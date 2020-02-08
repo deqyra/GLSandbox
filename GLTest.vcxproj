@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\camera.cpp" />
+    <ClCompile Include="src\core\meshes\axes.cpp" />
     <ClCompile Include="src\core\meshes\cube.cpp" />
     <ClCompile Include="src\core\mesh_drawer.cpp" />
     <ClCompile Include="src\core\positioned_object.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="src\core\camera.hpp" />
     <ClInclude Include="src\core\directions.hpp" />
     <ClInclude Include="src\core\mesh.hpp" />
+    <ClInclude Include="src\core\meshes\axes.hpp" />
     <ClInclude Include="src\core\meshes\cube.hpp" />
     <ClInclude Include="src\core\mesh_drawer.hpp" />
     <ClInclude Include="src\core\positioned_object.hpp" />

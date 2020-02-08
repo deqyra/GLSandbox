@@ -24,7 +24,8 @@ LightingExample::LightingExample() :
     _angle(0.f),
     _autoRotate(true),
     _speedFactor(10.f),
-    _cube(1.f)
+    _cube(1.f),
+    _axes(3.f)
 {
     _lastTime = (float)glfwGetTime();
 }
@@ -78,6 +79,7 @@ void LightingExample::run(GLFWwindow* window)
     };
     
     _cube.setupBuffers();
+    _axes.setupBuffers();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -91,7 +93,7 @@ void LightingExample::run(GLFWwindow* window)
         }
         else
         {
-            _cube.lookAt(_camera.getPosition());
+            //_cube.lookAt(_camera.getPosition());
         }
 
         _camera.updateCamera(frameTime - _lastTime);
@@ -107,15 +109,19 @@ void LightingExample::run(GLFWwindow* window)
         _shader.setMat4f("uView", view);
         _shader.setMat4f("uProjection", projection);
 
-        int nPos = sizeof(positions) / sizeof(glm::vec3);
+        glm::mat4 model;
 
+        int nPos = sizeof(positions) / sizeof(glm::vec3);
         for (int i = 0; i < nPos; i++)
         {
             _cube.setPosition(positions[i]);
-            glm::mat4 model = _cube.getModelMatrix();
+            model = _cube.getModelMatrix();
             _shader.setMat4f("uModel", model);
             _cube.draw();
         }
+        model = _axes.getModelMatrix();
+        _shader.setMat4f("uModel", model);
+        _axes.draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

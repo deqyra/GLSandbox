@@ -15,7 +15,9 @@
 
 #include "../core/shader.hpp"
 #include "../core/texture_2d.hpp"
+
 #include "../core/meshes/cube.hpp"
+#include "../core/meshes/axes.hpp"
 
 #include "../fps_camera_manager.hpp"
 #include "../tools/input_processor.hpp"
@@ -27,7 +29,9 @@ class LightingExample : public GLExample, public InputProcessor
         Shader _shader;
         Texture2D _texture;
         FPSCameraManager _camera;
+
         Cube _cube;
+        Axes _axes;
 
         float _angle;
         bool _autoRotate;
