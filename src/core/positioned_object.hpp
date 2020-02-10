@@ -21,13 +21,14 @@ class PositionedObject
     protected:
         glm::vec3 _position;
         glm::quat _orientation;
+        glm::vec3 _scale;
 
         glm::mat4 _modelMatrix;
         bool _modelCoordinatesUpdated;
 
     public:
         PositionedObject();
-        PositionedObject(glm::vec3 position, glm::quat orientation);
+        PositionedObject(glm::vec3 position, glm::quat orientation, glm::vec3 scale);
 
         glm::vec3 getPosition();
         void setPosition(glm::vec3 position);
@@ -38,6 +39,10 @@ class PositionedObject
         glm::quat rotate(glm::quat rotation);
         glm::quat rotate(float radAngle, glm::vec3 axis);
         glm::quat lookAt(glm::vec3 target);
+
+        glm::vec3 getScale();
+        void setScale(glm::vec3 scale);
+        glm::vec3 scale(glm::vec3 scaling);
 
         glm::mat4 getModelMatrix();
 };
