@@ -8,7 +8,7 @@
 #include "cube.hpp"
 #include "../../tools/gl_utils.hpp"
 
-Cube::Cube(float size) : Mesh(),
+Cube::Cube(float size) :
     _vertices{
         // Position                             // Colours
          size / 2.f,  size / 2.f,  size / 2.f,  WHITE,
@@ -63,9 +63,6 @@ void Cube::setupBuffers()
 
     // Unbind VAO
     glBindVertexArray(0);
-
-	// Set background to black
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void Cube::draw()

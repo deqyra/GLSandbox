@@ -12,8 +12,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#define DEFAULT_POSITION glm::vec3(0.f, 0.f, 0.f)
-#define DEFAULT_ORIENTATION glm::vec3(0.f, 0.f, 1.f)
 #define WORLD_X glm::vec3(1.f, 0.f, 0.f)
 #define WORLD_Y glm::vec3(0.f, 1.f, 0.f)
 #define WORLD_Z glm::vec3(0.f, 0.f, 1.f)
@@ -28,8 +26,8 @@ class PositionedObject
         bool _modelCoordinatesUpdated;
 
     public:
-        //PositionedObject();
-        PositionedObject(glm::vec3 position = DEFAULT_POSITION, glm::vec3 orientation = DEFAULT_ORIENTATION);
+        PositionedObject();
+        PositionedObject(glm::vec3 position, glm::quat orientation);
 
         glm::vec3 getPosition();
         void setPosition(glm::vec3 position);

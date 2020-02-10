@@ -7,17 +7,16 @@
  */
 #include "positioned_object.hpp"
 
-/*
 PositionedObject::PositionedObject() :
-    _position(DEFAULT_POSITION),
-    _orientation(DEFAULT_ORIENTATION),
+    _position(glm::vec3(0.f)),
+    _orientation(glm::quat(1.f, glm::vec3(0.f))),
     _modelMatrix(glm::mat4(1.f)),
     _modelCoordinatesUpdated(false)
 {
 
 }
-*/
-PositionedObject::PositionedObject(glm::vec3 position, glm::vec3 orientation) :
+
+PositionedObject::PositionedObject(glm::vec3 position, glm::quat orientation) :
     _position(position),
     _orientation(orientation),
     _modelMatrix(glm::mat4(1.f)),

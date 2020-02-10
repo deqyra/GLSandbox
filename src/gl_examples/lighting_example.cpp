@@ -20,7 +20,7 @@
 LightingExample::LightingExample() :
     _shader(),
     _texture("assets/textures/container.jpg", 0),
-    _camera(CAMERA_POS, -135.f, -30.f),
+    _camera(CAMERA_POS),
     _angle(0.f),
     _autoRotate(true),
     _speedFactor(10.f),
@@ -89,7 +89,7 @@ void LightingExample::run(GLFWwindow* window)
         if (_autoRotate)
         {
             float angleDiff = _speedFactor * (frameTime - _lastTime);
-            _cube.rotate(glm::radians(angleDiff), CUBE_ROTATION_AXIS);
+            //_cube.rotate(glm::radians(angleDiff), CUBE_ROTATION_AXIS);
         }
         else
         {

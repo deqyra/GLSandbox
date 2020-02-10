@@ -61,9 +61,6 @@ void Axes::setupBuffers()
 
     // Unbind VAO
     glBindVertexArray(0);
-
-	// Set background to black
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void Axes::draw()
