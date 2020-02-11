@@ -21,6 +21,7 @@ class Cube : public Mesh
         unsigned int _ebo;
 
     public:
+        Cube();
         Cube(float size);
         ~Cube();
 

@@ -15,19 +15,21 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
-#define CUBE_ROTATION_AXIS glm::vec3(0.4f, 0.3f, 0.7f)
+#define TORUS_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
 
 LightingExample::LightingExample() :
     _shader(),
     _texture("assets/textures/container.jpg", 0),
-    _camera(CAMERA_POS),
+    _camera(CAMERA_POS, -135.f, -25.f),
     _angle(0.f),
     _autoRotate(true),
     _speedFactor(10.f),
-    _cube(1.f),
-    _axes(3.f)
+    _torus(2.f, 0.5f, 72, 48),
+    _axes(3.f),
+    _light(1.f)
 {
     _lastTime = (float)glfwGetTime();
+    _light.setPosition(glm::vec3(-3.f, 3.f, 0.f));
 }
 
 LightingExample::~LightingExample()
@@ -37,7 +39,7 @@ LightingExample::~LightingExample()
 void LightingExample::setupBuffers()
 {
     // Set background to black
-    glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
 }
@@ -53,33 +55,17 @@ void LightingExample::run(GLFWwindow* window)
     this->setupBuffers();
 
     _shader.use();
-    // Set texture sampler to the bound texture units.
-    _shader.setInt("uTexData1", 0);
 
     // Retrieve the custom window pointer, register this example as an input processor
     GLWindow* windowHandler = static_cast<GLWindow*>(glfwGetWindowUserPointer(window));
     windowHandler->registerInputProcessor(this);
 
     _lastTime = (float)glfwGetTime();
-
-    glm::vec3 positions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f),
-        glm::vec3( 2.0f,  0.0f,  0.0f),
-        glm::vec3( 4.0f,  0.0f,  0.0f),
-        glm::vec3( 0.0f,  2.0f,  0.0f),
-        glm::vec3( 0.0f,  4.0f,  0.0f),
-        glm::vec3( 0.0f,  0.0f,  2.0f),
-        glm::vec3( 0.0f,  0.0f,  4.0f),
-        glm::vec3(-2.0f,  0.0f,  0.0f),
-        glm::vec3(-4.0f,  0.0f,  0.0f),
-        glm::vec3( 0.0f, -2.0f,  0.0f),
-        glm::vec3( 0.0f, -4.0f,  0.0f),
-        glm::vec3( 0.0f,  0.0f, -2.0f),
-        glm::vec3( 0.0f,  0.0f, -4.0f)
-    };
     
-    _cube.setupBuffers();
+    // Buffer data before drawing meshes
+    _torus.setupBuffers();
     _axes.setupBuffers();
+    _light.setupBuffers();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -89,40 +75,36 @@ void LightingExample::run(GLFWwindow* window)
         if (_autoRotate)
         {
             float angleDiff = _speedFactor * (frameTime - _lastTime);
-            //_cube.rotate(glm::radians(angleDiff), CUBE_ROTATION_AXIS);
+            _torus.rotate(glm::radians(angleDiff), TORUS_ROTATION_AXIS);
         }
         else
         {
-            //_cube.lookAt(_camera.getPosition());
+            _torus.lookAt(_camera.getPosition());
         }
 
-        _camera.updateCamera(frameTime - _lastTime);
-        glm::mat4 view = _camera.getViewMatrix();
-
-        int dims[4] = { 0 };
-        glGetIntegerv(GL_VIEWPORT, dims);
         // Projection matrix, adds perspective to the final render.
-        glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), (float)(dims[2]) / (float)dims[3], 0.1f, 100.0f);
-
-        _shader.setFloat("uTime", _lastTime);
-        _shader.setMat4f("uView", view);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), glAspectRatio(), 0.1f, 100.0f);
         _shader.setMat4f("uProjection", projection);
 
-        glm::mat4 model;
+        // View matrix, transpose world coordinates into camera coordinates
+        _camera.updateCamera(frameTime - _lastTime);
+        glm::mat4 view = _camera.getViewMatrix();
+        _shader.setMat4f("uView", view);
 
-        int nPos = sizeof(positions) / sizeof(glm::vec3);
-        for (int i = 0; i < nPos; i++)
-        {
-            _cube.setPosition(positions[i]);
-            model = _cube.getModelMatrix();
-            _shader.setMat4f("uModel", model);
-            _cube.draw();
-        }
+        // Draw different meshes, each with its own model matrix, transposing model coordinates into world coordinates
+        glm::mat4 model = _torus.getModelMatrix();
+        _shader.setMat4f("uModel", model);
+        _torus.draw();
+
         model = _axes.getModelMatrix();
         _shader.setMat4f("uModel", model);
         _axes.draw();
 
+        model = _light.getModelMatrix();
+        _shader.setMat4f("uModel", model);
+        _light.draw();
+
+        // Refresh screen and process input
         glfwSwapBuffers(window);
         glfwPollEvents();
 
@@ -142,11 +124,11 @@ void LightingExample::handleKeyboardObjectRotation(GLFWwindow* window, int key, 
     {
         if (key == GLFW_KEY_LEFT && (action == GLFW_PRESS || action == GLFW_REPEAT))
         {
-            _cube.rotate(glm::radians(-1.f), CUBE_ROTATION_AXIS);
+            _torus.rotate(glm::radians(-1.f), TORUS_ROTATION_AXIS);
         }
         else if (key == GLFW_KEY_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT))
         {
-            _cube.rotate(glm::radians(1.f), CUBE_ROTATION_AXIS);
+            _torus.rotate(glm::radians(1.f), TORUS_ROTATION_AXIS);
         }
     }
     else

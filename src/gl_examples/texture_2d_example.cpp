@@ -16,7 +16,7 @@
 using std::runtime_error;
 
 Texture2DExample::Texture2DExample() :
-    _shader(),
+    _shader("assets/shaders/default.vert", "assets/shaders/texture_2ch.frag"),
     _texture("assets/textures/container.jpg", 0),
     _overlay("assets/textures/awesomeface.png", 1, true, true),
     _vbo(0),

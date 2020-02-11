@@ -22,6 +22,8 @@
     <None Include="assets\shaders\default.frag" />
     <None Include="assets\shaders\default.vert" />
     <None Include="assets\shaders\perspective.vert" />
+    <None Include="assets\shaders\texture_1ch.frag" />
+    <None Include="assets\shaders\texture_2ch.frag" />
     <None Include="assets\shaders\vibing_rgb.frag" />
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +34,7 @@
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="src\core\meshes\axes.cpp" />
     <ClCompile Include="src\core\meshes\cube.cpp" />
+    <ClCompile Include="src\core\meshes\torus.cpp" />
     <ClCompile Include="src\core\mesh_drawer.cpp" />
     <ClCompile Include="src\core\positioned_object.cpp" />
     <ClCompile Include="src\core\shader.cpp" />
@@ -58,6 +61,7 @@
     <ClInclude Include="src\core\mesh.hpp" />
     <ClInclude Include="src\core\meshes\axes.hpp" />
     <ClInclude Include="src\core\meshes\cube.hpp" />
+    <ClInclude Include="src\core\meshes\torus.hpp" />
     <ClInclude Include="src\core\mesh_drawer.hpp" />
     <ClInclude Include="src\core\positioned_object.hpp" />
     <ClInclude Include="src\core\shader.hpp" />

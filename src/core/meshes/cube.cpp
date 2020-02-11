@@ -8,6 +8,11 @@
 #include "cube.hpp"
 #include "../../tools/gl_utils.hpp"
 
+Cube::Cube() : Cube(1.f)
+{
+
+}
+
 Cube::Cube(float size) :
     _vertices{
         // Position                             // Colours

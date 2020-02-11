@@ -28,10 +28,14 @@ void destroyWindow(GLFWwindow* window);
 // Output print callback upon getting GL errors
 void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 
+// Returns the aspect ratio (width / height) of the current context
+float glAspectRatio();
+
 // Shortcut macros
 #define SQRT3 1.7320508075688772935274463415059
 
 #define WHITE   1.0f, 1.0f, 1.0f
+#define GREY    0.5f, 0.5f, 0.5f
 #define BLACK   0.0f, 0.0f, 0.0f
 #define RED     1.0f, 0.0f, 0.0f
 #define GREEN   0.0f, 1.0f, 0.0f

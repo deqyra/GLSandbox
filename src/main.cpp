@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 {
 	glfwInit();
 	// Init window, GL context and GL pointers
-	GLFWwindow* window = makeWindow("Test");
+	GLFWwindow* window = makeWindow("Test", 1280, 720);
 
 	// If no window could be fetched, exit with an error.
 	if (!window)

@@ -240,3 +240,10 @@ void APIENTRY glDebugOutput(GLenum source,
     } cout << endl;
     cout << endl;
 }
+
+float glAspectRatio()
+{
+    int dims[4] = { 0 };
+    glGetIntegerv(GL_VIEWPORT, dims);
+    return (float)(dims[2]) / (float)(dims[3]);
+}
