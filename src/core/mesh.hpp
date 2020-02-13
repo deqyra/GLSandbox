@@ -9,10 +9,20 @@
 #define MESH_HPP
 
 #include "positioned_object.hpp"
+#include "../core/shader.hpp"
+
+#include <string>
 
 class Mesh : public PositionedObject
 {
+    private:
+        unsigned int _id;
+        static unsigned int _count;
+
     public:
+        Mesh();
+        unsigned int getId();
+
         virtual void setupBuffers() = 0;
         virtual void draw() = 0;
 };

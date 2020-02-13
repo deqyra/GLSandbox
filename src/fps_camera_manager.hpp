@@ -15,6 +15,7 @@
 #include "tools/gl_window.hpp"
 #include "core/camera.hpp"
 #include "core/directions.hpp"
+#include "core/view_provider.hpp"
 
 #define DIR_INDEX_FORWARD 0
 #define DIR_INDEX_BACKWARD 1
@@ -25,7 +26,7 @@
 #define SPRINT_MUTLIPLIER 1.5f
 #define SENSITIVITY 0.1f
 
-class FPSCameraManager
+class FPSCameraManager : public ViewProvider
 {
     private:
         Camera _camera;

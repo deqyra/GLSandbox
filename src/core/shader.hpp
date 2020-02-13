@@ -21,11 +21,29 @@
 class Shader
 {
     private:
+        std::string _programKey;
         unsigned int _id;
-        std::unordered_map <std::string, unsigned int> _uniformLocations;
+
+        // Structure storing uniform locations against their name AND the ID of the program they belong to:
+        // program ID -> uniform name -> actual location
+        static std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>> _uniformLocations;
+
+        // Structure storing program locations against the path of the shaders they were constructed from:
+        // program shader names -> program location
+        static std::unordered_map<std::string, unsigned int> _programMaps;
+
+        // Structure storing how many shader instances are referencing a shader resource on the GPU:
+        // program ID -> reference count
+        static std::unordered_map<unsigned int, unsigned int> _refCount;
+
+        unsigned int getRefCount();
+        unsigned int increaseRefCount();
+        unsigned int decreaseRefCount();
 
     public:
-        Shader(const GLchar* vertexPath = "assets/shaders/default.vert", const GLchar* fragmentPath = "assets/shaders/default.frag");
+        Shader(const std::string vertexPath = "assets/shaders/default.vert", const std::string fragmentPath = "assets/shaders/default.frag");
+        Shader(const Shader& other);
+        Shader& operator=(const Shader& other);
         ~Shader();
 
         // Get program ID.
