@@ -19,6 +19,9 @@ class Mesh : public PositionedObject
         unsigned int _id;
         static unsigned int _count;
 
+    protected:
+        bool _buffersSetUp;
+
     public:
         Mesh();
         unsigned int getId();

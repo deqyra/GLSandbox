@@ -36,6 +36,8 @@ Axes::~Axes()
 
 void Axes::setupBuffers()
 {
+    if (_buffersSetUp) return;
+
 	// Generate a VAO
 	glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
@@ -61,6 +63,8 @@ void Axes::setupBuffers()
 
     // Unbind VAO
     glBindVertexArray(0);
+
+    _buffersSetUp = true;
 }
 
 void Axes::draw()

@@ -38,7 +38,9 @@ Torus::~Torus()
 
 void Torus::setupBuffers()
 {
-	// Generate a VAO
+    if (_buffersSetUp) return;
+
+    // Generate a VAO
 	glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
 
@@ -65,6 +67,8 @@ void Torus::setupBuffers()
 
     // Unbind VAO
     glBindVertexArray(0);
+
+    _buffersSetUp = true;
 }
 
 void Torus::draw()
@@ -79,8 +83,8 @@ void Torus::draw()
 
 void Torus::fillVertexData(float toroidalRadius, float poloidalRadius, unsigned int toroidalVertexRes, unsigned int poloidalVertexRes)
 {
-    float toroidalAngleStep = (2 * M_PI) / (float)(toroidalVertexRes);
-    float poloidalAngleStep = (2 * M_PI) / (float)(poloidalVertexRes);
+    float toroidalAngleStep = (float)(2 * M_PI) / (float)(toroidalVertexRes);
+    float poloidalAngleStep = (float)(2 * M_PI) / (float)(poloidalVertexRes);
 
     // Generate vertex position and colors
     for (unsigned int i = 0; i < poloidalVertexRes; i++)

@@ -11,7 +11,8 @@
 unsigned int Mesh::_count = 0;
 
 Mesh::Mesh() :
-    _id(_count++)
+    _id(_count++),
+    _buffersSetUp(false)
 {
 
 }

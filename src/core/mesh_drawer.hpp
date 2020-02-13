@@ -30,12 +30,16 @@ class MeshDrawer
         void drawMeshUnsafe(unsigned int id);
 
     public:
+        MeshDrawer();
         MeshDrawer(std::shared_ptr<ViewProvider> camera, glm::mat4 projection);
 
+        void setCamera(ViewProvider* camera);
         void setCamera(std::shared_ptr<ViewProvider> camera);
         std::shared_ptr<ViewProvider> getCamera();
 
+        void registerMesh(Mesh* mesh, Shader shader = Shader());
         void registerMesh(std::shared_ptr<Mesh> mesh, Shader shader = Shader());
+
         std::shared_ptr<Mesh> getMesh(unsigned int id);
         bool hasMesh(unsigned int id);
         void removeMesh(unsigned int id);

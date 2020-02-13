@@ -43,7 +43,9 @@ Cube::~Cube()
 
 void Cube::setupBuffers()
 {
-	// Generate a VAO
+    if (_buffersSetUp) return;
+
+    // Generate a VAO
 	glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
 
@@ -68,6 +70,8 @@ void Cube::setupBuffers()
 
     // Unbind VAO
     glBindVertexArray(0);
+
+    _buffersSetUp = true;
 }
 
 void Cube::draw()

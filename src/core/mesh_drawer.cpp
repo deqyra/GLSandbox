@@ -28,6 +28,11 @@ MeshDrawer::MeshDrawer(std::shared_ptr<ViewProvider> camera, glm::mat4 projectio
 
 }
 
+void MeshDrawer::setCamera(ViewProvider* camera)
+{
+    _camera.reset(camera);
+}
+
 void MeshDrawer::setCamera(std::shared_ptr<ViewProvider> camera)
 {
     _camera = camera;
@@ -36,6 +41,19 @@ void MeshDrawer::setCamera(std::shared_ptr<ViewProvider> camera)
 std::shared_ptr<ViewProvider> MeshDrawer::getCamera()
 {
     return _camera;
+}
+
+void MeshDrawer::registerMesh(Mesh* mesh, Shader shader)
+{
+    unsigned int id = mesh->getId();
+    if (hasMesh(id))
+    {
+        throw std::runtime_error(std::string("MeshDrawer error: mesh with ID " + std::to_string(id) + " already exists.").c_str());
+    }
+
+    _meshes[id] = std::shared_ptr<Mesh>(mesh);
+    _shaders[id] = shader;
+    _enabled[id] = true;
 }
 
 void MeshDrawer::registerMesh(std::shared_ptr<Mesh> mesh, Shader shader)
