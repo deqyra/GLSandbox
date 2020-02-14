@@ -17,7 +17,7 @@
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
 
 RotatingTexturedCubeExample::RotatingTexturedCubeExample() :
-    _shader("assets/shaders/default.vert", "assets/shaders/texture_1ch.frag"),
+    _shader("assets/shaders/mvp.vert", "assets/shaders/texture_1ch.frag"),
     _texture("assets/textures/container.jpg", 0),
     _camera(CAMERA_POS, -135.f, -30.f),
     _vbo(0),
@@ -171,15 +171,12 @@ void RotatingTexturedCubeExample::run(GLFWwindow* window)
             }
         }
 
-        glm::mat4 transform = glm::mat4(1.0f);
-         transform = glm::rotate(transform, glm::radians(_angle), glm::vec3(0.4f, 0.3f, 0.7f));
-        //transform = glm::rotate(transform, glm::radians(_angle), glm::vec3(0.f, 0.f, 1.f));
-
         // Model matrix, transforms all the vertices of all objects about the world origin.
         // Outside this example, a model matrix should be defined on a per-object basis in order for multiple objects to occupy different places in the world.
         // Multiple object locations are simulated further down by drawing the cube with different values of this matrix, updated through a shader uniform.
         glm::mat4 model = glm::mat4(1.0f);
-        
+        model = glm::rotate(model, glm::radians(_angle), glm::vec3(0.4f, 0.3f, 0.7f));
+
         _camera.updateCamera(frameTime - _lastTime);
         glm::mat4 view = _camera.getViewMatrix();
 
@@ -190,7 +187,6 @@ void RotatingTexturedCubeExample::run(GLFWwindow* window)
         projection = glm::perspective(glm::radians(45.0f), (float)(dims[2]) / (float)dims[3], 0.1f, 100.0f);
 
         _shader.setFloat("uTime", _lastTime);
-        _shader.setMat4f("uTransform", transform);
         _shader.setMat4f("uView", view);
         _shader.setMat4f("uProjection", projection);
 
@@ -198,8 +194,8 @@ void RotatingTexturedCubeExample::run(GLFWwindow* window)
 
         for (int i = 0; i < nPos; i++)
         {
-            model = glm::translate(glm::mat4(1.0f), cubePos[i]);
-            _shader.setMat4f("uModel", model);
+            glm::mat4 tmpModel = glm::translate(model, cubePos[i]);
+            _shader.setMat4f("uModel", tmpModel);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 

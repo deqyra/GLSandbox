@@ -36,23 +36,14 @@ LightingExample::~LightingExample()
 {
 }
 
-void LightingExample::setupBuffers()
+void LightingExample::run(GLFWwindow* window)
 {
+    // Remove cursor from window
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
     // Set background to black
     glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
-}
-
-void LightingExample::unsetBuffers()
-{
-    glUseProgram(0);
-}
-
-void LightingExample::run(GLFWwindow* window)
-{
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
-    this->setupBuffers();
 
     // Retrieve the custom window pointer, register this example as an input processor
     GLWindow* windowHandler = static_cast<GLWindow*>(glfwGetWindowUserPointer(window));
@@ -60,6 +51,8 @@ void LightingExample::run(GLFWwindow* window)
 
     _lastTime = (float)glfwGetTime();
     
+    Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/monosource_phong.frag");
+
     std::shared_ptr<Torus> torus = std::make_shared<Torus>(2.f, 0.5f, 72, 48);
     std::shared_ptr<Axes> axes = std::make_shared<Axes>(3.f);
     std::shared_ptr<Cube> light = std::make_shared<Cube>(1.f);
@@ -67,7 +60,7 @@ void LightingExample::run(GLFWwindow* window)
     light->setPosition(glm::vec3(-3.f, 3.f, 0.f));
 
     MeshDrawer meshDrawer = MeshDrawer();
-    meshDrawer.registerMesh(torus);
+    meshDrawer.registerMesh(torus, lightingShader);
     meshDrawer.registerMesh(axes);
     meshDrawer.registerMesh(light);
 
@@ -104,7 +97,6 @@ void LightingExample::run(GLFWwindow* window)
 
     windowHandler->removeInputProcessor();
 
-    this->unsetBuffers();
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);  
 }
 

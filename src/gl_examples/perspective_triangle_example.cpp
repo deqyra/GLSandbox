@@ -15,7 +15,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 PerspectiveTriangleExample::PerspectiveTriangleExample() :
-    _shader("assets/shaders/default.vert", "assets/shaders/vibing_rgb.frag"),
+    _shader("assets/shaders/mvp.vert", "assets/shaders/vibing_rgb.frag"),
     _position_vbo(0),
     _color_vbo(0),
     _ebo(0),
@@ -143,12 +143,10 @@ void PerspectiveTriangleExample::run(GLFWwindow* window)
         }
         _time = (float)glfwGetTime();
 
-        glm::mat4 transform = glm::mat4(1.0f);
-        transform = glm::rotate(transform, glm::radians(_angle), glm::vec3(0.f, 0.f, 1.f));
-
         // Model matrix, transforms all the vertices of all objects (in that case, a couple triangles) about the world origin.
         // Outside this example, a model matrix should be defined on a per-object basis in order for multiple objects to occupy different places in the world.
         glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(_angle), glm::vec3(0.f, 0.f, 1.f));
         model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
         // View matrix, transforms all vertices of all objects about the world origin, accounting for a camera placed in the world.
@@ -162,7 +160,6 @@ void PerspectiveTriangleExample::run(GLFWwindow* window)
         projection = glm::perspective(glm::radians(45.0f), (float)(dims[2]) / (float)dims[3], 0.1f, 100.0f);
 
         _shader.setFloat("uTime", _time);
-        _shader.setMat4f("uTransform", transform);
         _shader.setMat4f("uModel", model);
         _shader.setMat4f("uView", view);
         _shader.setMat4f("uProjection", projection);

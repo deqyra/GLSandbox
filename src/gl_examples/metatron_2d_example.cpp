@@ -9,7 +9,7 @@
 #include "../tools/gl_utils.hpp"
 
 Metatron2DExample::Metatron2DExample() :
-    _shader("assets/shaders/default.vert", "assets/shaders/vibing_rgb.frag"),
+    _shader("assets/shaders/mvp.vert", "assets/shaders/vibing_rgb.frag"),
     _position_vbo(0),
     _color_vbo(0),
     _ebo(0),

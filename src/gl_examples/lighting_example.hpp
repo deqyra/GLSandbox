@@ -32,9 +32,6 @@ class LightingExample : public GLExample, public InputProcessor
         float _speedFactor;
         float _lastTime;
 
-        void setupBuffers();
-        void unsetBuffers();
-
         void handleKeyboardObjectRotation(GLFWwindow* window, int key, int scancode, int action, int mods);
 
     public:

@@ -41,7 +41,7 @@ class Shader
         unsigned int decreaseRefCount();
 
     public:
-        Shader(const std::string vertexPath = "assets/shaders/default.vert", const std::string fragmentPath = "assets/shaders/default.frag");
+        Shader(const std::string vertexPath = "assets/shaders/mvp.vert", const std::string fragmentPath = "assets/shaders/default.frag");
         Shader(const Shader& other);
         Shader& operator=(const Shader& other);
         ~Shader();
