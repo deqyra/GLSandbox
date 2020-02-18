@@ -22,17 +22,24 @@ class Torus : public Mesh
         unsigned int _poloidalVertexRes;
 
         float* _vertices;
+        unsigned int _vertexDataLength;
+
         unsigned int* _indices;
+        unsigned int _indexDataLength;
 
         unsigned int _vao;
         unsigned int _vbo;
         unsigned int _ebo;
 
-        void fillVertexData(float toroidalRadius, float poloidalRadius, unsigned int toroidalVertexRes, unsigned int poloidalVertexRes);
+        bool _drawNormals;
+
+        static constexpr unsigned int DATA_STRIDE = 9;
+
+        void fillVertexData(float toroidalRadius, float poloidalRadius, unsigned int toroidalVertexRes, unsigned int poloidalVertexRes, bool drawNormals);
 
     public:
         Torus();
-        Torus(float toroidalRadius, float poloidalRadius, unsigned int toroidalVertexRes = DEFAULT_TOROIDAL_VERTEX_RESOLUTION, unsigned int poloidalVertexRes = DEFAULT_POLOIDAL_VERTEX_RESOLUTION);
+        Torus(float toroidalRadius, float poloidalRadius, unsigned int toroidalVertexRes = DEFAULT_TOROIDAL_VERTEX_RESOLUTION, unsigned int poloidalVertexRes = DEFAULT_POLOIDAL_VERTEX_RESOLUTION, bool drawNormals = false);
         ~Torus();
 
         void setupBuffers();

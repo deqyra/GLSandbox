@@ -57,7 +57,11 @@ void LightingExample::run(GLFWwindow* window)
     std::shared_ptr<Axes> axes = std::make_shared<Axes>(3.f);
     std::shared_ptr<Cube> light = std::make_shared<Cube>(1.f);
 
-    light->setPosition(glm::vec3(-3.f, 3.f, 0.f));
+    torus->setPosition(glm::vec3(0.f, 0.f, 0.f));
+
+    glm::vec3 lightPosition = glm::vec3(-3.f, 3.f, 0.f);
+    light->setPosition(lightPosition);
+    lightingShader.setVec3f("uLightPos", lightPosition);
 
     MeshDrawer meshDrawer = MeshDrawer();
     meshDrawer.registerMesh(torus, lightingShader);
@@ -77,7 +81,10 @@ void LightingExample::run(GLFWwindow* window)
         if (_autoRotate)
         {
             float angleDiff = _speedFactor * (frameTime - _lastTime);
-            torus->rotate(glm::radians(angleDiff), TORUS_ROTATION_AXIS);
+            light->orbit(glm::radians(angleDiff), TORUS_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+            lightingShader.setVec3f("uLightPos", light->getPosition());
+            //torus->orbit(glm::radians(angleDiff), TORUS_ROTATION_AXIS, glm::vec3(0.f, 0.f, 0.f));
+            //torus->rotate(glm::radians(angleDiff), TORUS_ROTATION_AXIS);
         }
         else
         {

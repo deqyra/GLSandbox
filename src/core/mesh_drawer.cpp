@@ -215,10 +215,12 @@ void MeshDrawer::drawMeshUnsafe(unsigned int id)
 
     std::shared_ptr<Mesh> mesh = _meshes[id];
     glm::mat4 model = mesh->getModelMatrix();
+    glm::mat4 normal = mesh->getNormalCorrectionMatrix();
 
     shader.setMat4f("uProjection", _projection);
     shader.setMat4f("uView", view);
     shader.setMat4f("uModel", model);
+    shader.setMat4f("uNormalCorrection", normal);
 
     mesh->setupBuffers();
     mesh->draw();

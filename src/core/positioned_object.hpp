@@ -24,7 +24,11 @@ class PositionedObject
         glm::vec3 _scale;
 
         glm::mat4 _modelMatrix;
-        bool _modelCoordinatesUpdated;
+        glm::mat4 _normalMatrix;
+
+        bool _matricesOutdated;
+
+        void updateMatrices();
 
     public:
         PositionedObject();
@@ -33,6 +37,7 @@ class PositionedObject
         glm::vec3 getPosition();
         void setPosition(glm::vec3 position);
         glm::vec3 translate(glm::vec3 translation);
+        void orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate = false);
 
         glm::quat getOrientation();
         void setOrientation(glm::quat orientation);
@@ -45,6 +50,7 @@ class PositionedObject
         glm::vec3 scale(glm::vec3 scaling);
 
         glm::mat4 getModelMatrix();
+        glm::mat4 getNormalCorrectionMatrix();
 };
 
 #endif//POSITIONED_OBJECT_HPP

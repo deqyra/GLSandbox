@@ -23,6 +23,7 @@ class Cube : public Mesh
     public:
         Cube();
         Cube(float size);
+        Cube(float size, float r, float g, float b);
         ~Cube();
 
         void setupBuffers();

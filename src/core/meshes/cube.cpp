@@ -34,6 +34,27 @@ Cube::Cube(float size) :
     
 }
 
+Cube::Cube(float size, float r, float g, float b) :
+    _vertices{
+        // Position                             // Colours
+         size / 2.f,  size / 2.f,  size / 2.f,  r, g, b,
+         size / 2.f,  size / 2.f, -size / 2.f,  r, g, b,
+         size / 2.f, -size / 2.f,  size / 2.f,  r, g, b,
+         size / 2.f, -size / 2.f, -size / 2.f,  r, g, b,
+        -size / 2.f,  size / 2.f,  size / 2.f,  r, g, b,
+        -size / 2.f,  size / 2.f, -size / 2.f,  r, g, b,
+        -size / 2.f, -size / 2.f,  size / 2.f,  r, g, b,
+        -size / 2.f, -size / 2.f, -size / 2.f,  r, g, b
+    },
+    _indices{
+        0, 1, 2, 3, 6, 7, 4, 5, 0, 1,   // Side face strip
+        4, 6, 0, 2,                     // Top face strip
+        1, 3, 5, 7                      // Bottom face strip
+    }
+{
+    
+}
+
 Cube::~Cube()
 {
     glDeleteBuffers(1, &_ebo);

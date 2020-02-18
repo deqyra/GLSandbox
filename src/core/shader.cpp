@@ -144,19 +144,19 @@ unsigned int Shader::getUniformLocation(const string& name)
 void Shader::setBool(const string& name, bool value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
-    glUniform1i(uniformLocation, (int)value);
+    glProgramUniform1i(_id, uniformLocation, (int)value);
 }
 
 void Shader::setInt(const string& name, int value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
-    glUniform1i(uniformLocation, value);
+    glProgramUniform1i(_id, uniformLocation, value);
 }
 
 void Shader::setFloat(const string& name, float value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
-    glUniform1f(uniformLocation, value);
+    glProgramUniform1f(_id, uniformLocation, value);
 }
 
 void Shader::setMat4f(const string& name, glm::mat4 value, bool transpose)
@@ -168,7 +168,13 @@ void Shader::setMat4f(const string& name, glm::mat4 value, bool transpose)
     }
 
     unsigned int uniformLocation = getUniformLocation(name);
-    glUniformMatrix4fv(uniformLocation, 1, transposition, glm::value_ptr(value));
+    glProgramUniformMatrix4fv(_id, uniformLocation, 1, transposition, glm::value_ptr(value));
+}
+
+void Shader::setVec3f(const std::string& name, glm::vec3 value)
+{
+    unsigned int uniformLocation = getUniformLocation(name);
+    glProgramUniform3f(_id, uniformLocation, value.x, value.y, value.z);
 }
 
 unsigned int Shader::getRefCount()
