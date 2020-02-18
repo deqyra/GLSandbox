@@ -53,6 +53,8 @@ class FPSCameraManager : public ViewProvider
         void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
         void processMouseScroll(float scrollOffset);
 
+        glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
+
         void updateCamera(float timeDelta);
         glm::vec3 getPosition();
 };

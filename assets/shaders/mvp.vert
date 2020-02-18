@@ -12,13 +12,13 @@ layout (location = 3) out vec3 outFragPos;
 uniform mat4 uModel = mat4(1.0f);
 uniform mat4 uView = mat4(1.0f);
 uniform mat4 uProjection = mat4(1.0f);
-uniform mat4 uNormalCorrection = mat4(1.0f);
+uniform mat3 uNormalCorrection = mat3(1.0f);
 
 void main()
 {
     gl_Position = uProjection * uView * uModel * vec4(inPosition, 1.0f);
 	outVertexColor = inColor;
-	outVertexNormal = vec3(uNormalCorrection * vec4(inNormal, 0.0f));
+	outVertexNormal = uNormalCorrection * inNormal;
 	outTexCoord = inTexCoord;
-	outFragPos = vec3(uModel * vec4(inPosition, 1.0f));
+	outFragPos = vec3(uView * uModel * vec4(inPosition, 1.0f));
 }

@@ -104,6 +104,11 @@ void FPSCameraManager::processMouseScroll(float scrollOffset)
 
 }
 
+glm::vec3 FPSCameraManager::transformWorldPosition(glm::vec3 worldPosition)
+{
+    return _camera.transformWorldPosition(worldPosition);
+}
+
 void FPSCameraManager::updateCamera(float timeDelta)
 {
     float velocity = timeDelta * _moveSpeed;

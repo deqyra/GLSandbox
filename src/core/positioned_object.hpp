@@ -24,7 +24,6 @@ class PositionedObject
         glm::vec3 _scale;
 
         glm::mat4 _modelMatrix;
-        glm::mat4 _normalMatrix;
 
         bool _matricesOutdated;
 
@@ -50,7 +49,6 @@ class PositionedObject
         glm::vec3 scale(glm::vec3 scaling);
 
         glm::mat4 getModelMatrix();
-        glm::mat4 getNormalCorrectionMatrix();
 };
 
 #endif//POSITIONED_OBJECT_HPP

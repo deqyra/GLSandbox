@@ -103,3 +103,9 @@ void Camera::processZoom(float scrollOffset)
     if (_zoom >= 45.0f)
         _zoom = 45.0f;
 }
+
+glm::vec3 Camera::transformWorldPosition(glm::vec3 worldPosition)
+{
+    glm::vec4 viewPosition = _viewMatrix * glm::vec4(worldPosition, 1.f);
+    return glm::vec3(viewPosition);
+}

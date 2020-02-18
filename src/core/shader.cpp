@@ -159,6 +159,18 @@ void Shader::setFloat(const string& name, float value)
     glProgramUniform1f(_id, uniformLocation, value);
 }
 
+void Shader::setMat3f(const string& name, glm::mat3 value, bool transpose)
+{
+    unsigned int transposition = GL_FALSE;
+    if (transpose)
+    {
+        transposition = GL_TRUE;
+    }
+
+    unsigned int uniformLocation = getUniformLocation(name);
+    glProgramUniformMatrix3fv(_id, uniformLocation, 1, transposition, glm::value_ptr(value));
+}
+
 void Shader::setMat4f(const string& name, glm::mat4 value, bool transpose)
 {
     unsigned int transposition = GL_FALSE;

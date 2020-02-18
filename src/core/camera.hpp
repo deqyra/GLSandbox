@@ -50,6 +50,8 @@ class Camera : public ViewProvider
         void processMovement(Direction dir, float velocity);
         void processRotation(float yawOffset, float pitchOffset, bool constrainPitch = true);
         void processZoom(float scrollOffset);
+
+        glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
 };
 
 #endif//CAMERA_HPP

@@ -12,7 +12,6 @@ PositionedObject::PositionedObject() :
     _orientation(glm::quat(1.f, glm::vec3(0.f))),
     _scale(glm::vec3(1.f)),
     _modelMatrix(glm::mat4(1.f)),
-    _normalMatrix(glm::mat4(1.f)),
     _matricesOutdated(false)
 {
 
@@ -146,16 +145,6 @@ glm::mat4 PositionedObject::getModelMatrix()
     return _modelMatrix;
 }
 
-glm::mat4 PositionedObject::getNormalCorrectionMatrix()
-{
-    if (_matricesOutdated)
-    {
-        updateMatrices();
-    }
-
-    return _normalMatrix;
-}
-
 void PositionedObject::updateMatrices()
 {
     // Generate 4x4 matrix from quaternion
@@ -166,8 +155,6 @@ void PositionedObject::updateMatrices()
     // Include translation to current position
     glm::vec4 position4 = glm::vec4(_position, 1.f);
     _modelMatrix[3] = position4;
-
-    _normalMatrix = glm::transpose(glm::inverse(_modelMatrix));
 
     _matricesOutdated = false;
 }

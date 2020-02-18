@@ -147,6 +147,8 @@ void Torus::fillVertexData(float toroidalRadius, float poloidalRadius, unsigned 
                 index = (poloidalVertexRes * toroidalVertexRes) + (index * 2);
                 index *= DATA_STRIDE;
 
+                float normalFactor = 0.8f;
+
                 // Base vertex
                 _vertices[index]      = vertexX;
                 _vertices[index +  1] = vertexY;
@@ -158,9 +160,9 @@ void Torus::fillVertexData(float toroidalRadius, float poloidalRadius, unsigned 
                 _vertices[index +  7] = normalY;
                 _vertices[index +  8] = normalZ;
                 // Normal vertex
-                _vertices[index +  9] = vertexX + normalX;
-                _vertices[index + 10] = vertexY + normalY;
-                _vertices[index + 11] = vertexZ + normalZ;
+                _vertices[index +  9] = vertexX + (normalX * normalFactor);
+                _vertices[index + 10] = vertexY + (normalY * normalFactor);
+                _vertices[index + 11] = vertexZ + (normalZ * normalFactor);
                 _vertices[index + 12] = 1.f;    // YE
                 _vertices[index + 13] = 1.f;    // LL
                 _vertices[index + 14] = 0.f;    // OW

@@ -21,7 +21,8 @@
 #include <memory>
 
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
-#define TORUS_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
+#define CUBE_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
+#define TORUS_ROTATION_AXIS glm::vec3(1.f, 0.f, 0.f)
 
 LightingExample::LightingExample() :
     _angle(0.f),
@@ -81,10 +82,14 @@ void LightingExample::run(GLFWwindow* window)
         if (_autoRotate)
         {
             float angleDiff = _speedFactor * (frameTime - _lastTime);
-            light->orbit(glm::radians(angleDiff), TORUS_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
-            lightingShader.setVec3f("uLightPos", light->getPosition());
-            //torus->orbit(glm::radians(angleDiff), TORUS_ROTATION_AXIS, glm::vec3(0.f, 0.f, 0.f));
-            //torus->rotate(glm::radians(angleDiff), TORUS_ROTATION_AXIS);
+
+            light->orbit(glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+
+            glm::vec3 lightPos = light->getPosition();
+            glm::vec3 lightViewPos = _camera->transformWorldPosition(lightPos);
+            lightingShader.setVec3f("uLightPos", lightViewPos);
+
+            torus->rotate(glm::radians(angleDiff), TORUS_ROTATION_AXIS);
         }
         else
         {
