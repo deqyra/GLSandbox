@@ -60,6 +60,7 @@ void LightingExample::run(GLFWwindow* window)
     std::shared_ptr<Torus> torus = std::make_shared<Torus>(2.f, 0.5f, 72, 48);
     std::shared_ptr<Axes> axes = std::make_shared<Axes>(3.f);
     std::shared_ptr<Cube> lightCube = std::make_shared<Cube>(1.f);
+    std::shared_ptr<PointLight> light = std::make_shared<PointLight>();
 
     // Setup mesh properties
     torus->material = Materials::Emerald;
@@ -67,6 +68,7 @@ void LightingExample::run(GLFWwindow* window)
     // Setup light
     glm::vec3 lightPosition = glm::vec3(-3.f, 3.f, 0.f);
     lightCube->setPosition(lightPosition);
+    light->setPosition(lightPosition);
     lightingShader.setVec3f("uLightPos", lightPosition);
 
     // Register mesh in mesh drawer
@@ -95,10 +97,11 @@ void LightingExample::run(GLFWwindow* window)
             // Update object transforms
             float angleDiff = _speedFactor * (frameTime - _lastTime);
             lightCube->orbit(glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+            light->orbit(glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
             torus->rotate(glm::radians(angleDiff), TORUS_ROTATION_AXIS);
 
             // Update light position in lighting shader
-            glm::vec3 lightPos = lightCube->getPosition();
+            glm::vec3 lightPos = light->getPosition();
             glm::vec3 lightViewPos = _camera->transformWorldPosition(lightPos);
             lightingShader.setVec3f("uLightPos", lightViewPos);
         }

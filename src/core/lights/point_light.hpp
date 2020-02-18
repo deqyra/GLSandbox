@@ -4,11 +4,14 @@
 #include <glm/glm.hpp>
 
 #include "../positioned_object.hpp"
+#include "../light.hpp"
+#include "../light_type.hpp"
 
-class PointLight : public PositionedObject
+class PointLight : public PositionedObject, public Light
 {
     public:
-        PointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+        PointLight();
+        PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 
         glm::vec3 ambient;
         glm::vec3 diffuse;

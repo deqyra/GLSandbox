@@ -5,12 +5,7 @@
 
 namespace Materials
 {
-    const Material Default = Material(
-        glm::vec3(0.15f),
-        glm::vec3(0.6f),
-        glm::vec3(1.f),
-        12.8f
-    );
+    const Material Default = Material();
 
     const Material Emerald = Material(
         glm::vec3(0.0215f,  0.1745f,   0.0215f),

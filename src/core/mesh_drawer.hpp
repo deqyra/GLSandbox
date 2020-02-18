@@ -16,6 +16,8 @@
 #include "mesh.hpp"
 #include "shader.hpp"
 #include "view_provider.hpp"
+#include "light.hpp"
+#include "light_type.hpp"
 
 class MeshDrawer
 {
@@ -23,6 +25,7 @@ class MeshDrawer
         std::unordered_map<unsigned int, std::shared_ptr<Mesh>> _meshes;
         std::unordered_map<unsigned int, Shader> _shaders;
         std::unordered_map<unsigned int, bool> _enabled;
+        std::unordered_map<LightType, std::shared_ptr<Light>> _lights;
 
         std::shared_ptr<ViewProvider> _camera;
         glm::mat4 _projection;
