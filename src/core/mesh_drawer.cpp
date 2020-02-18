@@ -231,6 +231,8 @@ void MeshDrawer::drawMeshUnsafe(unsigned int id)
     shader.setMat4f("uModel", model);
     shader.setMat3f("uNormalCorrection", normal);
 
+    shader.setMaterial("uMaterial", mesh->material);
+
     mesh->setupBuffers();
     mesh->draw();
 }

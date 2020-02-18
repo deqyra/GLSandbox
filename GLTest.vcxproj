@@ -32,6 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\camera.cpp" />
+    <ClCompile Include="src\core\material.cpp" />
     <ClCompile Include="src\core\mesh.cpp" />
     <ClCompile Include="src\core\meshes\axes.cpp" />
     <ClCompile Include="src\core\meshes\cube.cpp" />
@@ -58,6 +59,7 @@
   <ItemGroup>
     <ClInclude Include="src\core\camera.hpp" />
     <ClInclude Include="src\core\directions.hpp" />
+    <ClInclude Include="src\core\material.hpp" />
     <ClInclude Include="src\core\mesh.hpp" />
     <ClInclude Include="src\core\meshes\axes.hpp" />
     <ClInclude Include="src\core\meshes\cube.hpp" />

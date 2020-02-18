@@ -9,7 +9,8 @@
 #define MESH_HPP
 
 #include "positioned_object.hpp"
-#include "../core/shader.hpp"
+#include "shader.hpp"
+#include "material.hpp"
 
 #include <string>
 
@@ -28,6 +29,8 @@ class Mesh : public PositionedObject
 
         virtual void setupBuffers() = 0;
         virtual void draw() = 0;
+
+        Material material;
 };
 
 #endif//MESH_HPP

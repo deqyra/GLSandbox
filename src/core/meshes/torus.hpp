@@ -33,7 +33,7 @@ class Torus : public Mesh
 
         bool _drawNormals;
 
-        static constexpr unsigned int DATA_STRIDE = 9;
+        const unsigned int DATA_STRIDE = 9;
 
         void fillVertexData(float toroidalRadius, float poloidalRadius, unsigned int toroidalVertexRes, unsigned int poloidalVertexRes, bool drawNormals);
 

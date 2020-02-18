@@ -18,6 +18,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "material.hpp"
+
 class Shader
 {
     private:
@@ -60,6 +62,7 @@ class Shader
         void setMat3f(const std::string& name, glm::mat3 value, bool transpose = false);
         void setMat4f(const std::string& name, glm::mat4 value, bool transpose = false);
         void setVec3f(const std::string& name, glm::vec3 value);
+        void setMaterial(const std::string& name, Material value);
 };
 
 #endif//SHADER_HPP

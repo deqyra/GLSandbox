@@ -54,23 +54,29 @@ void LightingExample::run(GLFWwindow* window)
     
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/monosource_phong.frag");
 
+    // Instantiate scene meshes
     std::shared_ptr<Torus> torus = std::make_shared<Torus>(2.f, 0.5f, 72, 48);
     std::shared_ptr<Axes> axes = std::make_shared<Axes>(3.f);
     std::shared_ptr<Cube> light = std::make_shared<Cube>(1.f);
 
-    torus->setPosition(glm::vec3(0.f, 0.f, 0.f));
+    // Setup materials
+    torus->material = Materials::Emerald;
 
+    // Setup light
     glm::vec3 lightPosition = glm::vec3(-3.f, 3.f, 0.f);
     light->setPosition(lightPosition);
     lightingShader.setVec3f("uLightPos", lightPosition);
 
+    // Register mesh in mesh drawer
     MeshDrawer meshDrawer = MeshDrawer();
     meshDrawer.registerMesh(torus, lightingShader);
     meshDrawer.registerMesh(axes);
     meshDrawer.registerMesh(light);
 
+    // Register camera in mesh drawer
     meshDrawer.setCamera(_camera);
 
+    // Setup projection in mesh drawer
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), glAspectRatio(), 0.1f, 100.0f);
     meshDrawer.setProjection(projection);
 
@@ -79,24 +85,27 @@ void LightingExample::run(GLFWwindow* window)
         float frameTime = (float)glfwGetTime();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Update camera
+        _camera->updateCamera(frameTime - _lastTime);
+
         if (_autoRotate)
         {
+            // Update object transforms
             float angleDiff = _speedFactor * (frameTime - _lastTime);
-
             light->orbit(glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+            torus->rotate(glm::radians(angleDiff), TORUS_ROTATION_AXIS);
 
+            // Update light position in lighting shader
             glm::vec3 lightPos = light->getPosition();
             glm::vec3 lightViewPos = _camera->transformWorldPosition(lightPos);
             lightingShader.setVec3f("uLightPos", lightViewPos);
-
-            torus->rotate(glm::radians(angleDiff), TORUS_ROTATION_AXIS);
         }
         else
         {
             torus->lookAt(_camera->getPosition());
         }
 
-        _camera->updateCamera(frameTime - _lastTime);
+        // Draw meshes
         meshDrawer.drawMeshes();
 
         // Refresh screen and process input

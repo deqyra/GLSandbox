@@ -189,6 +189,15 @@ void Shader::setVec3f(const std::string& name, glm::vec3 value)
     glProgramUniform3f(_id, uniformLocation, value.x, value.y, value.z);
 }
 
+void Shader::setMaterial(const std::string& name, Material value)
+{
+    unsigned int uniformLocation = getUniformLocation(name);
+    setVec3f(name + ".ambient", value.ambient);
+    setVec3f(name + ".diffuse", value.diffuse);
+    setVec3f(name + ".specular", value.specular);
+    setFloat(name + ".shininess", value.shininess);
+}
+
 unsigned int Shader::getRefCount()
 {
     auto it = _refCount.find(_id);
