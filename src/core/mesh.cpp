@@ -7,6 +7,7 @@
  */
 
 #include "mesh.hpp"
+#include "materials.hpp"
 
 unsigned int Mesh::_count = 0;
 
