@@ -94,21 +94,17 @@ glm::quat PositionedObject::rotate(float radAngle, glm::vec3 axis)
 glm::quat PositionedObject::lookAt(glm::vec3 target)
 {
     glm::vec3 direction = glm::normalize(target - _position);
+    glm::vec3 axis = glm::cross(WORLD_Z, direction);
+    axis = glm::normalize(axis);
     /*
     _orientation = glm::quat(direction);
     _orientation = glm::normalize(_orientation);
     */
-    direction = glm::normalize(direction);
-    glm::vec3 axis = glm::cross(direction, WORLD_Z);
-    axis = glm::normalize(axis);
 
-    float rot = glm::dot(WORLD_Z, direction);
+    float dot = glm::dot(WORLD_Z, direction);
+    float angle = glm::acos(dot);
 
-    _orientation.x = axis.x;
-    _orientation.y = axis.y;
-    _orientation.z = axis.z;
-    _orientation.w = rot;
-    _orientation = glm::normalize(_orientation);
+    _orientation = glm::normalize(glm::quat(axis * angle));
 
     _matricesOutdated = true;
     return _orientation;
