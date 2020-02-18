@@ -13,6 +13,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#define ORIGIN  glm::vec3(0.f, 0.f, 0.f)
 #define WORLD_X glm::vec3(1.f, 0.f, 0.f)
 #define WORLD_Y glm::vec3(0.f, 1.f, 0.f)
 #define WORLD_Z glm::vec3(0.f, 0.f, 1.f)
