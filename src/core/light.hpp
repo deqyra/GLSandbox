@@ -8,10 +8,13 @@ class Light
     private:
         Light() = delete;
 
+        static unsigned int _count;
+
     protected:
         Light(LightType type);
 
     public:
+        const unsigned int id;
         const LightType lightType;
 };
 

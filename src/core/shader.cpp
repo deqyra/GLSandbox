@@ -101,19 +101,19 @@ Shader::~Shader()
 }
 
 // Get program ID.
-unsigned int Shader::id()
+unsigned int Shader::id() const
 {
     return _id;
 }
 
 // Enable the shader.
-void Shader::use()
+void Shader::use() const
 {
     glUseProgram(_id);
 }
 
 // Utility uniform functions.
-unsigned int Shader::getUniformLocation(const string& name)
+unsigned int Shader::getUniformLocation(const string& name) const
 {
     // First find the program ID in the location hash map.
     auto it = _uniformLocations.find(_id);

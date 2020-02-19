@@ -49,13 +49,13 @@ class Shader
         ~Shader();
 
         // Get program ID.
-        unsigned int id();
+        unsigned int id() const;
 
         // Enable the shader.
-        void use();
+        void use() const;
 
         // Utility uniform functions.
-        unsigned int getUniformLocation(const std::string& name);
+        unsigned int getUniformLocation(const std::string& name) const;
         void setBool(const std::string& name, bool value);
         void setInt(const std::string& name, int value);
         void setFloat(const std::string& name, float value);

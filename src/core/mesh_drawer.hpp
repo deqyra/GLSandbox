@@ -16,8 +16,9 @@
 #include "mesh.hpp"
 #include "shader.hpp"
 #include "view_provider.hpp"
-#include "light.hpp"
 #include "light_type.hpp"
+#include "light.hpp"
+#include "lights/point_light.hpp"
 
 class MeshDrawer
 {
@@ -26,7 +27,7 @@ class MeshDrawer
         std::unordered_map<unsigned int, Shader> _shaders;
         std::unordered_map<unsigned int, bool> _meshesEnabled;
 
-        std::unordered_map<LightType, std::vector<std::shared_ptr<Light>>> _lights;
+        std::unordered_map<unsigned int, std::shared_ptr<Light>> _lights;
         std::unordered_map<unsigned int, bool> _lightsEnabled;
 
         std::shared_ptr<ViewProvider> _camera;
@@ -35,7 +36,9 @@ class MeshDrawer
         bool _lightsSetup;
 
         void drawMeshUnsafe(unsigned int id);
-        void sendLightData(Shader shader);
+        void sendAllLightData(Shader& shader);
+        void sendLightData(Shader& shader, std::shared_ptr<Light> light);
+        void sendPointLightData(Shader& shader, std::shared_ptr<PointLight> light);
 
     public:
         MeshDrawer();
@@ -53,11 +56,16 @@ class MeshDrawer
 
         void enableMesh(unsigned int id);
         void disableMesh(unsigned int id);
-        void setEnabled(unsigned int id, bool enabled);
-        bool isEnabled(unsigned int id);
+        void setMeshEnabled(unsigned int id, bool enabled);
+        bool isMeshEnabled(unsigned int id);
 
         void registerLight(Light* light);
         void registerLight(std::shared_ptr<Light> light);
+
+        void enableLight(unsigned int id);
+        void disableLight(unsigned int id);
+        void setLightEnabled(unsigned int id, bool enabled);
+        bool isLightEnabled(unsigned int id);
 
         void setCamera(ViewProvider* camera);
         void setCamera(std::shared_ptr<ViewProvider> camera);

@@ -118,7 +118,7 @@ void MeshDrawer::disableMesh(unsigned int id)
     _meshesEnabled[id] = false;
 }
 
-void MeshDrawer::setEnabled(unsigned int id, bool enabled)
+void MeshDrawer::setMeshEnabled(unsigned int id, bool enabled)
 {
     if (!hasMesh(id))
     {
@@ -128,7 +128,7 @@ void MeshDrawer::setEnabled(unsigned int id, bool enabled)
     _meshesEnabled[id] = enabled;
 }
 
-bool MeshDrawer::isEnabled(unsigned int id)
+bool MeshDrawer::isMeshEnabled(unsigned int id)
 {
     if (!hasMesh(id))
     {
@@ -212,7 +212,7 @@ void MeshDrawer::drawMeshUnsafe(unsigned int id)
 
     Shader shader = _shaders[id];
     shader.use();
-    sendLightData(shader);
+    sendAllLightData(shader);
 
     glm::mat4 view = _camera->getViewMatrix();
 
@@ -240,7 +240,28 @@ void MeshDrawer::drawMeshUnsafe(unsigned int id)
     mesh->draw();
 }
 
-void MeshDrawer::sendLightData(Shader shader)
+void MeshDrawer::sendAllLightData(Shader& shader)
+{
+    for (auto it = _lights.begin(); it != _lights.end(); it++)
+    {
+        std::shared_ptr<Light> light = it->second;
+        if (!_lightsEnabled[light->id]) continue;
+
+        sendLightData(shader, light);
+    }
+}
+
+void MeshDrawer::sendLightData(Shader& shader, std::shared_ptr<Light> light)
+{
+    switch (light->lightType)
+    {
+        case LightType::PointLight:
+            sendPointLightData(shader, std::static_pointer_cast<PointLight>(light));
+            break;
+    }
+}
+
+void MeshDrawer::sendPointLightData(Shader& shader, std::shared_ptr<PointLight> light)
 {
 
 }

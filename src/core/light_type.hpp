@@ -1,7 +1,7 @@
 #ifndef LIGHT_TYPE_HPP
 #define LIGHT_TYPE_HPP
 
-enum LightType
+enum class LightType
 {
     PointLight,
     DirectionalLight,
