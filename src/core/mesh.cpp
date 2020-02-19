@@ -12,14 +12,9 @@
 unsigned int Mesh::_count = 0;
 
 Mesh::Mesh() :
-    _id(_count++),
     _buffersSetUp(false),
+    id(_count++),
     material(Materials::Default)
 {
 
-}
-
-unsigned int Mesh::getId()
-{
-    return _id;
 }

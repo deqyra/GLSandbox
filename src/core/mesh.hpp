@@ -17,7 +17,6 @@
 class Mesh : public PositionedObject
 {
     private:
-        unsigned int _id;
         static unsigned int _count;
 
     protected:
@@ -25,11 +24,11 @@ class Mesh : public PositionedObject
 
     public:
         Mesh();
-        unsigned int getId();
 
         virtual void setupBuffers() = 0;
         virtual void draw() = 0;
 
+        const unsigned int id;
         Material material;
 };
 

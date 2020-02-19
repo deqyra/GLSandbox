@@ -16,14 +16,16 @@
 
 MeshDrawer::MeshDrawer() :
     _camera(nullptr),
-    _projection(glm::mat4(1.f))
+    _projection(glm::mat4(1.f)),
+    _lightsSetup(false)
 {
 
 }
 
 MeshDrawer::MeshDrawer(std::shared_ptr<ViewProvider> camera, glm::mat4 projection) :
     _camera(camera),
-    _projection(projection)
+    _projection(projection),
+    _lightsSetup(false)
 {
 
 }
@@ -45,7 +47,7 @@ std::shared_ptr<ViewProvider> MeshDrawer::getCamera()
 
 void MeshDrawer::registerMesh(Mesh* mesh, Shader shader)
 {
-    unsigned int id = mesh->getId();
+    unsigned int id = mesh->id;
     if (hasMesh(id))
     {
         throw std::runtime_error(std::string("MeshDrawer error: mesh with ID " + std::to_string(id) + " already exists.").c_str());
@@ -53,12 +55,12 @@ void MeshDrawer::registerMesh(Mesh* mesh, Shader shader)
 
     _meshes[id] = std::shared_ptr<Mesh>(mesh);
     _shaders[id] = shader;
-    _enabled[id] = true;
+    _meshesEnabled[id] = true;
 }
 
 void MeshDrawer::registerMesh(std::shared_ptr<Mesh> mesh, Shader shader)
 {
-    unsigned int id = mesh->getId();
+    unsigned int id = mesh->id;
     if (hasMesh(id))
     {
         throw std::runtime_error(std::string("MeshDrawer error: mesh with ID " + std::to_string(id) + " already exists.").c_str());
@@ -66,7 +68,7 @@ void MeshDrawer::registerMesh(std::shared_ptr<Mesh> mesh, Shader shader)
 
     _meshes[id] = mesh;
     _shaders[id] = shader;
-    _enabled[id] = true;
+    _meshesEnabled[id] = true;
 }
 
 std::shared_ptr<Mesh> MeshDrawer::getMesh(unsigned int id)
@@ -93,7 +95,7 @@ void MeshDrawer::removeMesh(unsigned int id)
 
     _meshes.erase(id);
     _shaders.erase(id);
-    _enabled.erase(id);
+    _meshesEnabled.erase(id);
 }
 
 void MeshDrawer::enableMesh(unsigned int id)
@@ -103,7 +105,7 @@ void MeshDrawer::enableMesh(unsigned int id)
         throw std::runtime_error(std::string("MeshDrawer error: no mesh with ID " + std::to_string(id) + ".").c_str());
     }
 
-    _enabled[id] = true;
+    _meshesEnabled[id] = true;
 }
 
 void MeshDrawer::disableMesh(unsigned int id)
@@ -113,7 +115,7 @@ void MeshDrawer::disableMesh(unsigned int id)
         throw std::runtime_error(std::string("MeshDrawer error: no mesh with ID " + std::to_string(id) + ".").c_str());
     }
 
-    _enabled[id] = false;
+    _meshesEnabled[id] = false;
 }
 
 void MeshDrawer::setEnabled(unsigned int id, bool enabled)
@@ -123,7 +125,7 @@ void MeshDrawer::setEnabled(unsigned int id, bool enabled)
         throw std::runtime_error(std::string("MeshDrawer error: no mesh with ID " + std::to_string(id) + ".").c_str());
     }
 
-    _enabled[id] = enabled;
+    _meshesEnabled[id] = enabled;
 }
 
 bool MeshDrawer::isEnabled(unsigned int id)
@@ -133,7 +135,7 @@ bool MeshDrawer::isEnabled(unsigned int id)
         throw std::runtime_error(std::string("MeshDrawer error: no mesh with ID " + std::to_string(id) + ".").c_str());
     }
 
-    return _enabled[id];
+    return _meshesEnabled[id];
 }
 
 Shader MeshDrawer::getShader(unsigned int id)
@@ -206,10 +208,11 @@ void MeshDrawer::drawMeshes()
 
 void MeshDrawer::drawMeshUnsafe(unsigned int id)
 {
-    if (!_enabled[id]) return;
+    if (!_meshesEnabled[id]) return;
 
     Shader shader = _shaders[id];
     shader.use();
+    sendLightData(shader);
 
     glm::mat4 view = _camera->getViewMatrix();
 
@@ -235,4 +238,9 @@ void MeshDrawer::drawMeshUnsafe(unsigned int id)
 
     mesh->setupBuffers();
     mesh->draw();
+}
+
+void MeshDrawer::sendLightData(Shader shader)
+{
+
 }
