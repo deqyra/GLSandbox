@@ -23,13 +23,14 @@ struct Material {
     float shininess;
 }; 
 
-uniform const unsigned int N_POINT_LIGHTS = 256;
+#define MAX_POINT_LIGHTS 128
 
 // Uniforms
 // ========
 
-uniform PointLight pLights[N_POINT_LIGHTS];
-uniform unsigned int nLights = 0;
+uniform const unsigned int maxPLights = MAX_POINT_LIGHTS;
+uniform PointLight pLights[MAX_POINT_LIGHTS];
+uniform unsigned int nPLights = 0;
 
 uniform Material material;
 
@@ -41,7 +42,7 @@ vec3 processPointLight(int i);
 void main()
 {
 	vec3 pLightTotal = vec3(0.f);
-	for (int i = 0; i < nLights; i++)
+	for (int i = 0; i < nPLights; i++)
 	{
 		pLightTotal += processPointLight(i);
 	}

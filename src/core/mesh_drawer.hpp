@@ -20,6 +20,8 @@
 #include "light.hpp"
 #include "lights/point_light.hpp"
 
+#define MAX_POINT_LIGHTS 128
+
 class MeshDrawer
 {
     private:
@@ -61,6 +63,10 @@ class MeshDrawer
 
         void registerLight(Light* light);
         void registerLight(std::shared_ptr<Light> light);
+
+        std::shared_ptr<Light> getLight(unsigned int id);
+        bool hasLight(unsigned int id);
+        void removeLight(unsigned int id);
 
         void enableLight(unsigned int id);
         void disableLight(unsigned int id);

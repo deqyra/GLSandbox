@@ -71,18 +71,22 @@ Shader::Shader(const string vertexPath, const string fragmentPath)
         _id = _programMaps[_programKey];
     }
 
+    _adapter = std::make_shared<ShaderAdapter>(vertexPath, fragmentPath);
+
     increaseRefCount();
 }
 
 Shader::Shader(const Shader& other)
 {
     _id = other._id;
+    _adapter = other._adapter;
     increaseRefCount();
 }
 
 Shader& Shader::operator=(const Shader& other)
 {
     _id = other._id;
+    _adapter = other._adapter;
     increaseRefCount();
 
     return *this;
@@ -98,6 +102,11 @@ Shader::~Shader()
         _programMaps.erase(_programKey);
         glDeleteProgram(_id);
     }
+}
+
+std::shared_ptr<ShaderAdapter> Shader::getAdapter()
+{
+    return _adapter;
 }
 
 // Get program ID.
@@ -140,6 +149,20 @@ unsigned int Shader::getUniformLocation(const string& name) const
     }
     return location;
 }
+
+unsigned int Shader::getUint(const std::string& name)
+{
+    unsigned int uniformLocation = getUniformLocation(name);
+    unsigned int value;
+    glGetUniformuiv(_id, uniformLocation, &value);
+    return value;
+}
+
+int Shader::getConstant(ShaderConstant constant)
+{
+    return _adapter->getConstant(constant);
+}
+
 
 void Shader::setBool(const string& name, bool value)
 {
@@ -211,6 +234,62 @@ void Shader::setPointLight(const std::string& name, PointLight value)
     setVec3f(name + ".ambient", value.ambient);
     setVec3f(name + ".diffuse", value.diffuse);
     setVec3f(name + ".specular", value.specular);
+}
+
+void Shader::setPointLightArray(const std::string& name, unsigned int index, PointLight value)
+{
+    std::string indexedName = name + "[" + std::to_string(index) + "]";
+    setPointLight(indexedName, value);
+}
+
+void Shader::setBool(UniformDestination dest, bool value)
+{
+    setBool(_adapter->getName(dest), value);
+}
+
+void Shader::setInt(UniformDestination dest, int value)
+{
+    setInt(_adapter->getName(dest), value);
+}
+
+void Shader::setUint(UniformDestination dest, unsigned int value)
+{
+    setUint(_adapter->getName(dest), value);
+}
+
+void Shader::setFloat(UniformDestination dest, float value)
+{
+    setFloat(_adapter->getName(dest), value);
+}
+
+void Shader::setMat3f(UniformDestination dest, glm::mat3 value, bool transpose)
+{
+    setMat3f(_adapter->getName(dest), value, transpose);
+}
+
+void Shader::setMat4f(UniformDestination dest, glm::mat4 value, bool transpose)
+{
+    setMat4f(_adapter->getName(dest), value, transpose);
+}
+
+void Shader::setVec3f(UniformDestination dest, glm::vec3 value)
+{
+    setVec3f(_adapter->getName(dest), value);
+}
+
+void Shader::setMaterial(UniformDestination dest, Material value)
+{
+    setMaterial(_adapter->getName(dest), value);
+}
+
+void Shader::setPointLight(UniformDestination dest, PointLight value)
+{
+    setPointLight(_adapter->getName(dest), value);
+}
+
+void Shader::setPointLightArray(UniformDestination dest, unsigned int index, PointLight value)
+{
+    setPointLightArray(_adapter->getName(dest), index, value);
 }
 
 unsigned int Shader::getRefCount()

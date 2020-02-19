@@ -19,6 +19,8 @@
 #include <unordered_map>
 
 #include "material.hpp"
+#include "shaders/shader_adapter.hpp"
+#include "shaders/uniform_destination.hpp"
 #include "lights/point_light.hpp"
 
 class Shader
@@ -43,11 +45,16 @@ class Shader
         unsigned int increaseRefCount();
         unsigned int decreaseRefCount();
 
+        std::shared_ptr<ShaderAdapter> _adapter;
+
     public:
         Shader(const std::string vertexPath = "assets/shaders/mvp.vert", const std::string fragmentPath = "assets/shaders/default.frag");
         Shader(const Shader& other);
         Shader& operator=(const Shader& other);
         ~Shader();
+
+        // Get shader adapter.
+        std::shared_ptr<ShaderAdapter> getAdapter();
 
         // Get program ID.
         unsigned int id() const;
@@ -57,6 +64,10 @@ class Shader
 
         // Utility uniform functions.
         unsigned int getUniformLocation(const std::string& name) const;
+
+        unsigned int getUint(const std::string& name);
+        int getConstant(ShaderConstant constant);
+
         void setBool(const std::string& name, bool value);
         void setInt(const std::string& name, int value);
         void setUint(const std::string& name, unsigned int value);
@@ -66,6 +77,18 @@ class Shader
         void setVec3f(const std::string& name, glm::vec3 value);
         void setMaterial(const std::string& name, Material value);
         void setPointLight(const std::string& name, PointLight value);
+        void setPointLightArray(const std::string& name, unsigned int index, PointLight value);
+
+        void setBool(UniformDestination dest, bool value);
+        void setInt(UniformDestination dest, int value);
+        void setUint(UniformDestination dest, unsigned int value);
+        void setFloat(UniformDestination dest, float value);
+        void setMat3f(UniformDestination dest, glm::mat3 value, bool transpose = false);
+        void setMat4f(UniformDestination dest, glm::mat4 value, bool transpose = false);
+        void setVec3f(UniformDestination dest, glm::vec3 value);
+        void setMaterial(UniformDestination dest, Material value);
+        void setPointLight(UniformDestination dest, PointLight value);
+        void setPointLightArray(UniformDestination dest, unsigned int index, PointLight value);
 };
 
 #endif//SHADER_HPP

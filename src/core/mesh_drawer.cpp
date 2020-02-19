@@ -30,21 +30,6 @@ MeshDrawer::MeshDrawer(std::shared_ptr<ViewProvider> camera, glm::mat4 projectio
 
 }
 
-void MeshDrawer::setCamera(ViewProvider* camera)
-{
-    _camera.reset(camera);
-}
-
-void MeshDrawer::setCamera(std::shared_ptr<ViewProvider> camera)
-{
-    _camera = camera;
-}
-
-std::shared_ptr<ViewProvider> MeshDrawer::getCamera()
-{
-    return _camera;
-}
-
 void MeshDrawer::registerMesh(Mesh* mesh, Shader shader)
 {
     unsigned int id = mesh->id;
@@ -98,6 +83,26 @@ void MeshDrawer::removeMesh(unsigned int id)
     _meshesEnabled.erase(id);
 }
 
+Shader MeshDrawer::getShader(unsigned int id)
+{
+    if (!hasMesh(id))
+    {
+        throw std::runtime_error(std::string("MeshDrawer error: no mesh with ID " + std::to_string(id) + ".").c_str());
+    }
+
+    return _shaders[id];
+}
+
+void MeshDrawer::setShader(unsigned int id, Shader shader)
+{
+    if (!hasMesh(id))
+    {
+        throw std::runtime_error(std::string("MeshDrawer error: no mesh with ID " + std::to_string(id) + ".").c_str());
+    }
+
+    _shaders[id] = shader;
+}
+
 void MeshDrawer::enableMesh(unsigned int id)
 {
     if (!hasMesh(id))
@@ -138,24 +143,109 @@ bool MeshDrawer::isMeshEnabled(unsigned int id)
     return _meshesEnabled[id];
 }
 
-Shader MeshDrawer::getShader(unsigned int id)
+void MeshDrawer::registerLight(Light* light)
 {
-    if (!hasMesh(id))
+    unsigned int id = light->id;
+    if (hasLight(id))
     {
-        throw std::runtime_error(std::string("MeshDrawer error: no mesh with ID " + std::to_string(id) + ".").c_str());
+        throw std::runtime_error(std::string("MeshDrawer error: light with ID " + std::to_string(id) + " already exists.").c_str());
     }
 
-    return _shaders[id];
+    _lights[id] = std::shared_ptr<Light>(light);
+    _lightsEnabled[id] = true;
 }
 
-void MeshDrawer::setShader(unsigned int id, Shader shader)
+void MeshDrawer::registerLight(std::shared_ptr<Light> light)
 {
-    if (!hasMesh(id))
+    unsigned int id = light->id;
+    if (hasLight(id))
     {
-        throw std::runtime_error(std::string("MeshDrawer error: no mesh with ID " + std::to_string(id) + ".").c_str());
+        throw std::runtime_error(std::string("MeshDrawer error: light with ID " + std::to_string(id) + " already exists.").c_str());
     }
 
-    _shaders[id] = shader;
+    _lights[id] = light;
+    _lightsEnabled[id] = true;
+}
+
+std::shared_ptr<Light> MeshDrawer::getLight(unsigned int id)
+{
+    if (!hasLight(id))
+    {
+        throw std::runtime_error(std::string("MeshDrawer error: no light with ID " + std::to_string(id) + ".").c_str());
+    }
+    return _lights[id];
+}
+
+bool MeshDrawer::hasLight(unsigned int id)
+{
+    auto it = _lights.find(id);
+    return it != _lights.end();
+}
+
+void MeshDrawer::removeLight(unsigned int id)
+{
+    if (!hasLight(id))
+    {
+        throw std::runtime_error(std::string("MeshDrawer error: no light with ID " + std::to_string(id) + ".").c_str());
+    }
+
+    _lights.erase(id);
+    _lightsEnabled.erase(id);
+}
+
+void MeshDrawer::enableLight(unsigned int id)
+{
+    if (!hasLight(id))
+    {
+        throw std::runtime_error(std::string("MeshDrawer error: no light with ID " + std::to_string(id) + ".").c_str());
+    }
+
+    _lightsEnabled[id] = true;
+}
+
+void MeshDrawer::disableLight(unsigned int id)
+{
+    if (!hasLight(id))
+    {
+        throw std::runtime_error(std::string("MeshDrawer error: no light with ID " + std::to_string(id) + ".").c_str());
+    }
+
+    _lightsEnabled[id] = false;
+}
+
+void MeshDrawer::setLightEnabled(unsigned int id, bool enabled)
+{
+    if (!hasLight(id))
+    {
+        throw std::runtime_error(std::string("MeshDrawer error: no light with ID " + std::to_string(id) + ".").c_str());
+    }
+
+    _lightsEnabled[id] = enabled;
+}
+
+bool MeshDrawer::isLightEnabled(unsigned int id)
+{
+    if (!hasLight(id))
+    {
+        throw std::runtime_error(std::string("MeshDrawer error: no light with ID " + std::to_string(id) + ".").c_str());
+    }
+
+    return _lightsEnabled[id];
+}
+
+void MeshDrawer::setCamera(ViewProvider* camera)
+{
+    _camera.reset(camera);
+}
+
+void MeshDrawer::setCamera(std::shared_ptr<ViewProvider> camera)
+{
+    _camera = camera;
+}
+
+std::shared_ptr<ViewProvider> MeshDrawer::getCamera()
+{
+    return _camera;
 }
 
 glm::mat4 MeshDrawer::getProjection()
@@ -229,12 +319,13 @@ void MeshDrawer::drawMeshUnsafe(unsigned int id)
         }
     }
 
-    shader.setMat4f("uProjection", _projection);
-    shader.setMat4f("uView", view);
-    shader.setMat4f("uModel", model);
-    shader.setMat3f("uNormalCorrection", normal);
+    typedef UniformDestination UD;
+    shader.setMat4f(UD::ProjectionMatrix, _projection);
+    shader.setMat4f(UD::ViewMatrix, view);
+    shader.setMat4f(UD::ModelMatrix, model);
+    shader.setMat3f(UD::NormalMatrix, normal);
 
-    shader.setMaterial("uMaterial", mesh->material);
+    shader.setMaterial(UD::Material, mesh->material);
 
     mesh->setupBuffers();
     mesh->draw();
@@ -242,26 +333,27 @@ void MeshDrawer::drawMeshUnsafe(unsigned int id)
 
 void MeshDrawer::sendAllLightData(Shader& shader)
 {
+    typedef UniformDestination UD;
+    typedef ShaderConstant SC;
+
+    unsigned int maxPLightCount = (unsigned int) shader.getConstant(SC::MaxPointLightCount);
+    unsigned int pLightIndex = 0;
+
     for (auto it = _lights.begin(); it != _lights.end(); it++)
     {
         std::shared_ptr<Light> light = it->second;
         if (!_lightsEnabled[light->id]) continue;
 
-        sendLightData(shader, light);
+        switch (light->lightType)
+        {
+            case LightType::PointLight:
+                if (pLightIndex < maxPLightCount)
+                {
+                    std::shared_ptr<PointLight> pLight = std::static_pointer_cast<PointLight>(light);
+                    shader.setPointLightArray(UD::PointLightArray, pLightIndex++, *pLight);
+                }
+                break;
+        }
     }
-}
-
-void MeshDrawer::sendLightData(Shader& shader, std::shared_ptr<Light> light)
-{
-    switch (light->lightType)
-    {
-        case LightType::PointLight:
-            sendPointLightData(shader, std::static_pointer_cast<PointLight>(light));
-            break;
-    }
-}
-
-void MeshDrawer::sendPointLightData(Shader& shader, std::shared_ptr<PointLight> light)
-{
-
+    shader.setUint(UD::PointLightCount, pLightIndex);
 }

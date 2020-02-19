@@ -54,7 +54,7 @@ void LightingExample::run(GLFWwindow* window)
 
     _lastTime = (float)glfwGetTime();
     
-    Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/monosource_phong.frag");
+    Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
 
     // Instantiate scene meshes
     std::shared_ptr<Torus> torus = std::make_shared<Torus>(2.f, 0.5f, 72, 48);
@@ -76,6 +76,7 @@ void LightingExample::run(GLFWwindow* window)
     meshDrawer.registerMesh(torus, lightingShader);
     meshDrawer.registerMesh(axes);
     meshDrawer.registerMesh(lightCube);
+    meshDrawer.registerLight(light);
 
     // Register camera in mesh drawer
     meshDrawer.setCamera(_camera);
@@ -96,9 +97,9 @@ void LightingExample::run(GLFWwindow* window)
         {
             // Update object transforms
             float angleDiff = _speedFactor * (frameTime - _lastTime);
-            lightCube->orbit(glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
-            light->orbit(glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
-            torus->rotate(glm::radians(angleDiff), TORUS_ROTATION_AXIS);
+            lightCube->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+            light->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+            torus->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
 
             // Update light position in lighting shader
             glm::vec3 lightPos = light->getPosition();

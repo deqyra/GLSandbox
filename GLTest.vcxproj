@@ -20,8 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\default.frag" />
-    <None Include="assets\shaders\monosource_phong.frag" />
     <None Include="assets\shaders\mvp.vert" />
+    <None Include="assets\shaders\mvp.vert.conf" />
+    <None Include="assets\shaders\phong.frag" />
     <None Include="assets\shaders\texture_1ch.frag" />
     <None Include="assets\shaders\texture_2ch.frag" />
     <None Include="assets\shaders\vibing_rgb.frag" />
@@ -32,6 +33,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\camera.cpp" />
+    <ClCompile Include="src\core\light.cpp" />
+    <ClCompile Include="src\core\lights\point_light.cpp" />
     <ClCompile Include="src\core\material.cpp" />
     <ClCompile Include="src\core\mesh.cpp" />
     <ClCompile Include="src\core\meshes\axes.cpp" />
@@ -40,6 +43,7 @@
     <ClCompile Include="src\core\mesh_drawer.cpp" />
     <ClCompile Include="src\core\positioned_object.cpp" />
     <ClCompile Include="src\core\shader.cpp" />
+    <ClCompile Include="src\core\shaders\shader_adapter.cpp" />
     <ClCompile Include="src\core\texture_2d.cpp" />
     <ClCompile Include="src\fps_camera_manager.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -52,13 +56,21 @@
     <ClCompile Include="src\gl_examples\transform_triangle_example.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
+    <ClCompile Include="src\tools\exceptions\file_not_found_error.cpp" />
+    <ClCompile Include="src\tools\exceptions\index_out_of_bounds_error.cpp" />
+    <ClCompile Include="src\tools\exceptions\range_bounds_exceeded_error.cpp" />
+    <ClCompile Include="src\tools\exceptions\unmatched_array_size_error.cpp" />
     <ClCompile Include="src\tools\gl_utils.cpp" />
     <ClCompile Include="src\tools\gl_window.cpp" />
     <ClCompile Include="src\tools\input_processor.cpp" />
+    <ClCompile Include="src\tools\string_tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\camera.hpp" />
     <ClInclude Include="src\core\directions.hpp" />
+    <ClInclude Include="src\core\light.hpp" />
+    <ClInclude Include="src\core\lights\point_light.hpp" />
+    <ClInclude Include="src\core\light_type.hpp" />
     <ClInclude Include="src\core\material.hpp" />
     <ClInclude Include="src\core\mesh.hpp" />
     <ClInclude Include="src\core\meshes\axes.hpp" />
@@ -67,6 +79,8 @@
     <ClInclude Include="src\core\mesh_drawer.hpp" />
     <ClInclude Include="src\core\positioned_object.hpp" />
     <ClInclude Include="src\core\shader.hpp" />
+    <ClInclude Include="src\core\shaders\shader_adapter.hpp" />
+    <ClInclude Include="src\core\shaders\uniform_destination.hpp" />
     <ClInclude Include="src\core\texture_2d.hpp" />
     <ClInclude Include="src\core\view_provider.hpp" />
     <ClInclude Include="src\fps_camera_manager.hpp" />
@@ -78,9 +92,15 @@
     <ClInclude Include="src\gl_examples\rotating_textured_cube_example.hpp" />
     <ClInclude Include="src\gl_examples\texture_2d_example.hpp" />
     <ClInclude Include="src\gl_examples\transform_triangle_example.hpp" />
+    <ClInclude Include="src\tools\exceptions\file_not_found_error.hpp" />
+    <ClInclude Include="src\tools\exceptions\index_out_of_bounds_error.hpp" />
+    <ClInclude Include="src\tools\exceptions\range_bounds_exceeded_error.hpp" />
+    <ClInclude Include="src\tools\exceptions\unmatched_array_size_error.hpp" />
     <ClInclude Include="src\tools\gl_utils.hpp" />
     <ClInclude Include="src\tools\gl_window.hpp" />
     <ClInclude Include="src\tools\input_processor.hpp" />
+    <ClInclude Include="src\tools\make_basic_exception.hpp" />
+    <ClInclude Include="src\tools\string_tools.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
