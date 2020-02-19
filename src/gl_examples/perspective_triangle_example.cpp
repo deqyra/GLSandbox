@@ -159,10 +159,10 @@ void PerspectiveTriangleExample::run(GLFWwindow* window)
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), (float)(dims[2]) / (float)dims[3], 0.1f, 100.0f);
 
-        _shader.setFloat("uTime", _time);
-        _shader.setMat4f("uModel", model);
-        _shader.setMat4f("uView", view);
-        _shader.setMat4f("uProjection", projection);
+        _shader.setFloat("time", _time);
+        _shader.setMat4f("model", model);
+        _shader.setMat4f("view", view);
+        _shader.setMat4f("projection", projection);
 
         glDrawElements(GL_TRIANGLE_STRIP, 5, GL_UNSIGNED_INT, (void*)0);
         glDrawElements(GL_TRIANGLE_STRIP, 3, GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * 5));

@@ -116,7 +116,7 @@ void BasicTriangleExample::run(GLFWwindow* window)
 	while (!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
-        _shader.setFloat("uTime", (float)glfwGetTime());
+        _shader.setFloat("time", (float)glfwGetTime());
         // glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, (void*)0);
         glDrawElements(GL_TRIANGLE_STRIP, 5, GL_UNSIGNED_INT, (void*)0);
         glDrawElements(GL_TRIANGLE_STRIP, 3, GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * 5));

@@ -4,11 +4,11 @@ layout (location = 2) in vec2 inTexCoord;
 
 out vec4 fragColor;
 
-uniform sampler2D uTexData1;
-uniform sampler2D uTexData2;
-uniform float uTextureMix;
+uniform sampler2D texData1;
+uniform sampler2D texData2;
+uniform float textureMix;
 
 void main()
 {
-	fragColor = mix(texture(uTexData1, inTexCoord), texture(uTexData2, inTexCoord), uTextureMix) * vec4(inVertexColor, 1.0f); 
+	fragColor = mix(texture(texData1, inTexCoord), texture(texData2, inTexCoord), textureMix) * vec4(inVertexColor, 1.0f); 
 }

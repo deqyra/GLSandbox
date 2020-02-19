@@ -194,7 +194,7 @@ void Metatron2DExample::run(GLFWwindow* window)
 
         glBindVertexArray(_vao);
 
-        _shader.setFloat("uTime", (float)glfwGetTime());
+        _shader.setFloat("time", (float)glfwGetTime());
         glDrawElements(GL_LINES, 108, GL_UNSIGNED_INT, (void*)0);
         glBindVertexArray(0);
 

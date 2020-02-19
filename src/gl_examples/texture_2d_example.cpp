@@ -101,9 +101,9 @@ void Texture2DExample::run(GLFWwindow* window)
     _overlay.bind();
 
     // Set texture samplers to their respectively bound texture units.
-    _shader.setInt("uTexData1", 0);
-    _shader.setInt("uTexData2", 1);
-    _shader.setFloat("uTextureMix", _mixValue);
+    _shader.setInt("texData1", 0);
+    _shader.setInt("texData2", 1);
+    _shader.setFloat("textureMix", _mixValue);
 
     glBindVertexArray(_vao);
 
@@ -146,7 +146,7 @@ void Texture2DExample::keyboardCallback(GLFWwindow* window, int key, int scancod
             {
                 _mixValue = 1.f;
             }
-            _shader.setFloat("uTextureMix", _mixValue);
+            _shader.setFloat("textureMix", _mixValue);
         }
     }
     // Make it less visible when pressing the down arrow
@@ -159,7 +159,7 @@ void Texture2DExample::keyboardCallback(GLFWwindow* window, int key, int scancod
             {
                 _mixValue = 0.f;
             }
-            _shader.setFloat("uTextureMix", _mixValue);
+            _shader.setFloat("textureMix", _mixValue);
         }
     }
 }

@@ -132,7 +132,7 @@ void RotatingTexturedCubeExample::run(GLFWwindow* window)
 
     _shader.use();
     // Set texture sampler to the bound texture units.
-    _shader.setInt("uTexData1", 0);
+    _shader.setInt("texData1", 0);
     glBindVertexArray(_vao);
 
     // Retrieve the custom window pointer, register this example as an input processor
@@ -186,16 +186,16 @@ void RotatingTexturedCubeExample::run(GLFWwindow* window)
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), (float)(dims[2]) / (float)dims[3], 0.1f, 100.0f);
 
-        _shader.setFloat("uTime", _lastTime);
-        _shader.setMat4f("uView", view);
-        _shader.setMat4f("uProjection", projection);
+        _shader.setFloat("time", _lastTime);
+        _shader.setMat4f("view", view);
+        _shader.setMat4f("projection", projection);
 
         int nPos = sizeof(cubePos) / sizeof(glm::vec3);
 
         for (int i = 0; i < nPos; i++)
         {
             glm::mat4 tmpModel = glm::translate(model, cubePos[i]);
-            _shader.setMat4f("uModel", tmpModel);
+            _shader.setMat4f("model", tmpModel);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 

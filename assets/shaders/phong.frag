@@ -4,6 +4,11 @@ layout (location = 1) in vec3 inVertexNormal;
 layout (location = 2) in vec2 inTexCoord;
 layout (location = 3) in vec3 inFragPos;
 
+out vec4 fragColor;
+
+// Types and constants
+// ===================
+
 struct PointLight {
     vec3 position;
     vec3 ambient;
@@ -19,12 +24,18 @@ struct Material {
 }; 
 
 const int N_POINT_LIGHTS = 256;
+
+// Uniforms
+// ========
+
 uniform PointLight pLights[N_POINT_LIGHTS];
 uniform int nLights = 0;
 
 uniform Material material;
 
-out vec4 fragColor;
+
+// Functions
+// =========
 
 vec3 processPointLight(int i);
 
