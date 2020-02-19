@@ -19,6 +19,7 @@
 #include <unordered_map>
 
 #include "material.hpp"
+#include "lights/point_light.hpp"
 
 class Shader
 {
@@ -58,11 +59,13 @@ class Shader
         unsigned int getUniformLocation(const std::string& name) const;
         void setBool(const std::string& name, bool value);
         void setInt(const std::string& name, int value);
+        void setUint(const std::string& name, unsigned int value);
         void setFloat(const std::string& name, float value);
         void setMat3f(const std::string& name, glm::mat3 value, bool transpose = false);
         void setMat4f(const std::string& name, glm::mat4 value, bool transpose = false);
         void setVec3f(const std::string& name, glm::vec3 value);
         void setMaterial(const std::string& name, Material value);
+        void setPointLight(const std::string& name, PointLight value);
 };
 
 #endif//SHADER_HPP

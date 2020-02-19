@@ -153,6 +153,12 @@ void Shader::setInt(const string& name, int value)
     glProgramUniform1i(_id, uniformLocation, value);
 }
 
+void Shader::setUint(const string& name, unsigned int value)
+{
+    unsigned int uniformLocation = getUniformLocation(name);
+    glProgramUniform1ui(_id, uniformLocation, value);
+}
+
 void Shader::setFloat(const string& name, float value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
@@ -186,7 +192,7 @@ void Shader::setMat4f(const string& name, glm::mat4 value, bool transpose)
 void Shader::setVec3f(const std::string& name, glm::vec3 value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
-    glProgramUniform3f(_id, uniformLocation, value.x, value.y, value.z);
+    glProgramUniform3fv(_id, uniformLocation, 1, glm::value_ptr(value));
 }
 
 void Shader::setMaterial(const std::string& name, Material value)
@@ -196,6 +202,15 @@ void Shader::setMaterial(const std::string& name, Material value)
     setVec3f(name + ".diffuse", value.diffuse);
     setVec3f(name + ".specular", value.specular);
     setFloat(name + ".shininess", value.shininess);
+}
+
+void Shader::setPointLight(const std::string& name, PointLight value)
+{
+    unsigned int uniformLocation = getUniformLocation(name);
+    setVec3f(name + ".position", value.getPosition());
+    setVec3f(name + ".ambient", value.ambient);
+    setVec3f(name + ".diffuse", value.diffuse);
+    setVec3f(name + ".specular", value.specular);
 }
 
 unsigned int Shader::getRefCount()

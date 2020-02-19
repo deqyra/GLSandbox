@@ -23,16 +23,15 @@ struct Material {
     float shininess;
 }; 
 
-const int N_POINT_LIGHTS = 256;
+uniform const unsigned int N_POINT_LIGHTS = 256;
 
 // Uniforms
 // ========
 
 uniform PointLight pLights[N_POINT_LIGHTS];
-uniform int nLights = 0;
+uniform unsigned int nLights = 0;
 
 uniform Material material;
-
 
 // Functions
 // =========
