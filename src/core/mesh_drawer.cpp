@@ -339,6 +339,8 @@ void MeshDrawer::sendAllLightData(Shader& shader)
     unsigned int maxPLightCount = (unsigned int) shader.getConstant(SC::MaxPointLightCount);
     unsigned int pLightIndex = 0;
 
+    glm::mat4 view = _camera->getViewMatrix();
+
     for (auto it = _lights.begin(); it != _lights.end(); it++)
     {
         std::shared_ptr<Light> light = it->second;
@@ -350,7 +352,11 @@ void MeshDrawer::sendAllLightData(Shader& shader)
                 if (pLightIndex < maxPLightCount)
                 {
                     std::shared_ptr<PointLight> pLight = std::static_pointer_cast<PointLight>(light);
-                    shader.setPointLightArray(UD::PointLightArray, pLightIndex++, *pLight);
+                    PointLight viewLight = (*pLight);
+                    glm::vec3 wPos = viewLight.getPosition();
+                    glm::vec4 vPos = view * glm::vec4(wPos, 1.f);
+                    viewLight.setPosition(glm::vec3(vPos));
+                    shader.setPointLightArray(UD::PointLightArray, pLightIndex++, viewLight);
                 }
                 break;
         }

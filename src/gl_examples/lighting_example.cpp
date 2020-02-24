@@ -69,7 +69,6 @@ void LightingExample::run(GLFWwindow* window)
     glm::vec3 lightPosition = glm::vec3(-3.f, 3.f, 0.f);
     lightCube->setPosition(lightPosition);
     light->setPosition(lightPosition);
-    lightingShader.setVec3f("uLightPos", lightPosition);
 
     // Register mesh in mesh drawer
     MeshDrawer meshDrawer = MeshDrawer();
@@ -104,11 +103,10 @@ void LightingExample::run(GLFWwindow* window)
             // Update light position in lighting shader
             glm::vec3 lightPos = light->getPosition();
             glm::vec3 lightViewPos = _camera->transformWorldPosition(lightPos);
-            lightingShader.setVec3f("uLightPos", lightViewPos);
         }
         else
         {
-            torus->lookAt(_camera->getPosition());
+            //torus->lookAt(_camera->getPosition());
         }
 
         // Draw meshes
