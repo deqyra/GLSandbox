@@ -273,8 +273,11 @@ void MeshDrawer::renderFrame()
         throw std::runtime_error("MeshDrawer error: renderFrame was called with no projection matrix set.");
     }
 
+    glm::mat4 view = _camera->getViewMatrix();
+    _matrixUbo.setView(view);
+
     sendLightData();
-    sendMatrixData();
+
     for (auto it = _meshes.begin(); it != _meshes.end(); it++)
     {
         drawMesh(it->first);
@@ -302,12 +305,6 @@ void MeshDrawer::drawMesh(unsigned int id)
 
     mesh->setupBuffers();
     mesh->draw();
-}
-
-void MeshDrawer::sendMatrixData()
-{
-    glm::mat4 view = _camera->getViewMatrix();
-    _matrixUbo.setView(view);
 }
 
 void MeshDrawer::sendLightData()

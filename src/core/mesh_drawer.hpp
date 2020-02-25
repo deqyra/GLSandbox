@@ -41,7 +41,6 @@ class MeshDrawer
         LightUBO _lightUbo;
 
         void drawMesh(unsigned int id);
-        void sendMatrixData();
         void sendLightData();
 
     public:
