@@ -17,17 +17,19 @@
 MeshDrawer::MeshDrawer() :
     _camera(nullptr),
     _projection(glm::mat4(1.f)),
-    _lightsSetup(false)
+    _matrixUbo(),
+    _lightUbo()
 {
-
+    _matrixUbo.setProjection(_projection);
 }
 
 MeshDrawer::MeshDrawer(std::shared_ptr<ViewProvider> camera, glm::mat4 projection) :
     _camera(camera),
     _projection(projection),
-    _lightsSetup(false)
+    _matrixUbo(),
+    _lightUbo()
 {
-
+    _matrixUbo.setProjection(_projection);
 }
 
 void MeshDrawer::registerMesh(Mesh* mesh, Shader shader)
@@ -256,87 +258,60 @@ glm::mat4 MeshDrawer::getProjection()
 void MeshDrawer::setProjection(glm::mat4 projection)
 {
     _projection = projection;
+    _matrixUbo.setProjection(_projection);
+}
+
+void MeshDrawer::renderFrame()
+{
+    if (_camera == nullptr)
+    {
+        throw std::runtime_error("MeshDrawer error: renderFrame was called with no camera set.");
+    }
+
+    if (_projection == glm::mat4(1.f))
+    {
+        throw std::runtime_error("MeshDrawer error: renderFrame was called with no projection matrix set.");
+    }
+
+    sendLightData();
+    sendMatrixData();
+    for (auto it = _meshes.begin(); it != _meshes.end(); it++)
+    {
+        drawMesh(it->first);
+    }
 }
 
 void MeshDrawer::drawMesh(unsigned int id)
-{
-    if (_camera == nullptr)
-    {
-        throw std::runtime_error("MeshDrawer error: drawMesh was called with no camera set.");
-    }
-
-    if (_projection == glm::mat4(1.f))
-    {
-        throw std::runtime_error("MeshDrawer error: drawMesh was called with no projection matrix set.");
-    }
-
-    if (!hasMesh(id))
-    {
-        throw std::runtime_error(std::string("MeshDrawer error: no mesh with ID " + std::to_string(id) + ".").c_str());
-    }
-
-    drawMeshUnsafe(id);
-}
-
-void MeshDrawer::drawMeshes()
-{
-    if (_camera == nullptr)
-    {
-        throw std::runtime_error("MeshDrawer error: drawMeshes was called with no camera set.");
-    }
-
-    if (_projection == glm::mat4(1.f))
-    {
-        throw std::runtime_error("MeshDrawer error: drawMeshes was called with no projection matrix set.");
-    }
-
-    for (auto it = _meshes.begin(); it != _meshes.end(); it++)
-    {
-        drawMeshUnsafe(it->first);
-    }
-}
-
-void MeshDrawer::drawMeshUnsafe(unsigned int id)
 {
     if (!_meshesEnabled[id]) return;
 
     Shader shader = _shaders[id];
     shader.use();
-    sendAllLightData(shader);
 
     glm::mat4 view = _camera->getViewMatrix();
 
     std::shared_ptr<Mesh> mesh = _meshes[id];
     glm::mat4 model = mesh->getModelMatrix();
     
-    glm::mat3 normal = glm::mat3(0.f);
-    glm::mat4 normal4 = glm::transpose(glm::inverse(view * model));
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            normal[i][j] = normal4[i][j];
-        }
-    }
+    glm::mat4 normal = glm::transpose(glm::inverse(view * model));
 
-    typedef UniformDestination UD;
-    shader.setMat4f(UD::ProjectionMatrix, _projection);
-    shader.setMat4f(UD::ViewMatrix, view);
-    shader.setMat4f(UD::ModelMatrix, model);
-    shader.setMat3f(UD::NormalMatrix, normal);
+    _matrixUbo.setModel(model);
+    _matrixUbo.setNormal(normal);
 
-    shader.setMaterial(UD::Material, mesh->material);
+    shader.setMaterial("material", mesh->material);
 
     mesh->setupBuffers();
     mesh->draw();
 }
 
-void MeshDrawer::sendAllLightData(Shader& shader)
+void MeshDrawer::sendMatrixData()
 {
-    typedef UniformDestination UD;
-    typedef ShaderConstant SC;
+    glm::mat4 view = _camera->getViewMatrix();
+    _matrixUbo.setView(view);
+}
 
-    unsigned int maxPLightCount = (unsigned int) shader.getConstant(SC::MaxPointLightCount);
+void MeshDrawer::sendLightData()
+{
     unsigned int pLightIndex = 0;
 
     glm::mat4 view = _camera->getViewMatrix();
@@ -349,17 +324,20 @@ void MeshDrawer::sendAllLightData(Shader& shader)
         switch (light->lightType)
         {
             case LightType::PointLight:
-                if (pLightIndex < maxPLightCount)
+                if (pLightIndex < POINT_LIGHT_MAX_COUNT)
                 {
+                    // Retrieve the light as a PointLight
                     std::shared_ptr<PointLight> pLight = std::static_pointer_cast<PointLight>(light);
-                    PointLight viewLight = (*pLight);
-                    glm::vec3 wPos = viewLight.getPosition();
-                    glm::vec4 vPos = view * glm::vec4(wPos, 1.f);
-                    viewLight.setPosition(glm::vec3(vPos));
-                    shader.setPointLightArray(UD::PointLightArray, pLightIndex++, viewLight);
+                    PointLight tmpLight = (*pLight);
+                    // Transform its world position into view coordinates
+                    glm::vec3 tmpPos = tmpLight.getPosition();
+                    glm::vec3 viewPos = _camera->transformWorldPosition(tmpPos);
+                    tmpLight.setPosition(viewPos);
+                    // Send it to the UBO
+                    _lightUbo.setPoint(pLightIndex++, tmpLight);
                 }
                 break;
         }
     }
-    shader.setUint(UD::PointLightCount, pLightIndex);
+    _lightUbo.setPointCount(pLightIndex);
 }

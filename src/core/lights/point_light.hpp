@@ -7,6 +7,9 @@
 #include "../light.hpp"
 #include "../light_type.hpp"
 
+#define POINT_LIGHT_MAX_COUNT 128
+#define POINT_LIGHT_UBO_SIZE  64
+
 class PointLight : public PositionedObject, public Light
 {
     public:

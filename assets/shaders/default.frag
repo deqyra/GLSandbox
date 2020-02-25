@@ -1,9 +1,15 @@
 #version 460 core
-layout (location = 0) in vec3 inVertexColor;
+in VertexOut 
+{
+	vec3 color;
+	vec3 normal;
+	vec2 texCoord;
+	vec3 fragPos;
+} vertOut;
 
 out vec4 fragColor;
 
 void main()
 {
-	fragColor = vec4(inVertexColor, 1.0f); 
+	fragColor = vec4(vertOut.color, 1.0f); 
 }

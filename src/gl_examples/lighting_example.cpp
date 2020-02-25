@@ -99,10 +99,6 @@ void LightingExample::run(GLFWwindow* window)
             lightCube->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
             light->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
             torus->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
-
-            // Update light position in lighting shader
-            glm::vec3 lightPos = light->getPosition();
-            glm::vec3 lightViewPos = _camera->transformWorldPosition(lightPos);
         }
         else
         {
@@ -110,7 +106,7 @@ void LightingExample::run(GLFWwindow* window)
         }
 
         // Draw meshes
-        meshDrawer.drawMeshes();
+        meshDrawer.renderFrame();
 
         // Refresh screen and process input
         glfwSwapBuffers(window);

@@ -39,9 +39,6 @@
     <None Include="assets\shaders\phong.frag">
       <Filter>Fichiers de ressources\Shaders</Filter>
     </None>
-    <None Include="assets\shaders\mvp.vert.conf">
-      <Filter>Fichiers de ressources\Shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\awesomeface.png">
@@ -133,9 +130,6 @@
     <ClCompile Include="src\tools\string_tools.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\shaders\shader_adapter.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\tools\exceptions\file_not_found_error.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -146,6 +140,15 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\tools\exceptions\unmatched_array_size_error.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\ubo\light_ubo.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\ubo\matrix_ubo.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\uniform_buffer_object.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -231,12 +234,6 @@
     <ClInclude Include="src\core\light_type.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\shaders\shader_adapter.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\shaders\uniform_destination.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="src\tools\string_tools.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -253,6 +250,15 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="src\tools\make_basic_exception.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\ubo\light_ubo.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\ubo\matrix_ubo.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\uniform_buffer_object.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

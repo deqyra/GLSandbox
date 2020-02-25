@@ -44,14 +44,14 @@ class Camera : public ViewProvider
     public:
         Camera(glm::vec3 position, float yaw = YAW, float pitch = PITCH, glm::vec3 up = UP);
 
-        glm::mat4 getViewMatrix();
         glm::vec3 getPosition();
 
         void processMovement(Direction dir, float velocity);
         void processRotation(float yawOffset, float pitchOffset, bool constrainPitch = true);
         void processZoom(float scrollOffset);
 
-        glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
+        virtual glm::mat4 getViewMatrix();
+        virtual glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
 };
 
 #endif//CAMERA_HPP

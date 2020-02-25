@@ -17,8 +17,8 @@ layout (std140, binding = 0) uniform matrices
 	mat4 model;			// 64				//   0
 	mat4 view;			// 64				//  64
 	mat4 projection;	// 64				// 128
-	mat3 normal;		// 64				// 192
-};						// Size: 256
+	mat3 normal;		// 48				// 192
+};						// Size: 240
 
 void main()
 {

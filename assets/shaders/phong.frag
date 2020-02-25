@@ -5,7 +5,7 @@ in VertexOut
 	vec3 normal;
 	vec2 texCoord;
 	vec3 fragPos;
-} fragIn;
+} vertOut;
 
 out vec4 fragColor;
 
@@ -28,22 +28,14 @@ struct Material
     float shininess;						// 4				// 48
 };											// Size: 52
 
-#define MAX_POINT_LIGHTS 128
+#define POINT_LIGHT_MAX_COUNT 128
 
 // Uniforms
 // ========
 
-layout (std140, binding = 0) uniform matrices
-{											// Base alignment	// Base offset
-	mat4 model;								// 64				//   0
-	mat4 view;								// 64				//  64
-	mat4 projection;						// 64				// 128
-	mat3 normal;							// 64				// 192
-};											// Size: 256
-
 layout (std140, binding = 1) uniform lights
 {											// Base alignment	// Base offset
-	PointLight point[MAX_POINT_LIGHTS];		// 64 * 128			//    0
+	PointLight point[POINT_LIGHT_MAX_COUNT];// 64 * 128			//    0
 	unsigned int nPoint;					// 4				// 8192
 };											// Size: 8196
 
@@ -62,15 +54,15 @@ void main()
 		pLightTotal += processPointLight(i);
 	}
 
-    vec3 result = pLightTotal * fragIn.color;
+    vec3 result = pLightTotal * vertOut.color;
     fragColor = vec4(result, 1.0);
 }
 
 vec3 processPointLight(int i)
 {
-	vec3 normal = normalize(fragIn.normal);
-	vec3 viewDir = normalize(fragIn.fragPos);
-	vec3 lightDir = normalize(fragIn.fragPos - point[i].position);
+	vec3 normal = normalize(vertOut.normal);
+	vec3 viewDir = normalize(vertOut.fragPos);
+	vec3 lightDir = normalize(vertOut.fragPos - point[i].position);
 
 	// Ambient lighting
     vec3 ambient = point[i].ambient * material.ambient;

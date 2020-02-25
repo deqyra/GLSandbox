@@ -47,16 +47,16 @@ class FPSCameraManager : public ViewProvider
     public:
         FPSCameraManager(glm::vec3 position, float yaw = YAW, float pitch = PITCH, glm::vec3 up = UP);
 
-        glm::mat4 getViewMatrix();
 
         void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods);
         void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
         void processMouseScroll(float scrollOffset);
 
-        glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
-
         void updateCamera(float timeDelta);
         glm::vec3 getPosition();
+
+        virtual glm::mat4 getViewMatrix();
+        virtual glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
 };
 
 #endif//FPS_CAMERA_MANAGER_HPP

@@ -21,7 +21,6 @@
   <ItemGroup>
     <None Include="assets\shaders\default.frag" />
     <None Include="assets\shaders\mvp.vert" />
-    <None Include="assets\shaders\mvp.vert.conf" />
     <None Include="assets\shaders\phong.frag" />
     <None Include="assets\shaders\texture_1ch.frag" />
     <None Include="assets\shaders\texture_2ch.frag" />
@@ -43,8 +42,10 @@
     <ClCompile Include="src\core\mesh_drawer.cpp" />
     <ClCompile Include="src\core\positioned_object.cpp" />
     <ClCompile Include="src\core\shader.cpp" />
-    <ClCompile Include="src\core\shaders\shader_adapter.cpp" />
     <ClCompile Include="src\core\texture_2d.cpp" />
+    <ClCompile Include="src\core\ubo\light_ubo.cpp" />
+    <ClCompile Include="src\core\ubo\matrix_ubo.cpp" />
+    <ClCompile Include="src\core\uniform_buffer_object.cpp" />
     <ClCompile Include="src\fps_camera_manager.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gl_examples\basic_triangle_example.cpp" />
@@ -79,9 +80,10 @@
     <ClInclude Include="src\core\mesh_drawer.hpp" />
     <ClInclude Include="src\core\positioned_object.hpp" />
     <ClInclude Include="src\core\shader.hpp" />
-    <ClInclude Include="src\core\shaders\shader_adapter.hpp" />
-    <ClInclude Include="src\core\shaders\uniform_destination.hpp" />
     <ClInclude Include="src\core\texture_2d.hpp" />
+    <ClInclude Include="src\core\ubo\light_ubo.hpp" />
+    <ClInclude Include="src\core\ubo\matrix_ubo.hpp" />
+    <ClInclude Include="src\core\uniform_buffer_object.hpp" />
     <ClInclude Include="src\core\view_provider.hpp" />
     <ClInclude Include="src\fps_camera_manager.hpp" />
     <ClInclude Include="src\gl_example.hpp" />

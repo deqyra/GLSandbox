@@ -19,6 +19,8 @@
 #include "light_type.hpp"
 #include "light.hpp"
 #include "lights/point_light.hpp"
+#include "ubo/matrix_ubo.hpp"
+#include "ubo/light_ubo.hpp"
 
 #define MAX_POINT_LIGHTS 128
 
@@ -35,12 +37,12 @@ class MeshDrawer
         std::shared_ptr<ViewProvider> _camera;
         glm::mat4 _projection;
 
-        bool _lightsSetup;
+        MatrixUBO _matrixUbo;
+        LightUBO _lightUbo;
 
-        void drawMeshUnsafe(unsigned int id);
-        void sendAllLightData(Shader& shader);
-        void sendLightData(Shader& shader, std::shared_ptr<Light> light);
-        void sendPointLightData(Shader& shader, std::shared_ptr<PointLight> light);
+        void drawMesh(unsigned int id);
+        void sendMatrixData();
+        void sendLightData();
 
     public:
         MeshDrawer();
@@ -80,8 +82,7 @@ class MeshDrawer
         glm::mat4 getProjection();
         void setProjection(glm::mat4 projection);
 
-        void drawMesh(unsigned int id);
-        void drawMeshes();
+        void renderFrame();
 };
 
 #endif//MESH_DRAWER_HPP
