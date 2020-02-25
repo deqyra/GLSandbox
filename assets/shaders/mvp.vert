@@ -4,21 +4,27 @@ layout (location = 1) in vec3 inColor;
 layout (location = 2) in vec3 inNormal;
 layout (location = 3) in vec2 inTexCoord;
 
-layout (location = 0) out vec3 outVertexColor;
-layout (location = 1) out vec3 outVertexNormal;
-layout (location = 2) out vec2 outTexCoord;
-layout (location = 3) out vec3 outFragPos;
+out VertexOut 
+{
+	vec3 color;
+	vec3 normal;
+	vec2 texCoord;
+	vec3 fragPos;
+} vertOut;
 
-uniform mat4 model = mat4(1.0f);
-uniform mat4 view = mat4(1.0f);
-uniform mat4 projection = mat4(1.0f);
-uniform mat3 normalCorrection = mat3(1.0f);
+layout (std140, binding = 0) uniform matrices
+{						// Base alignment	// Base offset
+	mat4 model;			// 64				//   0
+	mat4 view;			// 64				//  64
+	mat4 projection;	// 64				// 128
+	mat3 normal;		// 64				// 192
+};						// Size: 256
 
 void main()
 {
     gl_Position = projection * view * model * vec4(inPosition, 1.0f);
-	outVertexColor = inColor;
-	outVertexNormal = normalCorrection * inNormal;
-	outTexCoord = inTexCoord;
-	outFragPos = vec3(view * model * vec4(inPosition, 1.0f));
+	vertOut.color = inColor;
+	vertOut.normal = normal * inNormal;
+	vertOut.texCoord = inTexCoord;
+	vertOut.fragPos = vec3(view * model * vec4(inPosition, 1.0f));
 }

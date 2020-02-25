@@ -10,14 +10,18 @@ Example screenshot:
 
 The torus mesh is entirely parametrically generated and has a (so-called) emerald material. The coloured cube shows the position of a point light.
 
+### Requirements
+
+* A graphics card capable with OpenGL 4.6 or higher
+
 ### Current features
 
 * Transforms
 * FPS camera & key bindings
 * Self-drawing meshes
 * Per-mesh shaders
-* A horrible thing called ShaderAdapter which attempts to abstract shader uniform names for the app
-* Textures (kind of)
+* UBOs
+* Textures
 * Materials
 * Lighting methods:
   * Phong
@@ -30,8 +34,6 @@ The torus mesh is entirely parametrically generated and has a (so-called) emeral
   * Spotlights
   * Directional lights
   * Light maps
-* Actually decent texture handling
-* UBOs
 * `.obj` file handling
 * Shadows
 * Scene graph
