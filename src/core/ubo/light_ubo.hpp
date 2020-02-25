@@ -5,6 +5,16 @@
 #include "../uniform_buffer_object.hpp"
 #include "../lights/point_light.hpp"
 
+/* UNIFORM BLOCK LAYOUT
+ * ====================
+ *
+ * layout (std140, binding = 1) uniform lights
+ * {											// Base alignment	// Base offset
+ *     PointLight point[POINT_LIGHT_MAX_COUNT]; // 64 * 128			//    0
+ *     unsigned int nPoint;		    			// 4				// 8192
+ * };											// Size: 8196
+ **/
+
 class LightUBO : public UniformBufferObject
 {
     public:

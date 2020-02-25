@@ -5,6 +5,18 @@
 
 #include "../uniform_buffer_object.hpp"
 
+/* UNIFORM BLOCK LAYOUT
+ * ====================
+ *
+ * layout (std140, binding = 0) uniform matrices
+ * {						// Base alignment	// Base offset
+ *     mat4 model;			// 64				//   0
+ *     mat4 view;			// 64				//  64
+ *     mat4 projection;	    // 64				// 128
+ *     mat3 normal;		    // 48				// 192
+ * };						// Size: 240
+ **/
+
 class MatrixUBO : public UniformBufferObject
 {
     public:

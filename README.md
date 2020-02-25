@@ -37,4 +37,7 @@ The torus mesh is entirely parametrically generated and has a (so-called) emeral
 * `.obj` file handling
 * Shadows
 * Scene graph
+* Transparency
+* Portals
+* Particles
 * PBR
