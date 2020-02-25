@@ -21,12 +21,18 @@ struct PointLight
 };											// Size: 64
 
 struct Material
-{											// Base alignment	// Base offset
-    vec3 ambient;							// 16				// 0
-    vec3 diffuse;							// 16				// 16
-    vec3 specular;							// 16				// 32
-    float shininess;						// 4				// 48
-};											// Size: 52
+{
+    vec4 ambient;
+    vec4 diffuse;
+    vec4 specular;
+    float shininess;
+
+	sampler2D diffuseMap;
+	sampler2D specularMap;
+
+	bool diffuseMapEnabled;
+	bool specularMapEnabled;
+};
 
 #define POINT_LIGHT_MAX_COUNT 128
 
@@ -44,37 +50,47 @@ uniform Material material;
 // Functions
 // =========
 
-vec3 processPointLight(int i);
+vec4 processPointLight(int i);
 
 void main()
 {
+	// Process all point lights
 	vec3 pLightTotal = vec3(0.f);
 	for (int i = 0; i < nPoint; i++)
 	{
 		pLightTotal += processPointLight(i);
 	}
 
-    vec3 result = pLightTotal * vertOut.color;
-    fragColor = vec4(result, 1.0);
+	// Combine components together
+    vec4 result = vec4(pLightTotal, 1.f) * vec4(vertOut.color, 1.f);
+    fragColor = result;
 }
 
-vec3 processPointLight(int i)
+vec4 processPointLight(int i)
 {
 	vec3 normal = normalize(vertOut.normal);
 	vec3 viewDir = normalize(vertOut.fragPos);
 	vec3 lightDir = normalize(vertOut.fragPos - point[i].position);
+	vec3 reflectDir = reflect(lightDir, normal);
 
 	// Ambient lighting
-    vec3 ambient = point[i].ambient * material.ambient;
+    vec4 ambient = vec4(point[i].ambient, 1.f) * material.ambient;
 
 	// Diffuse lighting
+	vec4 diffuseTexel = vec4(1.f);
+	if (material.diffuseMapEnabled)
+		diffuseTexel = texture(material.diffuseMap, vertOut.texCoord);
+	
 	float diffusionFactor = max(dot(normal, -lightDir), 0.0);
-	vec3 diffuse = point[i].diffuse * material.diffuse * diffusionFactor;
+	vec4 diffuse = vec4(point[i].diffuse, 1.f) * material.diffuse * diffuseTexel * diffusionFactor;
 
 	// Specular
-	vec3 reflectDir = reflect(lightDir, normal);
+	vec4 specularTexel = vec4(1.f);
+	if (material.specularMapEnabled)
+		specularTexel = texture(material.specularMap, vertOut.texCoord);
+
 	float spec = pow(max(dot(-viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = point[i].specular * material.specular * spec;
+	vec4 specular = vec4(point[i].specular, 1.f) * material.specular * specularTexel * spec;
 
 	return ambient + diffuse + specular;
 }
