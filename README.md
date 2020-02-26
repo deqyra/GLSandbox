@@ -10,9 +10,10 @@ Example screenshot:
 
 The torus mesh is entirely parametrically generated and has a (so-called) emerald material. The coloured cube shows the position of a point light.
 
-### Requirements
+### Info
 
-* A graphics card capable with OpenGL 4.6 or higher
+* Development using OpenGL 4.6 (core profile) on a GTX 1660 Ti.
+* If your graphics driver does not implement OpenGL 4.6 core, [generate a loader](https://glad.dav1d.de/) that suits your platform, and replace `include/glad/glad.h` with it.
 
 ### Current features
 
@@ -27,13 +28,13 @@ The torus mesh is entirely parametrically generated and has a (so-called) emeral
   * Phong
 * Lighting:
   * Point lights
+  * Light maps
 
 ### Roadmap
 
 * Lighting:
   * Spotlights
   * Directional lights
-  * Light maps
 * `.obj` file handling
 * Shadows
 * Scene graph
