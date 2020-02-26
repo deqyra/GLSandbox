@@ -66,25 +66,27 @@ Shader::Shader(const string vertexPath, const string fragmentPath)
         }
 
         _programMaps[_programKey] = _id;
+        _refCount[_id] = 1;
     }
     else
     {
         _id = _programMaps[_programKey];
+        _refCount[_id]++;
     }
-
-    increaseRefCount();
 }
 
 Shader::Shader(const Shader& other)
 {
     _id = other._id;
-    increaseRefCount();
+    _programKey = other._programKey;
+    _refCount[_id]++;
 }
 
 Shader& Shader::operator=(const Shader& other)
 {
     _id = other._id;
-    increaseRefCount();
+    _programKey = other._programKey;
+    _refCount[_id]++;
 
     return *this;
 }
@@ -93,12 +95,13 @@ Shader& Shader::operator=(const Shader& other)
 Shader::~Shader()
 {
     // Decrease the ref count
+    unsigned int count = --_refCount[_id];
     // If empty, destroy resource
-    if (decreaseRefCount() == 0)
+    if (!count)
     {
         _programMaps.erase(_programKey);
         glDeleteProgram(_id);
-    }
+    };
 }
 
 // Get program ID.
