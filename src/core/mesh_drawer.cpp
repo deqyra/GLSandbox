@@ -32,19 +32,6 @@ MeshDrawer::MeshDrawer(std::shared_ptr<ViewProvider> camera, glm::mat4 projectio
     _matrixUbo.setProjection(_projection);
 }
 
-void MeshDrawer::registerMesh(Mesh* mesh, Shader shader)
-{
-    unsigned int id = mesh->id;
-    if (hasMesh(id))
-    {
-        throw std::runtime_error(std::string("MeshDrawer error: mesh with ID " + std::to_string(id) + " already exists.").c_str());
-    }
-
-    _meshes[id] = std::shared_ptr<Mesh>(mesh);
-    _shaders[id] = shader;
-    _meshesEnabled[id] = true;
-}
-
 void MeshDrawer::registerMesh(std::shared_ptr<Mesh> mesh, Shader shader)
 {
     unsigned int id = mesh->id;
@@ -145,18 +132,6 @@ bool MeshDrawer::isMeshEnabled(unsigned int id)
     return _meshesEnabled[id];
 }
 
-void MeshDrawer::registerLight(Light* light)
-{
-    unsigned int id = light->id;
-    if (hasLight(id))
-    {
-        throw std::runtime_error(std::string("MeshDrawer error: light with ID " + std::to_string(id) + " already exists.").c_str());
-    }
-
-    _lights[id] = std::shared_ptr<Light>(light);
-    _lightsEnabled[id] = true;
-}
-
 void MeshDrawer::registerLight(std::shared_ptr<Light> light)
 {
     unsigned int id = light->id;
@@ -235,11 +210,6 @@ bool MeshDrawer::isLightEnabled(unsigned int id)
     return _lightsEnabled[id];
 }
 
-void MeshDrawer::setCamera(ViewProvider* camera)
-{
-    _camera.reset(camera);
-}
-
 void MeshDrawer::setCamera(std::shared_ptr<ViewProvider> camera)
 {
     _camera = camera;
@@ -301,6 +271,7 @@ void MeshDrawer::drawMesh(unsigned int id)
     _matrixUbo.setModel(model);
     _matrixUbo.setNormal(normal);
 
+    mesh->material.bindTextures();
     shader.setMaterial("material", mesh->material);
 
     mesh->setupBuffers();
