@@ -6,10 +6,10 @@ layout (location = 3) in vec2 inTexCoord;
 
 out VertexOut 
 {
+	vec3 fragPos;
 	vec3 color;
 	vec3 normal;
 	vec2 texCoord;
-	vec3 fragPos;
 } vertOut;
 
 layout (std140, binding = 0) uniform matrices
