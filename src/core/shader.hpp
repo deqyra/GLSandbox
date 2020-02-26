@@ -39,9 +39,7 @@ class Shader
         // program ID -> reference count
         static std::unordered_map<unsigned int, unsigned int> _refCount;
 
-        unsigned int getRefCount();
-        unsigned int increaseRefCount();
-        unsigned int decreaseRefCount();
+        void cleanup();
 
     public:
         Shader(const std::string vertexPath = "assets/shaders/mvp.vert", const std::string fragmentPath = "assets/shaders/default.frag");

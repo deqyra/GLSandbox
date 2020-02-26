@@ -84,6 +84,8 @@ Shader::Shader(const Shader& other)
 
 Shader& Shader::operator=(const Shader& other)
 {
+    cleanup();
+
     _id = other._id;
     _programKey = other._programKey;
     _refCount[_id]++;
@@ -91,8 +93,12 @@ Shader& Shader::operator=(const Shader& other)
     return *this;
 }
 
-
 Shader::~Shader()
+{
+    cleanup();
+}
+
+void Shader::cleanup()
 {
     // Decrease the ref count
     unsigned int count = --_refCount[_id];
@@ -206,6 +212,24 @@ void Shader::setMaterial(const std::string& name, Material value)
     setVec3f(name + ".diffuse", value.diffuse);
     setVec3f(name + ".specular", value.specular);
     setFloat(name + ".shininess", value.shininess);
+
+    unsigned int count = value.getDiffuseMapCount();
+    // Diffuse maps are bound in texture units 0 through 7
+    for (unsigned int i = 0; i < count; i++)
+    {
+        std::string samplerName = name + ".diffuseMaps[" + std::to_string(i) + "]";
+        setInt(samplerName, (int)i);
+    }
+    setUint(name + ".diffuseMapCount", count);
+
+    count = value.getSpecularMapCount();
+    // Diffuse maps are bound in texture units 8 through 15
+    for (unsigned int i = 0; i < count; i++)
+    {
+        std::string samplerName = name + ".specularMaps[" + std::to_string(i) + "]";
+        setInt(samplerName, SPECULAR_MAP_MAX_COUNT + (int)i);
+    }
+    setUint(name + ".specularMapCount", count);
 }
 
 void Shader::setPointLight(const std::string& name, PointLight value)
@@ -221,31 +245,4 @@ void Shader::setPointLightArray(const std::string& name, unsigned int index, Poi
 {
     std::string indexedName = name + "[" + std::to_string(index) + "]";
     setPointLight(indexedName, value);
-}
-
-unsigned int Shader::getRefCount()
-{
-    auto it = _refCount.find(_id);
-    // No check on whether the iterator is valid, as the element MUST exist
-    return it->second;
-}
-
-unsigned int Shader::increaseRefCount()
-{
-    auto it = _refCount.find(_id);
-    // If resource was not found, set ref count to 1
-    if (it == _refCount.end())
-    {
-        _refCount[_id] = 1;
-        return 1;
-    }
-    // Otherwise, increment it
-    else return ++(it->second);
-}
-
-unsigned int Shader::decreaseRefCount()
-{
-    auto it = _refCount.find(_id);
-    // No check on whether the iterator is valid, as the element MUST exist
-    return --(it->second);
 }
