@@ -17,8 +17,8 @@
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
 
 RotatingTexturedCubeExample::RotatingTexturedCubeExample() :
-    _shader("assets/shaders/mvp.vert", "assets/shaders/texture_1ch.frag"),
-    _texture("assets/textures/container.jpg", 0),
+    _shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag"),
+    _texture("assets/textures/container.jpg"),
     _camera(CAMERA_POS, -135.f, -30.f),
     _vbo(0),
     _vao(0),

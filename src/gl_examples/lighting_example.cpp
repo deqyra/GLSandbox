@@ -7,20 +7,23 @@
  */
 #include "lighting_example.hpp"
 
-#include "../tools/gl_utils.hpp"
-#include "../tools/gl_window.hpp"
-
-#include "../core/meshes/torus.hpp"
-#include "../core/meshes/axes.hpp"
-#include "../core/meshes/cube.hpp"
-#include "../core/lights/point_light.hpp"
-#include "../core/materials.hpp"
+#include <memory>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <memory>
+#include "../core/mesh.hpp"
+#include "../core/materials.hpp"
+#include "../core/shader.hpp"
+#include "../core/lights/point_light.hpp"
+
+#include "../core/mesh_generators/torus_generator.hpp"
+#include "../core/mesh_generators/axes_generator.hpp"
+#include "../core/mesh_generators/cube_generator.hpp"
+
+#include "../tools/gl_utils.hpp"
+#include "../tools/gl_window.hpp"
 
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
 #define CUBE_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
@@ -57,9 +60,15 @@ void LightingExample::run(GLFWwindow* window)
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
 
     // Instantiate scene meshes
-    std::shared_ptr<Torus> torus = std::make_shared<Torus>(2.f, 0.5f, 72, 48);
-    std::shared_ptr<Axes> axes = std::make_shared<Axes>(3.f);
-    std::shared_ptr<Cube> lightCube = std::make_shared<Cube>(1.f);
+    TorusGenerator torusGen = TorusGenerator(2.f, 0.5f, 72, 48);
+    MeshPtr torus = torusGen.generatePtr();
+
+    AxesGenerator axesGen = AxesGenerator(3.f);
+    MeshPtr axes = axesGen.generatePtr();
+
+    CubeGenerator cubeGen = CubeGenerator();
+    MeshPtr cube = cubeGen.generatePtr();
+
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>();
 
     // Setup mesh properties
@@ -67,14 +76,14 @@ void LightingExample::run(GLFWwindow* window)
 
     // Setup light
     glm::vec3 lightPosition = glm::vec3(-3.f, 3.f, 0.f);
-    lightCube->setPosition(lightPosition);
+    cube->setPosition(lightPosition);
     light->setPosition(lightPosition);
 
     // Register mesh in mesh drawer
     MeshDrawer meshDrawer = MeshDrawer();
     meshDrawer.registerMesh(torus, lightingShader);
     meshDrawer.registerMesh(axes);
-    meshDrawer.registerMesh(lightCube);
+    meshDrawer.registerMesh(cube);
     meshDrawer.registerLight(light);
 
     // Register camera in mesh drawer
@@ -96,7 +105,7 @@ void LightingExample::run(GLFWwindow* window)
         {
             // Update object transforms
             float angleDiff = _speedFactor * (frameTime - _lastTime);
-            lightCube->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+            cube->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
             light->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
             torus->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
         }
