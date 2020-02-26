@@ -4,6 +4,9 @@
 #include <string>
 #include <unordered_map>
 
+#define MAX_TEXTURE_UNIT GL_TEXTURE31
+#define MAX_TEXTURE_UNIT_OFFSET MAX_TEXTURE_UNIT - GL_TEXTURE0
+
 class Texture2D
 {
     private:
@@ -20,6 +23,8 @@ class Texture2D
 
         static unsigned int loadTextureFromFile(const std::string path);
 
+        void cleanup();
+
     public:
         Texture2D(std::string path);
         Texture2D(const Texture2D& other);
@@ -31,6 +36,7 @@ class Texture2D
 
         // Bind the texture.
         void bind();
+        void bind(unsigned int unit);
 };
 
 #endif//TEXTURE_2D_HPP

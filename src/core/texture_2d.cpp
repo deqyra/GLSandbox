@@ -1,12 +1,13 @@
 #include "texture_2d.hpp"
 
-#include <stdexcept>
-
 #include "../../include/glad/glad.h"
 #include "../../include/stb_image.hpp"
 
-std::unordered_map<unsigned int, unsigned int> Texture2D::_refCount = std::unordered_map<std::string, unsigned int>();
-std::unordered_map<std::string , unsigned int> Texture2D::_pathIds   = std::unordered_map<std::string, unsigned int>();
+#include <stdexcept>
+#include "../tools/exceptions/index_out_of_bounds_error.hpp"
+
+std::unordered_map<unsigned int, unsigned int> Texture2D::_refCount = std::unordered_map<unsigned int, unsigned int>();
+std::unordered_map<std::string , unsigned int> Texture2D::_pathIds  = std::unordered_map<std::string, unsigned int>();
 
 Texture2D::Texture2D(std::string path) :
     _path(path)
@@ -25,15 +26,17 @@ Texture2D::Texture2D(std::string path) :
     }
 }
 
-Texture2D::Texture2D(const Texture2D& other)
+Texture2D::Texture2D(const Texture2D& other) :
+    _id(other._id),
+    _path(other._path)
 {
-    _id = other._id;
-    _path = other._path;
     _refCount[_id]++;
 }
 
 Texture2D& Texture2D::operator=(const Texture2D& other)
 {
+    cleanup();
+
     _id = other._id;
     _path = other._path;
     _refCount[_id]++;
@@ -42,6 +45,11 @@ Texture2D& Texture2D::operator=(const Texture2D& other)
 }
 
 Texture2D::~Texture2D()
+{
+    cleanup();
+}
+
+void Texture2D::cleanup()
 {
     // Decrease the ref count
     unsigned int count = --_refCount[_id];
@@ -98,5 +106,18 @@ unsigned int Texture2D::id()
 // Bind the texture.
 void Texture2D::bind()
 {
+    glBindTexture(GL_TEXTURE_2D, _id);
+}
+
+void Texture2D::bind(unsigned int unit)
+{
+    unsigned int realUnit = GL_TEXTURE0 + unit;
+    if (realUnit)
+    {
+        std::string s = "Texture2D: cannot bind to texture unit " + std::to_string(realUnit) + ".";
+        throw IndexOutOfBoundsError(s);
+    }
+
+    glActiveTexture(realUnit);
     glBindTexture(GL_TEXTURE_2D, _id);
 }
