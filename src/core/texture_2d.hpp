@@ -1,30 +1,31 @@
-/**
-    GLTest, texture.hpp
-    Purpose: Texture2D handler. Reads image files and generates textures.
-
-    @author François Brachais (deqyra)
-    @version 1.0 16/09/2019
- */
-
 #ifndef TEXTURE_2D_HPP
 #define TEXTURE_2D_HPP
 
-#include <glad/glad.h>
+#include <string>
+#include <unordered_map>
 
 class Texture2D
 {
     private:
         unsigned int _id;
-        unsigned int _unit;
+        std::string _path;
 
-        int _width;
-        int _height;
-        int _nChannels;
+        // Structure storing program locations against the path of the shaders they were constructed from:
+        // program shader names -> program location
+        static std::unordered_map<std::string , unsigned int> _pathIds;
+
+        // Structure storing how many shader instances are referencing a shader resource on the GPU:
+        // program ID -> reference count
+        static std::unordered_map<unsigned int, unsigned int> _refCount;
+
+        static unsigned int loadTextureFromFile(const std::string path);
 
     public:
-        Texture2D(const GLchar* texturePath, const unsigned int textureUnit = 0, bool alphaChannel = false, bool flipY = false);
+        Texture2D(std::string path);
+        Texture2D(const Texture2D& other);
+        Texture2D& operator=(const Texture2D& other);
         ~Texture2D();
-
+        
         // Get texture ID.
         unsigned int id();
 
