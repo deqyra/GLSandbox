@@ -11,10 +11,16 @@
 
 unsigned int Mesh::_count = 0;
 
-Mesh::Mesh() :
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode, Material material) :
+    _vertices(vertices),
+    _indices(indices),
+    _drawMode(drawMode),
     _buffersSetUp(false),
     id(_count++),
-    material(Materials::Default)
+    material(material)
 {
 
 }
+
+void setupBuffers();
+void draw();

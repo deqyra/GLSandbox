@@ -8,11 +8,14 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
+#include "../../include/glad/glad.h"
+
 #include "positioned_object.hpp"
-#include "shader.hpp"
+#include "vertex.hpp"
 #include "material.hpp"
 
 #include <string>
+#include <vector>
 
 class Mesh : public PositionedObject
 {
@@ -20,16 +23,21 @@ class Mesh : public PositionedObject
         static unsigned int _count;
 
     protected:
+        std::vector<Vertex> _vertices;
+        std::vector<unsigned int> _indices;
+        unsigned int _drawMode;
+
         bool _buffersSetUp;
+        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode, Material material, bool skipDataCheck);
 
     public:
-        Mesh();
-
-        virtual void setupBuffers() = 0;
-        virtual void draw() = 0;
-
         const unsigned int id;
         Material material;
+
+        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode, Material material = Material());
+
+        void setupBuffers();
+        void draw();
 };
 
 #endif//MESH_HPP
