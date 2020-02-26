@@ -11,23 +11,35 @@
 
 class Material
 {
+    private:
+        std::vector<Texture2D> _diffuseMaps;
+        std::vector<Texture2D> _specularMaps;
+
     public:
         Material();
         Material(glm::vec3 ambient,
                  glm::vec3 diffuse,
                  glm::vec3 specular,
-                 float shininess,
-                 std::vector<Texture2D> diffuseMaps = std::vector<Texture2D>(),
-                 std::vector<Texture2D> specularMaps = std::vector<Texture2D>()
+                 float shininess
         );
+
+        std::vector<Texture2D> getDiffuseMaps();
+        std::vector<Texture2D> getSpecularMaps();
+        unsigned int pushDiffuseMap(Texture2D tex);
+        unsigned int pushSpecularMap(Texture2D tex);
+        unsigned int popDiffuseMap();
+        unsigned int popSpecularMap();
+        unsigned int setDiffuseMaps(std::vector<Texture2D> diffuseMaps);
+        unsigned int setSpecularMaps(std::vector<Texture2D> specularMaps);
+        unsigned int getDiffuseMapCount();
+        unsigned int getSpecularMapCount();
+
+        void bindTextures();
 
         glm::vec3 ambient;
         glm::vec3 diffuse;
         glm::vec3 specular;
         float shininess;
-
-        std::vector<Texture2D> diffuseMaps;
-        std::vector<Texture2D> specularMaps;
 };
 
 #endif//MATERIAL_HPP
