@@ -1,6 +1,8 @@
 #ifndef LIGHT_HPP
 #define LIGHT_HPP
 
+#include <memory>
+
 #include "light_type.hpp"
 
 class Light
@@ -17,5 +19,7 @@ class Light
         const unsigned int id;
         const LightType lightType;
 };
+
+using LightPtr = std::shared_ptr<Light>;
 
 #endif//LIGHT_HPP
