@@ -12,6 +12,10 @@ out vec4 fragColor;
 // Types and constants
 // ===================
 
+#define POINT_LIGHT_MAX_COUNT 128
+#define DIFFUSE_MAP_MAX_COUNT   8
+#define SPECULAR_MAP_MAX_COUNT  8
+
 struct PointLight
 {											// Base alignment	// Base offset
     vec3 position;							// 16				//  0
@@ -27,14 +31,12 @@ struct Material
     vec3 specular;
     float shininess;
 
-	sampler2D diffuseMap;
-	sampler2D specularMap;
+	sampler2D diffuseMaps[DIFFUSE_MAP_MAX_COUNT];
+	sampler2D specularMaps[SPECULAR_MAP_MAX_COUNT];
 
-	bool diffuseMapEnabled;
-	bool specularMapEnabled;
+	unsigned int diffuseMapCount;
+	unsigned int specularMapCount;
 };
-
-#define POINT_LIGHT_MAX_COUNT 128
 
 // Uniforms
 // ========
@@ -42,7 +44,7 @@ struct Material
 layout (std140, binding = 1) uniform lights
 {											// Base alignment	// Base offset
 	PointLight point[POINT_LIGHT_MAX_COUNT];// 64 * 128			//    0
-	unsigned int nPoint;					// 4				// 8192
+	unsigned int pointCount;				// 4				// 8192
 };											// Size: 8196
 
 uniform Material material;
@@ -56,7 +58,7 @@ void main()
 {
 	// Process all point lights
 	vec4 pLightTotal = vec4(0.f);
-	for (int i = 0; i < nPoint; i++)
+	for (int i = 0; i < pointCount; i++)
 	{
 		pLightTotal += processPointLight(i);
 	}
@@ -78,16 +80,16 @@ vec4 processPointLight(int i)
 
 	// Diffuse lighting
 	vec4 diffuseTexel = vec4(1.f);
-	if (material.diffuseMapEnabled)
-		diffuseTexel = texture(material.diffuseMap, vertOut.texCoord);
+	if (material.diffuseMapCount > 0)
+		diffuseTexel = texture(material.diffuseMaps[0], vertOut.texCoord);
 	
 	float diffusionFactor = max(dot(normal, -lightDir), 0.0);
 	vec4 diffuse = vec4(point[i].diffuse, 1.f) * vec4(material.diffuse, 1.f) * diffuseTexel * diffusionFactor;
 
 	// Specular
 	vec4 specularTexel = vec4(1.f);
-	if (material.specularMapEnabled)
-		specularTexel = texture(material.specularMap, vertOut.texCoord);
+	if (material.specularMapCount > 0)
+		specularTexel = texture(material.specularMaps[0], vertOut.texCoord);
 
 	float spec = pow(max(dot(-viewDir, reflectDir), 0.0), material.shininess);
 	vec4 specular = vec4(point[i].specular, 1.f) * vec4(material.specular, 1.f) * specularTexel * spec;
