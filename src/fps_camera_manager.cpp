@@ -7,8 +7,8 @@
 */
 #include "fps_camera_manager.hpp"
 
-FPSCameraManager::FPSCameraManager(glm::vec3 position, float yaw, float pitch, glm::vec3 up) :
-    _camera(position, yaw, pitch, up),
+FPSCameraManager::FPSCameraManager(glm::vec3 position, glm::mat4 projection, float yaw, float pitch, glm::vec3 up) :
+    _camera(position, projection, yaw, pitch, up),
     _moveSpeed(SPEED),
     _mouseSensitivity(SENSITIVITY),
     _movement{false},
@@ -18,11 +18,6 @@ FPSCameraManager::FPSCameraManager(glm::vec3 position, float yaw, float pitch, g
     _mouseWasUpdatedOnce(false)
 {
 
-}
-
-glm::mat4 FPSCameraManager::getViewMatrix()
-{
-    return _camera.getViewMatrix();
 }
 
 void FPSCameraManager::processKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -104,11 +99,6 @@ void FPSCameraManager::processMouseScroll(float scrollOffset)
 
 }
 
-glm::vec3 FPSCameraManager::transformWorldPosition(glm::vec3 worldPosition)
-{
-    return _camera.transformWorldPosition(worldPosition);
-}
-
 void FPSCameraManager::updateCamera(float timeDelta)
 {
     float velocity = timeDelta * _moveSpeed;
@@ -128,4 +118,24 @@ void FPSCameraManager::updateCamera(float timeDelta)
 glm::vec3 FPSCameraManager::getPosition()
 {
     return _camera.getPosition();
+}
+
+glm::mat4 FPSCameraManager::getViewMatrix()
+{
+    return _camera.getViewMatrix();
+}
+
+glm::vec3 FPSCameraManager::transformWorldPosition(glm::vec3 worldPosition)
+{
+    return _camera.transformWorldPosition(worldPosition);
+}
+
+glm::mat4 FPSCameraManager::getProjectionMatrix()
+{
+    return _camera.getProjectionMatrix();
+}
+
+glm::mat4 FPSCameraManager::getViewProjectionMatrix()
+{
+    return _camera.getViewProjectionMatrix();
 }

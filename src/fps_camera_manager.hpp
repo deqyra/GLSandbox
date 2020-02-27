@@ -11,11 +11,12 @@
 
 #include <glm/glm.hpp>
 
-#include "../include/glad/glad.h"
-#include "tools/gl_window.hpp"
 #include "core/camera.hpp"
 #include "core/directions.hpp"
-#include "core/view_provider.hpp"
+#include "core/view_projection_provider.hpp"
+#include "tools/gl_window.hpp"
+
+#include "../include/glad/glad.h"
 
 #define DIR_INDEX_FORWARD 0
 #define DIR_INDEX_BACKWARD 1
@@ -26,7 +27,7 @@
 #define SPRINT_MUTLIPLIER 1.5f
 #define SENSITIVITY 0.1f
 
-class FPSCameraManager : public ViewProvider
+class FPSCameraManager : public ViewProjectionProvider
 {
     private:
         Camera _camera;
@@ -45,8 +46,7 @@ class FPSCameraManager : public ViewProvider
         bool _mouseWasUpdatedOnce;
 
     public:
-        FPSCameraManager(glm::vec3 position, float yaw = YAW, float pitch = PITCH, glm::vec3 up = UP);
-
+        FPSCameraManager(glm::vec3 position, glm::mat4 projection, float yaw = YAW, float pitch = PITCH, glm::vec3 up = UP);
 
         void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods);
         void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
@@ -57,6 +57,8 @@ class FPSCameraManager : public ViewProvider
 
         virtual glm::mat4 getViewMatrix();
         virtual glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
+        virtual glm::mat4 getProjectionMatrix();
+        virtual glm::mat4 getViewProjectionMatrix();
 };
 
 #endif//FPS_CAMERA_MANAGER_HPP

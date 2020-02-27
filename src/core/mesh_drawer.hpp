@@ -15,7 +15,7 @@
 
 #include "mesh.hpp"
 #include "shader.hpp"
-#include "view_provider.hpp"
+#include "view_projection_provider.hpp"
 
 #include "light_type.hpp"
 #include "light.hpp"
@@ -36,8 +36,7 @@ class MeshDrawer
         std::unordered_map<unsigned int, LightPtr> _lights;
         std::unordered_map<unsigned int, bool> _lightsEnabled;
 
-        std::shared_ptr<ViewProvider> _camera;
-        glm::mat4 _projection;
+        std::shared_ptr<ViewProjectionProvider> _camera;
 
         MatrixUBO _matrixUbo;
         LightUBO _lightUbo;
@@ -46,8 +45,7 @@ class MeshDrawer
         void sendLightData();
 
     public:
-        MeshDrawer();
-        MeshDrawer(std::shared_ptr<ViewProvider> camera, glm::mat4 projection);
+        MeshDrawer(std::shared_ptr<ViewProjectionProvider> camera);
 
         void registerMesh(MeshPtr mesh, Shader shader = Shader());
 
@@ -74,11 +72,8 @@ class MeshDrawer
         void setLightEnabled(unsigned int id, bool enabled);
         bool isLightEnabled(unsigned int id);
 
-        void setCamera(std::shared_ptr<ViewProvider> camera);
-        std::shared_ptr<ViewProvider> getCamera();
-
-        glm::mat4 getProjection();
-        void setProjection(glm::mat4 projection);
+        void setCamera(std::shared_ptr<ViewProjectionProvider> camera);
+        std::shared_ptr<ViewProjectionProvider> getCamera();
 
         void renderFrame();
 };

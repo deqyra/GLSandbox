@@ -14,25 +14,16 @@
 #include "shader.hpp"
 #include "view_provider.hpp"
 
-MeshDrawer::MeshDrawer() :
-    _camera(nullptr),
-    _projection(glm::mat4(1.f)),
-    _matrixUbo(),
-    _lightUbo()
-{
-    _matrixUbo.setProjection(_projection);
-}
-
-MeshDrawer::MeshDrawer(std::shared_ptr<ViewProvider> camera, glm::mat4 projection) :
+MeshDrawer::MeshDrawer(std::shared_ptr<ViewProjectionProvider> camera) :
     _camera(camera),
-    _projection(projection),
     _matrixUbo(),
     _lightUbo()
 {
-    _matrixUbo.setProjection(_projection);
+    _matrixUbo.setView(camera->getViewMatrix());
+    _matrixUbo.setProjection(camera->getProjectionMatrix());
 }
 
-void MeshDrawer::registerMesh(std::shared_ptr<Mesh> mesh, Shader shader)
+void MeshDrawer::registerMesh(MeshPtr mesh, Shader shader)
 {
     unsigned int id = mesh->id;
     if (hasMesh(id))
@@ -132,7 +123,7 @@ bool MeshDrawer::isMeshEnabled(unsigned int id)
     return _meshesEnabled[id];
 }
 
-void MeshDrawer::registerLight(std::shared_ptr<Light> light)
+void MeshDrawer::registerLight(LightPtr light)
 {
     unsigned int id = light->id;
     if (hasLight(id))
@@ -210,39 +201,18 @@ bool MeshDrawer::isLightEnabled(unsigned int id)
     return _lightsEnabled[id];
 }
 
-void MeshDrawer::setCamera(std::shared_ptr<ViewProvider> camera)
+void MeshDrawer::setCamera(std::shared_ptr<ViewProjectionProvider> camera)
 {
     _camera = camera;
 }
 
-std::shared_ptr<ViewProvider> MeshDrawer::getCamera()
+std::shared_ptr<ViewProjectionProvider> MeshDrawer::getCamera()
 {
     return _camera;
 }
 
-glm::mat4 MeshDrawer::getProjection()
-{
-    return _projection;
-}
-
-void MeshDrawer::setProjection(glm::mat4 projection)
-{
-    _projection = projection;
-    _matrixUbo.setProjection(_projection);
-}
-
 void MeshDrawer::renderFrame()
 {
-    if (_camera == nullptr)
-    {
-        throw std::runtime_error("MeshDrawer error: renderFrame was called with no camera set.");
-    }
-
-    if (_projection == glm::mat4(1.f))
-    {
-        throw std::runtime_error("MeshDrawer error: renderFrame was called with no projection matrix set.");
-    }
-
     glm::mat4 view = _camera->getViewMatrix();
     _matrixUbo.setView(view);
 
