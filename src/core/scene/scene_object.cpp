@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 
+#include "../scene.hpp"
 #include "tools.hpp"
 
 unsigned int SceneObject::_count = 0;
@@ -9,8 +10,8 @@ unsigned int SceneObject::_count = 0;
 SceneObject::SceneObject(std::shared_ptr<Scene> scene) :
     id(_count++),
     enabled(true),
-    _components(),
-    _scene(scene)
+    scene(scene),
+    _components()
 {
 
 }
@@ -42,7 +43,8 @@ SceneObject& SceneObject::operator=(const SceneObject& other)
     return (*this);
 }
 
-std::weak_ptr<Scene> SceneObject::getScene()
+glm::vec3 SceneObject::getWorldPosition()
 {
-    return _scene;
+    std::shared_ptr<Scene> scene = this->scene.lock();
+    return scene->getWorldPosition(id);
 }
