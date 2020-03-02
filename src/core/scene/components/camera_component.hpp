@@ -11,15 +11,18 @@
 class CameraComponent : public SceneObjectComponent, public ViewProjectionProvider
 {
     public:
-        CameraComponent(std::shared_ptr<ViewProjectionProvider> camera);
+        CameraComponent(std::shared_ptr<Camera> camera);
         virtual ~CameraComponent();
 
-        std::shared_ptr<ViewProjectionProvider> camera;
+        std::shared_ptr<Camera> camera;
 
         virtual glm::mat4 getViewMatrix();
         virtual glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
         virtual glm::mat4 getProjectionMatrix();
         virtual glm::mat4 getViewProjectionMatrix();
+
+    private:
+        glm::vec3 getNewWorldUp();
 };
 
 template<>
