@@ -30,17 +30,20 @@ void SceneRenderer::renderScene(Scene& scene)
 
     auto cameraObj = cameraComponents[0].lock();
     auto cameraComp = cameraObj->getComponent<CameraComponent>().lock();
-    _matrixUbo.setView(cameraComp->getViewMatrix());
+    glm::mat4 view = cameraComp->getViewMatrix();
+    _matrixUbo.setView(view);
     _matrixUbo.setProjection(cameraComp->getProjectionMatrix());
 
     std::vector<LightPtr> lights;
+    std::vector<glm::mat4> modelMats;
     for (auto it = lightComponents.begin(); it != lightComponents.end(); it++)
     {
         auto lightObj = it->lock();
         auto lightComp = lightObj->getComponent<LightComponent>().lock();
         lights.push_back(lightComp->light);
+        modelMats.push_back(scene.getWorldModelMatrix(lightObj->id));
+        sendLightData(lights, modelMats, view);
     }
-    sendLightData(lights, cameraComp->camera);
 
     for (auto it = meshComponents.begin(); it != meshComponents.end(); it++)
     {
@@ -52,25 +55,24 @@ void SceneRenderer::renderScene(Scene& scene)
     }
 }
 
-void SceneRenderer::sendLightData(std::vector<LightPtr> lights, std::shared_ptr<ViewProjectionProvider> camera)
+void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<glm::mat4>& modelMats, glm::mat4 view)
 {
     unsigned int pLightIndex = 0;
 
-    for (auto it = lights.begin(); it != lights.end(); it++)
+    for (unsigned int i = 0; i < lights.size(); i++)
     {
-        switch ((*it)->lightType)
+        LightPtr light = lights[i];
+        switch (light->lightType)
         {
             case LightType::PointLight:
                 if (pLightIndex < POINT_LIGHT_MAX_COUNT)
                 {
                     // Retrieve the light as a PointLight
-                    std::shared_ptr<PointLight> pLight = std::static_pointer_cast<PointLight>(*it);
-                    // Transform its world position into view coordinates
-                    glm::vec3 lightPos = pLight->getPosition();
-                    glm::vec3 viewPos = camera->transformWorldPosition(lightPos);
-                    pLight->setPosition(viewPos);
+                    std::shared_ptr<PointLight> pLight = std::static_pointer_cast<PointLight>(light);
                     // Send it to the UBO
-                    _lightUbo.setPoint(pLightIndex++, *pLight);
+                    glm::vec4 position = glm::vec4(glm::vec3(0.f), 1.f);
+                    position = view * modelMats[i] * position;
+                    _lightUbo.setPoint(pLightIndex++, *pLight, glm::vec3(position));
                 }
                 break;
         }

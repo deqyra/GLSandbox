@@ -28,7 +28,7 @@ class SceneRenderer
         MatrixUBO _matrixUbo;
         LightUBO _lightUbo;
 
-        void sendLightData(std::vector<LightPtr> lights, std::shared_ptr<ViewProjectionProvider> camera);
+        void sendLightData(std::vector<LightPtr>& lights, std::vector<glm::mat4>& modelMats, glm::mat4 view);
         void drawMesh(MeshPtr mesh, glm::mat4 model, glm::mat4 view, Material mat, Shader shader);
 
     public:
