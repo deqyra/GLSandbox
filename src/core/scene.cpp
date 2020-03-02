@@ -143,6 +143,11 @@ void Scene::processOutdatedTransformsFromNode(unsigned int id)
     {
         recalculateModelMatrix(uppermostOutdatedId);
     }
+    else if (objNode->value->transformModifiedFlagState())
+    {
+        objNode->value->resetTransformModifiedFlag();
+        recalculateModelMatrix(id);
+    }
 }
 
 void Scene::recalculateModelMatrix(unsigned int id)
