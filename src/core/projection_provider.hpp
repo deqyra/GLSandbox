@@ -6,6 +6,7 @@
 class ProjectionProvider
 {
     public:
+        virtual ~ProjectionProvider();
         virtual glm::mat4 getProjectionMatrix() = 0;
 };
 

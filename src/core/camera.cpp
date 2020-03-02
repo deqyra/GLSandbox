@@ -33,6 +33,11 @@ Camera::Camera(glm::vec3 position, glm::mat4 projection, float yaw, float pitch,
     getViewProjectionMatrix();
 }
 
+Camera::~Camera()
+{
+
+}
+
 void Camera::updateVectors()
 {
     glm::vec3 front;

@@ -9,9 +9,10 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#include <memory>
 #include <glm/glm.hpp>
 
-#include "directions.hpp"
+#include "direction.hpp"
 #include "view_projection_provider.hpp"
 
 #include "../include/glad/glad.h"
@@ -49,6 +50,7 @@ class Camera : public ViewProjectionProvider
 
     public:
         Camera(glm::vec3 position, glm::mat4 projection, float yaw = YAW, float pitch = PITCH, glm::vec3 up = UP);
+        virtual ~Camera();
 
         void processMovement(Direction dir, float velocity);
         void processRotation(float yawOffset, float pitchOffset, bool constrainPitch = true);

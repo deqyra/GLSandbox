@@ -9,6 +9,7 @@
 class ViewProjectionProvider : public ViewProvider, public ProjectionProvider
 {
     public:
+        virtual ~ViewProjectionProvider();
         virtual glm::mat4 getViewMatrix() = 0;
         virtual glm::vec3 transformWorldPosition(glm::vec3 worldPosition) = 0;
         virtual glm::mat4 getProjectionMatrix() = 0;

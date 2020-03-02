@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 
 #include "core/camera.hpp"
-#include "core/directions.hpp"
+#include "core/direction.hpp"
 #include "core/view_projection_provider.hpp"
 #include "tools/gl_window.hpp"
 
@@ -47,11 +47,13 @@ class FPSCameraManager : public ViewProjectionProvider
 
     public:
         FPSCameraManager(glm::vec3 position, glm::mat4 projection, float yaw = YAW, float pitch = PITCH, glm::vec3 up = UP);
+        ~FPSCameraManager();
 
         void processKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods);
         void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
         void processMouseScroll(float scrollOffset);
 
+        void setProjectionMatrix(glm::mat4 projection);
         void updateCamera(float timeDelta);
         glm::vec3 getPosition();
 

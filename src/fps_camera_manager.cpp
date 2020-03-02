@@ -20,6 +20,11 @@ FPSCameraManager::FPSCameraManager(glm::vec3 position, glm::mat4 projection, flo
 
 }
 
+FPSCameraManager::~FPSCameraManager()
+{
+
+}
+
 void FPSCameraManager::processKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     // Four directional keys input processing
@@ -97,6 +102,11 @@ void FPSCameraManager::processMouseCursor(GLFWwindow* window, double xpos, doubl
 void FPSCameraManager::processMouseScroll(float scrollOffset)
 {
 
+}
+
+void FPSCameraManager::setProjectionMatrix(glm::mat4 projection)
+{
+    _camera.setProjectionMatrix(projection);
 }
 
 void FPSCameraManager::updateCamera(float timeDelta)
