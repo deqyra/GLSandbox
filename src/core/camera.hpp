@@ -58,12 +58,18 @@ class Camera : public ViewProjectionProvider
 
         glm::vec3 getPosition();
         void setPosition(glm::vec3 position);
+        glm::vec3 getWorldUp();
+        void setWorldUp(glm::vec3 up);
         void setProjectionMatrix(glm::mat4 projection);
 
         virtual glm::mat4 getViewMatrix();
+        virtual glm::mat4 getViewMatrix(glm::vec3 position);
         virtual glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
         virtual glm::mat4 getProjectionMatrix();
         virtual glm::mat4 getViewProjectionMatrix();
 };
+
+using CameraPtr = std::shared_ptr<Camera>;
+using CameraWPtr = std::weak_ptr<Camera>;
 
 #endif//CAMERA_HPP

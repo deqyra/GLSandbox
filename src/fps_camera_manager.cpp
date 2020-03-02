@@ -8,7 +8,7 @@
 #include "fps_camera_manager.hpp"
 
 FPSCameraManager::FPSCameraManager(glm::vec3 position, glm::mat4 projection, float yaw, float pitch, glm::vec3 up) :
-    _camera(position, projection, yaw, pitch, up),
+    _camera(nullptr),
     _moveSpeed(SPEED),
     _mouseSensitivity(SENSITIVITY),
     _movement{false},
@@ -17,7 +17,7 @@ FPSCameraManager::FPSCameraManager(glm::vec3 position, glm::mat4 projection, flo
     _lastMouseY(0),
     _mouseWasUpdatedOnce(false)
 {
-
+    _camera = std::make_shared<Camera>(position, projection, yaw, pitch, up);
 }
 
 FPSCameraManager::~FPSCameraManager()
@@ -94,7 +94,7 @@ void FPSCameraManager::processMouseCursor(GLFWwindow* window, double xpos, doubl
     float yawOffset = (float)(xpos - _lastMouseX) * _mouseSensitivity;
     float pitchOffset = (float)(_lastMouseY - ypos) * _mouseSensitivity; // Y offset reversed since y-coordinates range from bottom to top
 
-    _camera.processRotation(yawOffset, pitchOffset);
+    _camera->processRotation(yawOffset, pitchOffset);
     _lastMouseX = (float) xpos;
     _lastMouseY = (float) ypos;
 }
@@ -104,9 +104,19 @@ void FPSCameraManager::processMouseScroll(float scrollOffset)
 
 }
 
+CameraWPtr FPSCameraManager::getCamera()
+{
+    return _camera;
+}
+
+void FPSCameraManager::setCamera(CameraPtr camera)
+{
+    _camera = camera;
+}
+
 void FPSCameraManager::setProjectionMatrix(glm::mat4 projection)
 {
-    _camera.setProjectionMatrix(projection);
+    _camera->setProjectionMatrix(projection);
 }
 
 void FPSCameraManager::updateCamera(float timeDelta)
@@ -116,36 +126,41 @@ void FPSCameraManager::updateCamera(float timeDelta)
         velocity *= SPRINT_MUTLIPLIER;
 
     if (_movement[DIR_INDEX_FORWARD])
-        _camera.processMovement(Direction::FORWARD, velocity);
+        _camera->processMovement(Direction::FORWARD, velocity);
     if (_movement[DIR_INDEX_BACKWARD])
-        _camera.processMovement(Direction::BACKWARD, velocity);
+        _camera->processMovement(Direction::BACKWARD, velocity);
     if (_movement[DIR_INDEX_LEFT])
-        _camera.processMovement(Direction::LEFT, velocity);
+        _camera->processMovement(Direction::LEFT, velocity);
     if (_movement[DIR_INDEX_RIGHT])
-        _camera.processMovement(Direction::RIGHT, velocity);
+        _camera->processMovement(Direction::RIGHT, velocity);
 }
 
 glm::vec3 FPSCameraManager::getPosition()
 {
-    return _camera.getPosition();
+    return _camera->getPosition();
 }
 
 glm::mat4 FPSCameraManager::getViewMatrix()
 {
-    return _camera.getViewMatrix();
+    return _camera->getViewMatrix();
+}
+
+glm::mat4 FPSCameraManager::getViewMatrix(glm::vec3 position)
+{
+    return _camera->getViewMatrix(position);
 }
 
 glm::vec3 FPSCameraManager::transformWorldPosition(glm::vec3 worldPosition)
 {
-    return _camera.transformWorldPosition(worldPosition);
+    return _camera->transformWorldPosition(worldPosition);
 }
 
 glm::mat4 FPSCameraManager::getProjectionMatrix()
 {
-    return _camera.getProjectionMatrix();
+    return _camera->getProjectionMatrix();
 }
 
 glm::mat4 FPSCameraManager::getViewProjectionMatrix()
 {
-    return _camera.getViewProjectionMatrix();
+    return _camera->getViewProjectionMatrix();
 }

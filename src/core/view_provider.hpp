@@ -16,6 +16,7 @@ class ViewProvider
     public:
         virtual ~ViewProvider();
         virtual glm::mat4 getViewMatrix() = 0;
+        virtual glm::mat4 getViewMatrix(glm::vec3 position) = 0;
         virtual glm::vec3 transformWorldPosition(glm::vec3 worldPosition) = 0;
 };
 

@@ -30,7 +30,7 @@
 class FPSCameraManager : public ViewProjectionProvider
 {
     private:
-        Camera _camera;
+        CameraPtr _camera;
 
         // Camera options
         float _moveSpeed;
@@ -53,11 +53,15 @@ class FPSCameraManager : public ViewProjectionProvider
         void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
         void processMouseScroll(float scrollOffset);
 
+        CameraWPtr getCamera();
+        void setCamera(CameraPtr camera);
+
         void setProjectionMatrix(glm::mat4 projection);
         void updateCamera(float timeDelta);
         glm::vec3 getPosition();
 
         virtual glm::mat4 getViewMatrix();
+        virtual glm::mat4 getViewMatrix(glm::vec3 position);
         virtual glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
         virtual glm::mat4 getProjectionMatrix();
         virtual glm::mat4 getViewProjectionMatrix();
