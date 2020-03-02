@@ -64,8 +64,8 @@ class Shader
         void setMat4f(const std::string& name, glm::mat4 value, bool transpose = false);
         void setVec3f(const std::string& name, glm::vec3 value);
         void setMaterial(const std::string& name, Material value);
-        void setPointLight(const std::string& name, PointLight value);
-        void setPointLightArray(const std::string& name, unsigned int index, PointLight value);
+        void setPointLight(const std::string& name, PointLight value, glm::vec3 position);
+        void setPointLightArray(const std::string& name, unsigned int index, PointLight value, glm::vec3 position);
 };
 
 #endif//SHADER_HPP

@@ -232,17 +232,17 @@ void Shader::setMaterial(const std::string& name, Material value)
     setUint(name + ".specularMapCount", count);
 }
 
-void Shader::setPointLight(const std::string& name, PointLight value)
+void Shader::setPointLight(const std::string& name, PointLight value, glm::vec3 position)
 {
     unsigned int uniformLocation = getUniformLocation(name);
-    setVec3f(name + ".position", value.getPosition());
+    setVec3f(name + ".position", position);
     setVec3f(name + ".ambient", value.ambient);
     setVec3f(name + ".diffuse", value.diffuse);
     setVec3f(name + ".specular", value.specular);
 }
 
-void Shader::setPointLightArray(const std::string& name, unsigned int index, PointLight value)
+void Shader::setPointLightArray(const std::string& name, unsigned int index, PointLight value, glm::vec3 position)
 {
     std::string indexedName = name + "[" + std::to_string(index) + "]";
-    setPointLight(indexedName, value);
+    setPointLight(indexedName, value, position);
 }
