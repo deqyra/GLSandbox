@@ -19,11 +19,11 @@ CameraComponent::~CameraComponent()
 glm::mat4 CameraComponent::getViewMatrix()
 {
     std::shared_ptr<SceneObject> strongSceneObj = sceneObject.lock();
-    glm::mat4 worldPo
+    glm::vec3 worldPosition = strongSceneObj->getWorldPosition();
 
     glm::vec3 newUp = getNewWorldUp();
     camera->setWorldUp(newUp);
-    return camera->getViewMatrix() * strongSceneObj->getModelMatrix();
+    return camera->getViewMatrix(worldPosition);
 }
 
 glm::vec3 CameraComponent::transformWorldPosition(glm::vec3 worldPosition)
