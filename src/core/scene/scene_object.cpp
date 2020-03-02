@@ -41,3 +41,8 @@ SceneObject& SceneObject::operator=(const SceneObject& other)
 
     return (*this);
 }
+
+std::weak_ptr<Scene> SceneObject::getScene()
+{
+    return _scene;
+}

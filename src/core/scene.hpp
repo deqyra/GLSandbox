@@ -4,13 +4,14 @@
 #include <algorithm>
 #include <functional>
 #include <unordered_map>
+#include <memory>
 #include <vector>
 #include <glm/glm.hpp>
 
 #include "../tools/tree.hpp"
 #include "scene/scene_object.hpp"
 
-class Scene
+class Scene : public std::enable_shared_from_this<Scene>
 {
     public:
         using ObjPtr = std::shared_ptr<SceneObject>;
@@ -32,6 +33,8 @@ class Scene
         Scene();
 
         WeakObjPtr operator[](unsigned int id);
+        WeakObjPtr newObject();
+        WeakObjPtr newObject(unsigned int parentId);
         void registerObject(ObjPtr object, unsigned int parentId);
         void registerObject(ObjPtr object);
         void removeObject(unsigned int id);

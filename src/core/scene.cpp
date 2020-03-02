@@ -118,6 +118,31 @@ std::vector<Scene::WeakObjPtr> Scene::getAllObjects()
     return result;
 }
 
+Scene::WeakObjPtr Scene::newObject()
+{
+    auto node = _graph.getRoot().lock();
+    return newObject(node->value->id);
+}
+
+Scene::WeakObjPtr Scene::newObject(unsigned int parentId)
+{
+    auto it = _objectIdsToNodeIds.find(parentId);
+    if (it == _objectIdsToNodeIds.end())
+    {
+        std::string s = "Scene: no SceneObject with ID " + std::to_string(parentId) + ", cannot create object as child.";
+        throw std::runtime_error(s.c_str());
+    }
+
+    auto pair = it->second;
+
+    ObjPtr obj = std::make_shared<SceneObject>(this->shared_from_this());
+    unsigned int objHandle = _graph.addNode(obj, pair.first);
+    unsigned int matHandle = _modelMatrices.addNode(glm::mat4(1.f), pair.second);
+    _objectIdsToNodeIds[obj->id] = { objHandle, matHandle };
+
+    return obj;
+}
+
 void Scene::processOutdatedTransformsFromNode(unsigned int id)
 {
     auto it = _objectIdsToNodeIds.find(id);

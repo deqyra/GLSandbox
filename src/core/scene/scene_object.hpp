@@ -28,7 +28,7 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
         static unsigned int _count;
 
         std::vector<CompPtr> _components;
-        std::weak_ptr<Scene> _scene;
+        const std::weak_ptr<Scene> _scene;
 
     public:
         SceneObject(std::shared_ptr<Scene> scene);
@@ -43,6 +43,8 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
 
         template<class T>
         std::weak_ptr<T> getComponent();
+
+        std::weak_ptr<Scene> getScene();
 
         const unsigned int id;
         bool enabled;
