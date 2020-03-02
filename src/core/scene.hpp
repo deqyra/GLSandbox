@@ -40,6 +40,7 @@ class Scene : public std::enable_shared_from_this<Scene>
         void removeObject(unsigned int id);
         void moveObject(unsigned int id, unsigned int newParentId);
         glm::mat4 getWorldModelMatrix(unsigned int id);
+        glm::vec3 getWorldPosition(unsigned int id);
 
         std::vector<WeakObjPtr> getAllObjects();
 

@@ -104,6 +104,23 @@ glm::mat4 Scene::getWorldModelMatrix(unsigned int id)
     return node->value;
 }
 
+glm::vec3 Scene::getWorldPosition(unsigned int id)
+{
+    auto it = _objectIdsToNodeIds.find(id);
+    if (it == _objectIdsToNodeIds.end())
+    {
+        std::string s = "Scene: no SceneObject with ID " + std::to_string(id) + ", cannot compute world position.";
+        throw std::runtime_error(s.c_str());
+    }
+
+    processOutdatedTransformsFromNode(id);
+
+    auto pair = it->second;
+    glm::mat4 model = _modelMatrices[pair.second].lock()->value;
+    glm::vec4 position = model * glm::vec4(glm::vec3(0.f), 1.f);
+    return glm::vec3(position);
+}
+
 std::vector<Scene::WeakObjPtr> Scene::getAllObjects()
 {
     std::vector<WeakObjPtr> result;
