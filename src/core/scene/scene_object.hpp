@@ -16,6 +16,8 @@
 #include "components/light_component.hpp"
 #include "components/camera_component.hpp"
 
+class Scene;
+
 class SceneObject : public PositionedObject, public std::enable_shared_from_this<SceneObject>
 {
     using CompType = SceneObjectComponentType;
@@ -26,9 +28,10 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
         static unsigned int _count;
 
         std::vector<CompPtr> _components;
+        std::weak_ptr<Scene> _scene;
 
     public:
-        SceneObject();
+        SceneObject(std::shared_ptr<Scene> scene);
         SceneObject(const SceneObject& other);
         SceneObject& operator=(const SceneObject& other);
 
