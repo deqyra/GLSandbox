@@ -8,12 +8,16 @@
 class LightComponent : public SceneObjectComponent
 {
     public:
-        LightComponent(Light light);
+        LightComponent(LightPtr light);
+        virtual ~LightComponent();
 
-        Light light;
+        LightPtr light;
 };
 
 template<>
 SceneObjectComponentType SceneObjectComponent::componentType<LightComponent>();
+
+template<>
+std::string SceneObjectComponent::componentTypeString<LightComponent>();
 
 #endif//LIGHT_COMPONENT

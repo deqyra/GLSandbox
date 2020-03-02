@@ -2,9 +2,14 @@
 
 using CompType = SceneObjectComponentType;
 
-LightComponent::LightComponent(Light light) :
+LightComponent::LightComponent(LightPtr light) :
     SceneObjectComponent(CompType::Light),
-    LightComponent(light)
+    light(light)
+{
+
+}
+
+LightComponent::~LightComponent()
 {
 
 }
@@ -13,4 +18,10 @@ template<>
 SceneObjectComponentType SceneObjectComponent::componentType<LightComponent>()
 {
     return SceneObjectComponentType::Light;
+}
+
+template<>
+std::string SceneObjectComponent::componentTypeString<LightComponent>()
+{
+    return "Light";
 }

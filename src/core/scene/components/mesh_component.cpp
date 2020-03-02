@@ -2,25 +2,25 @@
 
 using CompType = SceneObjectComponentType;
 
-MeshComponent::MeshComponent(Mesh mesh) :
+MeshComponent::MeshComponent(MeshPtr mesh) :
     MeshComponent(mesh, Material(), Shader())
 {
 
 }
 
-MeshComponent::MeshComponent(Mesh mesh, Material material) :
+MeshComponent::MeshComponent(MeshPtr mesh, Material material) :
     MeshComponent(mesh, material, Shader())
 {
 
 }
 
-MeshComponent::MeshComponent(Mesh mesh, Shader shader) :
+MeshComponent::MeshComponent(MeshPtr mesh, Shader shader) :
     MeshComponent(mesh, Material(), shader)
 {
 
 }
 
-MeshComponent::MeshComponent(Mesh mesh, Material material, Shader shader) :
+MeshComponent::MeshComponent(MeshPtr mesh, Material material, Shader shader) :
     SceneObjectComponent(CompType::Mesh),
     mesh(mesh),
     material(material),
@@ -29,8 +29,19 @@ MeshComponent::MeshComponent(Mesh mesh, Material material, Shader shader) :
 
 }
 
+MeshComponent::~MeshComponent()
+{
+
+}
+
 template<>
 SceneObjectComponentType SceneObjectComponent::componentType<MeshComponent>()
 {
-    return CompType::Mesh;
+    return SceneObjectComponentType::Mesh;
+}
+
+template<>
+std::string SceneObjectComponent::componentTypeString<MeshComponent>()
+{
+    return "Mesh";
 }

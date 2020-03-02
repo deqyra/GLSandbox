@@ -12,12 +12,14 @@
 class MeshComponent : public SceneObjectComponent
 {
     public:
-        MeshComponent(Mesh mesh);
-        MeshComponent(Mesh mesh, Material material);
-        MeshComponent(Mesh mesh, Shader shader);
-        MeshComponent(Mesh mesh, Material material, Shader shader);
+        MeshComponent(MeshPtr mesh);
+        MeshComponent(MeshPtr mesh, Material material);
+        MeshComponent(MeshPtr mesh, Shader shader);
+        MeshComponent(MeshPtr mesh, Material material, Shader shader);
 
-        Mesh mesh;
+        virtual ~MeshComponent();
+
+        MeshPtr mesh;
         Material material;
         Shader shader;
 };
