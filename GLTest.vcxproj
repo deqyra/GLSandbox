@@ -36,16 +36,26 @@
     <ClCompile Include="src\core\lights\point_light.cpp" />
     <ClCompile Include="src\core\material.cpp" />
     <ClCompile Include="src\core\mesh.cpp" />
-    <ClCompile Include="src\core\mesh_drawer.cpp" />
     <ClCompile Include="src\core\mesh_generators\axes_generator.cpp" />
     <ClCompile Include="src\core\mesh_generators\cube_generator.cpp" />
     <ClCompile Include="src\core\mesh_generators\torus_generator.cpp" />
     <ClCompile Include="src\core\positioned_object.cpp" />
+    <ClCompile Include="src\core\projection_provider.cpp" />
+    <ClCompile Include="src\core\scene.cpp" />
+    <ClCompile Include="src\core\scene\components\camera_component.cpp" />
+    <ClCompile Include="src\core\scene\components\light_component.cpp" />
+    <ClCompile Include="src\core\scene\components\mesh_component.cpp" />
+    <ClCompile Include="src\core\scene\scene_object.cpp" />
+    <ClCompile Include="src\core\scene\scene_object_component.cpp" />
+    <ClCompile Include="src\core\scene\tools.cpp" />
+    <ClCompile Include="src\core\scene_renderer.cpp" />
     <ClCompile Include="src\core\shader.cpp" />
     <ClCompile Include="src\core\texture_2d.cpp" />
     <ClCompile Include="src\core\ubo\light_ubo.cpp" />
     <ClCompile Include="src\core\ubo\matrix_ubo.cpp" />
     <ClCompile Include="src\core\uniform_buffer_object.cpp" />
+    <ClCompile Include="src\core\view_projection_provider.cpp" />
+    <ClCompile Include="src\core\view_provider.cpp" />
     <ClCompile Include="src\fps_camera_manager.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gl_examples\basic_triangle_example.cpp" />
@@ -68,18 +78,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\camera.hpp" />
-    <ClInclude Include="src\core\directions.hpp" />
+    <ClInclude Include="src\core\direction.hpp" />
     <ClInclude Include="src\core\light.hpp" />
     <ClInclude Include="src\core\lights\point_light.hpp" />
     <ClInclude Include="src\core\light_type.hpp" />
     <ClInclude Include="src\core\material.hpp" />
     <ClInclude Include="src\core\mesh.hpp" />
-    <ClInclude Include="src\core\mesh_drawer.hpp" />
     <ClInclude Include="src\core\mesh_generator.hpp" />
     <ClInclude Include="src\core\mesh_generators\axes_generator.hpp" />
     <ClInclude Include="src\core\mesh_generators\cube_generator.hpp" />
     <ClInclude Include="src\core\mesh_generators\torus_generator.hpp" />
     <ClInclude Include="src\core\positioned_object.hpp" />
+    <ClInclude Include="src\core\scene.hpp" />
+    <ClInclude Include="src\core\scene\components\camera_component.hpp" />
+    <ClInclude Include="src\core\scene\components\light_component.hpp" />
+    <ClInclude Include="src\core\scene\components\mesh_component.hpp" />
+    <ClInclude Include="src\core\scene\scene_object.hpp" />
+    <ClInclude Include="src\core\scene\scene_object_component.hpp" />
+    <ClInclude Include="src\core\scene\scene_object_component_type.hpp" />
+    <ClInclude Include="src\core\scene\tools.hpp" />
+    <ClInclude Include="src\core\scene_object_type.hpp" />
+    <ClInclude Include="src\core\scene_renderer.hpp" />
     <ClInclude Include="src\core\shader.hpp" />
     <ClInclude Include="src\core\texture_2d.hpp" />
     <ClInclude Include="src\core\ubo\light_ubo.hpp" />
@@ -104,6 +123,8 @@
     <ClInclude Include="src\tools\input_processor.hpp" />
     <ClInclude Include="src\tools\make_basic_exception.hpp" />
     <ClInclude Include="src\tools\string_tools.hpp" />
+    <ClInclude Include="src\tools\tree.hpp" />
+    <ClInclude Include="src\tools\tree_node.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

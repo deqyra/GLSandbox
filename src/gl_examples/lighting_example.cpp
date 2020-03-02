@@ -25,6 +25,11 @@
 #include "../tools/gl_utils.hpp"
 #include "../tools/gl_window.hpp"
 
+#include "../core/scene.hpp"
+#include "../core/scene_renderer.hpp"
+#include "../core/scene/scene_object.hpp"
+#include "../core/scene/scene_object_component_type.hpp"
+
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
 #define CUBE_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
 #define TORUS_ROTATION_AXIS glm::vec3(1.f, 0.f, 0.f)
@@ -34,7 +39,9 @@ LightingExample::LightingExample() :
     _autoRotate(true),
     _speedFactor(10.f)
 {
-    _camera = std::make_shared<FPSCameraManager>(CAMERA_POS, -135.f, -25.f),
+    // Setup projection in mesh drawer
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), glAspectRatio(), 0.1f, 100.0f);
+    _camera = std::make_shared<FPSCameraManager>(CAMERA_POS, projection, -135.f, -25.f),
     _lastTime = (float)glfwGetTime();
 }
 
@@ -59,40 +66,26 @@ void LightingExample::run(GLFWwindow* window)
     
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
 
-    // Instantiate scene meshes
-    TorusGenerator torusGen = TorusGenerator(2.f, 0.5f, 72, 48);
-    MeshPtr torus = torusGen.generatePtr();
+    // Instantiate scene objects
+    std::shared_ptr<SceneObject> torusObj = generateSceneMesh(std::make_shared<TorusGenerator>(2.f, 0.5f, 72, 48), Materials::Emerald, lightingShader);
+    std::shared_ptr<SceneObject> axesObj = generateSceneMesh(std::make_shared<AxesGenerator>(3.f));
 
-    AxesGenerator axesGen = AxesGenerator(3.f);
-    MeshPtr axes = axesGen.generatePtr();
-
-    CubeGenerator cubeGen = CubeGenerator();
-    MeshPtr cube = cubeGen.generatePtr();
-
+    std::shared_ptr<SceneObject> cubeObj = generateSceneMesh(std::make_shared<CubeGenerator>());
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>();
+    cubeObj->addComponent<LightComponent>(light);
+    cubeObj->setPosition(glm::vec3(-3.f, 3.f, 0.f));
 
-    // Setup mesh properties
-    torus->material = Materials::Emerald;
+    std::shared_ptr<SceneObject> cameraObj = std::make_shared<SceneObject>();
+    std::shared_ptr<ViewProjectionProvider> cameraPtr = std::static_pointer_cast<ViewProjectionProvider>(_camera);
+    cameraObj->addComponent<CameraComponent>(_camera);
 
-    // Setup light
-    glm::vec3 lightPosition = glm::vec3(-3.f, 3.f, 0.f);
-    cube->setPosition(lightPosition);
-    light->setPosition(lightPosition);
+    Scene scene;
+    scene.registerObject(axesObj);
+    scene.registerObject(torusObj);
+    scene.registerObject(cubeObj);
+    scene.registerObject(cameraObj);
 
-    // Register mesh in mesh drawer
-    MeshDrawer meshDrawer = MeshDrawer();
-    meshDrawer.registerMesh(torus, lightingShader);
-    meshDrawer.registerMesh(axes);
-    meshDrawer.registerMesh(cube);
-    meshDrawer.registerLight(light);
-
-    // Register camera in mesh drawer
-    meshDrawer.setCamera(_camera);
-
-    // Setup projection in mesh drawer
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), glAspectRatio(), 0.1f, 100.0f);
-    meshDrawer.setProjection(projection);
-
+    SceneRenderer sceneRenderer;
     while (!glfwWindowShouldClose(window))
     {
         float frameTime = (float)glfwGetTime();
@@ -105,9 +98,8 @@ void LightingExample::run(GLFWwindow* window)
         {
             // Update object transforms
             float angleDiff = _speedFactor * (frameTime - _lastTime);
-            cube->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
-            light->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
-            torus->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
+            cubeObj->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+            torusObj->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
         }
         else
         {
@@ -115,7 +107,7 @@ void LightingExample::run(GLFWwindow* window)
         }
 
         // Draw meshes
-        meshDrawer.renderFrame();
+        sceneRenderer.renderScene(scene);
 
         // Refresh screen and process input
         glfwSwapBuffers(window);
@@ -148,6 +140,14 @@ void LightingExample::handleKeyboardObjectRotation(GLFWwindow* window, int key, 
     {
         _autoRotate = !_autoRotate;
     }
+}
+
+std::shared_ptr<SceneObject> LightingExample::generateSceneMesh(std::shared_ptr<MeshGenerator> generator, Material mat, Shader shader)
+{
+    MeshPtr mesh = generator->generatePtr();
+    std::shared_ptr<SceneObject> obj = std::make_shared<SceneObject>();
+    obj->addComponent<MeshComponent>(mesh, Materials::Emerald, shader);
+    return obj;
 }
 
 void LightingExample::keyboardCallback(GLFWwindow * window, int key, int scancode, int action, int mods)

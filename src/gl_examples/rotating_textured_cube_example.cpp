@@ -19,7 +19,7 @@
 RotatingTexturedCubeExample::RotatingTexturedCubeExample() :
     _shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag"),
     _texture("assets/textures/container.jpg"),
-    _camera(CAMERA_POS, -135.f, -30.f),
+    _camera(CAMERA_POS, glm::mat4(1.f), -135.f, -30.f),
     _vbo(0),
     _vao(0),
     _vertices{
@@ -71,6 +71,11 @@ RotatingTexturedCubeExample::RotatingTexturedCubeExample() :
     _speedFactor(10.f)
 {
     _lastTime = (float)glfwGetTime();
+    int dims[4] = { 0 };
+    glGetIntegerv(GL_VIEWPORT, dims);
+    // Projection matrix, adds perspective to the final render.
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(dims[2]) / (float)dims[3], 0.1f, 100.0f);
+    _camera.setProjectionMatrix(projection);
 }
 
 RotatingTexturedCubeExample::~RotatingTexturedCubeExample()
@@ -180,15 +185,9 @@ void RotatingTexturedCubeExample::run(GLFWwindow* window)
         _camera.updateCamera(frameTime - _lastTime);
         glm::mat4 view = _camera.getViewMatrix();
 
-        int dims[4] = { 0 };
-        glGetIntegerv(GL_VIEWPORT, dims);
-        // Projection matrix, adds perspective to the final render.
-        glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), (float)(dims[2]) / (float)dims[3], 0.1f, 100.0f);
-
         _shader.setFloat("time", _lastTime);
         _shader.setMat4f("view", view);
-        _shader.setMat4f("projection", projection);
+        _shader.setMat4f("projection", _camera.getProjectionMatrix());
 
         int nPos = sizeof(cubePos) / sizeof(glm::vec3);
 

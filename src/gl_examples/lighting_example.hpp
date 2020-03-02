@@ -16,11 +16,11 @@
 #include "../core/shader.hpp"
 #include "../core/texture_2d.hpp"
 
-#include "../core/mesh_drawer.hpp"
-
 #include "../fps_camera_manager.hpp"
 #include "../tools/input_processor.hpp"
 #include "../gl_example.hpp"
+#include "../core/scene/scene_object.hpp"
+#include "../core/mesh_generator.hpp"
 
 class LightingExample : public GLExample, public InputProcessor
 {
@@ -33,6 +33,7 @@ class LightingExample : public GLExample, public InputProcessor
         float _lastTime;
 
         void handleKeyboardObjectRotation(GLFWwindow* window, int key, int scancode, int action, int mods);
+        std::shared_ptr<SceneObject> generateSceneMesh(std::shared_ptr<MeshGenerator> generator, Material mat = Material(), Shader shader = Shader());
 
     public:
         LightingExample();
