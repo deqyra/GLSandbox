@@ -13,21 +13,31 @@ unsigned int Mesh::_count = 0;
 std::unordered_map<unsigned int, unsigned int> Mesh::_arrayRefCount = std::unordered_map<unsigned int, unsigned int>();
 std::unordered_map<unsigned int, unsigned int> Mesh::_bufferRefCount = std::unordered_map<unsigned int, unsigned int>();
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode, Material material) :
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode) :
     _vertices(vertices),
     _indices(indices),
     _drawMode(drawMode),
     _vao(0),
     _vbo(0),
     _ebo(0),
-    id(_count++),
-    material(material)
+    id(_count++)
 {
     setupBuffers();
 
-    _arrayRefCount[_vao]++;
-    _bufferRefCount[_vbo]++;
-    _bufferRefCount[_ebo]++;
+    if (_arrayRefCount.find(_vao) != _arrayRefCount.end())
+        _arrayRefCount[_vao] = 1;
+    else
+        _arrayRefCount[_vao]++;
+
+    if (_bufferRefCount.find(_vbo) != _bufferRefCount.end())
+        _bufferRefCount[_vbo] = 1;
+    else
+        _bufferRefCount[_vbo]++;
+
+    if (_bufferRefCount.find(_ebo) != _bufferRefCount.end())
+        _bufferRefCount[_ebo] = 1;
+    else
+        _bufferRefCount[_ebo]++;
 }
 
 Mesh::Mesh(const Mesh& other) :
@@ -37,8 +47,7 @@ Mesh::Mesh(const Mesh& other) :
     _vao(other._vao),
     _vbo(other._vbo),
     _ebo(other._ebo),
-    id(_count++),
-    material(other.material)
+    id(_count++)
 {
     _arrayRefCount[_vao]++;
     _bufferRefCount[_vbo]++;
@@ -55,7 +64,6 @@ Mesh& Mesh::operator=(const Mesh& other)
     _vao = other._vao;
     _vbo = other._vbo;
     _ebo = other._ebo;
-    material = other.material;
 
     _arrayRefCount[_vao]++;
     _bufferRefCount[_vbo]++;
@@ -123,6 +131,11 @@ void Mesh::draw()
     // Draw mesh
     glBindVertexArray(_vao);
     glDrawElements(_drawMode, (unsigned int) _indices.size(), GL_UNSIGNED_INT, 0);
+}
+
+MeshPtr Mesh::getPtr()
+{
+    return std::make_shared<Mesh>(*this);
 }
 
 MeshPtr Mesh::getPtr(Mesh mesh)

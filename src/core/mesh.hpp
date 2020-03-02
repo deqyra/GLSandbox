@@ -46,7 +46,7 @@ class Mesh : public PositionedObject
         unsigned int _ebo;
 
     public:
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode, Material material = Material());
+        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode);
         Mesh(const Mesh& other);
         Mesh& operator=(const Mesh& other);
         ~Mesh();
@@ -54,10 +54,10 @@ class Mesh : public PositionedObject
         void setupBuffers();
         void draw();
 
+        MeshPtr getPtr();
         static MeshPtr getPtr(Mesh mesh);
 
         const unsigned int id;
-        Material material;
 };
 
 #endif//MESH_HPP
