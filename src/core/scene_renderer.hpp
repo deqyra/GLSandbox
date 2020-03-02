@@ -33,7 +33,7 @@ class SceneRenderer
 
     public:
         SceneRenderer();
-        void renderScene(Scene& scene);
+        void renderScene(std::weak_ptr<Scene> wScene);
 };
 
 #endif//SCENE_RENDERER_HPP

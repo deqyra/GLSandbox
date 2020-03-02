@@ -67,22 +67,22 @@ void LightingExample::run(GLFWwindow* window)
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
 
     // Instantiate scene objects
-    std::shared_ptr<SceneObject> torusObj = generateSceneMesh(std::make_shared<TorusGenerator>(2.f, 0.5f, 72, 48), Materials::Emerald, lightingShader);
-    std::shared_ptr<SceneObject> axesObj = generateSceneMesh(std::make_shared<AxesGenerator>(3.f));
+    std::shared_ptr<Scene> scene = std::make_shared<Scene>();
+    std::shared_ptr<SceneObject> torusObj = generateSceneMesh(scene, std::make_shared<TorusGenerator>(2.f, 0.5f, 72, 48), Materials::Emerald, lightingShader);
+    std::shared_ptr<SceneObject> axesObj = generateSceneMesh(scene, std::make_shared<AxesGenerator>(3.f));
 
-    std::shared_ptr<SceneObject> cubeObj = generateSceneMesh(std::make_shared<CubeGenerator>());
+    std::shared_ptr<SceneObject> cubeObj = generateSceneMesh(scene, std::make_shared<CubeGenerator>());
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>();
     cubeObj->addComponent<LightComponent>(light);
     cubeObj->setPosition(glm::vec3(-3.f, 3.f, 0.f));
 
-    std::shared_ptr<SceneObject> cameraObj = std::make_shared<SceneObject>();
-    cameraObj->addComponent<CameraComponent>(_camera->getCamera());
+    std::shared_ptr<SceneObject> cameraObj = std::make_shared<SceneObject>(scene);
+    cameraObj->addComponent<CameraComponent>(_camera->getCamera().lock());
 
-    Scene scene;
-    scene.registerObject(axesObj);
-    scene.registerObject(torusObj);
-    scene.registerObject(cubeObj);
-    scene.registerObject(cameraObj);
+    scene->registerObject(axesObj);
+    scene->registerObject(torusObj);
+    scene->registerObject(cubeObj);
+    scene->registerObject(cameraObj);
 
     SceneRenderer sceneRenderer;
     while (!glfwWindowShouldClose(window))
@@ -141,10 +141,10 @@ void LightingExample::handleKeyboardObjectRotation(GLFWwindow* window, int key, 
     }
 }
 
-std::shared_ptr<SceneObject> LightingExample::generateSceneMesh(std::shared_ptr<MeshGenerator> generator, Material mat, Shader shader)
+std::shared_ptr<SceneObject> LightingExample::generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat, Shader shader)
 {
     MeshPtr mesh = generator->generatePtr();
-    std::shared_ptr<SceneObject> obj = std::make_shared<SceneObject>();
+    std::shared_ptr<SceneObject> obj = std::make_shared<SceneObject>(scene);
     obj->addComponent<MeshComponent>(mesh, Materials::Emerald, shader);
     return obj;
 }

@@ -33,7 +33,7 @@ class LightingExample : public GLExample, public InputProcessor
         float _lastTime;
 
         void handleKeyboardObjectRotation(GLFWwindow* window, int key, int scancode, int action, int mods);
-        std::shared_ptr<SceneObject> generateSceneMesh(std::shared_ptr<MeshGenerator> generator, Material mat = Material(), Shader shader = Shader());
+        std::shared_ptr<SceneObject> generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat = Material(), Shader shader = Shader());
 
     public:
         LightingExample();

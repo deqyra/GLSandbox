@@ -30,6 +30,7 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
         std::vector<CompPtr> _components;
 
     public:
+        SceneObject();
         SceneObject(std::shared_ptr<Scene> scene);
         SceneObject(const SceneObject& other);
         SceneObject& operator=(const SceneObject& other);

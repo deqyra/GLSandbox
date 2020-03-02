@@ -1,7 +1,7 @@
 #include "scene.hpp"
 
 Scene::Scene() :
-    _graph(std::make_shared<SceneObject>(this->shared_from_this())),
+    _graph(std::make_shared<SceneObject>()),
     _modelMatrices(glm::mat4(1.f)),
     _objectIdsToNodeIds()
 {

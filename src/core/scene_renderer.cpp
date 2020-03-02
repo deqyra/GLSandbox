@@ -12,11 +12,12 @@ SceneRenderer::SceneRenderer() :
 
 }
 
-void SceneRenderer::renderScene(Scene& scene)
+void SceneRenderer::renderScene(std::weak_ptr<Scene> wScene)
 {
-    std::vector<WeakObjPtr> meshComponents = scene.getObjectsWithComponent<MeshComponent>();
-    std::vector<WeakObjPtr> lightComponents = scene.getObjectsWithComponent<LightComponent>();
-    std::vector<WeakObjPtr> cameraComponents = scene.getObjectsWithComponent<CameraComponent>();
+    std::shared_ptr<Scene> scene = wScene.lock();
+    std::vector<WeakObjPtr> meshComponents = scene->getObjectsWithComponent<MeshComponent>();
+    std::vector<WeakObjPtr> lightComponents = scene->getObjectsWithComponent<LightComponent>();
+    std::vector<WeakObjPtr> cameraComponents = scene->getObjectsWithComponent<CameraComponent>();
 
     if (cameraComponents.size() == 0)
     {
@@ -41,7 +42,7 @@ void SceneRenderer::renderScene(Scene& scene)
         auto lightObj = it->lock();
         auto lightComp = lightObj->getComponent<LightComponent>().lock();
         lights.push_back(lightComp->light);
-        modelMats.push_back(scene.getWorldModelMatrix(lightObj->id));
+        modelMats.push_back(scene->getWorldModelMatrix(lightObj->id));
         sendLightData(lights, modelMats, view);
     }
 
@@ -49,7 +50,7 @@ void SceneRenderer::renderScene(Scene& scene)
     {
         auto meshObj = it->lock();
         unsigned int objId = meshObj->id;
-        glm::mat4 modelMatrix = scene.getWorldModelMatrix(objId);
+        glm::mat4 modelMatrix = scene->getWorldModelMatrix(objId);
         auto meshComp = meshObj->getComponent<MeshComponent>().lock();
         drawMesh(meshComp->mesh, modelMatrix, cameraComp->getViewMatrix(), meshComp->material, meshComp->shader);
     }

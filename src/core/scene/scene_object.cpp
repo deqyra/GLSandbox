@@ -7,6 +7,15 @@
 
 unsigned int SceneObject::_count = 0;
 
+SceneObject::SceneObject() :
+    id(_count++),
+    enabled(true),
+    scene(),
+    _components()
+{
+
+}
+
 SceneObject::SceneObject(std::shared_ptr<Scene> scene) :
     id(_count++),
     enabled(true),
