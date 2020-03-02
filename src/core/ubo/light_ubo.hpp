@@ -23,7 +23,7 @@ class LightUBO : public UniformBufferObject
         virtual unsigned int getBindingPoint();
         virtual unsigned int getSize();
 
-        void setPoint(unsigned int index, PointLight point);
+        void setPoint(unsigned int index, PointLight point, glm::vec3 position);
         void setPointCount(unsigned int count);
 };
 

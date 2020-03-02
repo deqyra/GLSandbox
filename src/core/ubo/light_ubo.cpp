@@ -13,12 +13,12 @@ LightUBO::LightUBO()
     glBindBufferBase(GL_UNIFORM_BUFFER, getBindingPoint(), _id); 
 }
 
-void LightUBO::setPoint(unsigned int index, PointLight point)
+void LightUBO::setPoint(unsigned int index, PointLight point, glm::vec3 position)
 {
     unsigned int offset = POINT_LIGHT_UBO_SIZE * index;
 
     glBindBuffer(GL_UNIFORM_BUFFER, _id);
-    glBufferSubData(GL_UNIFORM_BUFFER, offset +  0, sizeof(glm::vec4), glm::value_ptr(point.getPosition()));
+    glBufferSubData(GL_UNIFORM_BUFFER, offset +  0, sizeof(glm::vec4), glm::value_ptr(position));
     glBufferSubData(GL_UNIFORM_BUFFER, offset + 16, sizeof(glm::vec4), glm::value_ptr(point.ambient));
     glBufferSubData(GL_UNIFORM_BUFFER, offset + 32, sizeof(glm::vec4), glm::value_ptr(point.diffuse));
     glBufferSubData(GL_UNIFORM_BUFFER, offset + 48, sizeof(glm::vec4), glm::value_ptr(point.specular));
