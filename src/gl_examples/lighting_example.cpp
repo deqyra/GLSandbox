@@ -73,17 +73,15 @@ void LightingExample::run(GLFWwindow* window)
     std::shared_ptr<SceneObject> cubeObj = generateSceneMesh(std::make_shared<CubeGenerator>());
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>();
     cubeObj->addComponent<LightComponent>(light);
-    //cubeObj->setPosition(glm::vec3(-3.f, 3.f, 0.f));
+    cubeObj->setPosition(glm::vec3(-3.f, 3.f, 0.f));
 
     std::shared_ptr<SceneObject> cameraObj = std::make_shared<SceneObject>();
-    std::shared_ptr<ViewProjectionProvider> cameraPtr = std::static_pointer_cast<ViewProjectionProvider>(_camera);
-    cameraObj->addComponent<CameraComponent>(_camera);
+    cameraObj->addComponent<CameraComponent>(_camera->getCamera());
 
     Scene scene;
     scene.registerObject(axesObj);
     scene.registerObject(torusObj);
     scene.registerObject(cubeObj);
-    cubeObj->setPosition(glm::vec3(-3.f, 3.f, 0.f));
     scene.registerObject(cameraObj);
 
     SceneRenderer sceneRenderer;
