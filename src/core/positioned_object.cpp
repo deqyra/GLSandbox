@@ -12,7 +12,8 @@ PositionedObject::PositionedObject() :
     _orientation(glm::quat(1.f, glm::vec3(0.f))),
     _scale(glm::vec3(1.f)),
     _modelMatrix(glm::mat4(1.f)),
-    _matricesOutdated(false)
+    _transformModifiedFlag(false),
+    _matrixOutdated(false)
 {
 
 }
@@ -22,10 +23,11 @@ PositionedObject::PositionedObject(glm::vec3 position, glm::quat orientation, gl
     _orientation(orientation),
     _scale(scale),
     _modelMatrix(glm::mat4(1.f)),
-    _matricesOutdated(true)
+    _transformModifiedFlag(false),
+    _matrixOutdated(true)
 {
     // Generate model matrix according to parameters
-    updateMatrices();
+    updateMatrix();
 }
 
 glm::vec3 PositionedObject::getPosition()
@@ -36,7 +38,9 @@ glm::vec3 PositionedObject::getPosition()
 void PositionedObject::setPosition(glm::vec3 position)
 {
     _position = position;
-    _matricesOutdated = true;
+
+    _transformModifiedFlag = true;
+    _matrixOutdated = true;
 }
 
 glm::vec3 PositionedObject::translate(glm::vec3 translation)
@@ -44,7 +48,8 @@ glm::vec3 PositionedObject::translate(glm::vec3 translation)
     glm::vec4 position4 = glm::vec4(_position, 1.f);
     _position = glm::vec3(glm::translate(glm::mat4(1.f), translation) * position4);
 
-    _matricesOutdated = true;
+    _transformModifiedFlag = true;
+    _matrixOutdated = true;
     return _position;
 }
 
@@ -59,7 +64,9 @@ void PositionedObject::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, b
     {
         rotate(radAngle, axis);
     }
-    _matricesOutdated = true;
+
+    _transformModifiedFlag = true;
+    _matrixOutdated = true;
 }
 
 glm::quat PositionedObject::getOrientation()
@@ -71,14 +78,18 @@ void PositionedObject::setOrientation(glm::quat orientation)
 {
     _orientation = orientation;
     _orientation = glm::normalize(_orientation);
-    _matricesOutdated = true;
+
+    _transformModifiedFlag = true;
+    _matrixOutdated = true;
 }
 
 glm::quat PositionedObject::rotate(glm::quat rotation)
 {
     _orientation = rotation * _orientation;
     _orientation = glm::normalize(_orientation);
-    _matricesOutdated = true;
+    _matrixOutdated = true;
+
+    _transformModifiedFlag = true;
     return _orientation;
 }
 
@@ -87,7 +98,8 @@ glm::quat PositionedObject::rotate(float radAngle, glm::vec3 axis)
     _orientation = glm::rotate(_orientation, radAngle, axis);
     _orientation = glm::normalize(_orientation);
 
-    _matricesOutdated = true;
+    _transformModifiedFlag = true;
+    _matrixOutdated = true;
     return _orientation;
 }
 
@@ -106,7 +118,8 @@ glm::quat PositionedObject::lookAt(glm::vec3 target)
 
     _orientation = glm::normalize(glm::quat(axis * angle));
 
-    _matricesOutdated = true;
+    _transformModifiedFlag = true;
+    _matrixOutdated = true;
     return _orientation;
 }
 
@@ -118,7 +131,9 @@ glm::vec3 PositionedObject::getScale()
 void PositionedObject::setScale(glm::vec3 scale)
 {
     _scale = scale;
-    _matricesOutdated = true;
+
+    _transformModifiedFlag = true;
+    _matrixOutdated = true;
 }
 
 glm::vec3 PositionedObject::scale(glm::vec3 scaling)
@@ -127,21 +142,22 @@ glm::vec3 PositionedObject::scale(glm::vec3 scaling)
     _scale[1] *= scaling[1];
     _scale[2] *= scaling[2];
 
-    _matricesOutdated = true;
+    _transformModifiedFlag = true;
+    _matrixOutdated = true;
     return _scale;
 }
 
 glm::mat4 PositionedObject::getModelMatrix()
 {
-    if (_matricesOutdated)
+    if (_matrixOutdated)
     {
-        updateMatrices();
+        updateMatrix();
     }
 
     return _modelMatrix;
 }
 
-void PositionedObject::updateMatrices()
+void PositionedObject::updateMatrix()
 {
     // Generate 4x4 matrix from quaternion
     _modelMatrix = glm::toMat4(glm::inverse(_orientation));
@@ -152,5 +168,15 @@ void PositionedObject::updateMatrices()
     glm::vec4 position4 = glm::vec4(_position, 1.f);
     _modelMatrix[3] = position4;
 
-    _matricesOutdated = false;
+    _matrixOutdated = false;
+}
+
+bool PositionedObject::transformModifiedFlagState()
+{
+    return _transformModifiedFlag;
+}
+
+void PositionedObject::resetTransformModifiedFlag()
+{
+    _transformModifiedFlag = false;
 }

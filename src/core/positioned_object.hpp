@@ -27,9 +27,10 @@ class PositionedObject
 
         glm::mat4 _modelMatrix;
 
-        bool _matricesOutdated;
+        bool _transformModifiedFlag;
+        bool _matrixOutdated;
 
-        void updateMatrices();
+        void updateMatrix();
 
     public:
         PositionedObject();
@@ -51,6 +52,9 @@ class PositionedObject
         glm::vec3 scale(glm::vec3 scaling);
 
         glm::mat4 getModelMatrix();
+
+        bool transformModifiedFlagState();
+        void resetTransformModifiedFlag();
 };
 
 #endif//POSITIONED_OBJECT_HPP
