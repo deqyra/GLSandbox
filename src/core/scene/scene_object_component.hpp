@@ -1,33 +1,31 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
+#include "scene_types_decl.hpp"
 #include "scene_object_component_type.hpp"
 
-#include <string>
 #include <memory>
-
-class SceneObject;
+#include <string>
 
 class SceneObjectComponent
 {
-    using ObjPtr = std::weak_ptr<SceneObject>;
-    using CompType = SceneObjectComponentType;
-    using CompPtr = std::shared_ptr<SceneObjectComponent>;
-
     private:
         SceneObjectComponent() = delete;
 
     protected:
-        SceneObjectComponent(SceneObjectComponentType type, ObjPtr sceneObject = ObjPtr());
+        SceneObjectComponent(SceneObjectComponentType type, SceneObjectWPtr sceneObject = SceneObjectWPtr());
+        SceneObjectWPtr _sceneObject;
 
     public:
         virtual ~SceneObjectComponent();
 
         const SceneObjectComponentType type;
-        ObjPtr sceneObject;
+
+        virtual SceneObjectWPtr getSceneObject();
+        virtual void setSceneObject(SceneObjectWPtr sceneObject);
 
         template<class T>
-        static CompType componentType();
+        static SceneObjectComponentType componentType();
 
         template<class T>
         static std::string componentTypeString();

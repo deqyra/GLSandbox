@@ -1,13 +1,14 @@
 #include "scene_object_component.hpp"
 
-#include <stdexcept>
 #include <memory>
+#include <stdexcept>
 
+#include "scene_types_decl.hpp"
 #include "scene_object_component_type.hpp"
 
-SceneObjectComponent::SceneObjectComponent(SceneObjectComponentType type, ObjPtr sceneObject) :
+SceneObjectComponent::SceneObjectComponent(SceneObjectComponentType type, SceneObjectWPtr sceneObject) :
     type(type),
-    sceneObject(sceneObject)
+    _sceneObject(sceneObject)
 {
     if (type == SceneObjectComponentType::Unknown)
     {
@@ -18,4 +19,14 @@ SceneObjectComponent::SceneObjectComponent(SceneObjectComponentType type, ObjPtr
 SceneObjectComponent::~SceneObjectComponent()
 {
 
+}
+
+SceneObjectWPtr SceneObjectComponent::getSceneObject()
+{
+    return _sceneObject;
+}
+
+void SceneObjectComponent::setSceneObject(SceneObjectWPtr sceneObject)
+{
+    _sceneObject = sceneObject;
 }

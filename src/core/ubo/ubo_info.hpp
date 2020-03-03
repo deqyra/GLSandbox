@@ -10,7 +10,7 @@
  * - Scalars (int, float, bool...) have a base alignment of 4.
  *
  * - Vectors have a base alignment of 8 or 16 depending on what their elements fit in.
- *   For vec2 it's 8, for both vec3 and vec4 it' 16.
+ *   For vec2 it's 8, for both vec3 and vec4 it's 16.
  *
  * - Arrays of scalars or vectors: each element has the base alignment of a vec4.
  *   The base alignement of the whole array is 16 * nElements.

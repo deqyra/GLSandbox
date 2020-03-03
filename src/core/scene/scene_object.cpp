@@ -32,9 +32,9 @@ SceneObject::SceneObject(const SceneObject& other) :
 {
     for (auto it = other._components.begin(); it != other._components.end(); it++)
     {
-        CompPtr newComp = cloneComponent(*it);
-        newComp->sceneObject = this->weak_from_this();
-        _components.push_back(newComp);
+        SceneObjectComponentPtr newComponent = cloneComponent(*it);
+        newComponent->setSceneObject(this->weak_from_this());
+        _components.push_back(newComponent);
     }
 }
 
@@ -44,9 +44,9 @@ SceneObject& SceneObject::operator=(const SceneObject& other)
     _components.clear();
     for (auto it = other._components.begin(); it != other._components.end(); it++)
     {
-        CompPtr newComp = cloneComponent(*it);
-        newComp->sceneObject = this->weak_from_this();
-        _components.push_back(newComp);
+        SceneObjectComponentPtr newComponent = cloneComponent(*it);
+        newComponent->setSceneObject(this->weak_from_this());
+        _components.push_back(newComponent);
     }
 
     return (*this);

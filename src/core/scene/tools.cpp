@@ -8,6 +8,7 @@
 #include "components/mesh_component.hpp"
 #include "components/light_component.hpp"
 #include "components/camera_component.hpp"
+#include "components/script_component.hpp"
 
 std::shared_ptr<SceneObjectComponent> cloneComponent(std::shared_ptr<SceneObjectComponent> compPtr)
 {
@@ -19,6 +20,8 @@ std::shared_ptr<SceneObjectComponent> cloneComponent(std::shared_ptr<SceneObject
              return std::static_pointer_cast<SceneObjectComponent>(cloneComponent<SceneObjectComponentType::Light>(compPtr));
         case SceneObjectComponentType::Camera:
              return std::static_pointer_cast<SceneObjectComponent>(cloneComponent<SceneObjectComponentType::Camera>(compPtr));
+        case SceneObjectComponentType::Script:
+             return std::static_pointer_cast<SceneObjectComponent>(cloneComponent<SceneObjectComponentType::Script>(compPtr));
         default:
             return nullptr;
     }
@@ -27,12 +30,12 @@ std::shared_ptr<SceneObjectComponent> cloneComponent(std::shared_ptr<SceneObject
 template<SceneObjectComponentType T>
 std::shared_ptr<typename TypeFromEnum<T>::type> cloneComponent(std::shared_ptr<SceneObjectComponent> compPtr)
 {
-    using CompRealType = typename TypeFromEnum<T>::type;
-    using CompPtr = std::shared_ptr<CompRealType>;
+    using ComponentRealType = typename TypeFromEnum<T>::type;
+    using ComponentPtr = std::shared_ptr<ComponentRealType>;
 
-    CompPtr realTypePtr = std::static_pointer_cast<CompRealType>(compPtr);
-    // Clone the component on the heap and return a pointer to it
-    realTypePtr.reset(new CompRealType(*realTypePtr));
-
+    ComponentPtr realTypePtr = std::static_pointer_cast<ComponentRealType>(compPtr);
+    // Clone the component on the heap using his real type copy constructor
+    realTypePtr.reset(new ComponentRealType(*realTypePtr));
+    // Return a pointer to it
     return realTypePtr;
 }

@@ -9,6 +9,7 @@
 #include <string>
 #include <exception>
 
+#include "scene_types_decl.hpp"
 #include "scene_object_component.hpp"
 #include "scene_object_component_type.hpp"
 
@@ -16,22 +17,16 @@
 #include "components/light_component.hpp"
 #include "components/camera_component.hpp"
 
-class Scene;
-
 class SceneObject : public PositionedObject, public std::enable_shared_from_this<SceneObject>
 {
-    using CompType = SceneObjectComponentType;
-    using CompPtr  = std::shared_ptr<SceneObjectComponent>;
-    using WeakCompPtr  = std::weak_ptr<SceneObjectComponent>;
-
     private:
         static unsigned int _count;
 
-        std::vector<CompPtr> _components;
+        std::vector<SceneObjectComponentPtr> _components;
 
     public:
         SceneObject();
-        SceneObject(std::shared_ptr<Scene> scene);
+        SceneObject(ScenePtr scene);
         SceneObject(const SceneObject& other);
         SceneObject& operator=(const SceneObject& other);
 
@@ -48,22 +43,24 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
 
         const unsigned int id;
         bool enabled;
-        const std::weak_ptr<Scene> scene;
+        const SceneWPtr scene;
 };
 
 template<class T, class... ArgTypes>
 std::weak_ptr<T> SceneObject::addComponent(ArgTypes&& ... args)
 {
-    if (hasComponent<T>())
+    if (hasComponent<T>() && componentType<T>() != SceneObjectComponentType::Script)
     {
         std::string s = "SceneObject: object with ID " + std::to_string(id) + " already has a component of type " + SceneObjectComponent::componentTypeString<T>() + " and cannot have another.";
         throw std::runtime_error(s.c_str());
     }
 
     std::shared_ptr<T> realComp = std::make_shared<T>(std::forward<ArgTypes>(args)...);
-    std::shared_ptr<SceneObjectComponent> baseComp = std::static_pointer_cast<SceneObjectComponent>(realComp);
+    realComp->setSceneObject(this->weak_from_this());
+
+    SceneObjectComponentPtr baseComp = std::static_pointer_cast<SceneObjectComponent>(realComp);
     _components.push_back(baseComp);
-    baseComp->sceneObject = this->weak_from_this();
+
     return realComp;
 }
 
