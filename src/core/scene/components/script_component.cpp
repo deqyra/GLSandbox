@@ -3,6 +3,7 @@
 using CompType = SceneObjectComponentType;
 
 ScriptComponent::ScriptComponent(ScriptPtr script) :
+    SceneObjectComponent(CompType::Script),
     _script(script)
 {
 

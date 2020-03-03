@@ -11,6 +11,9 @@
 
 class InputProcessingScript : public Script, public InputProcessor, public std::enable_shared_from_this<InputProcessingScript>
 {
+    private:
+        void removeInputProcessor();
+
     public:
         InputProcessingScript();
         virtual ~InputProcessingScript();
