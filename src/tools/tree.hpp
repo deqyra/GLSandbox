@@ -15,7 +15,7 @@ class Tree
     public:
         using Node = TreeNode<T>;
         using NodePtr = std::shared_ptr<Node>;
-        using WeakNodePtr = std::weak_ptr<Node>;
+        using NodeWPtr = std::weak_ptr<Node>;
 
     private:
         NodePtr _root;
@@ -34,20 +34,20 @@ class Tree
         Tree<T>& operator=(const Tree<T>& other);
         ~Tree();
 
-        WeakNodePtr getRoot();
-        WeakNodePtr operator[](unsigned int id);
+        NodeWPtr getRoot();
+        NodeWPtr operator[](unsigned int id);
         bool hasNode(unsigned int id);
-        bool hasNode(WeakNodePtr node);
+        bool hasNode(NodeWPtr node);
         unsigned int addNode(T value, unsigned int parentId);
         unsigned int addBranch(const Tree<T>& tree, unsigned int parentId);
         void removeBranch(unsigned int branchRootId);
-        void removeBranch(WeakNodePtr branchRootNode);
+        void removeBranch(NodeWPtr branchRootNode);
         Tree<T> popBranch(unsigned int branchRootId);
-        Tree<T> popBranch(WeakNodePtr branchRootNode);
+        Tree<T> popBranch(NodeWPtr branchRootNode);
         Tree<T> getBranch(unsigned int branchRootId);
-        Tree<T> getBranch(WeakNodePtr branchRootNode);
+        Tree<T> getBranch(NodeWPtr branchRootNode);
         void moveBranch(unsigned int branchRootId, unsigned int newParentId);
-        void moveBranch(WeakNodePtr branchRootNode, WeakNodePtr newParentNode);
+        void moveBranch(NodeWPtr branchRootNode, NodeWPtr newParentNode);
 };
 
 template<typename T>
@@ -104,13 +104,13 @@ Tree<T>::Tree(NodePtr root, std::unordered_map<unsigned int, NodePtr> nodeMap) :
 }
 
 template<typename T>
-typename Tree<T>::WeakNodePtr Tree<T>::getRoot()
+typename Tree<T>::NodeWPtr Tree<T>::getRoot()
 {
-    return WeakNodePtr(_root);
+    return NodeWPtr(_root);
 }
 
 template<typename T>
-typename Tree<T>::WeakNodePtr Tree<T>::operator[](unsigned int id)
+typename Tree<T>::NodeWPtr Tree<T>::operator[](unsigned int id)
 {
     auto it = _nodes.find(id);
     if (it == _nodes.end())
@@ -119,7 +119,7 @@ typename Tree<T>::WeakNodePtr Tree<T>::operator[](unsigned int id)
         throw std::runtime_error(s.c_str());
     }
 
-    return WeakNodePtr(it->second);
+    return NodeWPtr(it->second);
 }
 
 template<typename T>
@@ -130,7 +130,7 @@ bool Tree<T>::hasNode(unsigned int id)
 }
 
 template<typename T>
-bool Tree<T>::hasNode(WeakNodePtr node)
+bool Tree<T>::hasNode(NodeWPtr node)
 {
     auto strongNode = node.lock();
     return hasNode(strongNode->id);
@@ -188,7 +188,7 @@ void Tree<T>::removeBranch(unsigned int branchRootId)
 }
 
 template<typename T>
-void Tree<T>::removeBranch(WeakNodePtr branchRootNode)
+void Tree<T>::removeBranch(NodeWPtr branchRootNode)
 {
     auto strongNode = branchRootNode.lock();
     removeBranch(strongNode->id);
@@ -218,7 +218,7 @@ Tree<T> Tree<T>::popBranch(unsigned int branchRootId)
 }
 
 template<typename T>
-Tree<T> Tree<T>::popBranch(WeakNodePtr branchRootNode)
+Tree<T> Tree<T>::popBranch(NodeWPtr branchRootNode)
 {
     auto strongNode = branchRootNode.lock();
     return popBranch(strongNode->id);
@@ -240,7 +240,7 @@ Tree<T> Tree<T>::getBranch(unsigned int branchRootId)
 }
 
 template<typename T>
-Tree<T> Tree<T>::getBranch(WeakNodePtr branchRootNode)
+Tree<T> Tree<T>::getBranch(NodeWPtr branchRootNode)
 {
     auto strongNode = branchRootNode.lock();
     return getBranch(strongNode->id);
@@ -267,7 +267,7 @@ void Tree<T>::moveBranch(unsigned int branchRootId, unsigned int newParentId)
 }
 
 template<typename T>
-void Tree<T>::moveBranch(WeakNodePtr branchRootNode, WeakNodePtr newParentNode)
+void Tree<T>::moveBranch(NodeWPtr branchRootNode, NodeWPtr newParentNode)
 {
     auto strongRoot = branchRootNode.lock();
     auto strongParent = newParentNode.lock();
@@ -277,13 +277,13 @@ void Tree<T>::moveBranch(WeakNodePtr branchRootNode, WeakNodePtr newParentNode)
 template<typename T>
 void Tree<T>::destructBranch(NodePtr root)
 {
-    std::vector<WeakNodePtr> children = root->getChildren();
+    std::vector<NodeWPtr> children = root->getChildren();
     for (auto it = children.begin(); it != children.end(); it++)
     {
         auto strongChild = it->lock();
         destructBranch(strongChild);
     }
-    root->setParent(WeakNodePtr());
+    root->setParent(NodeWPtr());
     _nodes.erase(root->id);
 }
 
@@ -292,7 +292,7 @@ std::unordered_map<unsigned int, typename Tree<T>::NodePtr> Tree<T>::branchNodeM
 {
     std::unordered_map<unsigned int, NodePtr> registeredNodes;
 
-    std::vector<WeakNodePtr> children = branchRoot->getChildren();
+    std::vector<NodeWPtr> children = branchRoot->getChildren();
     for (auto it = children.begin(); it != children.end(); it++)
     {
         auto strongChild = it->lock();
@@ -307,7 +307,7 @@ std::unordered_map<unsigned int, typename Tree<T>::NodePtr> Tree<T>::branchNodeM
 template<typename T>
 void Tree<T>::copyNodeStructure(NodePtr source, NodePtr destination)
 {
-    std::vector<WeakNodePtr> sourceChildren = source->getChildren();
+    std::vector<NodeWPtr> sourceChildren = source->getChildren();
     for (auto it = sourceChildren.begin(); it != sourceChildren.end(); it++)
     {
         auto strongChild = it->lock();

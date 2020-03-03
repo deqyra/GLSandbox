@@ -3,26 +3,27 @@
 
 #include <algorithm>
 #include <functional>
-#include <unordered_map>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "../tools/tree.hpp"
+#include "scene/scene_types_decl.hpp"
 #include "scene/scene_object.hpp"
+#include "../tools/tree.hpp"
+#include "../tools/input_processor.hpp"
 
 class Scene : public std::enable_shared_from_this<Scene>
 {
     public:
-        using ObjPtr = std::shared_ptr<SceneObject>;
-        using WeakObjPtr = std::weak_ptr<SceneObject>;
-        using ObjTree = Tree<ObjPtr>;
+        using ObjTree = Tree<SceneObjectPtr>;
         using MatTree = Tree<glm::mat4>;
 
     private:
         ObjTree _graph;
         MatTree _modelMatrices;
         std::unordered_map<unsigned int, std::pair<unsigned int, unsigned int>> _objectIdsToNodeIds;
+        std::unordered_map<unsigned int, InputProcessorWPtr> _inputProcessors;
 
         void processOutdatedTransformsFromNode(unsigned int id);
         void recalculateModelMatrix(unsigned int id);
@@ -31,25 +32,30 @@ class Scene : public std::enable_shared_from_this<Scene>
 
     public:
         Scene();
+        unsigned int init();
 
-        WeakObjPtr operator[](unsigned int id);
-        WeakObjPtr newObject();
-        WeakObjPtr newObject(unsigned int parentId);
-        void registerObject(ObjPtr object, unsigned int parentId);
-        void registerObject(ObjPtr object);
+        SceneObjectWPtr operator[](unsigned int id);
+        SceneObjectWPtr newObject();
+        SceneObjectWPtr newObject(unsigned int parentId);
+        void registerObject(SceneObjectPtr object, unsigned int parentId);
+        void registerObject(SceneObjectPtr object);
         void removeObject(unsigned int id);
         void moveObject(unsigned int id, unsigned int newParentId);
         glm::mat4 getWorldModelMatrix(unsigned int id);
         glm::vec3 getWorldPosition(unsigned int id);
 
-        std::vector<WeakObjPtr> getAllObjects();
+        std::vector<SceneObjectWPtr> getAllObjects();
+
+        void registerInputProcessor(InputProcessorWPtr inputProcessor);
+        void removeInputProcessor(InputProcessorWPtr inputProcessor);
+        std::vector<InputProcessorPtr> getAllInputProcessors();
 
         template<class T>
-        std::vector<WeakObjPtr> getObjectsWithComponent(bool mustBeEnabled = true);
+        std::vector<SceneObjectWPtr> getObjectsWithComponent(bool mustBeEnabled = true);
 };
 
 template<class T>
-std::vector<Scene::WeakObjPtr> Scene::getObjectsWithComponent(bool mustBeEnabled)
+std::vector<SceneObjectWPtr> Scene::getObjectsWithComponent(bool mustBeEnabled)
 {
     std::vector<WeakObjPtr> all = getAllObjects();
     std::vector<WeakObjPtr> result;

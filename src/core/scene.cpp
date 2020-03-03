@@ -1,17 +1,26 @@
 #include "scene.hpp"
 
 Scene::Scene() :
-    _graph(std::make_shared<SceneObject>()),
+    _graph(SceneObjectPtr()),
     _modelMatrices(glm::mat4(1.f)),
     _objectIdsToNodeIds()
 {
-    auto rootNode = _graph.getRoot().lock();
-    auto matRootNode = _modelMatrices.getRoot().lock();
-    unsigned int rootObjId = rootNode->value->id;
-    _objectIdsToNodeIds[rootObjId] = { rootNode->id, matRootNode->id };
 }
 
-Scene::WeakObjPtr Scene::operator[](unsigned int id)
+unsigned int Scene::init()
+{
+    auto rootNode = _graph.getRoot().lock();
+    auto matRootNode = _modelMatrices.getRoot().lock();
+
+    rootNode->value.reset(new SceneObject(this->shared_from_this()));
+
+    unsigned int rootObjId = rootNode->value->id;
+    _objectIdsToNodeIds[rootObjId] = { rootNode->id, matRootNode->id };
+    
+    return rootObjId;
+}
+
+SceneObjectWPtr Scene::operator[](unsigned int id)
 {
     auto it = _objectIdsToNodeIds.find(id);
     if (it == _objectIdsToNodeIds.end())
@@ -25,7 +34,32 @@ Scene::WeakObjPtr Scene::operator[](unsigned int id)
     return node->value;
 }
 
-void Scene::registerObject(ObjPtr object, unsigned int parentId)
+SceneObjectWPtr Scene::newObject()
+{
+    auto node = _graph.getRoot().lock();
+    return newObject(node->value->id);
+}
+
+SceneObjectWPtr Scene::newObject(unsigned int parentId)
+{
+    auto it = _objectIdsToNodeIds.find(parentId);
+    if (it == _objectIdsToNodeIds.end())
+    {
+        std::string s = "Scene: no SceneObject with ID " + std::to_string(parentId) + ", cannot create object as child.";
+        throw std::runtime_error(s.c_str());
+    }
+
+    auto pair = it->second;
+
+    SceneObjectPtr obj = std::make_shared<SceneObject>(this->shared_from_this());
+    unsigned int objHandle = _graph.addNode(obj, pair.first);
+    unsigned int matHandle = _modelMatrices.addNode(glm::mat4(1.f), pair.second);
+    _objectIdsToNodeIds[obj->id] = { objHandle, matHandle };
+
+    return obj;
+}
+
+void Scene::registerObject(SceneObjectPtr object, unsigned int parentId)
 {
     auto it = _objectIdsToNodeIds.find(parentId);
     if (it == _objectIdsToNodeIds.end())
@@ -33,6 +67,14 @@ void Scene::registerObject(ObjPtr object, unsigned int parentId)
         std::string s = "Scene: no SceneObject with ID " + std::to_string(parentId) + ", cannot register new object as one of its children.";
         throw std::runtime_error(s.c_str());
     }
+
+    ScenePtr objectScene = object->getScene().lock();
+    if (objectScene != nullptr && objectScene != this->shared_from_this())
+    {
+        std::string s = "Scene: SceneObject with ID " + std::to_string(object->id) + " already has a parent Scene, cannot register new object.";
+        throw std::runtime_error(s.c_str());
+    }
+    object->setScene(this->weak_from_this());
 
     auto pair = it->second;
     unsigned int graphNodeId = _graph.addNode(object, pair.first);
@@ -42,7 +84,7 @@ void Scene::registerObject(ObjPtr object, unsigned int parentId)
     recalculateModelMatrix(object->id);
 }
 
-void Scene::registerObject(ObjPtr object)
+void Scene::registerObject(SceneObjectPtr object)
 {
     auto node = _graph.getRoot().lock();
     registerObject(object, node->value->id);
@@ -121,9 +163,9 @@ glm::vec3 Scene::getWorldPosition(unsigned int id)
     return glm::vec3(position);
 }
 
-std::vector<Scene::WeakObjPtr> Scene::getAllObjects()
+std::vector<SceneObjectWPtr> Scene::getAllObjects()
 {
-    std::vector<WeakObjPtr> result;
+    std::vector<SceneObjectWPtr> result;
 
     for (auto it = _objectIdsToNodeIds.begin(); it != _objectIdsToNodeIds.end(); it++)
     {
@@ -135,29 +177,34 @@ std::vector<Scene::WeakObjPtr> Scene::getAllObjects()
     return result;
 }
 
-Scene::WeakObjPtr Scene::newObject()
+void Scene::registerInputProcessor(InputProcessorWPtr inputProcessor)
 {
-    auto node = _graph.getRoot().lock();
-    return newObject(node->value->id);
+    InputProcessorPtr realPtr = inputProcessor.lock();
+    if (realPtr == nullptr) return;
+
+    _inputProcessors[realPtr->id] = inputProcessor;
 }
 
-Scene::WeakObjPtr Scene::newObject(unsigned int parentId)
+void Scene::removeInputProcessor(InputProcessorWPtr inputProcessor)
 {
-    auto it = _objectIdsToNodeIds.find(parentId);
-    if (it == _objectIdsToNodeIds.end())
+    InputProcessorPtr realPtr = inputProcessor.lock();
+    if (realPtr == nullptr) return;
+
+    _inputProcessors.erase(realPtr->id);
+}
+
+std::vector<InputProcessorPtr> Scene::getAllInputProcessors()
+{
+    std::vector<InputProcessorPtr> result;
+    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
-        std::string s = "Scene: no SceneObject with ID " + std::to_string(parentId) + ", cannot create object as child.";
-        throw std::runtime_error(s.c_str());
+        InputProcessorPtr realPtr = it->second.lock();
+        if (realPtr == nullptr) continue;
+
+        result.push_back(realPtr);
     }
 
-    auto pair = it->second;
-
-    ObjPtr obj = std::make_shared<SceneObject>(this->shared_from_this());
-    unsigned int objHandle = _graph.addNode(obj, pair.first);
-    unsigned int matHandle = _modelMatrices.addNode(glm::mat4(1.f), pair.second);
-    _objectIdsToNodeIds[obj->id] = { objHandle, matHandle };
-
-    return obj;
+    return result;
 }
 
 void Scene::processOutdatedTransformsFromNode(unsigned int id)
@@ -166,13 +213,13 @@ void Scene::processOutdatedTransformsFromNode(unsigned int id)
     auto pair = it->second;
 
     ObjTree::NodePtr objNode = _graph[pair.first].lock();
-    std::vector<ObjTree::WeakNodePtr> parentChain = objNode->getParentChain();
+    std::vector<ObjTree::NodeWPtr> parentChain = objNode->getParentChain();
 
     bool outdated = false;
     unsigned int uppermostOutdatedId;
     for (auto it = parentChain.begin(); it != parentChain.end(); it++)
     {
-        ObjPtr obj = it->lock()->value;
+        SceneObjectPtr obj = it->lock()->value;
         if (obj->transformModifiedFlagState())
         {
             obj->resetTransformModifiedFlag();
@@ -237,7 +284,7 @@ bool Scene::hasDisabledParent(unsigned int id)
     auto pair = it->second;
 
     ObjTree::NodePtr objNode = _graph[pair.first].lock();
-    std::vector<ObjTree::WeakNodePtr> parents = objNode->getParentChain();
+    std::vector<ObjTree::NodeWPtr> parents = objNode->getParentChain();
     for (auto it = parents.begin(); it != parents.end(); it++)
     {
         auto strongParent = it->lock();

@@ -13,7 +13,7 @@
 template<typename T>
 class TreeNode : public std::enable_shared_from_this<TreeNode<T>>
 {
-    using TreeNodePtr = std::weak_ptr<TreeNode<T>>;
+    using TreeNodeWPtr = std::weak_ptr<TreeNode<T>>;
 
     private:
         TreeNode(const TreeNode& other) = delete;
@@ -21,29 +21,29 @@ class TreeNode : public std::enable_shared_from_this<TreeNode<T>>
 
         static unsigned int _count;
 
-        TreeNodePtr _parent;
-        std::vector<TreeNodePtr> _children;
+        TreeNodeWPtr _parent;
+        std::vector<TreeNodeWPtr> _children;
 
-        std::vector<TreeNodePtr> _parentChain;
+        std::vector<TreeNodeWPtr> _parentChain;
         std::vector<unsigned int> _parentIdChain;
         void generateParentChains();
 
     public:
         TreeNode(T value);
 
-        TreeNodePtr getParent();
-        void setParent(TreeNodePtr parent);
-        std::vector<TreeNodePtr> getParentChain();
+        TreeNodeWPtr getParent();
+        void setParent(TreeNodeWPtr parent);
+        std::vector<TreeNodeWPtr> getParentChain();
         std::vector<unsigned int> getParentIdChain();
 
-        std::vector<TreeNodePtr> getChildren();
-        void addChild(TreeNodePtr child);
-        void removeChild(TreeNodePtr child);
+        std::vector<TreeNodeWPtr> getChildren();
+        void addChild(TreeNodeWPtr child);
+        void removeChild(TreeNodeWPtr child);
         void removeChild(unsigned int id);
-        bool hasChild(TreeNodePtr child);
+        bool hasChild(TreeNodeWPtr child);
         bool hasChild(unsigned int id);
-        bool isParentOf(TreeNodePtr node);
-        bool isChildOf(TreeNodePtr node);
+        bool isParentOf(TreeNodeWPtr node);
+        bool isChildOf(TreeNodeWPtr node);
         bool isChildOf(unsigned int id);
         
         const unsigned int id;
@@ -66,13 +66,13 @@ TreeNode<T>::TreeNode(T value) :
 }
 
 template<typename T>
-typename TreeNode<T>::TreeNodePtr TreeNode<T>::getParent()
+typename TreeNode<T>::TreeNodeWPtr TreeNode<T>::getParent()
 {
     return _parent;
 }
 
 template<typename T>
-void TreeNode<T>::setParent(TreeNodePtr newParent)
+void TreeNode<T>::setParent(TreeNodeWPtr newParent)
 {
     auto strongNewParent = newParent.lock();
     auto strongParent = _parent.lock();
@@ -99,7 +99,7 @@ void TreeNode<T>::setParent(TreeNodePtr newParent)
 
     if (strongNewParent != nullptr)
     {
-        //_parent->_children.push_back(TreeNodePtr(this));
+        //_parent->_children.push_back(TreeNodeWPtr(this));
         strongNewParent->_children.push_back(this->weak_from_this());
     }
     _parent = newParent;
@@ -108,7 +108,7 @@ void TreeNode<T>::setParent(TreeNodePtr newParent)
 }
 
 template<typename T>
-std::vector<typename TreeNode<T>::TreeNodePtr> TreeNode<T>::getParentChain()
+std::vector<typename TreeNode<T>::TreeNodeWPtr> TreeNode<T>::getParentChain()
 {
     return _parentChain;
 }
@@ -120,13 +120,13 @@ std::vector<unsigned int> TreeNode<T>::getParentIdChain()
 }
 
 template<typename T>
-std::vector<typename TreeNode<T>::TreeNodePtr> TreeNode<T>::getChildren()
+std::vector<typename TreeNode<T>::TreeNodeWPtr> TreeNode<T>::getChildren()
 {
     return _children;
 }
 
 template<typename T>
-void TreeNode<T>::addChild(typename TreeNode<T>::TreeNodePtr child)
+void TreeNode<T>::addChild(TreeNodeWPtr child)
 {
     auto strongChild = child.lock();
     auto strongChildParent = strongChild->_parent.lock();
@@ -153,7 +153,7 @@ void TreeNode<T>::addChild(typename TreeNode<T>::TreeNodePtr child)
 }
 
 template<typename T>
-bool TreeNode<T>::hasChild(TreeNodePtr child)
+bool TreeNode<T>::hasChild(TreeNodeWPtr child)
 {
     auto strongChild = child.lock();
     return hasChild(strongChild->id);
@@ -162,7 +162,7 @@ bool TreeNode<T>::hasChild(TreeNodePtr child)
 template<typename T>
 bool TreeNode<T>::hasChild(unsigned int id)
 {
-    std::function<bool(TreeNodePtr)> checkId = [id](TreeNodePtr node)
+    std::function<bool(TreeNodeWPtr)> checkId = [id](TreeNodeWPtr node)
     {
         auto strongNode = node.lock();
         return id == strongNode->id;
@@ -173,7 +173,7 @@ bool TreeNode<T>::hasChild(unsigned int id)
 }
 
 template<typename T>
-void TreeNode<T>::removeChild(TreeNodePtr child)
+void TreeNode<T>::removeChild(TreeNodeWPtr child)
 {
     auto strongChild = child.lock();
     removeChild(strongChild->id);
@@ -182,7 +182,7 @@ void TreeNode<T>::removeChild(TreeNodePtr child)
 template<typename T>
 void TreeNode<T>::removeChild(unsigned int id)
 {
-    std::function<bool(TreeNodePtr)> checkId = [id](TreeNodePtr node)
+    std::function<bool(TreeNodeWPtr)> checkId = [id](TreeNodeWPtr node)
     {
         auto strongNode = node.lock();
         return id == strongNode->id;
@@ -199,7 +199,7 @@ void TreeNode<T>::removeChild(unsigned int id)
 }
 
 template<typename T>
-bool TreeNode<T>::isParentOf(typename TreeNode<T>::TreeNodePtr node)
+bool TreeNode<T>::isParentOf(TreeNodeWPtr node)
 {
     auto strongNode = node.lock();
     if (strongNode.get() == nullptr) return false;
@@ -208,7 +208,7 @@ bool TreeNode<T>::isParentOf(typename TreeNode<T>::TreeNodePtr node)
 }
 
 template<typename T>
-bool TreeNode<T>::isChildOf(typename TreeNode<T>::TreeNodePtr node)
+bool TreeNode<T>::isChildOf(TreeNodeWPtr node)
 {
     auto strongNode = node.lock();
     if (strongNode.get() == nullptr) return false;
@@ -236,7 +236,7 @@ void TreeNode<T>::generateParentChains()
     }
     else
     {
-        _parentChain = std::vector<TreeNodePtr>();
+        _parentChain = std::vector<TreeNodeWPtr>();
         _parentIdChain = std::vector<unsigned int>();
     }
 

@@ -16,6 +16,14 @@ using std::endl;
 using std::string;
 using std::stringstream;
 
+unsigned int InputProcessor::_count = 0;
+
+InputProcessor::InputProcessor() :
+    id(_count++)
+{
+
+}
+
 void InputProcessor::framebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);

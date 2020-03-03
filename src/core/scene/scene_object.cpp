@@ -7,19 +7,10 @@
 
 unsigned int SceneObject::_count = 0;
 
-SceneObject::SceneObject() :
+SceneObject::SceneObject(ScenePtr scene) :
     id(_count++),
     enabled(true),
-    scene(),
-    _components()
-{
-
-}
-
-SceneObject::SceneObject(std::shared_ptr<Scene> scene) :
-    id(_count++),
-    enabled(true),
-    scene(scene),
+    _scene(scene),
     _components()
 {
 
@@ -54,6 +45,16 @@ SceneObject& SceneObject::operator=(const SceneObject& other)
 
 glm::vec3 SceneObject::getWorldPosition()
 {
-    std::shared_ptr<Scene> scene = this->scene.lock();
+    std::shared_ptr<Scene> scene = _scene.lock();
     return scene->getWorldPosition(id);
+}
+
+SceneWPtr SceneObject::getScene()
+{
+    return _scene;
+}
+
+void SceneObject::setScene(SceneWPtr scene)
+{
+    _scene = scene;
 }
