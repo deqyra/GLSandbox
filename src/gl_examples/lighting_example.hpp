@@ -16,17 +16,14 @@
 #include "../core/shader.hpp"
 #include "../core/texture_2d.hpp"
 
-#include "../fps_camera_manager.hpp"
 #include "../tools/input_processor.hpp"
 #include "../gl_example.hpp"
 #include "../core/scene/scene_object.hpp"
 #include "../core/mesh_generator.hpp"
 
-class LightingExample : public GLExample, public InputProcessor
+class LightingExample : public GLExample
 {
     private:
-        std::shared_ptr<FPSCameraManager> _camera;
-
         float _angle;
         bool _autoRotate;
         float _speedFactor;
@@ -39,10 +36,6 @@ class LightingExample : public GLExample, public InputProcessor
         LightingExample();
         virtual ~LightingExample();
         virtual void run(GLFWwindow* window);
-
-        // Overridden InputProcessor callbacks
-        virtual void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        virtual void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
 };
 
 #endif//LIGHTING_EXAMPLE_HPP

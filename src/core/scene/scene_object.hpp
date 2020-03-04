@@ -26,7 +26,7 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
         SceneWPtr _scene;
 
     public:
-        SceneObject(ScenePtr scene);
+        SceneObject(SceneWPtr scene);
         SceneObject(const SceneObject& other);
         SceneObject& operator=(const SceneObject& other);
 
