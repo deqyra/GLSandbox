@@ -306,34 +306,34 @@ bool Scene::hasDisabledParent(unsigned int id)
     return false;
 }
 
-void Scene::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+void Scene::processFramebufferResize(GLFWwindow* window, int width, int height)
 {
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
-        it->second->framebufferResizeCallback(window, width, height);
+        it->second->processFramebufferResize(window, width, height);
     }
 }
 
-void Scene::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Scene::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
-        it->second->keyboardCallback(window, key, scancode, action, mods);
+        it->second->processKeyboard(window, key, scancode, action, mods);
     }
 }
 
-void Scene::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void Scene::processMouseButton(GLFWwindow* window, int button, int action, int mods)
 {
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
-        it->second->mouseButtonCallback(window, button, action, mods);
+        it->second->processMouseButton(window, button, action, mods);
     }
 }
 
-void Scene::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
+void Scene::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
 {
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
-        it->second->mouseCursorCallback(window, xpos, ypos);
+        it->second->processMouseCursor(window, xpos, ypos);
     }
 }

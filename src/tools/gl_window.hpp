@@ -23,10 +23,10 @@ class GLWindow
 
         // Callbacks to different events.
         // In all of these, the call is forwarded to the custom input processor if any, or to the base input processor otherwise.
-        void framebufferResizeCallback(GLFWwindow* window, int width, int height);
-        void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-        void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
+        void processFramebufferResize(GLFWwindow* window, int width, int height);
+        void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        void processMouseButton(GLFWwindow* window, int button, int action, int mods);
+        void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
 
         // Custom input processor registration.
         void registerInputProcessor(InputProcessorPtr inputProcessor);

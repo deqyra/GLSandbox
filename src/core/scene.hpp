@@ -60,10 +60,10 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         void removeInputProcessor(InputProcessorPtr inputProcessor);
         void removeInputProcessor(unsigned int id);
 
-        virtual void framebufferResizeCallback(GLFWwindow* window, int width, int height);
-        virtual void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        virtual void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-        virtual void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
+        virtual void processFramebufferResize(GLFWwindow* window, int width, int height);
+        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void processMouseButton(GLFWwindow* window, int button, int action, int mods);
+        virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
 
         template<class T>
         std::vector<SceneObjectWPtr> getObjectsWithComponent(bool mustBeEnabled = true);

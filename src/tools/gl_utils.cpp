@@ -152,28 +152,28 @@ GLFWwindow* makeWindow(string name, int width, int height, int glVersionMajor, i
     // Window resized callback
     auto framebufferResizeCallback = [](GLFWwindow* window, int width, int height)                                      // Declare a lambda
     {
-        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->framebufferResizeCallback(window, width, height);     // Retrieve the user pointer of the window, call the appropriate method.
+        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processFramebufferResize(window, width, height);     // Retrieve the user pointer of the window, call the appropriate method.
     };
     glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);                                                  // Statically bind the lambda as a callback.
 
     // Keyboard callback
     auto keyboardCallback = [](GLFWwindow* window, int key, int scancode, int action, int mods)
     {
-        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->keyboardCallback(window, key, scancode, action, mods);
+        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processKeyboard(window, key, scancode, action, mods);
     };
     glfwSetKeyCallback(window, keyboardCallback);
 
     // Mouse click callback
     auto mouseButtonCallback = [](GLFWwindow* window, int button, int action, int mods)
     {
-        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->mouseButtonCallback(window, button, action, mods);
+        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processMouseButton(window, button, action, mods);
     };
     glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
     // Mouse cursor callback
     auto mouseCursorCallback = [](GLFWwindow* window, double xpos, double ypos)
     {
-        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->mouseCursorCallback(window, xpos, ypos);
+        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processMouseCursor(window, xpos, ypos);
     };
     glfwSetCursorPosCallback(window, mouseCursorCallback);
 

@@ -24,12 +24,12 @@ InputProcessor::InputProcessor() :
 
 }
 
-void InputProcessor::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+void InputProcessor::processFramebufferResize(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-void InputProcessor::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void InputProcessor::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if ((key == GLFW_KEY_ESCAPE || key == GLFW_KEY_SPACE) && action == GLFW_PRESS)
     {
@@ -51,7 +51,7 @@ void InputProcessor::keyboardCallback(GLFWwindow* window, int key, int scancode,
     // cout << "Key event: " << glfwKeyName(key) << " " << glfwActionName(action) << endl;
 }
 
-void InputProcessor::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void InputProcessor::processMouseButton(GLFWwindow* window, int button, int action, int mods)
 {
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
@@ -59,7 +59,7 @@ void InputProcessor::mouseButtonCallback(GLFWwindow* window, int button, int act
     cout << "x: " << xpos << "; y: " << ypos << "; event: mouse " << glfwButtonName(button) << " " << glfwActionName(action) << endl;
 }
 
-void InputProcessor::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
+void InputProcessor::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
 {
 }
 

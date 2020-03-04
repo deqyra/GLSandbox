@@ -52,6 +52,7 @@
     <ClCompile Include="src\core\scene\tools.cpp" />
     <ClCompile Include="src\core\scene_renderer.cpp" />
     <ClCompile Include="src\core\scripts\fps_camera_script.cpp" />
+    <ClCompile Include="src\core\scripts\lambda_script.cpp" />
     <ClCompile Include="src\core\shader.cpp" />
     <ClCompile Include="src\core\texture_2d.cpp" />
     <ClCompile Include="src\core\ubo\light_ubo.cpp" />
@@ -98,6 +99,7 @@
     <ClInclude Include="src\core\scene_object_type.hpp" />
     <ClInclude Include="src\core\scene_renderer.hpp" />
     <ClInclude Include="src\core\scripts\fps_camera_script.hpp" />
+    <ClInclude Include="src\core\scripts\lambda_script.hpp" />
     <ClInclude Include="src\core\shader.hpp" />
     <ClInclude Include="src\core\texture_2d.hpp" />
     <ClInclude Include="src\core\ubo\light_ubo.hpp" />

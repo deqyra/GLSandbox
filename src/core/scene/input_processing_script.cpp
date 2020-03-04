@@ -10,22 +10,22 @@ InputProcessingScript::~InputProcessingScript()
     removeInputProcessor();
 }
 
-void InputProcessingScript::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+void InputProcessingScript::processFramebufferResize(GLFWwindow* window, int width, int height)
 {
 
 }
 
-void InputProcessingScript::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void InputProcessingScript::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 
 }
 
-void InputProcessingScript::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void InputProcessingScript::processMouseButton(GLFWwindow* window, int button, int action, int mods)
 {
 
 }
 
-void InputProcessingScript::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
+void InputProcessingScript::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
 {
 
 }

@@ -22,10 +22,10 @@ class InputProcessor
     public:
         InputProcessor();
         // Callbacks to different events.
-        virtual void framebufferResizeCallback(GLFWwindow* window, int width, int height);
-        virtual void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        virtual void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-        virtual void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
+        virtual void processFramebufferResize(GLFWwindow* window, int width, int height);
+        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void processMouseButton(GLFWwindow* window, int button, int action, int mods);
+        virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
 
         const unsigned int id;
 };

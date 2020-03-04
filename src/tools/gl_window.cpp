@@ -24,24 +24,24 @@ GLWindow::GLWindow(GLFWwindow* window) :
 
 }
 
-void GLWindow::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+void GLWindow::processFramebufferResize(GLFWwindow* window, int width, int height)
 {
-    _inputProcessor->framebufferResizeCallback(window, width, height);
+    _inputProcessor->processFramebufferResize(window, width, height);
 }
 
-void GLWindow::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void GLWindow::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    _inputProcessor->keyboardCallback(window, key, scancode, action, mods);
+    _inputProcessor->processKeyboard(window, key, scancode, action, mods);
 }
 
-void GLWindow::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void GLWindow::processMouseButton(GLFWwindow* window, int button, int action, int mods)
 {
-    _inputProcessor->mouseButtonCallback(window, button, action, mods);
+    _inputProcessor->processMouseButton(window, button, action, mods);
 }
 
-void GLWindow::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
+void GLWindow::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
 {
-    _inputProcessor->mouseCursorCallback(window, xpos, ypos);
+    _inputProcessor->processMouseCursor(window, xpos, ypos);
 }
 
 void GLWindow::registerInputProcessor(InputProcessorPtr inputProcessor)
