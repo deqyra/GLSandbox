@@ -19,66 +19,37 @@ using std::string;
 
 GLWindow::GLWindow(GLFWwindow* window) :
     _w(window),
-    _baseInputProcessor(),
-    _customInputProcessor(nullptr)
+    _inputProcessor(std::make_shared<InputProcessor>())
 {
 
 }
 
 void GLWindow::framebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
-    if (_customInputProcessor)
-    {
-        _customInputProcessor->framebufferResizeCallback(window, width, height);
-    }
-    else
-    {
-        _baseInputProcessor.framebufferResizeCallback(window, width, height);
-    }
+    _inputProcessor->framebufferResizeCallback(window, width, height);
 }
 
 void GLWindow::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (_customInputProcessor)
-    {
-        _customInputProcessor->keyboardCallback(window, key, scancode, action, mods);
-    }
-    else
-    {
-        _baseInputProcessor.keyboardCallback(window, key, scancode, action, mods);
-    }
+    _inputProcessor->keyboardCallback(window, key, scancode, action, mods);
 }
 
 void GLWindow::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (_customInputProcessor)
-    {
-        _customInputProcessor->mouseButtonCallback(window, button, action, mods);
-    }
-    else
-    {
-        _baseInputProcessor.mouseButtonCallback(window, button, action, mods);
-    }
+    _inputProcessor->mouseButtonCallback(window, button, action, mods);
 }
 
 void GLWindow::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (_customInputProcessor)
-    {
-        _customInputProcessor->mouseCursorCallback(window, xpos, ypos);
-    }
-    else
-    {
-        _baseInputProcessor.mouseCursorCallback(window, xpos, ypos);
-    }
+    _inputProcessor->mouseCursorCallback(window, xpos, ypos);
 }
 
-void GLWindow::registerInputProcessor(InputProcessor* inputProcessor)
+void GLWindow::registerInputProcessor(InputProcessorPtr inputProcessor)
 {
-    _customInputProcessor = inputProcessor;
+    _inputProcessor = inputProcessor;
 }
 
 void GLWindow::removeInputProcessor()
 {
-    _customInputProcessor = nullptr;
+    _inputProcessor = std::make_shared<InputProcessor>();
 }

@@ -29,13 +29,12 @@ class GLWindow
         void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
 
         // Custom input processor registration.
-        void registerInputProcessor(InputProcessor* inputProcessor);
+        void registerInputProcessor(InputProcessorPtr inputProcessor);
         void removeInputProcessor();
 
     private:
         GLFWwindow* _w;                         // Handled GLFW window.
-        InputProcessor _baseInputProcessor;     // Basic, non-overriden input processor, providing basic callback functionality on GLFW windows.
-        InputProcessor* _customInputProcessor;  // Custom input processor to be registered at any time, providing overriden, custom callbacks.
+        InputProcessorPtr _inputProcessor;// Custom input processor to be registered at any time, providing overriden, custom callbacks.
 };
 
 #endif//GL_WINDOW_HPP
