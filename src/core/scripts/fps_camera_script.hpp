@@ -34,8 +34,8 @@ class FPSCameraScript : public InputProcessingScript
     public:
         FPSCameraScript();
 
-        virtual void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        virtual void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
+        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
 
         virtual void update(float timeElapsed);
 

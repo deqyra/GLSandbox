@@ -15,7 +15,7 @@ FPSCameraScript::FPSCameraScript() :
 
 }
 
-void FPSCameraScript::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void FPSCameraScript::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     // Four directional keys input processing
     // W (forward)
@@ -71,7 +71,7 @@ void FPSCameraScript::keyboardCallback(GLFWwindow* window, int key, int scancode
     }
 }
 
-void FPSCameraScript::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
+void FPSCameraScript::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
 {
     if (!_mouseWasUpdatedOnce)
     {
