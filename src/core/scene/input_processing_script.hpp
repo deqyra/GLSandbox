@@ -7,7 +7,6 @@
 #include <memory>
 
 #include "scene_object.hpp"
-#include "../scene.hpp"
 
 class InputProcessingScript : public Script, public InputProcessor, public std::enable_shared_from_this<InputProcessingScript>
 {
@@ -29,5 +28,8 @@ class InputProcessingScript : public Script, public InputProcessor, public std::
 
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 };
+
+using InputProcessingScriptPtr = std::shared_ptr<InputProcessingScript>;
+using InputProcessingScriptWPtr = std::weak_ptr<InputProcessingScript>;
 
 #endif//INPUT_PROCESSING_SCRIPT

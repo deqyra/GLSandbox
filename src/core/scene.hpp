@@ -12,6 +12,7 @@
 #include "scene/scene_types_decl.hpp"
 #include "scene/scene_object.hpp"
 #include "scene/script.hpp"
+#include "scene/input_processing_script.hpp"
 #include "../tools/tree.hpp"
 #include "../tools/input_processor.hpp"
 
@@ -59,6 +60,9 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         void registerInputProcessor(InputProcessorPtr inputProcessor);
         void removeInputProcessor(InputProcessorPtr inputProcessor);
         void removeInputProcessor(unsigned int id);
+
+        void registerInputProcessingScript(InputProcessingScriptPtr script);
+        void removeInputProcessingScript(InputProcessingScriptPtr script);
 
         virtual void processFramebufferResize(GLFWwindow* window, int width, int height);
         virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);

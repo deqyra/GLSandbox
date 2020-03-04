@@ -24,28 +24,27 @@
 
 #include "../tools/gl_utils.hpp"
 #include "../tools/gl_window.hpp"
+#include "../tools/basic_input_manager.hpp"
 
 #include "../core/scene.hpp"
 #include "../core/scene_renderer.hpp"
 #include "../core/scene/scene_object.hpp"
 #include "../core/scene/scene_object_component_type.hpp"
 
-#include "../core/scripts/fps_camera_script.hpp"9
+#include "../core/scripts/fps_camera_script.hpp"
 
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
 #define CUBE_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
 #define TORUS_ROTATION_AXIS glm::vec3(1.f, 0.f, 0.f)
 
-LightingSandbox::LightingSandbox() :
-    _angle(0.f),
-    _autoRotate(true),
-    _speedFactor(10.f)
+LightingSandbox::LightingSandbox()
 {
-    _lastTime = (float)glfwGetTime();
+    
 }
 
 LightingSandbox::~LightingSandbox()
 {
+
 }
 
 void LightingSandbox::run(GLFWwindow* window)
@@ -57,7 +56,6 @@ void LightingSandbox::run(GLFWwindow* window)
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), glAspectRatio(), 0.1f, 100.0f);
     CameraPtr camera = std::make_shared<Camera>(projection, -135.f, -25.f);
-    _lastTime = (float)glfwGetTime();
     
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
 
@@ -89,6 +87,14 @@ void LightingSandbox::run(GLFWwindow* window)
     std::shared_ptr<FPSCameraScript> fpsScript = std::make_shared<FPSCameraScript>();
     std::shared_ptr<Script> baseFpsScript = std::static_pointer_cast<Script>(fpsScript);
     cameraObj->addComponent<ScriptComponent>(baseFpsScript);
+    // ROTATION SCRIPT
+    std::shared_ptr<LightingSandboxScript> rotationScript = std::make_shared<LightingSandboxScript>(cubeObj, torusObj);
+    std::shared_ptr<InputProcessingScript> ipRotationScript = std::static_pointer_cast<InputProcessingScript>(rotationScript);
+    scene->registerInputProcessingScript(ipRotationScript);
+    // WINDOW SCRIPT
+    std::shared_ptr<BasicInputManager> windowScript = std::make_shared<BasicInputManager>();
+    std::shared_ptr<InputProcessingScript> ipWindowScript = std::static_pointer_cast<InputProcessingScript>(windowScript);
+    scene->registerInputProcessingScript(ipWindowScript);
 
     SceneRenderer sceneRenderer;
     while (!glfwWindowShouldClose(window))
@@ -96,34 +102,54 @@ void LightingSandbox::run(GLFWwindow* window)
         float frameTime = (float)glfwGetTime();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if (_autoRotate)
-        {
-            // Update object transforms
-            float angleDiff = _speedFactor * (frameTime - _lastTime);
-            cubeObj->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
-            torusObj->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
-        }
-        else
-        {
-            //torus->lookAt(_camera->getPosition());
-        }
-
         // Draw meshes
         sceneRenderer.renderScene(scene);
 
         // Refresh screen and process input
         glfwSwapBuffers(window);
         glfwPollEvents();
-
-        _lastTime = frameTime;
     }
     glfwSetWindowShouldClose(window, false);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);  
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+    scene->removeInputProcessingScript(ipRotationScript);
 
     windowHandler->removeInputProcessor();
 }
 
-void LightingSandbox::handleKeyboardObjectRotation(GLFWwindow* window, int key, int scancode, int action, int mods)
+std::shared_ptr<SceneObject> LightingSandbox::generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat, Shader shader)
+{
+    MeshPtr mesh = generator->generatePtr();
+    std::shared_ptr<SceneObject> obj = std::make_shared<SceneObject>(SceneWPtr(scene));
+    obj->addComponent<MeshComponent>(mesh, mat, shader);
+    return obj;
+}
+
+LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr torusObj) :
+    _cubeObj(cubeObj),
+    _torusObj(torusObj),
+    _autoRotate(true),
+    _speedFactor(10.f)
+{
+
+}
+
+void LightingSandboxScript::update(float timeElapsed)
+{
+    if (_autoRotate)
+    {
+        // Update object transforms
+        float angleDiff = _speedFactor * timeElapsed;
+        _cubeObj->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+        _torusObj->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
+    }
+    else
+    {
+        //torus->lookAt(_camera->getPosition());
+    }
+}
+
+void LightingSandboxScript::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (_autoRotate)
     {
@@ -141,12 +167,4 @@ void LightingSandbox::handleKeyboardObjectRotation(GLFWwindow* window, int key, 
     {
         _autoRotate = !_autoRotate;
     }
-}
-
-std::shared_ptr<SceneObject> LightingSandbox::generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat, Shader shader)
-{
-    MeshPtr mesh = generator->generatePtr();
-    std::shared_ptr<SceneObject> obj = std::make_shared<SceneObject>(SceneWPtr(scene));
-    obj->addComponent<MeshComponent>(mesh, mat, shader);
-    return obj;
 }

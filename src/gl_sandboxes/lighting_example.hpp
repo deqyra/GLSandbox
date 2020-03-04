@@ -13,22 +13,18 @@
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
 
+
+#include "../gl_sandbox.hpp"
 #include "../core/shader.hpp"
 #include "../core/texture_2d.hpp"
-
-#include "../tools/input_processor.hpp"
-#include "../gl_sandbox.hpp"
-#include "../core/scene/scene_object.hpp"
 #include "../core/mesh_generator.hpp"
+#include "../core/scene/scene_object.hpp"
+#include "../core/scene/input_processing_script.hpp"
+#include "../tools/input_processor.hpp"
 
 class LightingSandbox : public GLSandbox
 {
     private:
-        float _angle;
-        bool _autoRotate;
-        float _speedFactor;
-        float _lastTime;
-
         void handleKeyboardObjectRotation(GLFWwindow* window, int key, int scancode, int action, int mods);
         std::shared_ptr<SceneObject> generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat = Material(), Shader shader = Shader());
 
@@ -36,6 +32,21 @@ class LightingSandbox : public GLSandbox
         LightingSandbox();
         virtual ~LightingSandbox();
         virtual void run(GLFWwindow* window);
+};
+
+class LightingSandboxScript : public InputProcessingScript
+{
+    private:
+        SceneObjectPtr _cubeObj;
+        SceneObjectPtr _torusObj;
+        bool _autoRotate;
+        float _speedFactor;
+
+    public:
+        LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr torusObj);
+
+        virtual void update(float timeElapsed);
+        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
 };
 
 #endif//LIGHTING_EXAMPLE_HPP

@@ -10,8 +10,8 @@
 
 #include <string>
 
-#include "../include/glad/glad.h"
-#include "../include/GLFW/glfw3.h"
+#include "../../include/glad/glad.h"
+#include "../../include/GLFW/glfw3.h"
 
 // Compiles GLSL code from a file into a shader.
 unsigned int loadShader(GLenum shaderType, std::string filename);

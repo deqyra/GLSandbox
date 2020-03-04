@@ -1,5 +1,6 @@
 #include "fps_camera_script.hpp"
 
+#include "../include/GLFW/glfw3.h"
 #include "../direction.hpp"
 #include "../scene/components/camera_component.hpp"
 

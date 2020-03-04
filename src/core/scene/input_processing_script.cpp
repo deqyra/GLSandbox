@@ -1,4 +1,5 @@
 #include "input_processing_script.hpp"
+#include "../scene.hpp"
 
 InputProcessingScript::InputProcessingScript()
 {

@@ -11,8 +11,7 @@
 #include <string>
 #include <memory>
 
-#include "../include/glad/glad.h"
-#include "../include/GLFW/glfw3.h"
+struct GLFWwindow;
 
 class InputProcessor
 {
@@ -29,11 +28,6 @@ class InputProcessor
 
         const unsigned int id;
 };
-
-// Helper functions to print button and key names.
-std::string glfwActionName(int action);
-std::string glfwKeyName(int key);
-std::string glfwButtonName(int button);
 
 using InputProcessorPtr = std::shared_ptr<InputProcessor>;
 using InputProcessorWPtr = std::weak_ptr<InputProcessor>;

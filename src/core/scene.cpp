@@ -220,6 +220,52 @@ void Scene::removeInputProcessor(unsigned int id)
     _inputProcessors.erase(id);
 }
 
+void Scene::registerInputProcessingScript(InputProcessingScriptPtr script)
+{
+    ScriptPtr baseScriptPtr = std::static_pointer_cast<Script>(script);
+    InputProcessorPtr baseIpPtr = std::static_pointer_cast<InputProcessor>(script);
+    registerScript(baseScriptPtr);
+    registerInputProcessor(baseIpPtr);
+}
+
+void Scene::removeInputProcessingScript(InputProcessingScriptPtr script)
+{
+    _scripts.erase(script->Script::id);
+    _inputProcessors.erase(script->InputProcessor::id);
+}
+
+void Scene::processFramebufferResize(GLFWwindow* window, int width, int height)
+{
+    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
+    {
+        it->second->processFramebufferResize(window, width, height);
+    }
+}
+
+void Scene::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
+    {
+        it->second->processKeyboard(window, key, scancode, action, mods);
+    }
+}
+
+void Scene::processMouseButton(GLFWwindow* window, int button, int action, int mods)
+{
+    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
+    {
+        it->second->processMouseButton(window, button, action, mods);
+    }
+}
+
+void Scene::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
+{
+    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
+    {
+        it->second->processMouseCursor(window, xpos, ypos);
+    }
+}
+
 void Scene::processOutdatedTransformsFromNode(unsigned int id)
 {
     auto it = _objectIdsToNodeIds.find(id);
@@ -304,36 +350,4 @@ bool Scene::hasDisabledParent(unsigned int id)
         if (!strongParent->value->enabled) return true;
     }
     return false;
-}
-
-void Scene::processFramebufferResize(GLFWwindow* window, int width, int height)
-{
-    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
-    {
-        it->second->processFramebufferResize(window, width, height);
-    }
-}
-
-void Scene::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
-    {
-        it->second->processKeyboard(window, key, scancode, action, mods);
-    }
-}
-
-void Scene::processMouseButton(GLFWwindow* window, int button, int action, int mods)
-{
-    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
-    {
-        it->second->processMouseButton(window, button, action, mods);
-    }
-}
-
-void Scene::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
-{
-    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
-    {
-        it->second->processMouseCursor(window, xpos, ypos);
-    }
 }

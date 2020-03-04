@@ -34,7 +34,7 @@ class GLWindow
 
     private:
         GLFWwindow* _w;                         // Handled GLFW window.
-        InputProcessorPtr _inputProcessor;// Custom input processor to be registered at any time, providing overriden, custom callbacks.
+        InputProcessorPtr _inputProcessor;      // Custom input processor to be registered at any time, providing overriden, custom callbacks.
 };
 
 #endif//GL_WINDOW_HPP
