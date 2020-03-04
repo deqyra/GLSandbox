@@ -96,7 +96,7 @@ std::weak_ptr<T> SceneObject::getComponent()
         }
     }
 
-    return std::weak_ptr<T>(nullptr);
+    return std::weak_ptr<T>();
 }
 
 template<class T>

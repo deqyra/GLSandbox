@@ -54,7 +54,6 @@
     <ClCompile Include="src\core\ubo\light_ubo.cpp" />
     <ClCompile Include="src\core\ubo\matrix_ubo.cpp" />
     <ClCompile Include="src\core\uniform_buffer_object.cpp" />
-    <ClCompile Include="src\fps_camera_manager.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gl_examples\basic_triangle_example.cpp" />
     <ClCompile Include="src\gl_examples\lighting_example.cpp" />
@@ -94,6 +93,7 @@
     <ClInclude Include="src\core\scene\scene_object.hpp" />
     <ClInclude Include="src\core\scene\scene_object_component.hpp" />
     <ClInclude Include="src\core\scene\scene_object_component_type.hpp" />
+    <ClInclude Include="src\core\scene\scene_types_decl.hpp" />
     <ClInclude Include="src\core\scene\tools.hpp" />
     <ClInclude Include="src\core\scene_object_type.hpp" />
     <ClInclude Include="src\core\scene_renderer.hpp" />
@@ -103,7 +103,6 @@
     <ClInclude Include="src\core\ubo\light_ubo.hpp" />
     <ClInclude Include="src\core\ubo\matrix_ubo.hpp" />
     <ClInclude Include="src\core\uniform_buffer_object.hpp" />
-    <ClInclude Include="src\fps_camera_manager.hpp" />
     <ClInclude Include="src\gl_example.hpp" />
     <ClInclude Include="src\gl_examples\basic_triangle_example.hpp" />
     <ClInclude Include="src\gl_examples\lighting_example.hpp" />

@@ -5,7 +5,11 @@
 
 #include "scene_object_component.hpp"
 #include "scene_object_component_type.hpp"
-#include "scene_types_decl.hpp"
+
+#include "components/mesh_component.hpp"
+#include "components/light_component.hpp"
+#include "components/camera_component.hpp"
+#include "components/script_component.hpp"
 
 template<SceneObjectComponentType T>
 struct TypeFromEnum
