@@ -11,7 +11,8 @@
 
 class InputProcessingScript : public Script, public InputProcessor, public std::enable_shared_from_this<InputProcessingScript>
 {
-    private:
+    protected:
+        void registerInputProcessor();
         void removeInputProcessor();
 
     public:
@@ -24,8 +25,9 @@ class InputProcessingScript : public Script, public InputProcessor, public std::
         virtual void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
         virtual void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
 
+        virtual void update(float currentTime, float timeElapsed);
+
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
-        virtual void update() = 0;
 };
 
 #endif//INPUT_PROCESSING_SCRIPT

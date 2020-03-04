@@ -7,7 +7,7 @@
 
 class Script
 {
-    private:
+    protected:
         SceneObjectWPtr _sceneObject;
 
     public:
@@ -16,7 +16,7 @@ class Script
 
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 
-        virtual void update() = 0;
+        virtual void update(float currentTime, float timeElapsed) = 0;
 };
 
 using ScriptPtr = std::shared_ptr<Script>;
