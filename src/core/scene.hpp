@@ -72,10 +72,10 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
 template<class T>
 std::vector<SceneObjectWPtr> Scene::getObjectsWithComponent(bool mustBeEnabled)
 {
-    std::vector<WeakObjPtr> all = getAllObjects();
-    std::vector<WeakObjPtr> result;
+    std::vector<SceneObjectWPtr> all = getAllObjects();
+    std::vector<SceneObjectWPtr> result;
 
-    std::function<bool(WeakObjPtr)> componentChecker = [this, mustBeEnabled](WeakObjPtr obj)
+    std::function<bool(SceneObjectWPtr)> componentChecker = [this, mustBeEnabled](SceneObjectWPtr obj)
     {
         auto strongObj = obj.lock();
         if (mustBeEnabled && !strongObj->enabled) return false;

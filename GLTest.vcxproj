@@ -40,7 +40,6 @@
     <ClCompile Include="src\core\mesh_generators\cube_generator.cpp" />
     <ClCompile Include="src\core\mesh_generators\torus_generator.cpp" />
     <ClCompile Include="src\core\positioned_object.cpp" />
-    <ClCompile Include="src\core\projection_provider.cpp" />
     <ClCompile Include="src\core\scene.cpp" />
     <ClCompile Include="src\core\scene\components\camera_component.cpp" />
     <ClCompile Include="src\core\scene\components\light_component.cpp" />
@@ -55,8 +54,6 @@
     <ClCompile Include="src\core\ubo\light_ubo.cpp" />
     <ClCompile Include="src\core\ubo\matrix_ubo.cpp" />
     <ClCompile Include="src\core\uniform_buffer_object.cpp" />
-    <ClCompile Include="src\core\view_projection_provider.cpp" />
-    <ClCompile Include="src\core\view_provider.cpp" />
     <ClCompile Include="src\fps_camera_manager.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gl_examples\basic_triangle_example.cpp" />
@@ -106,7 +103,6 @@
     <ClInclude Include="src\core\ubo\light_ubo.hpp" />
     <ClInclude Include="src\core\ubo\matrix_ubo.hpp" />
     <ClInclude Include="src\core\uniform_buffer_object.hpp" />
-    <ClInclude Include="src\core\view_provider.hpp" />
     <ClInclude Include="src\fps_camera_manager.hpp" />
     <ClInclude Include="src\gl_example.hpp" />
     <ClInclude Include="src\gl_examples\basic_triangle_example.hpp" />

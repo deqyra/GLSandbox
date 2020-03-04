@@ -26,16 +26,3 @@ std::shared_ptr<SceneObjectComponent> cloneComponent(std::shared_ptr<SceneObject
             return nullptr;
     }
 }
-
-template<SceneObjectComponentType T>
-std::shared_ptr<typename TypeFromEnum<T>::type> cloneComponent(std::shared_ptr<SceneObjectComponent> compPtr)
-{
-    using ComponentRealType = typename TypeFromEnum<T>::type;
-    using ComponentPtr = std::shared_ptr<ComponentRealType>;
-
-    ComponentPtr realTypePtr = std::static_pointer_cast<ComponentRealType>(compPtr);
-    // Clone the component on the heap using his real type copy constructor
-    realTypePtr.reset(new ComponentRealType(*realTypePtr));
-    // Return a pointer to it
-    return realTypePtr;
-}

@@ -16,6 +16,7 @@
 #include "components/mesh_component.hpp"
 #include "components/light_component.hpp"
 #include "components/camera_component.hpp"
+#include "components/script_component.hpp"
 
 class SceneObject : public PositionedObject, public std::enable_shared_from_this<SceneObject>
 {
@@ -53,7 +54,7 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
 template<class T, class... ArgTypes>
 std::weak_ptr<T> SceneObject::addComponent(ArgTypes&& ... args)
 {
-    if (hasComponent<T>() && componentType<T>() != SceneObjectComponentType::Script)
+    if (hasComponent<T>() && SceneObjectComponent::componentType<T>() != SceneObjectComponentType::Script)
     {
         std::string s = "SceneObject: object with ID " + std::to_string(id) + " already has a component of type " + SceneObjectComponent::componentTypeString<T>() + " and cannot have another.";
         throw std::runtime_error(s.c_str());
@@ -108,7 +109,7 @@ std::weak_ptr<T> SceneObject::getAllComponents()
     {
         if ((*it)->type == expectedType)
         {
-            SceneObjectComponentWPtr wComponent = std::static_pointer_cast<T>(*it)
+            SceneObjectComponentWPtr wComponent = std::static_pointer_cast<T>(*it);
             std::weak_ptr<T> wRealComponent = std::weak_ptr<T>(wComponent);
             components.push_back(wRealComponent);
         }
