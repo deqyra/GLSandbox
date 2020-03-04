@@ -10,6 +10,7 @@
 
 #include "scene/scene_types_decl.hpp"
 #include "scene/scene_object.hpp"
+#include "scene/script.hpp"
 #include "../tools/tree.hpp"
 #include "../tools/input_processor.hpp"
 
@@ -23,7 +24,8 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         ObjTree _graph;
         MatTree _modelMatrices;
         std::unordered_map<unsigned int, std::pair<unsigned int, unsigned int>> _objectIdsToNodeIds;
-        std::unordered_map<unsigned int, InputProcessorWPtr> _inputProcessors;
+        std::unordered_map<unsigned int, ScriptPtr> _scripts;
+        std::unordered_map<unsigned int, InputProcessorPtr> _inputProcessors;
 
         void processOutdatedTransformsFromNode(unsigned int id);
         void recalculateModelMatrix(unsigned int id);
@@ -46,10 +48,14 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
 
         std::vector<SceneObjectWPtr> getAllObjects();
 
-        void registerInputProcessor(InputProcessorWPtr inputProcessor);
-        void removeInputProcessor(InputProcessorWPtr inputProcessor);
+        void registerScript(ScriptPtr script);
+        void removeScript(ScriptPtr script);
+        void removeScript(unsigned int id);
+        void triggerUpdate();
+
+        void registerInputProcessor(InputProcessorPtr inputProcessor);
+        void removeInputProcessor(InputProcessorPtr inputProcessor);
         void removeInputProcessor(unsigned int id);
-        std::vector<InputProcessorPtr> getAllInputProcessors();
 
         virtual void framebufferResizeCallback(GLFWwindow* window, int width, int height);
         virtual void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

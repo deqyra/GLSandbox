@@ -1,6 +1,9 @@
 #include "script.hpp"
 
-Script::Script()
+Script::_count = 0;
+
+Script::Script() :
+    id(_count++)
 {
 
 }

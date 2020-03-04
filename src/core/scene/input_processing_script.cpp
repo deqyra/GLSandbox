@@ -46,7 +46,7 @@ void InputProcessingScript::registerInputProcessor()
 {
     SceneObjectPtr sceneObject = _sceneObject.lock();
     ScenePtr scene = sceneObject->getScene().lock();
-    InputProcessorWPtr ptr = std::static_pointer_cast<InputProcessor>(this->weak_from_this());
+    InputProcessorPtr ptr = std::static_pointer_cast<InputProcessor>(this->shared_from_this());
     scene->registerInputProcessor(ptr);
 }
 

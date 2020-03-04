@@ -178,39 +178,39 @@ std::vector<SceneObjectWPtr> Scene::getAllObjects()
     return result;
 }
 
-void Scene::registerInputProcessor(InputProcessorWPtr inputProcessor)
+void Scene::registerScript(ScriptPtr script)
 {
-    InputProcessorPtr realPtr = inputProcessor.lock();
-    if (realPtr == nullptr) return;
-
-    _inputProcessors[realPtr->id] = inputProcessor;
+    _scripts[script->id] = script;
 }
 
-void Scene::removeInputProcessor(InputProcessorWPtr inputProcessor)
+void Scene::removeScript(ScriptPtr script)
 {
-    InputProcessorPtr realPtr = inputProcessor.lock();
-    if (realPtr == nullptr) return;
+    _scripts.erase(script->id);
+}
 
-    _inputProcessors.erase(realPtr->id);
+void Scene::removeScript(unsigned int id)
+{
+    _scripts.erase(id);
+}
+
+void Scene::triggerUpdate()
+{
+    
+}
+
+void Scene::registerInputProcessor(InputProcessorPtr inputProcessor)
+{
+    _inputProcessors[inputProcessor->id] = inputProcessor;
+}
+
+void Scene::removeInputProcessor(InputProcessorPtr inputProcessor)
+{
+    _inputProcessors.erase(inputProcessor->id);
 }
 
 void Scene::removeInputProcessor(unsigned int id)
 {
     _inputProcessors.erase(id);
-}
-
-std::vector<InputProcessorPtr> Scene::getAllInputProcessors()
-{
-    std::vector<InputProcessorPtr> result;
-    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
-    {
-        InputProcessorPtr realPtr = it->second.lock();
-        if (realPtr == nullptr) continue;
-
-        result.push_back(realPtr);
-    }
-
-    return result;
 }
 
 void Scene::processOutdatedTransformsFromNode(unsigned int id)
@@ -303,8 +303,7 @@ void Scene::framebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
-        InputProcessorPtr realInputProcessor = it->second.lock();
-        realInputProcessor->framebufferResizeCallback(window, width, height);
+        it->second->framebufferResizeCallback(window, width, height);
     }
 }
 
@@ -312,8 +311,7 @@ void Scene::keyboardCallback(GLFWwindow* window, int key, int scancode, int acti
 {
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
-        InputProcessorPtr realInputProcessor = it->second.lock();
-        realInputProcessor->keyboardCallback(window, key, scancode, action, mods);
+        it->second->keyboardCallback(window, key, scancode, action, mods);
     }
 }
 
@@ -321,8 +319,7 @@ void Scene::mouseButtonCallback(GLFWwindow* window, int button, int action, int 
 {
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
-        InputProcessorPtr realInputProcessor = it->second.lock();
-        realInputProcessor->mouseButtonCallback(window, button, action, mods);
+        it->second->mouseButtonCallback(window, button, action, mods);
     }
 }
 
@@ -330,7 +327,6 @@ void Scene::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
 {
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
-        InputProcessorPtr realInputProcessor = it->second.lock();
-        realInputProcessor->mouseCursorCallback(window, xpos, ypos);
+        it->second->mouseCursorCallback(window, xpos, ypos);
     }
 }

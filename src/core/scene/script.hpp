@@ -7,6 +7,9 @@
 
 class Script
 {
+    private:
+        static unsigned int _count;
+
     protected:
         SceneObjectWPtr _sceneObject;
 
@@ -17,8 +20,11 @@ class Script
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 
         virtual void update(float currentTime, float timeElapsed) = 0;
+
+        const unsigned int id;
 };
 
 using ScriptPtr = std::shared_ptr<Script>;
+using ScriptWPtr = std::weak_ptr<Script>;
 
 #endif//SCRIPT_HPP
