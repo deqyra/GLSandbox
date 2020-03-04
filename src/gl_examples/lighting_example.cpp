@@ -58,16 +58,17 @@ void LightingExample::run(GLFWwindow* window)
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
 
-    // Retrieve the custom window pointer, register this example as an input processor
-    GLWindow* windowHandler = static_cast<GLWindow*>(glfwGetWindowUserPointer(window));
-    windowHandler->registerInputProcessor(this);
-
     _lastTime = (float)glfwGetTime();
     
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
 
-    // Instantiate scene objects
+    // Initialize scene
     std::shared_ptr<Scene> scene = std::make_shared<Scene>();
+    scene->init();
+    // Retrieve the custom window pointer, register the scene as an input processor
+    GLWindow* windowHandler = static_cast<GLWindow*>(glfwGetWindowUserPointer(window));
+    windowHandler->registerInputProcessor(scene);
+
     std::shared_ptr<SceneObject> torusObj = generateSceneMesh(scene, std::make_shared<TorusGenerator>(2.f, 0.5f, 72, 48), Materials::Emerald, lightingShader);
     std::shared_ptr<SceneObject> axesObj = generateSceneMesh(scene, std::make_shared<AxesGenerator>(3.f));
 
