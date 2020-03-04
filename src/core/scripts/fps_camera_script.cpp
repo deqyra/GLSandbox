@@ -1,31 +1,14 @@
-/**
-    GLTest, fps_camera_manager.hpp
-    Purpose: Implementation of class FPSCameraManager. See .hpp file.
+#include "fps_camera_script.hpp"
 
-    @author François Brachais (deqyra)
-    @version 1.0 06/02/2020
-*/
-#include "fps_camera_manager.hpp"
+#include "../direction.hpp"
+#include "../scene/components/camera_component.hpp"
 
-FPSCameraManager::FPSCameraManager(glm::vec3 position, glm::mat4 projection, float yaw, float pitch, glm::vec3 up) :
-    _camera(nullptr),
-    _moveSpeed(SPEED),
-    _mouseSensitivity(SENSITIVITY),
-    _movement{false},
-    _sprint(false),
-    _lastMouseX(0),
-    _lastMouseY(0),
-    _mouseWasUpdatedOnce(false)
-{
-    _camera = std::make_shared<Camera>(position, projection, yaw, pitch, up);
-}
-
-FPSCameraManager::~FPSCameraManager()
+FPSCameraScript::FPSCameraScript()
 {
 
 }
 
-void FPSCameraManager::processKeyInput(GLFWwindow* window, int key, int scancode, int action, int mods)
+void FPSCameraScript::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     // Four directional keys input processing
     // W (forward)
@@ -81,7 +64,7 @@ void FPSCameraManager::processKeyInput(GLFWwindow* window, int key, int scancode
     }
 }
 
-void FPSCameraManager::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
+void FPSCameraScript::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
 {
     if (!_mouseWasUpdatedOnce)
     {
@@ -99,68 +82,32 @@ void FPSCameraManager::processMouseCursor(GLFWwindow* window, double xpos, doubl
     _lastMouseY = (float) ypos;
 }
 
-void FPSCameraManager::processMouseScroll(float scrollOffset)
+void FPSCameraScript::update(float currentTime, float timeElapsed)
 {
-
-}
-
-CameraWPtr FPSCameraManager::getCamera()
-{
-    return _camera;
-}
-
-void FPSCameraManager::setCamera(CameraPtr camera)
-{
-    _camera = camera;
-}
-
-void FPSCameraManager::setProjectionMatrix(glm::mat4 projection)
-{
-    _camera->setProjectionMatrix(projection);
-}
-
-void FPSCameraManager::updateCamera(float timeDelta)
-{
-    float velocity = timeDelta * _moveSpeed;
+    float velocity = timeElapsed * _moveSpeed;
     if (_sprint)
         velocity *= SPRINT_MUTLIPLIER;
 
+    SceneObjectPtr sceneObject = _sceneObject.lock();
+    glm::vec3 position = sceneObject->getPosition();
+
     if (_movement[DIR_INDEX_FORWARD])
-        _camera->processMovement(Direction::FORWARD, velocity);
+        position += _camera->front() * velocity;
     if (_movement[DIR_INDEX_BACKWARD])
-        _camera->processMovement(Direction::BACKWARD, velocity);
+        position -= _camera->front() * velocity;
     if (_movement[DIR_INDEX_LEFT])
-        _camera->processMovement(Direction::LEFT, velocity);
+        position -= _camera->right() * velocity;
     if (_movement[DIR_INDEX_RIGHT])
-        _camera->processMovement(Direction::RIGHT, velocity);
+        position += _camera->right() * velocity;
+
+    sceneObject->setPosition(position);
 }
 
-glm::vec3 FPSCameraManager::getPosition()
+void FPSCameraScript::setSceneObject(SceneObjectWPtr sceneObject)
 {
-    return _camera->getPosition();
-}
-
-glm::mat4 FPSCameraManager::getViewMatrix()
-{
-    return _camera->getViewMatrix();
-}
-
-glm::mat4 FPSCameraManager::getViewMatrix(glm::vec3 position)
-{
-    return _camera->getViewMatrix(position);
-}
-
-glm::vec3 FPSCameraManager::transformWorldPosition(glm::vec3 worldPosition)
-{
-    return _camera->transformWorldPosition(worldPosition);
-}
-
-glm::mat4 FPSCameraManager::getProjectionMatrix()
-{
-    return _camera->getProjectionMatrix();
-}
-
-glm::mat4 FPSCameraManager::getViewProjectionMatrix()
-{
-    return _camera->getViewProjectionMatrix();
+    InputProcessingScript::setSceneObject(sceneObject);
+    SceneObjectPtr realSceneObject = sceneObject.lock();
+    auto cameraComponent = realSceneObject->getComponent<CameraComponent>();
+    auto realComponent = cameraComponent.lock();
+    _camera = realComponent->camera;
 }
