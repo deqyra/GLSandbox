@@ -11,6 +11,8 @@ class ScriptComponent : public SceneObjectComponent
 {
     private:
         ScriptPtr _script;
+        void registerScript();
+        void removeScript();
 
     public:
         ScriptComponent(ScriptPtr script);
