@@ -8,8 +8,6 @@
 #include "scene/scene_object.hpp"
 #include "scene/scene_object_component.hpp"
 
-#include "view_provider.hpp"
-
 #include "light.hpp"
 #include "ubo/matrix_ubo.hpp"
 #include "ubo/light_ubo.hpp"
@@ -20,10 +18,6 @@
 
 class SceneRenderer
 {
-    public:
-        using ObjPtr = Scene::ObjPtr;
-        using WeakObjPtr = Scene::WeakObjPtr;
-
     private:
         MatrixUBO _matrixUbo;
         LightUBO _lightUbo;

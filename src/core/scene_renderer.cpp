@@ -1,4 +1,5 @@
 #include "scene_renderer.hpp"
+#include "scene.hpp"
 #include "scene/components/mesh_component.hpp"
 #include "scene/components/light_component.hpp"
 #include "scene/components/camera_component.hpp"
@@ -12,12 +13,14 @@ SceneRenderer::SceneRenderer() :
 
 }
 
-void SceneRenderer::renderScene(std::weak_ptr<Scene> wScene)
+void SceneRenderer::renderScene(SceneWPtr wScene)
 {
-    std::shared_ptr<Scene> scene = wScene.lock();
-    std::vector<WeakObjPtr> meshComponents = scene->getObjectsWithComponent<MeshComponent>();
-    std::vector<WeakObjPtr> lightComponents = scene->getObjectsWithComponent<LightComponent>();
-    std::vector<WeakObjPtr> cameraComponents = scene->getObjectsWithComponent<CameraComponent>();
+    ScenePtr scene = wScene.lock();
+    scene->triggerUpdate();
+
+    std::vector<SceneObjectWPtr> meshComponents = scene->getObjectsWithComponent<MeshComponent>();
+    std::vector<SceneObjectWPtr> lightComponents = scene->getObjectsWithComponent<LightComponent>();
+    std::vector<SceneObjectWPtr> cameraComponents = scene->getObjectsWithComponent<CameraComponent>();
 
     if (cameraComponents.size() == 0)
     {

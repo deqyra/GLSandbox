@@ -88,4 +88,7 @@ std::vector<SceneObjectWPtr> Scene::getObjectsWithComponent(bool mustBeEnabled)
     return result;
 }
 
+using ScenePtr = std::shared_ptr<Scene>;
+using SceneWPtr = std::weak_ptr<Scene>;
+
 #endif//SCENE_HPP
