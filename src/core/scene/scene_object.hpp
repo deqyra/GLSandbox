@@ -43,6 +43,9 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
         template<class T>
         std::weak_ptr<T> getComponent();
 
+        template<class T>
+        std::weak_ptr<T> getAllComponents();
+
         const unsigned int id;
         bool enabled;
 };
@@ -92,7 +95,26 @@ std::weak_ptr<T> SceneObject::getComponent()
         }
     }
 
-    return std::shared_ptr<T>(nullptr);
+    return std::weak_ptr<T>(nullptr);
+}
+
+template<class T>
+std::weak_ptr<T> SceneObject::getAllComponents()
+{
+    std::vector<std::weak_ptr<T>> components;
+
+    SceneObjectComponentType expectedType = SceneObjectComponent::componentType<T>();
+    for (auto it = _components.begin(); it != _components.end(); it++)
+    {
+        if ((*it)->type == expectedType)
+        {
+            SceneObjectComponentWPtr wComponent = std::static_pointer_cast<T>(*it)
+            std::weak_ptr<T> wRealComponent = std::weak_ptr<T>(wComponent);
+            components.push_back(wRealComponent);
+        }
+    }
+
+    return components;
 }
 
 #endif//SCENE_OBJECT_HPP
