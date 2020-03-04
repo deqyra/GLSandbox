@@ -13,7 +13,7 @@
 #include "../tools/tree.hpp"
 #include "../tools/input_processor.hpp"
 
-class Scene : public std::enable_shared_from_this<Scene>
+class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
 {
     public:
         using ObjTree = Tree<SceneObjectPtr>;
@@ -50,6 +50,11 @@ class Scene : public std::enable_shared_from_this<Scene>
         void removeInputProcessor(InputProcessorWPtr inputProcessor);
         void removeInputProcessor(unsigned int id);
         std::vector<InputProcessorPtr> getAllInputProcessors();
+
+        virtual void framebufferResizeCallback(GLFWwindow* window, int width, int height);
+        virtual void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+        virtual void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
 
         template<class T>
         std::vector<SceneObjectWPtr> getObjectsWithComponent(bool mustBeEnabled = true);

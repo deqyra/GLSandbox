@@ -1,6 +1,7 @@
 #include "scene.hpp"
 
 Scene::Scene() :
+    InputProcessor(),
     _graph(SceneObjectPtr()),
     _modelMatrices(glm::mat4(1.f)),
     _objectIdsToNodeIds()
@@ -296,4 +297,40 @@ bool Scene::hasDisabledParent(unsigned int id)
         if (!strongParent->value->enabled) return true;
     }
     return false;
+}
+
+void Scene::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+{
+    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
+    {
+        InputProcessorPtr realInputProcessor = it->second.lock();
+        realInputProcessor->framebufferResizeCallback(window, width, height);
+    }
+}
+
+void Scene::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
+    {
+        InputProcessorPtr realInputProcessor = it->second.lock();
+        realInputProcessor->keyboardCallback(window, key, scancode, action, mods);
+    }
+}
+
+void Scene::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
+    {
+        InputProcessorPtr realInputProcessor = it->second.lock();
+        realInputProcessor->mouseButtonCallback(window, button, action, mods);
+    }
+}
+
+void Scene::mouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
+{
+    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
+    {
+        InputProcessorPtr realInputProcessor = it->second.lock();
+        realInputProcessor->mouseCursorCallback(window, xpos, ypos);
+    }
 }
