@@ -6,6 +6,7 @@ Scene::Scene() :
     _modelMatrices(glm::mat4(1.f)),
     _objectIdsToNodeIds()
 {
+    _lastTime = std::chrono::system_clock::now();
 }
 
 unsigned int Scene::init()
