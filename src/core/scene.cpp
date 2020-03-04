@@ -193,6 +193,11 @@ void Scene::removeInputProcessor(InputProcessorWPtr inputProcessor)
     _inputProcessors.erase(realPtr->id);
 }
 
+void Scene::removeInputProcessor(unsigned int id)
+{
+    _inputProcessors.erase(id);
+}
+
 std::vector<InputProcessorPtr> Scene::getAllInputProcessors()
 {
     std::vector<InputProcessorPtr> result;

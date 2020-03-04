@@ -48,6 +48,7 @@ class Scene : public std::enable_shared_from_this<Scene>
 
         void registerInputProcessor(InputProcessorWPtr inputProcessor);
         void removeInputProcessor(InputProcessorWPtr inputProcessor);
+        void removeInputProcessor(unsigned int id);
         std::vector<InputProcessorPtr> getAllInputProcessors();
 
         template<class T>
