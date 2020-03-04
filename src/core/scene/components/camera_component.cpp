@@ -4,7 +4,7 @@
 
 using CompType = SceneObjectComponentType;
 
-CameraComponent::CameraComponent(std::shared_ptr<Camera> camera) :
+CameraComponent::CameraComponent(CameraPtr camera) :
     SceneObjectComponent(CompType::Camera),
     camera(camera)
 {
@@ -18,8 +18,8 @@ CameraComponent::~CameraComponent()
 
 glm::mat4 CameraComponent::getViewMatrix()
 {
-    std::shared_ptr<SceneObject> strongSceneObj = sceneObject.lock();
-    glm::vec3 worldPosition = strongSceneObj->getWorldPosition();
+    std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
+    glm::vec3 worldPosition = sceneObject->getWorldPosition();
 
     glm::vec3 newUp = getNewWorldUp();
     camera->setWorldUp(newUp);
@@ -39,14 +39,16 @@ glm::mat4 CameraComponent::getProjectionMatrix()
 
 glm::mat4 CameraComponent::getViewProjectionMatrix()
 {
-    return camera->getViewProjectionMatrix();
+    std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
+    glm::vec3 worldPosition = sceneObject->getWorldPosition();
+    return camera->getViewProjectionMatrix(worldPosition);
 }
 
 glm::vec3 CameraComponent::getNewWorldUp()
 {
-    std::shared_ptr<SceneObject> obj = sceneObject.lock();
-    std::shared_ptr<Scene> scene = obj->scene.lock();
-    glm::mat4 worldMat = scene->getWorldModelMatrix(obj->id);
+    std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
+    std::shared_ptr<Scene> scene = sceneObject->getScene().lock();
+    glm::mat4 worldMat = scene->getWorldModelMatrix(sceneObject->id);
     glm::vec4 up = glm::vec4(WORLD_Y, 0.f);
     up = worldMat * up;
     return glm::vec3(up);

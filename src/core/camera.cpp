@@ -11,26 +11,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 position, glm::mat4 projection, float yaw, float pitch, glm::vec3 up) :
-    _position(position),
+Camera::Camera(glm::mat4 projection, float yaw, float pitch, glm::vec3 up) :
     _worldUp(up),
     _front(glm::vec3(0.f, 0.f, -1.f)),
     _yaw(yaw),
     _pitch(pitch),
     _zoom(ZOOM),
-    _vectorsUpdated(false),
-    _viewUpdated(false),
-    _projectionUpdated(true),
-    _viewMatrix(glm::mat4(1.f)),
-    _projectionMatrix(projection),
-    _viewProjectionMatrix(projection)
+    _projectionMatrix(projection)
 {
     // Update vectors according to parameters
     updateVectors();
-    // Generate view matrix
-    getViewMatrix();
-    // Generate the view projection matrix
-    getViewProjectionMatrix();
 }
 
 Camera::~Camera()
@@ -48,29 +38,6 @@ void Camera::updateVectors()
 
     _right = glm::normalize(glm::cross(_front, _worldUp));
     _up = glm::normalize(glm::cross(_right, _front));
-
-    _vectorsUpdated = true;
-}
-
-void Camera::processMovement(Direction dir, float velocity)
-{
-    switch (dir)
-    {
-        case Direction::FORWARD:
-            _position += _front * velocity;
-            break;
-        case Direction::BACKWARD:
-            _position -= _front * velocity;
-            break;
-        case Direction::LEFT:
-            _position -= _right * velocity;
-            break;
-        case Direction::RIGHT:
-            _position += _right * velocity;
-            break;
-    }
-
-    updateVectors();
 }
 
 void Camera::processRotation(float yawOffset, float pitchOffset, bool constrainPitch)
@@ -99,14 +66,19 @@ void Camera::processZoom(float scrollOffset)
         _zoom = 45.0f;
 }
 
-glm::vec3 Camera::getPosition()
+glm::vec3 Camera::front()
 {
-    return _position;
+    return _front;
 }
 
-void Camera::setPosition(glm::vec3 position)
+glm::vec3 Camera::right()
 {
-    _position = position;
+    return _right;
+}
+
+glm::vec3 Camera::up()
+{
+    return _up;
 }
 
 glm::vec3 Camera::getWorldUp()
@@ -124,19 +96,6 @@ void Camera::setWorldUp(glm::vec3 up)
 void Camera::setProjectionMatrix(glm::mat4 projection)
 {
     _projectionMatrix = projection;
-    _projectionUpdated = true;
-}
-
-glm::mat4 Camera::getViewMatrix()
-{
-    if (_vectorsUpdated)
-    {
-        _viewMatrix = glm::lookAt(_position, _position + _front, _up);
-        _vectorsUpdated = false;
-        _viewUpdated = true;
-    }
-
-    return _viewMatrix;
 }
 
 glm::mat4 Camera::getViewMatrix(glm::vec3 position)
@@ -144,10 +103,10 @@ glm::mat4 Camera::getViewMatrix(glm::vec3 position)
     return glm::lookAt(position, position + _front, _up);
 }
 
-glm::vec3 Camera::transformWorldPosition(glm::vec3 worldPosition)
+glm::vec3 Camera::transformWorldPosition(glm::vec3 viewPos, glm::vec3 worldPosition)
 {
-    glm::vec4 viewPosition = _viewMatrix * glm::vec4(worldPosition, 1.f);
-    return glm::vec3(viewPosition);
+    glm::vec4 transformedPosition = getViewMatrix(viewPos) * glm::vec4(worldPosition, 1.f);
+    return glm::vec3(transformedPosition);
 }
 
 glm::mat4 Camera::getProjectionMatrix()
@@ -155,14 +114,7 @@ glm::mat4 Camera::getProjectionMatrix()
     return _projectionMatrix;
 }
 
-glm::mat4 Camera::getViewProjectionMatrix()
+glm::mat4 Camera::getViewProjectionMatrix(glm::vec3 viewPos)
 {
-    if (_viewUpdated || _projectionUpdated)
-    {
-        _viewProjectionMatrix = _projectionMatrix * _viewMatrix;
-        _viewUpdated = false;
-        _projectionUpdated = false;
-    }
-
-    return _viewProjectionMatrix;
+    return _projectionMatrix * getViewMatrix(viewPos);
 }

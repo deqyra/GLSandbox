@@ -4,17 +4,16 @@
 #include "../scene_object_component.hpp"
 #include "../scene_object_component_type.hpp"
 #include "../../camera.hpp"
-#include "../../view_projection_provider.hpp"
 
 #include <string>
 
-class CameraComponent : public SceneObjectComponent, public ViewProjectionProvider
+class CameraComponent : public SceneObjectComponent
 {
     public:
-        CameraComponent(std::shared_ptr<Camera> camera);
+        CameraComponent(CameraPtr camera);
         virtual ~CameraComponent();
 
-        std::shared_ptr<Camera> camera;
+        CameraPtr camera;
 
         virtual glm::mat4 getViewMatrix();
         virtual glm::vec3 transformWorldPosition(glm::vec3 worldPosition);
