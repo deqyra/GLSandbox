@@ -53,6 +53,8 @@ void InputProcessingScript::registerInputProcessor()
 void InputProcessingScript::removeInputProcessor()
 {
     SceneObjectPtr sceneObject = _sceneObject.lock();
+    if (sceneObject == nullptr) return;
+
     ScenePtr scene = sceneObject->getScene().lock();
     scene->removeInputProcessor(InputProcessor::id);
 }

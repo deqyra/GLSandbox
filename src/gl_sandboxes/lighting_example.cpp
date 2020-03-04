@@ -30,6 +30,8 @@
 #include "../core/scene/scene_object.hpp"
 #include "../core/scene/scene_object_component_type.hpp"
 
+#include "../core/scripts/fps_camera_script.hpp"9
+
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
 #define CUBE_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
 #define TORUS_ROTATION_AXIS glm::vec3(1.f, 0.f, 0.f)
@@ -84,6 +86,9 @@ void LightingSandbox::run(GLFWwindow* window)
     cameraObj->addComponent<CameraComponent>(camera);
     cameraObj->setPosition(CAMERA_POS);
     scene->registerObject(cameraObj);
+    std::shared_ptr<FPSCameraScript> fpsScript = std::make_shared<FPSCameraScript>();
+    std::shared_ptr<Script> baseFpsScript = std::static_pointer_cast<Script>(fpsScript);
+    cameraObj->addComponent<ScriptComponent>(baseFpsScript);
 
     SceneRenderer sceneRenderer;
     while (!glfwWindowShouldClose(window))

@@ -3,7 +3,14 @@
 #include "../direction.hpp"
 #include "../scene/components/camera_component.hpp"
 
-FPSCameraScript::FPSCameraScript()
+FPSCameraScript::FPSCameraScript() :
+    _moveSpeed(SPEED),
+    _mouseSensitivity(SENSITIVITY),
+    _movement{false},
+    _sprint(false),
+    _lastMouseX(0),
+    _lastMouseY(0),
+    _mouseWasUpdatedOnce(false)
 {
 
 }
