@@ -44,8 +44,11 @@
     <ClCompile Include="src\core\scene\components\camera_component.cpp" />
     <ClCompile Include="src\core\scene\components\light_component.cpp" />
     <ClCompile Include="src\core\scene\components\mesh_component.cpp" />
+    <ClCompile Include="src\core\scene\components\script_component.cpp" />
+    <ClCompile Include="src\core\scene\input_processing_script.cpp" />
     <ClCompile Include="src\core\scene\scene_object.cpp" />
     <ClCompile Include="src\core\scene\scene_object_component.cpp" />
+    <ClCompile Include="src\core\scene\script.cpp" />
     <ClCompile Include="src\core\scene\tools.cpp" />
     <ClCompile Include="src\core\scene_renderer.cpp" />
     <ClCompile Include="src\core\scripts\fps_camera_script.cpp" />
@@ -84,10 +87,13 @@
     <ClInclude Include="src\core\scene\components\camera_component.hpp" />
     <ClInclude Include="src\core\scene\components\light_component.hpp" />
     <ClInclude Include="src\core\scene\components\mesh_component.hpp" />
+    <ClInclude Include="src\core\scene\components\script_component.hpp" />
+    <ClInclude Include="src\core\scene\input_processing_script.hpp" />
     <ClInclude Include="src\core\scene\scene_object.hpp" />
     <ClInclude Include="src\core\scene\scene_object_component.hpp" />
     <ClInclude Include="src\core\scene\scene_object_component_type.hpp" />
     <ClInclude Include="src\core\scene\scene_types_decl.hpp" />
+    <ClInclude Include="src\core\scene\script.hpp" />
     <ClInclude Include="src\core\scene\tools.hpp" />
     <ClInclude Include="src\core\scene_object_type.hpp" />
     <ClInclude Include="src\core\scene_renderer.hpp" />

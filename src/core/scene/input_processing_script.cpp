@@ -54,5 +54,5 @@ void InputProcessingScript::removeInputProcessor()
 {
     SceneObjectPtr sceneObject = _sceneObject.lock();
     ScenePtr scene = sceneObject->getScene().lock();
-    scene->removeInputProcessor(id);
+    scene->removeInputProcessor(InputProcessor::id);
 }

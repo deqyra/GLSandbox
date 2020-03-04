@@ -21,7 +21,7 @@
 #include "../core/scene/scene_object.hpp"
 #include "../core/mesh_generator.hpp"
 
-class LightingExample : public GLSandbox
+class LightingSandbox : public GLSandbox
 {
     private:
         float _angle;
@@ -33,8 +33,8 @@ class LightingExample : public GLSandbox
         std::shared_ptr<SceneObject> generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat = Material(), Shader shader = Shader());
 
     public:
-        LightingExample();
-        virtual ~LightingExample();
+        LightingSandbox();
+        virtual ~LightingSandbox();
         virtual void run(GLFWwindow* window);
 };
 

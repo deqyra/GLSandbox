@@ -72,7 +72,7 @@ vector<GLSandbox*> createAllSandboxes()
     try
     {
         return vector<GLSandbox*>({
-            new LightingExample()
+            new LightingSandbox()
         });
     }
     catch (runtime_error e)

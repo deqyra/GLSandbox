@@ -34,7 +34,7 @@
 #define CUBE_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
 #define TORUS_ROTATION_AXIS glm::vec3(1.f, 0.f, 0.f)
 
-LightingExample::LightingExample() :
+LightingSandbox::LightingSandbox() :
     _angle(0.f),
     _autoRotate(true),
     _speedFactor(10.f)
@@ -42,11 +42,11 @@ LightingExample::LightingExample() :
     _lastTime = (float)glfwGetTime();
 }
 
-LightingExample::~LightingExample()
+LightingSandbox::~LightingSandbox()
 {
 }
 
-void LightingExample::run(GLFWwindow* window)
+void LightingSandbox::run(GLFWwindow* window)
 {
     glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
@@ -118,7 +118,7 @@ void LightingExample::run(GLFWwindow* window)
     windowHandler->removeInputProcessor();
 }
 
-void LightingExample::handleKeyboardObjectRotation(GLFWwindow* window, int key, int scancode, int action, int mods)
+void LightingSandbox::handleKeyboardObjectRotation(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (_autoRotate)
     {
@@ -138,7 +138,7 @@ void LightingExample::handleKeyboardObjectRotation(GLFWwindow* window, int key, 
     }
 }
 
-std::shared_ptr<SceneObject> LightingExample::generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat, Shader shader)
+std::shared_ptr<SceneObject> LightingSandbox::generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat, Shader shader)
 {
     MeshPtr mesh = generator->generatePtr();
     std::shared_ptr<SceneObject> obj = std::make_shared<SceneObject>(SceneWPtr(scene));

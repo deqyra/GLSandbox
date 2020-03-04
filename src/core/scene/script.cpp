@@ -1,6 +1,6 @@
 #include "script.hpp"
 
-Script::_count = 0;
+unsigned int Script::_count = 0;
 
 Script::Script() :
     id(_count++)
@@ -8,7 +8,7 @@ Script::Script() :
 
 }
 
-virtual Script::~Script()
+Script::~Script()
 {
 
 }
