@@ -19,18 +19,18 @@ The torus mesh is entirely parametrically generated and has a (so-called) emeral
 
 ## Current features
 
-* **Transforms**
-* **FPS camera & key bindings**
-* **Self-drawing meshes**
-* **Per-mesh shaders**
-* **UBOs**
-* **Textures**
+* **Meshes**
 * **Materials**
-* **Lighting methods:**
-  * Phong
+* **Textures**
+* **Shaders**
+* **UBO handling**
 * **Lighting:**
   * Point lights
   * Light maps
+  * Spotlights
+  * Directional lights
+* **Lighting methods:**
+  * Phong
 * **Scene graph** and Unity-like **component system**:
   * Scene objects are arranged in a tree
   * Children scene object global position depends on their successive parents
@@ -39,12 +39,10 @@ The torus mesh is entirely parametrically generated and has a (so-called) emeral
 	* **Light component:** a light source is simulated at the scene object's position;
 	* **Camera component:** a camera is attached to the scene object and provides the view-projection matrix;
 	* **Script component:** a script controls the aspects of the scene object based on time, user input, etc.
+* **FPS camera and key bindings**, implemented as a script component attached to the scene camera
 
 ## Roadmap
 
-* Lighting:
-  * Spotlights
-  * Directional lights
 * `.obj` file handling
 * Shadows
 * Transparency
