@@ -15,14 +15,8 @@
 #include "GLFW/glfw3.h"
 
 #include "tools/gl_utils.hpp"
-#include "gl_example.hpp"
-#include "gl_examples/basic_triangle_example.hpp"
-#include "gl_examples/metatron_2d_example.hpp"
-#include "gl_examples/texture_2d_example.hpp"
-#include "gl_examples/transform_triangle_example.hpp"
-#include "gl_examples/perspective_triangle_example.hpp"
-#include "gl_examples/rotating_textured_cube_example.hpp"
-#include "gl_examples/lighting_example.hpp"
+#include "gl_sandbox.hpp"
+#include "gl_sandboxes/lighting_example.hpp"
 
 using std::cerr;
 using std::endl;
@@ -34,7 +28,7 @@ using std::vector;
 int abortWithError(string message, bool terminateGLFW = true);
 
 // Instantiate all available examples
-vector<GLExample*> createAllExamples();
+vector<GLSandbox*> createAllSandboxes();
 
 //Initialises OpenGL and displays a window with an active GL context
 int main(int argc, char** argv)
@@ -49,7 +43,7 @@ int main(int argc, char** argv)
 		return abortWithError("Window creation failed. Aborting...");
 	}
 
-	vector<GLExample*> examples = createAllExamples();
+	vector<GLSandbox*> examples = createAllSandboxes();
     for (auto it = examples.begin(); it != examples.end(); it++)
     {
         (*it)->run(window);
@@ -73,17 +67,11 @@ int abortWithError(string message, bool terminateGLFW)
 	return EXIT_FAILURE;
 }
 
-vector<GLExample*> createAllExamples()
+vector<GLSandbox*> createAllSandboxes()
 {
     try
     {
-        return vector<GLExample*>({
-            //new BasicTriangleExample(),
-            //new Metatron2DExample(),
-            //new Texture2DExample(),
-            //new TransformTriangleExample(),
-            //new PerspectiveTriangleExample(),
-            //new RotatingTexturedCubeExample(),
+        return vector<GLSandbox*>({
             new LightingExample()
         });
     }
@@ -92,5 +80,5 @@ vector<GLExample*> createAllExamples()
         cerr << "Exception caught: " << e.what();
     }
 
-    return vector<GLExample*>();
+    return vector<GLSandbox*>();
 }

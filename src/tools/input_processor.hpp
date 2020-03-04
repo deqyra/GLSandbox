@@ -9,6 +9,7 @@
 #define INPUT_PROCESSOR_HPP
 
 #include <string>
+#include <memory>
 
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"

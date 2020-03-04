@@ -1,5 +1,5 @@
 /**
-	GLTest, GLExample.cpp
+	GLTest, GLSandbox.cpp
 	Purpose: Abstract class declaration for generic OpenGL examples.
 
 	@author François Brachais (deqyra)
@@ -13,7 +13,7 @@
 #define GLFW_INCLUDE_NONE
 #include "../include/GLFW/glfw3.h"
 
-class GLExample
+class GLSandbox
 {
 	public:
 		virtual void run(GLFWwindow* window) = 0;

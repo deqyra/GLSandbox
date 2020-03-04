@@ -17,11 +17,11 @@
 #include "../core/texture_2d.hpp"
 
 #include "../tools/input_processor.hpp"
-#include "../gl_example.hpp"
+#include "../gl_sandbox.hpp"
 #include "../core/scene/scene_object.hpp"
 #include "../core/mesh_generator.hpp"
 
-class LightingExample : public GLExample
+class LightingExample : public GLSandbox
 {
     private:
         float _angle;
