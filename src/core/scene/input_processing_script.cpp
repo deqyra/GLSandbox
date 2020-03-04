@@ -30,7 +30,7 @@ void InputProcessingScript::mouseCursorCallback(GLFWwindow* window, double xpos,
 
 }
 
-void InputProcessingScript::update(float currentTime, float timeElapsed)
+void InputProcessingScript::update(float timeElapsed)
 {
 
 }

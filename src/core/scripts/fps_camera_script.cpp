@@ -82,7 +82,7 @@ void FPSCameraScript::mouseCursorCallback(GLFWwindow* window, double xpos, doubl
     _lastMouseY = (float) ypos;
 }
 
-void FPSCameraScript::update(float currentTime, float timeElapsed)
+void FPSCameraScript::update(float timeElapsed)
 {
     float velocity = timeElapsed * _moveSpeed;
     if (_sprint)

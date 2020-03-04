@@ -25,7 +25,7 @@ class InputProcessingScript : public Script, public InputProcessor, public std::
         virtual void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
         virtual void mouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
 
-        virtual void update(float currentTime, float timeElapsed);
+        virtual void update(float timeElapsed);
 
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 };

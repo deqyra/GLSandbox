@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <chrono>
 #include <memory>
 #include <unordered_map>
 #include <vector>
@@ -26,6 +27,8 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         std::unordered_map<unsigned int, std::pair<unsigned int, unsigned int>> _objectIdsToNodeIds;
         std::unordered_map<unsigned int, ScriptPtr> _scripts;
         std::unordered_map<unsigned int, InputProcessorPtr> _inputProcessors;
+
+        std::chrono::time_point<std::chrono::system_clock> _lastTime;
 
         void processOutdatedTransformsFromNode(unsigned int id);
         void recalculateModelMatrix(unsigned int id);

@@ -19,7 +19,7 @@ class Script
 
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 
-        virtual void update(float currentTime, float timeElapsed) = 0;
+        virtual void update(float timeElapsed) = 0;
 
         const unsigned int id;
 };

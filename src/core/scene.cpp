@@ -195,7 +195,14 @@ void Scene::removeScript(unsigned int id)
 
 void Scene::triggerUpdate()
 {
-    
+    auto now = std::chrono::system_clock::now();
+    std::chrono::duration<float> delta = now - _lastTime;
+    _lastTime = now;
+
+    for (auto it = _scripts.begin(); it != _scripts.end(); it++)
+    {
+        it->second->update(delta.count());
+    }
 }
 
 void Scene::registerInputProcessor(InputProcessorPtr inputProcessor)
