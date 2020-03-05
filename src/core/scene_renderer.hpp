@@ -27,7 +27,7 @@ class SceneRenderer
 
     public:
         SceneRenderer();
-        void renderScene(std::weak_ptr<Scene> wScene);
+        void renderScene(SceneWPtr wScene);
 };
 
 #endif//SCENE_RENDERER_HPP

@@ -62,6 +62,8 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
 void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<glm::mat4>& modelMats, glm::mat4 view)
 {
     unsigned int pLightIndex = 0;
+    unsigned int sLightIndex = 0;
+    unsigned int dLightIndex = 0;
 
     for (unsigned int i = 0; i < lights.size(); i++)
     {
@@ -79,9 +81,31 @@ void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<glm
                     _lightUbo.setPoint(pLightIndex++, *pLight, glm::vec3(position));
                 }
                 break;
+            case LightType::SpotLight:
+                if (sLightIndex < SPOT_LIGHT_MAX_COUNT)
+                {
+                    // Retrieve the light as a PointLight
+                    std::shared_ptr<SpotLight> sLight = std::static_pointer_cast<SpotLight>(light);
+                    // Send it to the UBO
+                    glm::vec4 position = glm::vec4(glm::vec3(0.f), 1.f);
+                    position = view * modelMats[i] * position;
+                    _lightUbo.setSpot(sLightIndex++, *sLight, glm::vec3(position));
+                }
+                break;
+            case LightType::DirectionalLight:
+                if (dLightIndex < DIRECTIONAL_LIGHT_MAX_COUNT)
+                {
+                    // Retrieve the light as a PointLight
+                    std::shared_ptr<DirectionalLight> dLight = std::static_pointer_cast<DirectionalLight>(light);
+                    // Send it to the UBO
+                    _lightUbo.setDirectional(dLightIndex++, *dLight);
+                }
+                break;
         }
     }
     _lightUbo.setPointCount(pLightIndex);
+    _lightUbo.setSpotCount(sLightIndex);
+    _lightUbo.setDirectionalCount(dLightIndex);
 }
 
 void SceneRenderer::drawMesh(MeshPtr mesh, glm::mat4 model, glm::mat4 view, Material material, Shader shader)
