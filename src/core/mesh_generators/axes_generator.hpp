@@ -25,7 +25,6 @@ class AxesGenerator : public MeshGenerator
         AxesGenerator(float size);
         AxesGenerator(Parameters parameters);
 
-        virtual Mesh generate();
         virtual MeshPtr generatePtr();
         
         Parameters parameters;

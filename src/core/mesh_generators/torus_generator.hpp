@@ -31,7 +31,6 @@ class TorusGenerator : public MeshGenerator
         TorusGenerator(float toroidalRadius, float poloidalRadius, unsigned int toroidalVertexRes = DefaultToroidalVertexResolution, unsigned int poloidalVertexRes = DefaultPoloidalVertexResolution);
         TorusGenerator(Parameters parameters);
 
-        virtual Mesh generate();
         virtual MeshPtr generatePtr();
 
         Parameters parameters;

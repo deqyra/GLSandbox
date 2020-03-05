@@ -6,7 +6,6 @@
 class MeshGenerator
 {
     public:
-        virtual Mesh generate() = 0;
         virtual MeshPtr generatePtr() = 0;
 };
 

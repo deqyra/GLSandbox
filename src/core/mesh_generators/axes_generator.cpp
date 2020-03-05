@@ -33,11 +33,6 @@ AxesGenerator::AxesGenerator(Parameters parameters) :
 
 }
 
-Mesh AxesGenerator::generate()
-{
-    return *generatePtr();
-}
-
 MeshPtr AxesGenerator::generatePtr()
 {
     float len = parameters.axisLength;

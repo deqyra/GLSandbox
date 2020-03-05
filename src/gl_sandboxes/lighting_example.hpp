@@ -36,8 +36,10 @@ class LightingSandbox : public GLSandbox
 class LightingSandboxScript : public InputProcessingScript
 {
     private:
-        SceneObjectPtr _cubeObj;
-        SceneObjectPtr _torusObj;
+        SceneObjectPtr _lightCubeObj;
+        SceneObjectPtr _bigTorusObj;
+        SceneObjectPtr _smallTorusObj;
+        SceneObjectPtr _tetrahedronObj;
         bool _autoRotate;
         float _speedFactor;
 

@@ -45,11 +45,6 @@ CubeGenerator::CubeGenerator(Parameters parameters) :
     
 }
 
-Mesh CubeGenerator::generate()
-{
-    return *generatePtr();
-}
-
 MeshPtr CubeGenerator::generatePtr()
 {
     float len = parameters.size / 2.f;

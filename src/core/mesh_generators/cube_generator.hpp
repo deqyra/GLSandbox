@@ -31,7 +31,6 @@ class CubeGenerator : public MeshGenerator
         CubeGenerator(float size, float r, float g, float b);
         CubeGenerator(Parameters parameters);
 
-        virtual Mesh generate();
         virtual MeshPtr generatePtr();
         
         Parameters parameters;

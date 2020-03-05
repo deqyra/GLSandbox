@@ -126,8 +126,8 @@ std::shared_ptr<SceneObject> LightingSandbox::generateSceneMesh(std::shared_ptr<
 }
 
 LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr torusObj) :
-    _cubeObj(cubeObj),
-    _torusObj(torusObj),
+    _lightCubeObj(cubeObj),
+    _bigTorusObj(torusObj),
     _autoRotate(true),
     _speedFactor(10.f)
 {
@@ -140,8 +140,8 @@ void LightingSandboxScript::update(float timeElapsed)
     {
         // Update object transforms
         float angleDiff = _speedFactor * timeElapsed;
-        _cubeObj->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
-        _torusObj->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
+        _lightCubeObj->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
+        _bigTorusObj->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
     }
     else
     {

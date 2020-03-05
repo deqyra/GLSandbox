@@ -36,11 +36,6 @@ TorusGenerator::TorusGenerator(Parameters parameters) :
 
 }
 
-Mesh TorusGenerator::generate()
-{
-    return *generatePtr();
-}
-
 MeshPtr TorusGenerator::generatePtr()
 {
     Parameters& p(parameters);
