@@ -84,38 +84,80 @@ uniform Material material;
 // =========
 
 vec4 processPointLight(int i);
+vec4 processSpotLight(int i);
+vec4 processDirectionalLight(int i);
+vec4 calculatePhong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specularLight);
 
 void main()
 {
 	// Process all point lights
-	vec4 pLightTotal = vec4(0.f);
+	vec4 lightTotal = vec4(0.f);
 	for (int i = 0; i < pointCount; i++)
 	{
-		pLightTotal += processPointLight(i);
+		lightTotal += processPointLight(i);
+	}
+	for (int i = 0; i < spotCount; i++)
+	{
+		lightTotal += processSpotLight(i);
+	}
+	for (int i = 0; i < directionalCount; i++)
+	{
+		lightTotal += processDirectionalLight(i);
 	}
 
 	// Combine components together
-    vec4 result = pLightTotal * vec4(vertOut.color, 1.f);
+    vec4 result = lightTotal * vec4(vertOut.color, 1.f);
     fragColor = result;
 }
 
 vec4 processPointLight(int i)
 {
+	vec3 positionDiff = vertOut.fragPos - point[i].position;
+	vec3 lightDirection = normalize(positionDiff);
+	float dist = length(positionDiff);
+	float attenuation = 1.0 / (point[i].constant + (point[i].linear * dist) + (point[i].quadratic * dist * dist));
+
+	return attenuation * calculatePhong(lightDirection, point[i].ambient, point[i].diffuse, point[i].specular);
+}
+
+vec4 processSpotLight(int i)
+{
+	vec3 positionDiff = vertOut.fragPos - spot[i].position;
+	vec3 lightDirection = normalize(positionDiff);
+
+	float theta = dot(lightDirection, normalize(spot[i].direction));
+	float outerCos = cos(spot[i].outerCutoff);
+	float innerCos = cos(spot[i].innerCutoff);
+	float epsilon = innerCos - outerCos;
+	float intensity = clamp((theta - outerCos) / epsilon, 0.0, 1.0);
+
+	float dist = length(positionDiff);
+	float attenuation = 1.0 / (spot[i].constant + (spot[i].linear * dist) + (spot[i].quadratic * dist * dist));
+
+	return attenuation * intensity * calculatePhong(lightDirection, spot[i].ambient, spot[i].diffuse, spot[i].specular);
+}
+
+vec4 processDirectionalLight(int i)
+{
+	return calculatePhong(direct[i].direction, direct[i].ambient, direct[i].diffuse, direct[i].specular);
+}
+
+vec4 calculatePhong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specularLight)
+{
 	vec3 normal = normalize(vertOut.normal);
 	vec3 viewDir = normalize(vertOut.fragPos);
-	vec3 lightDir = normalize(vertOut.fragPos - point[i].position);
-	vec3 reflectDir = reflect(lightDir, normal);
+	vec3 reflectDir = reflect(lightDirection, normal);
 
 	// Ambient lighting
-    vec4 ambient = vec4(point[i].ambient, 1.f) * vec4(material.ambient, 1.f);
+    vec4 ambient = vec4(ambientLight, 1.f) * vec4(material.ambient, 1.f);
 
 	// Diffuse lighting
 	vec4 diffuseTexel = vec4(1.f);
 	if (material.diffuseMapCount > 0)
 		diffuseTexel = texture(material.diffuseMaps[0], vertOut.texCoord);
 	
-	float diffusionFactor = max(dot(normal, -lightDir), 0.0);
-	vec4 diffuse = vec4(point[i].diffuse, 1.f) * vec4(material.diffuse, 1.f) * diffuseTexel * diffusionFactor;
+	float diffusionFactor = max(dot(normal, -lightDirection), 0.0);
+	vec4 diffuse = vec4(diffuseLight, 1.f) * vec4(material.diffuse, 1.f) * diffuseTexel * diffusionFactor;
 
 	// Specular
 	vec4 specularTexel = vec4(1.f);
@@ -123,7 +165,7 @@ vec4 processPointLight(int i)
 		specularTexel = texture(material.specularMaps[0], vertOut.texCoord);
 
 	float spec = pow(max(dot(-viewDir, reflectDir), 0.0), material.shininess);
-	vec4 specular = vec4(point[i].specular, 1.f) * vec4(material.specular, 1.f) * specularTexel * spec;
+	vec4 specular = vec4(specularLight, 1.f) * vec4(material.specular, 1.f) * specularTexel * spec;
 
 	return ambient + diffuse + specular;
 }

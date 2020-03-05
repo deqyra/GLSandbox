@@ -11,8 +11,8 @@
 #define SPOT_LIGHT_UBO_SIZE  112
 
 #define DEFAULT_SPOT_LIGHT_RANGE 50.f
-#define DEFAULT_SPOT_LIGHT_INNER_CUTOFF 15.f
-#define DEFAULT_SPOT_LIGHT_OUTER_CUTOFF 20.f
+#define DEFAULT_SPOT_LIGHT_INNER_CUTOFF glm::radians(15.f)
+#define DEFAULT_SPOT_LIGHT_OUTER_CUTOFF glm::radians(20.f)
 
 class SpotLight : public Light
 {
