@@ -32,11 +32,11 @@ class SpotLight : public Light
         glm::vec3 diffuse;
         glm::vec3 specular;
 
-        float innerCutoff;
-        float outerCutoff;
         float constant;
         float linear;
         float quadratic;
+        float innerCutoff;
+        float outerCutoff;
 
         static const std::function<float(float)> linearCoeffFromDesiredRange;
         static const std::function<float(float)> quadraticCoeffFromDesiredRange;

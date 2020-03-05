@@ -8,7 +8,7 @@
 #include "../light_type.hpp"
 
 #define POINT_LIGHT_MAX_COUNT 64
-#define POINT_LIGHT_UBO_SIZE  64
+#define POINT_LIGHT_UBO_SIZE  80
 
 class PointLight : public Light
 {

@@ -13,8 +13,8 @@ out vec4 fragColor;
 // ===================
 
 #define POINT_LIGHT_MAX_COUNT 64
-#define DIRECTIONAL_LIGHT_MAX_COUNT 4
 #define SPOT_LIGHT_MAX_COUNT 64
+#define DIRECTIONAL_LIGHT_MAX_COUNT 4
 #define DIFFUSE_MAP_MAX_COUNT   8
 #define SPECULAR_MAP_MAX_COUNT  8
 
@@ -29,14 +29,6 @@ struct PointLight
     float quadratic;  						//  4				// 72
 };											// Size: 80 = 76 + vec4 padding
 
-struct DirectionalLight
-{											// Base alignment	// Base offset
-    vec3 direction;							// 16				//  0
-    vec3 ambient;							// 16				// 16
-    vec3 diffuse;							// 16				// 32
-    vec3 specular;							// 16				// 48
-};											// Size: 64
-
 struct SpotLight
 {											// Base alignment	// Base offset
 	vec3 position;							// 16				//  0
@@ -44,12 +36,20 @@ struct SpotLight
     vec3 ambient;							// 16				// 32
     vec3 diffuse;							// 16				// 48
     vec3 specular;							// 16				// 64
-	float innerCutoff;						//  4				// 80
-	float outerCutoff;						//  4				// 84
-    float constant;							//  4				// 88
-    float linear;							//  4				// 92
-    float quadratic;  						//  4				// 96
+    float constant;							//  4				// 80
+    float linear;							//  4				// 84
+    float quadratic;  						//  4				// 88
+	float innerCutoff;						//  4				// 92
+	float outerCutoff;						//  4				// 96
 };											// Size: 112 = 100 + vec4 padding
+
+struct DirectionalLight
+{											// Base alignment	// Base offset
+    vec3 direction;							// 16				//  0
+    vec3 ambient;							// 16				// 16
+    vec3 diffuse;							// 16				// 32
+    vec3 specular;							// 16				// 48
+};											// Size: 64
 
 struct Material
 {
@@ -70,9 +70,9 @@ struct Material
 
 layout (std140, binding = 1) uniform lights
 {															// Base alignment	// Base offset
-	PointLight point[POINT_LIGHT_MAX_COUNT];				// 64 * 80			//    0
-	SpotLight spot[SPOT_LIGHT_MAX_COUNT];					// 64 * 64			// 5120
-	DirectionalLight direct[DIRECTIONAL_LIGHT_MAX_COUNT];	// 64 *  4			// 9216
+	PointLight point[POINT_LIGHT_MAX_COUNT];				// 64 *  80			//    0
+	SpotLight spot[SPOT_LIGHT_MAX_COUNT];					// 64 * 112			// 5120
+	DirectionalLight direct[DIRECTIONAL_LIGHT_MAX_COUNT];	//  4 *  64			// 9216
 	unsigned int pointCount;								// 4				// 9728
 	unsigned int spotCount;									// 4				// 9732
 	unsigned int directionalCount;							// 4				// 9736
