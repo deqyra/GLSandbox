@@ -16,7 +16,7 @@ The cube shows the position of a point light.
 ## Info
 
 * Development conducted using OpenGL 4.6 (core profile) on a GTX 1660 Ti.
-* To use the project, [generate a loader](https://glad.dav1d.de/) that suits your platform, and replace `include/glad/glad.h` with it.
+* To use the project, [generate a loader](https://glad.dav1d.de/) that suits your platform, and replace `include/glad/glad.h` and `src/glad.cpp` with it.
 
 ## Current features
 
