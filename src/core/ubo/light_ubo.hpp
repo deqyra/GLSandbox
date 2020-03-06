@@ -12,14 +12,30 @@
  *
  * layout (std140, binding = 1) uniform lights
  * {                                                           // Base alignment   // Base offset
- *     PointLight point[POINT_LIGHT_MAX_COUNT];                // 64 *  80         //    0
- *     SpotLight spot[SPOT_LIGHT_MAX_COUNT];                   // 64 * 112         // 5120
- *     DirectionalLight direct[DIRECTIONAL_LIGHT_MAX_COUNT];   //  4 *  64         // 9216
- *     unsigned int pointCount;                                // 4                // 9728
- *     unsigned int spotCount;                                 // 4                // 9732
- *     unsigned int directionalCount;                          // 4                // 9736
- * };                                                          // Size: 9740
+ *     SpotLight spot[SPOT_LIGHT_MAX_COUNT];                   // 64 * 96          //     0
+ *     PointLight point[POINT_LIGHT_MAX_COUNT];                // 64 * 80          //  6144
+ *     DirectionalLight direct[DIRECTIONAL_LIGHT_MAX_COUNT];   //  4 * 64          // 11264
+ *     unsigned int pointCount;                                // 4                // 11520
+ *     unsigned int spotCount;                                 // 4                // 11524
+ *     unsigned int directionalCount;                          // 4                // 11528
+ * };                                                          // Size: 11532
  **/
+
+#define SPOT_LIGHT_MAX_COUNT  64
+#define SPOT_LIGHT_UBO_SIZE   96
+#define SPOT_LIGHT_UBO_OFFSET 0
+
+#define POINT_LIGHT_MAX_COUNT 64
+#define POINT_LIGHT_UBO_SIZE  80
+#define POINT_LIGHT_UBO_OFFSET 6144
+
+#define DIRECTIONAL_LIGHT_MAX_COUNT 4
+#define DIRECTIONAL_LIGHT_UBO_SIZE  64
+#define DIRECTIONAL_LIGHT_UBO_OFFSET 11264
+
+#define LIGHT_UBO_COUNTS_OFFSET 11520
+
+#define LIGHT_UBO_SIZE 11532
 
 class LightUBO : public UniformBufferObject
 {

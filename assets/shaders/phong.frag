@@ -23,11 +23,11 @@ struct PointLight
     vec3 position;							// 16				//  0
     vec3 ambient;							// 16				// 16
     vec3 diffuse;							// 16				// 32
-    vec3 specular;							// 16				// 48
-    float constant;							//  4				// 64
-    float linear;							//  4				// 68
-    float quadratic;  						//  4				// 72
-};											// Size: 80 = 76 + vec4 padding
+    vec3 specular;							// 12				// 48
+    float constant;							//  4				// 60
+    float linear;							//  4				// 64
+    float quadratic;  						//  4				// 68
+};											// Size: 80 = 72 + vec4 padding
 
 struct SpotLight
 {											// Base alignment	// Base offset
@@ -35,13 +35,13 @@ struct SpotLight
 	vec3 direction;							// 16				// 16
     vec3 ambient;							// 16				// 32
     vec3 diffuse;							// 16				// 48
-    vec3 specular;							// 16				// 64
-    float constant;							//  4				// 80
-    float linear;							//  4				// 84
-    float quadratic;  						//  4				// 88
-	float innerCutoff;						//  4				// 92
-	float outerCutoff;						//  4				// 96
-};											// Size: 112 = 100 + vec4 padding
+    vec3 specular;							// 12				// 64
+    float constant;							//  4				// 76
+    float linear;							//  4				// 80
+    float quadratic;  						//  4				// 84
+	float innerCutoff;						//  4				// 88
+	float outerCutoff;						//  4				// 92
+};											// Size: 96
 
 struct DirectionalLight
 {											// Base alignment	// Base offset
@@ -70,13 +70,13 @@ struct Material
 
 layout (std140, binding = 1) uniform lights
 {															// Base alignment	// Base offset
-	PointLight point[POINT_LIGHT_MAX_COUNT];				// 64 *  80			//    0
-	SpotLight spot[SPOT_LIGHT_MAX_COUNT];					// 64 * 112			// 5120
-	DirectionalLight direct[DIRECTIONAL_LIGHT_MAX_COUNT];	//  4 *  64			// 9216
-	unsigned int pointCount;								// 4				// 9728
-	unsigned int spotCount;									// 4				// 9732
-	unsigned int directionalCount;							// 4				// 9736
-};															// Size: 9740
+	SpotLight spot[SPOT_LIGHT_MAX_COUNT];					// 64 * 96			//     0
+	PointLight point[POINT_LIGHT_MAX_COUNT];				// 64 * 80			//  6144
+	DirectionalLight direct[DIRECTIONAL_LIGHT_MAX_COUNT];	//  4 * 64			// 11264
+	unsigned int pointCount;								// 4				// 11520
+	unsigned int spotCount;									// 4				// 11524
+	unsigned int directionalCount;							// 4				// 11528
+};															// Size: 11532
 
 uniform Material material;
 
@@ -103,11 +103,10 @@ void main()
 	for (int i = 0; i < directionalCount; i++)
 	{
 		lightTotal += processDirectionalLight(i);
-	}
+	}	
 
 	// Combine components together
-    vec4 result = lightTotal * vec4(vertOut.color, 1.f);
-    fragColor = result;
+    fragColor = lightTotal * vec4(vertOut.color, 1.f);
 }
 
 vec4 processPointLight(int i)
@@ -115,7 +114,8 @@ vec4 processPointLight(int i)
 	vec3 positionDiff = vertOut.fragPos - point[i].position;
 	vec3 lightDirection = normalize(positionDiff);
 	float dist = length(positionDiff);
-	float attenuation = 1.0 / (point[i].constant + (point[i].linear * dist) + (point[i].quadratic * dist * dist));
+	float attenuation = 1.f;
+	// float attenuation = 1.f / (point[i].constant + (point[i].linear * dist) + (point[i].quadratic * dist * dist));
 
 	return attenuation * calculatePhong(lightDirection, point[i].ambient, point[i].diffuse, point[i].specular);
 }

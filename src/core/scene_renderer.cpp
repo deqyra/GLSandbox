@@ -46,8 +46,8 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
         auto lightComp = lightObj->getComponent<LightComponent>().lock();
         lights.push_back(lightComp->light);
         modelMats.push_back(scene->getWorldModelMatrix(lightObj->id));
-        sendLightData(lights, modelMats, view);
     }
+    sendLightData(lights, modelMats, view);
 
     for (auto it = meshComponents.begin(); it != meshComponents.end(); it++)
     {

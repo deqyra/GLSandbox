@@ -36,7 +36,7 @@ class LightingSandbox : public GLSandbox
 class LightingSandboxScript : public InputProcessingScript
 {
     private:
-        SceneObjectPtr _lightCubeObj;
+        SceneObjectPtr _cubeObj;
         SceneObjectPtr _bigTorusObj;
         SceneObjectPtr _smallTorusObj;
         SceneObjectPtr _tetrahedronObj;
@@ -44,7 +44,7 @@ class LightingSandboxScript : public InputProcessingScript
         float _speedFactor;
 
     public:
-        LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr torusObj);
+        LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj);
 
         virtual void update(float timeElapsed);
         virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);

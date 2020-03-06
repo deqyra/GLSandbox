@@ -7,9 +7,6 @@
 #include "../light.hpp"
 #include "../light_type.hpp"
 
-#define SPOT_LIGHT_MAX_COUNT 64
-#define SPOT_LIGHT_UBO_SIZE  112
-
 #define DEFAULT_SPOT_LIGHT_RANGE 50.f
 #define DEFAULT_SPOT_LIGHT_INNER_CUTOFF glm::radians(15.f)
 #define DEFAULT_SPOT_LIGHT_OUTER_CUTOFF glm::radians(20.f)

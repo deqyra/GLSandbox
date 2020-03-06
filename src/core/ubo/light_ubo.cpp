@@ -20,12 +20,12 @@ unsigned int LightUBO::getBindingPoint()
 
 unsigned int LightUBO::getSize()
 {
-    return (POINT_LIGHT_UBO_SIZE * POINT_LIGHT_MAX_COUNT) + sizeof(unsigned int);
+    return LIGHT_UBO_SIZE;
 }
 
 void LightUBO::setPoint(unsigned int index, PointLight point, glm::vec3 position)
 {
-    unsigned int offset = index * POINT_LIGHT_UBO_SIZE;
+    unsigned int offset = POINT_LIGHT_UBO_OFFSET + (index * POINT_LIGHT_UBO_SIZE);
 
     glBindBuffer(GL_UNIFORM_BUFFER, _id);
     glBufferSubData(GL_UNIFORM_BUFFER, offset +  0, sizeof(glm::vec3), glm::value_ptr(position));
@@ -39,9 +39,7 @@ void LightUBO::setPoint(unsigned int index, PointLight point, glm::vec3 position
 
 void LightUBO::setPointCount(unsigned int count)
 {
-    unsigned int offset = POINT_LIGHT_MAX_COUNT       * POINT_LIGHT_UBO_SIZE
-                        + SPOT_LIGHT_MAX_COUNT        * SPOT_LIGHT_UBO_SIZE
-                        + DIRECTIONAL_LIGHT_MAX_COUNT * DIRECTIONAL_LIGHT_UBO_SIZE;
+    unsigned int offset = LIGHT_UBO_COUNTS_OFFSET;
 
     glBindBuffer(GL_UNIFORM_BUFFER, _id);
     glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(unsigned int), &count);
@@ -49,8 +47,7 @@ void LightUBO::setPointCount(unsigned int count)
 
 void LightUBO::setSpot(unsigned int index, SpotLight spot, glm::vec3 position)
 {
-    unsigned int offset = POINT_LIGHT_MAX_COUNT * POINT_LIGHT_UBO_SIZE
-                        + index                 * SPOT_LIGHT_UBO_SIZE;
+    unsigned int offset = SPOT_LIGHT_UBO_OFFSET + (index * SPOT_LIGHT_UBO_SIZE);
 
     glBindBuffer(GL_UNIFORM_BUFFER, _id);
     glBufferSubData(GL_UNIFORM_BUFFER, offset +  0, sizeof(glm::vec3), glm::value_ptr(position));
@@ -67,10 +64,7 @@ void LightUBO::setSpot(unsigned int index, SpotLight spot, glm::vec3 position)
 
 void LightUBO::setSpotCount(unsigned int count)
 {
-    unsigned int offset = POINT_LIGHT_MAX_COUNT       * POINT_LIGHT_UBO_SIZE
-                        + SPOT_LIGHT_MAX_COUNT        * SPOT_LIGHT_UBO_SIZE
-                        + DIRECTIONAL_LIGHT_MAX_COUNT * DIRECTIONAL_LIGHT_UBO_SIZE
-                        + 4;
+    unsigned int offset = LIGHT_UBO_COUNTS_OFFSET + 4;
 
     glBindBuffer(GL_UNIFORM_BUFFER, _id);
     glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(unsigned int), &count);
@@ -78,9 +72,7 @@ void LightUBO::setSpotCount(unsigned int count)
 
 void LightUBO::setDirectional(unsigned int index, DirectionalLight direct)
 {
-    unsigned int offset = POINT_LIGHT_MAX_COUNT * POINT_LIGHT_UBO_SIZE
-                        + SPOT_LIGHT_MAX_COUNT  * SPOT_LIGHT_UBO_SIZE
-                        + index                 * DIRECTIONAL_LIGHT_UBO_SIZE;
+    unsigned int offset = DIRECTIONAL_LIGHT_UBO_OFFSET + (index * DIRECTIONAL_LIGHT_UBO_SIZE);
 
     glBindBuffer(GL_UNIFORM_BUFFER, _id);
     glBufferSubData(GL_UNIFORM_BUFFER, offset +  0, sizeof(glm::vec3), glm::value_ptr(direct.direction));
@@ -91,11 +83,7 @@ void LightUBO::setDirectional(unsigned int index, DirectionalLight direct)
 
 void LightUBO::setDirectionalCount(unsigned int count)
 {
-    unsigned int offset = POINT_LIGHT_MAX_COUNT       * POINT_LIGHT_UBO_SIZE
-                        + SPOT_LIGHT_MAX_COUNT        * SPOT_LIGHT_UBO_SIZE
-                        + DIRECTIONAL_LIGHT_MAX_COUNT * DIRECTIONAL_LIGHT_UBO_SIZE
-                        + 4
-                        + 4;
+    unsigned int offset = LIGHT_UBO_COUNTS_OFFSET + 8;
 
     glBindBuffer(GL_UNIFORM_BUFFER, _id);
     glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(unsigned int), &count);

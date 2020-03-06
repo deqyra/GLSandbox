@@ -42,10 +42,10 @@ MeshPtr TetrahedronGenerator::generatePtr()
 {
     const unsigned int nVertices = 12;
 
-    glm::vec3 top           = glm::vec3( 0.f,  1.5f * sqrt(6.f),  0.f)              * parameters.size;
-    glm::vec3 baseBackLeft  = glm::vec3(-1.f, -0.5f * sqrt(6.f), -0.5f * sqrt(3.f)) * parameters.size;
-    glm::vec3 baseBackRight = glm::vec3( 1.f, -0.5f * sqrt(6.f), -0.5f * sqrt(3.f)) * parameters.size;
-    glm::vec3 baseFront     = glm::vec3( 0.f, -0.5f * sqrt(6.f),         sqrt(3.f)) * parameters.size;
+    glm::vec3 top           = glm::vec3( 0.f,               0.75f * sqrt(2.f),  0.f)                * parameters.size;
+    glm::vec3 baseBackLeft  = glm::vec3(-0.5f * sqrt(3.f), -0.25f * sqrt(2.f), -0.5f)               * parameters.size;
+    glm::vec3 baseBackRight = glm::vec3( 0.5f * sqrt(3.f), -0.25f * sqrt(2.f), -0.5f)               * parameters.size;
+    glm::vec3 baseFront     = glm::vec3( 0.f,              -0.25f * sqrt(2.f),  1.f)                * parameters.size;
 
     std::vector<Vertex> vertices = {
         // Position         // Color            // Normal       // Tex coord

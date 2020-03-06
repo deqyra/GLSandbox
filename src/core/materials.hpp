@@ -7,6 +7,13 @@ namespace Materials
 {
     const Material Default = Material();
 
+    const Material White = Material(
+        glm::vec3(1.f),
+        glm::vec3(1.f),
+        glm::vec3(0.f),
+        0.f
+    );
+
     const Material Emerald = Material(
         glm::vec3(0.0215f,  0.1745f,   0.0215f),
         glm::vec3(0.07568f, 0.61424f,  0.07568f),

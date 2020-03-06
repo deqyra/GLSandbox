@@ -33,11 +33,14 @@
   <ItemGroup>
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="src\core\light.cpp" />
+    <ClCompile Include="src\core\lights\directional_light.cpp" />
     <ClCompile Include="src\core\lights\point_light.cpp" />
+    <ClCompile Include="src\core\lights\spot_light.cpp" />
     <ClCompile Include="src\core\material.cpp" />
     <ClCompile Include="src\core\mesh.cpp" />
     <ClCompile Include="src\core\mesh_generators\axes_generator.cpp" />
     <ClCompile Include="src\core\mesh_generators\cube_generator.cpp" />
+    <ClCompile Include="src\core\mesh_generators\tetrahedron_generator.cpp" />
     <ClCompile Include="src\core\mesh_generators\torus_generator.cpp" />
     <ClCompile Include="src\core\positioned_object.cpp" />
     <ClCompile Include="src\core\scene.cpp" />
@@ -73,16 +76,20 @@
     <ClCompile Include="src\tools\string_tools.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\vsgl_info_lib.hpp" />
     <ClInclude Include="src\core\camera.hpp" />
     <ClInclude Include="src\core\direction.hpp" />
     <ClInclude Include="src\core\light.hpp" />
+    <ClInclude Include="src\core\lights\directional_light.hpp" />
     <ClInclude Include="src\core\lights\point_light.hpp" />
+    <ClInclude Include="src\core\lights\spot_light.hpp" />
     <ClInclude Include="src\core\light_type.hpp" />
     <ClInclude Include="src\core\material.hpp" />
     <ClInclude Include="src\core\mesh.hpp" />
     <ClInclude Include="src\core\mesh_generator.hpp" />
     <ClInclude Include="src\core\mesh_generators\axes_generator.hpp" />
     <ClInclude Include="src\core\mesh_generators\cube_generator.hpp" />
+    <ClInclude Include="src\core\mesh_generators\tetrahedron_generator.hpp" />
     <ClInclude Include="src\core\mesh_generators\torus_generator.hpp" />
     <ClInclude Include="src\core\positioned_object.hpp" />
     <ClInclude Include="src\core\scene.hpp" />

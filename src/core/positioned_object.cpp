@@ -62,7 +62,7 @@ void PositionedObject::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, b
 
     if (selfRotate)
     {
-        rotate(radAngle, axis);
+        rotate(-radAngle, axis);
     }
 
     _transformModifiedFlag = true;
@@ -93,8 +93,12 @@ glm::quat PositionedObject::rotate(glm::quat rotation)
     return _orientation;
 }
 
-glm::quat PositionedObject::rotate(float radAngle, glm::vec3 axis)
+glm::quat PositionedObject::rotate(float radAngle, glm::vec3 axis, bool localAxis)
 {
+    if (localAxis)
+    {
+        axis = _orientation * axis;
+    }
     _orientation = glm::rotate(_orientation, radAngle, axis);
     _orientation = glm::normalize(_orientation);
 

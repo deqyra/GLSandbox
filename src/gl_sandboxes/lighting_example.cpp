@@ -21,6 +21,7 @@
 #include "../core/mesh_generators/torus_generator.hpp"
 #include "../core/mesh_generators/axes_generator.hpp"
 #include "../core/mesh_generators/cube_generator.hpp"
+#include "../core/mesh_generators/tetrahedron_generator.hpp"
 
 #include "../tools/gl_utils.hpp"
 #include "../tools/gl_window.hpp"
@@ -34,8 +35,11 @@
 #include "../core/scripts/fps_camera_script.hpp"
 
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
-#define CUBE_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
-#define TORUS_ROTATION_AXIS glm::vec3(1.f, 0.f, 0.f)
+#define CUBE_ORBIT_AXIS glm::vec3(0.f, 1.f, 0.f)
+#define BIG_TORUS_ROTATION_AXIS glm::vec3(1.f, 0.f, 0.f)
+#define SMALL_TORUS_ORBIT_AXIS glm::vec3(0.f, 1.f, 0.f)
+#define TETRAHEDRON_ROTATION_AXIS glm::vec3(0.f, 1.f, 0.f)
+#define TETRAHEDRON_ORBIT_AXIS glm::vec3(0.f, 1.f, 0.f)
 
 LightingSandbox::LightingSandbox()
 {
@@ -67,18 +71,28 @@ void LightingSandbox::run(GLFWwindow* window)
     GLWindow* windowHandler = static_cast<GLWindow*>(glfwGetWindowUserPointer(window));
     windowHandler->registerInputProcessor(scene);
 
-    // TORUS
-    std::shared_ptr<SceneObject> torusObj = generateSceneMesh(scene, std::make_shared<TorusGenerator>(2.f, 0.5f, 72, 48), Materials::Emerald, lightingShader);
-    scene->registerObject(torusObj);
+    // BIG TORUS
+    std::shared_ptr<SceneObject> bigTorusObj = generateSceneMesh(scene, std::make_shared<TorusGenerator>(2.f, 0.5f, 72, 48), Materials::Emerald, lightingShader);
+    scene->registerObject(bigTorusObj);
+    // SMALL TORUS
+    std::shared_ptr<SceneObject> smallTorusObj = generateSceneMesh(scene, std::make_shared<TorusGenerator>(0.75f, 0.25f, 64, 32), Materials::Gold, lightingShader);
+    scene->registerObject(smallTorusObj, bigTorusObj->id);
+    smallTorusObj->rotate(glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+    smallTorusObj->translate(glm::vec3(-2.f, 0.f, 0.f));
     // AXES
     std::shared_ptr<SceneObject> axesObj = generateSceneMesh(scene, std::make_shared<AxesGenerator>(3.f));
     scene->registerObject(axesObj);
     // CUBE
     std::shared_ptr<SceneObject> cubeObj = generateSceneMesh(scene, std::make_shared<CubeGenerator>());
-    std::shared_ptr<PointLight> light = std::make_shared<PointLight>();
+    std::shared_ptr<PointLight> light = std::make_shared<PointLight>(5000.f);
     cubeObj->addComponent<LightComponent>(light);
     cubeObj->setPosition(glm::vec3(-3.f, 3.f, 0.f));
     scene->registerObject(cubeObj);
+    // TETRAHEDRON
+    std::shared_ptr<SceneObject> tetrahedronObj = generateSceneMesh(scene, std::make_shared<TetrahedronGenerator>(0.5f));
+    scene->registerObject(tetrahedronObj, smallTorusObj->id);
+    tetrahedronObj->translate(glm::vec3(1.2f, 0.f, 0.f));
+    tetrahedronObj->rotate(glm::radians(90.f), glm::vec3(0.F, 0.f, 1.f));
     // CAMERA
     std::shared_ptr<SceneObject> cameraObj = std::make_shared<SceneObject>(scene);
     cameraObj->addComponent<CameraComponent>(camera);
@@ -88,7 +102,7 @@ void LightingSandbox::run(GLFWwindow* window)
     std::shared_ptr<Script> baseFpsScript = std::static_pointer_cast<Script>(fpsScript);
     cameraObj->addComponent<ScriptComponent>(baseFpsScript);
     // ROTATION SCRIPT
-    std::shared_ptr<LightingSandboxScript> rotationScript = std::make_shared<LightingSandboxScript>(cubeObj, torusObj);
+    std::shared_ptr<LightingSandboxScript> rotationScript = std::make_shared<LightingSandboxScript>(cubeObj, bigTorusObj, smallTorusObj, tetrahedronObj);
     std::shared_ptr<InputProcessingScript> ipRotationScript = std::static_pointer_cast<InputProcessingScript>(rotationScript);
     scene->registerInputProcessingScript(ipRotationScript);
     // WINDOW SCRIPT
@@ -125,9 +139,11 @@ std::shared_ptr<SceneObject> LightingSandbox::generateSceneMesh(std::shared_ptr<
     return obj;
 }
 
-LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr torusObj) :
-    _lightCubeObj(cubeObj),
-    _bigTorusObj(torusObj),
+LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj) :
+    _cubeObj(cubeObj),
+    _bigTorusObj(bigTorusObj),
+    _smallTorusObj(smallTorusObj),
+    _tetrahedronObj(tetrahedronObj),
     _autoRotate(true),
     _speedFactor(10.f)
 {
@@ -140,8 +156,11 @@ void LightingSandboxScript::update(float timeElapsed)
     {
         // Update object transforms
         float angleDiff = _speedFactor * timeElapsed;
-        _lightCubeObj->orbit((float)glm::radians(0.618 * angleDiff), CUBE_ROTATION_AXIS, glm::vec3(0.f, 3.f, 0.f));
-        _bigTorusObj->rotate((float)glm::radians(angleDiff), TORUS_ROTATION_AXIS);
+        _cubeObj->orbit((float)glm::radians(0.618f * angleDiff), CUBE_ORBIT_AXIS, glm::vec3(0.f, 3.f, 0.f));
+        _bigTorusObj->rotate((float)glm::radians(angleDiff), BIG_TORUS_ROTATION_AXIS);
+        _smallTorusObj->orbit((float)glm::radians(-1.f * angleDiff), SMALL_TORUS_ORBIT_AXIS, glm::vec3(0.f, 0.f, 0.f), true);
+        //_tetrahedronObj->rotate((float)glm::radians(1.5f * angleDiff), TETRAHEDRON_ROTATION_AXIS, true);
+        _tetrahedronObj->orbit((float)glm::radians(1.5f * angleDiff), TETRAHEDRON_ORBIT_AXIS, glm::vec3(0.f), true);
     }
     else
     {

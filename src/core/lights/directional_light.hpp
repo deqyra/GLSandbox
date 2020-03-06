@@ -6,9 +6,6 @@
 #include "../light.hpp"
 #include "../light_type.hpp"
 
-#define DIRECTIONAL_LIGHT_MAX_COUNT 4
-#define DIRECTIONAL_LIGHT_UBO_SIZE  64
-
 class DirectionalLight : public Light
 {
     public:

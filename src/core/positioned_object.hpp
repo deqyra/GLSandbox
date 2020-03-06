@@ -44,7 +44,7 @@ class PositionedObject
         glm::quat getOrientation();
         void setOrientation(glm::quat orientation);
         glm::quat rotate(glm::quat rotation);
-        glm::quat rotate(float radAngle, glm::vec3 axis);
+        glm::quat rotate(float radAngle, glm::vec3 axis, bool localAxis = false);
         glm::quat lookAt(glm::vec3 target);
 
         glm::vec3 getScale();
