@@ -4,13 +4,14 @@ RenderBoi
 A simple rendering engine with a modest feature set.  
 Originally a pet project to get started with real-time rendering app architecture.
 
-**Example screenshot:**  
+**Example screenshot:** (click to open a video)  
 
-![example screenshot](https://i.imgur.com/h9Y7qJM.png)  
+[![example screenshot](https://i.imgur.com/2xz4x0M.png)](https://streamable.com/mkce4)  
 
-The torus mesh is entirely parametrically generated and rendered with a (so-called) emerald material. The coloured cube shows the position of a point light.
-
-![wireframe view](https://i.imgur.com/m7bdLME.png)
+All meshes here are entirely parametrically generated.
+The tetrahedron is a child of the golden torus, itself being a child of the emerald, larger torus.
+It is apparent that children objects are affected by their parent's transform.
+The cube shows the position of a point light.
 
 ## Info
 
