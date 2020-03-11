@@ -18,7 +18,7 @@ FPSCameraScript::FPSCameraScript() :
 
 void FPSCameraScript::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    // Four directional keys input processing
+    // Enable or disable directional movement flags depending on key input
     // W (forward)
     if (key == GLFW_KEY_W)
     {
@@ -74,6 +74,7 @@ void FPSCameraScript::processKeyboard(GLFWwindow* window, int key, int scancode,
 
 void FPSCameraScript::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
 {
+    // If the mouse was never updated before, record its position and skip this update
     if (!_mouseWasUpdatedOnce)
     {
         _lastMouseX = (float) xpos;
@@ -81,24 +82,32 @@ void FPSCameraScript::processMouseCursor(GLFWwindow* window, double xpos, double
         _mouseWasUpdatedOnce = true;
         return;
     }
+    // This is to avoid a huge mouse jump upon entering the window with the mouse
 
+    // Compute offsets
     float yawOffset = (float)(xpos - _lastMouseX) * _mouseSensitivity;
-    float pitchOffset = (float)(_lastMouseY - ypos) * _mouseSensitivity; // Y offset reversed since y-coordinates range from bottom to top
+    // Y offset reversed since y-coordinates range from bottom to top
+    float pitchOffset = (float)(_lastMouseY - ypos) * _mouseSensitivity;
 
+    // Translate to Euler angles
     _camera->processRotation(yawOffset, pitchOffset);
+    // Record mouse position
     _lastMouseX = (float) xpos;
     _lastMouseY = (float) ypos;
 }
 
 void FPSCameraScript::update(float timeElapsed)
 {
+    // Compute distance to cover in this frame
     float velocity = timeElapsed * _moveSpeed;
     if (_sprint)
         velocity *= SPRINT_MUTLIPLIER;
 
+    // Retrieve the linked scene object (i.e the camera)
     SceneObjectPtr sceneObject = _sceneObject.lock();
     glm::vec3 position = sceneObject->getPosition();
 
+    // Depending on which directional flags were raised, compute new position
     if (_movement[DIR_INDEX_FORWARD])
         position += _camera->front() * velocity;
     if (_movement[DIR_INDEX_BACKWARD])
@@ -108,12 +117,16 @@ void FPSCameraScript::update(float timeElapsed)
     if (_movement[DIR_INDEX_RIGHT])
         position += _camera->right() * velocity;
 
+    // Update camera position
     sceneObject->setPosition(position);
 }
 
 void FPSCameraScript::setSceneObject(SceneObjectWPtr sceneObject)
 {
+    // Perform base class operations
     InputProcessingScript::setSceneObject(sceneObject);
+
+    // Retrieve camera component
     SceneObjectPtr realSceneObject = sceneObject.lock();
     auto cameraComponent = realSceneObject->getComponent<CameraComponent>();
     auto realComponent = cameraComponent.lock();

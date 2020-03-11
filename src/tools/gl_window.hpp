@@ -1,40 +1,40 @@
-/**
-    GLTest, gl_window.hpp
-    Purpose: GLFW window handler. Encapsulates callbacks.
-
-    @author François Brachais (deqyra)
-    @version 1.0 19/06/2019
- */
-#ifndef GL_WINDOW_HPP
-#define GL_WINDOW_HPP
+#ifndef TOOLS__GL_WINDOW_HPP
+#define TOOLS__GL_WINDOW_HPP
 
 #include <sstream>
 #include <string>
 
 #include "input_processor.hpp"
 
-#include "../include/glad/glad.h"
+#define GLFW_INCLUDE_NONE
 #include "../include/GLFW/glfw3.h"
+#undef GLFW_INCLUDE_NONE
 
+// To be attached to a GLFWwindow object, providing event callback functionality through a custom InputProcessor
 class GLWindow
 {
     public:
         GLWindow(GLFWwindow* window);
 
-        // Callbacks to different events.
-        // In all of these, the call is forwarded to the custom input processor if any, or to the base input processor otherwise.
+        // To be called upon a framebuffer resize event; forwards the call to the custom input processor
         void processFramebufferResize(GLFWwindow* window, int width, int height);
+        // To be called upon a keyboard event; forwards the call to the custom input processor
         void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        // To be called upon a mouse button event; forwards the call to the custom input processor
         void processMouseButton(GLFWwindow* window, int button, int action, int mods);
+        // To be called upon a mouse cursor event; forwards the call to the custom input processor
         void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
 
-        // Custom input processor registration.
+        // Register new input processor
         void registerInputProcessor(InputProcessorPtr inputProcessor);
+        // Discard custom input processor
         void removeInputProcessor();
 
     private:
-        GLFWwindow* _w;                         // Handled GLFW window.
-        InputProcessorPtr _inputProcessor;      // Custom input processor to be registered at any time, providing overriden, custom callbacks.
+        // The GLFW window being managed
+        GLFWwindow* _w;
+        // Custom input processor to be registered at any time, providing custom callbacks
+        InputProcessorPtr _inputProcessor;
 };
 
-#endif//GL_WINDOW_HPP
+#endif//TOOLS__GL_WINDOW_HPP

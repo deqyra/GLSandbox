@@ -8,24 +8,32 @@
 
 #include "scene_object.hpp"
 
+// A special flavor of Script, also able to process input from a GLFW window
 class InputProcessingScript : public Script, public InputProcessor, public std::enable_shared_from_this<InputProcessingScript>
 {
     protected:
+        // Register self as an input processor in the referenced SceneObject's Scene
         void registerInputProcessor();
+        // Remove self as an input processor from the referenced SceneObject's Scene
         void removeInputProcessor();
 
     public:
         InputProcessingScript();
         virtual ~InputProcessingScript();
 
-        // Callbacks to different events.
+        // To be called upon a framebuffer resize event
         virtual void processFramebufferResize(GLFWwindow* window, int width, int height);
+        // To be called upon a keyboard event
         virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        // To be called upon a mouse button event
         virtual void processMouseButton(GLFWwindow* window, int button, int action, int mods);
+        // To be called upon a mouse cursor event
         virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
 
+        // To be called once per frame
         virtual void update(float timeElapsed);
 
+        // Set the scene object reference which the input processing script is attached to
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 };
 

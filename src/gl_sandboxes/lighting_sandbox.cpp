@@ -5,7 +5,7 @@
     @author François Brachais (deqyra)
     @version 1.0 05/02/2020
  */
-#include "lighting_example.hpp"
+#include "lighting_sandbox.hpp"
 
 #include <memory>
 
@@ -25,7 +25,6 @@
 
 #include "../tools/gl_utils.hpp"
 #include "../tools/gl_window.hpp"
-#include "../tools/basic_input_manager.hpp"
 
 #include "../core/scene.hpp"
 #include "../core/scene_renderer.hpp"
@@ -33,6 +32,7 @@
 #include "../core/scene/scene_object_component_type.hpp"
 
 #include "../core/scripts/fps_camera_script.hpp"
+#include "../core/scripts/basic_input_manager.hpp"
 
 #define CAMERA_POS glm::vec3(5.f, 3.f, 5.f)
 #define CUBE_ORBIT_AXIS glm::vec3(0.f, 1.f, 0.f)

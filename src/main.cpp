@@ -1,11 +1,3 @@
-/**
-	GLTest, main.cpp
-	Purpose: Display windows with different OpenGL basic examples. Uses GLFW and GLAD.
-
-	@author François Brachais (deqyra)
-	@version 1.0 10/06/2019
- */
-
 #include <exception>
 #include <iostream>
 #include <string>
@@ -16,34 +8,28 @@
 
 #include "tools/gl_utils.hpp"
 #include "gl_sandbox.hpp"
-#include "gl_sandboxes/lighting_example.hpp"
+#include "gl_sandboxes/lighting_sandbox.hpp"
 
-using std::cerr;
-using std::endl;
-using std::string;
-using std::runtime_error;
-using std::vector;
+// Shortcut-function to halt the execution of the program with a clean exit.
+int abortWithError(std::string message, bool terminateGLFW = true);
 
-// Shortcut-funciton to halt the execution of the program with a clean exit.
-int abortWithError(string message, bool terminateGLFW = true);
+// Instantiate all available sandboxes
+std::vector<GLSandbox*> createAllSandboxes();
 
-// Instantiate all available examples
-vector<GLSandbox*> createAllSandboxes();
-
-//Initialises OpenGL and displays a window with an active GL context
+//Initialise OpenGL and display a window with an active GL context
 int main(int argc, char** argv)
 {
 	glfwInit();
 	// Init window, GL context and GL pointers
 	GLFWwindow* window = makeWindow("Test", 1280, 720);
 
-	// If no window could be fetched, exit with an error.
 	if (!window)
 	{
 		return abortWithError("Window creation failed. Aborting...");
 	}
 
-	vector<GLSandbox*> examples = createAllSandboxes();
+    // Instantiate and run examples
+	std::vector<GLSandbox*> examples = createAllSandboxes();
     for (auto it = examples.begin(); it != examples.end(); it++)
     {
         (*it)->run(window);
@@ -56,9 +42,9 @@ int main(int argc, char** argv)
 	return EXIT_SUCCESS;
 }
 
-int abortWithError(string message, bool terminateGLFW)
+int abortWithError(std::string message, bool terminateGLFW)
 {
-	cerr << message;
+	std::cerr << message;
 	if (terminateGLFW)
 	{
 		glfwTerminate();
@@ -67,18 +53,19 @@ int abortWithError(string message, bool terminateGLFW)
 	return EXIT_FAILURE;
 }
 
-vector<GLSandbox*> createAllSandboxes()
+std::vector<GLSandbox*> createAllSandboxes()
 {
+    // Try and instantiate all sandboxes.
     try
     {
-        return vector<GLSandbox*>({
+        return std::vector<GLSandbox*>({
             new LightingSandbox()
         });
     }
-    catch (runtime_error e)
+    catch (std::runtime_error e)
     {
-        cerr << "Exception caught: " << e.what();
+        std::cerr << "createAllSandboxes: " << e.what();
     }
 
-    return vector<GLSandbox*>();
+    return std::vector<GLSandbox*>();
 }

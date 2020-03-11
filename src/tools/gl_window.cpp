@@ -1,20 +1,12 @@
-/**
-    GLTest, GLWindow.cpp
-    Purpose: Implementation of class GLWindow. See .hpp file.
-
-    @author François Brachais (deqyra)
-    @version 1.0 19/06/2019
- */
 #include "gl_window.hpp"
 
 #include <iostream>
 #include <string>
 
-using std::cout;
-using std::endl;
-using std::string;
+#define GLFW_INCLUDE_NONE
+#include "../include/GLFW/glfw3.h"
+#undef GLFW_INCLUDE_NONE
 
-#include "gl_utils.hpp"
 #include "input_processor.hpp"
 
 GLWindow::GLWindow(GLFWwindow* window) :

@@ -1,46 +1,32 @@
-/**
-	GLTest, gl_utils.cpp
-	Purpose: Implementation of functions declared in gl_utils.hpp.
-
-	@author François Brachais (deqyra)
-	@version 1.0 12/06/2019
- */
 #include "gl_utils.hpp"
 
 #include <cstdlib>
-
+#include <cstdarg>
 #include <fstream>
 #include <iostream>
 #include <string>
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::ifstream;
-using std::runtime_error;
-using std::string;
 
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
 
 #include "gl_window.hpp"
+#include "glfw_window_callbacks.hpp"
 
 #define INFO_BUFFER_SIZE 512
 
-unsigned int loadShader(GLenum shaderType, string filename)
+unsigned int loadShader(unsigned int shaderType, std::string filename)
 {
 	// Open input file and read all of its contents.
-	ifstream file(filename);
+	std::ifstream file(filename);
 
 	if (!file.is_open())
-		cerr << "Shader \"" << filename << "\" could not be found." << endl;
+		std::cerr << "Shader \"" << filename << "\" could not be found." << std::endl;
 
-	string all("");
-	string line;
-	while (getline(file, line))
+	std::string all("");
+	std::string line;
+	while (std::getline(file, line))
 		all += line + "\n";
 
-	// Cast to a const C string
 	const char* source = all.c_str();
 
 	// Compile into shader
@@ -56,7 +42,7 @@ unsigned int loadShader(GLenum shaderType, string filename)
 	if (!success)
 	{
 		glGetShaderInfoLog(shader, INFO_BUFFER_SIZE, nullptr, info);
-		cerr << "Shader compilation \"" << filename << "\" failed:\n" << info << endl;
+		std::cerr << "Shader compilation \"" << filename << "\" failed:\n" << info << std::endl;
 		return 0;
 	}
 
@@ -90,14 +76,14 @@ unsigned int makeShaderProgram(unsigned int count...)
 	glGetProgramiv(program, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(program, INFO_BUFFER_SIZE, NULL, info);
-		cerr << "Shader linking failed:\n" << info << endl;
+		std::cerr << "Shader linking failed:\n" << info << std::endl;
 		return 0;
 	}
 
 	return program;
 }
 
-GLFWwindow* makeWindow(string name, int width, int height, int glVersionMajor, int glVersionMinor, bool debug)
+GLFWwindow* makeWindow(std::string name, int width, int height, int glVersionMajor, int glVersionMinor, bool debug)
 {
 	// GL metadata
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
@@ -112,7 +98,7 @@ GLFWwindow* makeWindow(string name, int width, int height, int glVersionMajor, i
 
 	if (!window)
 	{
-        throw runtime_error("Failed to create window.");
+        throw std::runtime_error("Failed to create window.");
     }
 
 	// Init context in new window
@@ -122,7 +108,7 @@ GLFWwindow* makeWindow(string name, int width, int height, int glVersionMajor, i
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		glfwDestroyWindow(window);
-        throw runtime_error("Failed to load GL function pointers.");
+        throw std::runtime_error("Failed to load GL function pointers.");
     }
 
     if (debug)
@@ -138,50 +124,25 @@ GLFWwindow* makeWindow(string name, int width, int height, int glVersionMajor, i
         }
     }
 
-    // It is not possible to set the callbacks of a window as the methods of user-defined class, because of function pointer type mismatch.
-    // A workaround is to use the user pointer of the GLFWwindow object, which can be set to point to any user-defined window class.
-    // This way, an instance of the user-defined window class is effectively bound both ways to a GLFWwindow instance (assuming the user-defined class properly stores a reference to a GLFWwindow object).
+    // It is not possible to set methods of a user-defined class as the callbacks of a window, because of function pointer type mismatch
+    // Instead, use the user pointer of the GLFWwindow object, which can be set to point to any user-defined window class
 
-    GLWindow* glWindow = new GLWindow(window);          // Initialise a user-defined window instance with a GLFWwindow instance.
-    glfwSetWindowUserPointer(window, glWindow);         // Set the user pointer of the GLFWwindow to the newly created user-defined window instance.
+    GLWindow* glWindow = new GLWindow(window);          // Initialize a GLWindow instance with a GLFWwindow object
+    glfwSetWindowUserPointer(window, glWindow);         // Set the user pointer of the GLFWwindow to the newly created GLWindow instance
 
-    // Then, a lambda taking the same parameters as a callback is declared.
-    // In the body of the lambda, the user-defined window pointer is retrieved from the GLFWwindow instance, and is used to call the user-defined class methods with the lambda parameters.
-    // That whole lambda expression, matching the expected function pointer type of the callback, can be set as the actual callback for the initial GLFWwindow instance.
-
-    // Window resized callback
-    auto framebufferResizeCallback = [](GLFWwindow* window, int width, int height)                                      // Declare a lambda
-    {
-        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processFramebufferResize(window, width, height);     // Retrieve the user pointer of the window, call the appropriate method.
-    };
-    glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);                                                  // Statically bind the lambda as a callback.
-
-    // Keyboard callback
-    auto keyboardCallback = [](GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
-        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processKeyboard(window, key, scancode, action, mods);
-    };
-    glfwSetKeyCallback(window, keyboardCallback);
-
-    // Mouse click callback
-    auto mouseButtonCallback = [](GLFWwindow* window, int button, int action, int mods)
-    {
-        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processMouseButton(window, button, action, mods);
-    };
-    glfwSetMouseButtonCallback(window, mouseButtonCallback);
-
-    // Mouse cursor callback
-    auto mouseCursorCallback = [](GLFWwindow* window, double xpos, double ypos)
-    {
-        static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processMouseCursor(window, xpos, ypos);
-    };
-    glfwSetCursorPosCallback(window, mouseCursorCallback);
+    // Then, a function can retrieve the GLWindow instance from the GLFWwindow object and call the appropriate callback on the GLWindow instance
+    // Bind all relevant callbacks to such functions
+    glfwSetFramebufferSizeCallback(window, globalGlfwFramebufferResizeCallback);
+    glfwSetKeyCallback(window, globalGlfwKeyboardCallback);
+    glfwSetMouseButtonCallback(window, globalGlfwMouseButtonCallback);
+    glfwSetCursorPosCallback(window, globalGlfwMouseCursorCallback);
 
     return window;
 }
 
 void destroyWindow(GLFWwindow* window)
 {
+    // Destroy the GLWindow object associated with the GLFWwindow object
     GLWindow* glWindow = static_cast<GLWindow*>(glfwGetWindowUserPointer(window));
     delete glWindow;
     glfwDestroyWindow(window);
@@ -189,61 +150,68 @@ void destroyWindow(GLFWwindow* window)
 
 void simpleErrorCallback(int error, const char* description)
 {
-	// Print the error.
-	cerr << "Error code: " << error << endl;
-	cerr << "Description: " << description << endl;
+	// Print the error
+	std::cerr << "Error code: " << error << std::endl;
+	std::cerr << "Description: " << description << std::endl;
 }
 
-void APIENTRY glDebugOutput(GLenum source,
-    GLenum type,
-    GLuint id,
-    GLenum severity,
-    GLsizei length,
-    const GLchar* message,
+void APIENTRY glDebugOutput(
+    unsigned int source,
+    unsigned int type,
+    unsigned int id,
+    unsigned int severity,
+    int length,
+    const char* message,
     const void* userParam)
 {
-    // Ignore non-significant error/warning codes.
+    // Ignore non-significant error/warning codes
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-    cout << "---------------" << endl;
-    cout << "Debug message (" << id << "): " << message << endl;
+    std::cout << "---------------" << std::endl;
+    std::cout << "Debug message (" << id << "): " << message << std::endl;
 
+    // Print error info on the console
     switch (source)
     {
-        case GL_DEBUG_SOURCE_API:             cout << "Source: API"; break;
-        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   cout << "Source: Window System"; break;
-        case GL_DEBUG_SOURCE_SHADER_COMPILER: cout << "Source: Shader Compiler"; break;
-        case GL_DEBUG_SOURCE_THIRD_PARTY:     cout << "Source: Third Party"; break;
-        case GL_DEBUG_SOURCE_APPLICATION:     cout << "Source: Application"; break;
-        case GL_DEBUG_SOURCE_OTHER:           cout << "Source: Other"; break;
-    } cout << endl;
+        case GL_DEBUG_SOURCE_API:             std::cout << "Source: API"; break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   std::cout << "Source: Window System"; break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Source: Shader Compiler"; break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY:     std::cout << "Source: Third Party"; break;
+        case GL_DEBUG_SOURCE_APPLICATION:     std::cout << "Source: Application"; break;
+        case GL_DEBUG_SOURCE_OTHER:           std::cout << "Source: Other"; break;
+    } std::cout << std::endl;
 
     switch (type)
     {
-        case GL_DEBUG_TYPE_ERROR:               cout << "Type: Error"; break;
-        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: cout << "Type: Deprecated Behaviour"; break;
-        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  cout << "Type: Undefined Behaviour"; break;
-        case GL_DEBUG_TYPE_PORTABILITY:         cout << "Type: Portability"; break;
-        case GL_DEBUG_TYPE_PERFORMANCE:         cout << "Type: Performance"; break;
-        case GL_DEBUG_TYPE_MARKER:              cout << "Type: Marker"; break;
-        case GL_DEBUG_TYPE_PUSH_GROUP:          cout << "Type: Push Group"; break;
-        case GL_DEBUG_TYPE_POP_GROUP:           cout << "Type: Pop Group"; break;
-        case GL_DEBUG_TYPE_OTHER:               cout << "Type: Other"; break;
-    } cout << endl;
+        case GL_DEBUG_TYPE_ERROR:               std::cout << "Type: Error"; break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Type: Deprecated Behaviour"; break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Type: Undefined Behaviour"; break;
+        case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Type: Portability"; break;
+        case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Type: Performance"; break;
+        case GL_DEBUG_TYPE_MARKER:              std::cout << "Type: Marker"; break;
+        case GL_DEBUG_TYPE_PUSH_GROUP:          std::cout << "Type: Push Group"; break;
+        case GL_DEBUG_TYPE_POP_GROUP:           std::cout << "Type: Pop Group"; break;
+        case GL_DEBUG_TYPE_OTHER:               std::cout << "Type: Other"; break;
+    } std::cout << std::endl;
 
     switch (severity)
     {
-        case GL_DEBUG_SEVERITY_HIGH:         cout << "Severity: high"; break;
-        case GL_DEBUG_SEVERITY_MEDIUM:       cout << "Severity: medium"; break;
-        case GL_DEBUG_SEVERITY_LOW:          cout << "Severity: low"; break;
-        case GL_DEBUG_SEVERITY_NOTIFICATION: cout << "Severity: notification"; break;
-    } cout << endl;
-    cout << endl;
+        case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high"; break;
+        case GL_DEBUG_SEVERITY_MEDIUM:       std::cout << "Severity: medium"; break;
+        case GL_DEBUG_SEVERITY_LOW:          std::cout << "Severity: low"; break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << "Severity: notification"; break;
+    } std::cout << std::endl;
+    std::cout << std::endl;
 }
 
 float glAspectRatio()
 {
     int dims[4] = { 0 };
     glGetIntegerv(GL_VIEWPORT, dims);
+    // dims[0] = viewport position X
+    // dims[1] = viewport position Y
+    // dims[2] = viewport width
+    // dims[3] = viewport height
+
     return (float)(dims[2]) / (float)(dims[3]);
 }

@@ -44,8 +44,6 @@ The cube shows the position of a point light.
 
 ## Roadmap
 
-// ! \\\\ Massive code cleanup needed // ! \\\\
-
 * `.obj` file loading
 * Shadows
 * Transparency

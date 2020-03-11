@@ -1,34 +1,28 @@
-/**
-	GLTest, gl_utils.hpp
-	Purpose: Provide boilerplate functions to kick-start GLFW/GLAD/OpenGL development.
-
-	@author François Brachais (deqyra)
-	@version 1.0 12/06/2019
- */
-#ifndef GL_UTILS_HPP
-#define GL_UTILS_HPP
+#ifndef TOOLS__GL_UTILS_HPP
+#define TOOLS__GL_UTILS_HPP
 
 #include <string>
 
-#include "../../include/glad/glad.h"
+#define GLFW_INCLUDE_NONE
 #include "../../include/GLFW/glfw3.h"
+#undef GLFW_INCLUDE_NONE
 
-// Compiles GLSL code from a file into a shader.
-unsigned int loadShader(GLenum shaderType, std::string filename);
+// Compile GLSL code from a file into a shader
+unsigned int loadShader(unsigned int shaderType, std::string filename);
 
-// Combines shaders and links them into a program.
+// Combine shaders and link them into a program
 unsigned int makeShaderProgram(unsigned int count...);
 
-// Creates a GL context within a GLFW window, binds callbacks and returns the whole thing. Also initialises GL pointers.
+// Create a GL context within a GLFW window, bind callbacks and initialize GL function pointers
 GLFWwindow* makeWindow(std::string name, int width = 640, int height = 480, int glVersionMajor = 4, int glVersionMinor = 6, bool debug = true);
 
-// Destroys the provided GLFW window along with the object managing its callbacks.
+// Destroy the provided GLFW window along with the object managing its callbacks
 void destroyWindow(GLFWwindow* window);
 
-// Output print callback upon getting GL errors
-void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
+// Output callback, called upon getting GL errors
+void APIENTRY glDebugOutput(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char* message, const void* userParam);
 
-// Returns the aspect ratio (width / height) of the current context
+// Return the aspect ratio (width / height) of the current context
 float glAspectRatio();
 
 // Shortcut macros
@@ -44,4 +38,4 @@ float glAspectRatio();
 #define MAGENTA 1.0f, 0.0f, 1.0f
 #define YELLOW  1.0f, 1.0f, 0.0f
 
-#endif//GL_UTILS_HPP
+#endif//TOOLS__GL_UTILS_HPP

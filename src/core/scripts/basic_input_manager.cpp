@@ -1,16 +1,10 @@
 #include "basic_input_manager.hpp"
 
 #include <iostream>
-#include <sstream>
 #include <string>
 
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
-
-using std::cout;
-using std::endl;
-using std::string;
-using std::stringstream;
 
 BasicInputManager::BasicInputManager()
 {
@@ -30,15 +24,15 @@ void BasicInputManager::processKeyboard(GLFWwindow* window, int key, int scancod
     }
     else if (key == GLFW_KEY_1 && action == GLFW_PRESS)
     {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);      // Normal draw mode
     }
     else if (key == GLFW_KEY_2 && action == GLFW_PRESS)
     {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);      // Wireframe draw mode
     }
     else if (key == GLFW_KEY_3 && action == GLFW_PRESS)
     {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);     // Vertices only draw mode
     }
 
     // cout << "Key event: " << glfwKeyName(key) << " " << glfwActionName(action) << endl;
@@ -49,7 +43,7 @@ void BasicInputManager::processMouseButton(GLFWwindow* window, int button, int a
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
 
-    cout << "x: " << xpos << "; y: " << ypos << "; event: mouse " << glfwButtonName(button) << " " << glfwActionName(action) << endl;
+    std::cout << "x: " << xpos << "; y: " << ypos << "; event: mouse " << glfwButtonName(button) << " " << glfwActionName(action) << std::endl;
 }
 
 void BasicInputManager::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
@@ -57,7 +51,7 @@ void BasicInputManager::processMouseCursor(GLFWwindow* window, double xpos, doub
 
 }
 
-string glfwActionName(int action)
+std::string glfwActionName(int action)
 {
     switch (action)
     {
@@ -72,13 +66,11 @@ string glfwActionName(int action)
     }
 }
 
-string glfwKeyName(int key)
+std::string glfwKeyName(int key)
 {
     if (key >= 0 && key <= 255)
     {
-        stringstream sstream;
-        sstream << (char)(key);
-        return sstream.str();
+        return std::to_string((char)(key));
     }
     else
     {
@@ -104,19 +96,17 @@ string glfwKeyName(int key)
     }
 }
 
-string glfwButtonName(int button)
+std::string glfwButtonName(int button)
 {
     switch (button)
     {
-        case 0:
+        case GLFW_MOUSE_BUTTON_LEFT:
             return "left button";
-        case 1:
+        case GLFW_MOUSE_BUTTON_RIGHT:
             return "right button";
-        case 2:
+        case GLFW_MOUSE_BUTTON_MIDDLE:
             return "middle button";
         default:
-            stringstream sstream;
-            sstream << "button " << button + 1;
-            return sstream.str();
+            return std::string("button ") + std::to_string(button + 1);
     }
 }

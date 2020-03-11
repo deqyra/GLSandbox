@@ -1,22 +1,17 @@
-/**
-	GLTest, GLSandbox.cpp
-	Purpose: Abstract class declaration for generic OpenGL examples.
-
-	@author François Brachais (deqyra)
-	@version 1.0 12/06/2019
- */
-#ifndef GL_EXAMPLE_HPP
-#define GL_EXAMPLE_HPP
+#ifndef GL_SANDBOX_HPP
+#define GL_SANDBOX_HPP
 
 #include <string>
 
 #define GLFW_INCLUDE_NONE
 #include "../include/GLFW/glfw3.h"
 
+// Abstract class to run any 3D scene in a GLFW window
 class GLSandbox
 {
 	public:
+        // Run something in the provided GLFW window
 		virtual void run(GLFWwindow* window) = 0;
 };
 
-#endif//GL_EXAMPLE_HPP
+#endif//GL_SANDBOX_HPP

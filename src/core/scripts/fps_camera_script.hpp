@@ -1,5 +1,5 @@
-#ifndef FPS_CAMERA_SCRIPT_HPP
-#define FPS_CAMERA_SCRIPT_HPP
+#ifndef CORE__SCRIPTS__FPS_CAMERA_SCRIPT_HPP
+#define CORE__SCRIPTS__FPS_CAMERA_SCRIPT_HPP
 
 #include "../camera.hpp"
 #include "../scene/input_processing_script.hpp"
@@ -13,33 +13,42 @@
 #define SPRINT_MUTLIPLIER 1.5f
 #define SENSITIVITY 0.1f
 
+// Provide event callbacks to manage a camera as in a FPS game
 class FPSCameraScript : public InputProcessingScript
 {
     private:
         CameraPtr _camera;
 
-        // Camera options
+        // Camera move speed (WASD)
         float _moveSpeed;
+        // Camera sensitivity (mouse)
         float _mouseSensitivity;
 
-        // Keyboard handling related stuff
+        // Movement flags
         bool _movement[4];
+        // Sprint flag
         bool _sprint;
 
-        // Mouse handling related stuff
+        // Last X position the mouse was recorded at
         float _lastMouseX;
+        // Last Y position the mouse was recorded at
         float _lastMouseY;
+        // Whether the mouse was updated once
         bool _mouseWasUpdatedOnce;
 
     public:
         FPSCameraScript();
 
+        // To be called upon a keyboard event; handles WASD keys and moves camera
         virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        // To be called upon a mouse cursor event; handles mouse position shift and rotates camera
         virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
 
+        // To be called upon a frame update; does nothing
         virtual void update(float timeElapsed);
 
+        // Set the scene object reference which the input processing script is attached to, retrieve camera from SceneObject
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 };
 
-#endif//FPS_CAMERA_SCRIPT_HPP
+#endif//CORE__SCRIPTS__FPS_CAMERA_SCRIPT_HPP
