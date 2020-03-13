@@ -12,7 +12,7 @@
 class InputProcessor
 {
     private:
-        // Keeps track of how many Script objects were created (used as an ID system)
+        // Keeps track of how many InputProcessor objects were created (used as an ID system)
         static unsigned int _count;
 
     public:

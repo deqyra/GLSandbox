@@ -1,10 +1,3 @@
-/**
-    GLTest, perspective_triangle_example.cpp
-    Purpose: Implementation of class RotatingTexturedCubeExample. See .hpp file.
-
-    @author François Brachais (deqyra)
-    @version 1.0 05/02/2020
- */
 #include "lighting_sandbox.hpp"
 
 #include <memory>
