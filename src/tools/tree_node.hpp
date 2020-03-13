@@ -10,6 +10,7 @@
 #include <vector>
 
 template<typename T>
+// A node to be used in a tree, stores a T-type value and weak pointers to surronding nodes
 class TreeNode : public std::enable_shared_from_this<TreeNode<T>>
 {
     using TreeNodeWPtr = std::weak_ptr<TreeNode<T>>;
@@ -22,46 +23,46 @@ class TreeNode : public std::enable_shared_from_this<TreeNode<T>>
         // Keeps track of how many TreeNode objects were created (used as an ID system)
         static unsigned int _count;
 
-        // Weak reference to the parent of this node
+        // Weak pointer to the parent of this node
         TreeNodeWPtr _wParent;
-        // Weak references to the children of this node
+        // Weak pointers to the children of this node
         std::vector<TreeNodeWPtr> _wChildren;
 
-        // Weak references to all the parents in the parent chain of this node
+        // Weak pointers to all the parents in the parent chain of this node
         std::vector<TreeNodeWPtr> _wParentChain;
         // IDs of all the parents in the parent chain of this node
         std::vector<unsigned int> _parentIdChain;
 
-        // Update the lists of IDs and references to parents in the parent chain
+        // Update the lists of IDs and pointers to parents in the parent chain
         void generateParentChains();
 
     public:
         // Construct new node with value attached
         TreeNode(T value);
 
-        // Get a weak reference to the parent of this node
+        // Get a weak pointer to the parent of this node
         TreeNodeWPtr getParent();
-        // Set the parent of this node from a weak reference
+        // Set the parent of this node from a weak pointer
         void setParent(TreeNodeWPtr wParent);
-        // Get a list of weak references to all parents of this node, from closest to furthest
+        // Get a list of weak pointers to all parents of this node, from closest to furthest
         std::vector<TreeNodeWPtr> getParentChain();
         // Get list of IDs of all parents of this node, from closest to furthest
         std::vector<unsigned int> getParentIdChain();
-        // Get list of weak references to all children of this node
+        // Get list of weak pointers to all children of this node
         std::vector<TreeNodeWPtr> getChildren();
-        // Add new child to this node from a weak reference
+        // Add new child to this node from a weak pointer
         void addChild(TreeNodeWPtr wChild);
-        // Remove child from this node from a weak reference
+        // Remove child from this node from a weak pointer
         void removeChild(TreeNodeWPtr wChild);
         // Remove child from this node using its ID
         void removeChild(unsigned int id);
-        // Whether the provided weak reference is a child of this node
+        // Whether the provided weak pointer is a child of this node
         bool hasChild(TreeNodeWPtr wChild);
         // Whether the node with provided ID is a child of this node
         bool hasChild(unsigned int id);
-        // Whether this node is a parent (to any degree) of the provided weak reference
+        // Whether this node is a parent (to any degree) of the provided weak pointer
         bool isParentOf(TreeNodeWPtr wNode);
-        // Whether this node is a child (to any degree) of the provided weak reference
+        // Whether this node is a child (to any degree) of the provided weak pointer
         bool isChildOf(TreeNodeWPtr wNode);
         // Whether this node is a child (to any degree) of the ndoe with provided ID
         bool isChildOf(unsigned int id);
@@ -127,7 +128,7 @@ void TreeNode<T>::setParent(TreeNodeWPtr wNewParent)
     {
         newParent->_wChildren.push_back(this->weak_from_this());
     }
-    // Update this node's parent weak reference
+    // Update this node's parent weak pointer
     _wParent = wNewParent;
 
     // Update parent chains
@@ -158,7 +159,7 @@ void TreeNode<T>::addChild(TreeNodeWPtr wChild)
     TreeNodePtr child = wChild.lock();
     if (child == nullptr)
     {
-        std::string s = "TreeNode: provided node reference is dangling, cannot add as child.";
+        std::string s = "TreeNode: provided node pointer is dangling, cannot add as child.";
         throw std::runtime_error(s.c_str());
     }
 
@@ -183,7 +184,7 @@ void TreeNode<T>::addChild(TreeNodeWPtr wChild)
         throw std::runtime_error(sstr.str().c_str());
     }
 
-    // Update parent reference in the new child
+    // Update parent pointer in the new child
     child->_wParent = this->weak_from_this();
     // Update parent chains in the new child
     child->generateParentChains();
@@ -197,7 +198,7 @@ bool TreeNode<T>::hasChild(TreeNodeWPtr wChild)
     TreeNodePtr child = wChild.lock();
     if (child == nullptr)
     {
-        std::string s = "TreeNode: provided node reference is dangling, cannot check as a potential child.";
+        std::string s = "TreeNode: provided node pointer is dangling, cannot check as a potential child.";
         throw std::runtime_error(s.c_str());
     }
     // Defer the check to the ID-version of the method
@@ -207,7 +208,7 @@ bool TreeNode<T>::hasChild(TreeNodeWPtr wChild)
 template<typename T>
 bool TreeNode<T>::hasChild(unsigned int id)
 {
-    // Lambda to check whether a provided weak reference to a node has the provided ID
+    // Lambda to check whether a provided weak pointer to a node has the provided ID
     std::function<bool(TreeNodeWPtr)> checkId = [id, &cleanupNeeded](TreeNodeWPtr wNode)
     {
         TreeNodePtr node = wNode.lock();
@@ -227,7 +228,7 @@ void TreeNode<T>::removeChild(TreeNodeWPtr wChild)
     TreeNodePtr child = wChild.lock();
     if (child == nullptr)
     {
-        std::string s = "TreeNode: provided node reference is dangling, cannot remove child.";
+        std::string s = "TreeNode: provided node pointer is dangling, cannot remove child.";
         throw std::runtime_error(s.c_str());
     }
     // Defer the processing to the ID-version of the method
@@ -237,7 +238,7 @@ void TreeNode<T>::removeChild(TreeNodeWPtr wChild)
 template<typename T>
 void TreeNode<T>::removeChild(unsigned int id)
 {
-    // Lambda to check whether a provided weak reference to a node has the provided ID
+    // Lambda to check whether a provided weak pointer to a node has the provided ID
     std::function<bool(TreeNodeWPtr)> checkId = [id](TreeNodeWPtr wNode)
     {
         auto node = wNode.lock();
@@ -252,10 +253,10 @@ void TreeNode<T>::removeChild(unsigned int id)
     if (it != _wChildren.end())
     {
         auto child = it->lock();
-        // Reset the child node's parent reference
+        // Reset the child node's parent pointer
         child->_wParent.reset();
         child->generateParentChains();
-        // Effectively remove the reference to the child node
+        // Effectively remove the pointer to the child node
         _wChildren.erase(it);
     }
 }

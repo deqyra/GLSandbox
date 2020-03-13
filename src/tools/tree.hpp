@@ -10,6 +10,7 @@
 #include "tree_node.hpp"
 
 template<typename T>
+// A tree composed from nodes, manages and stores pointers to all of its nodes
 class Tree
 {
     public:
@@ -18,36 +19,59 @@ class Tree
         using NodeWPtr = std::weak_ptr<Node>;
 
     private:
+        // Pointer to the root node of the tree
         NodePtr _root;
+        // Map containing pointers to all of the nodes in the tree (mapped to node ID)
         std::unordered_map<unsigned int, NodePtr> _nodes;
 
+        // Construct tree from a single root node
         Tree(NodePtr root);
+        // Construct tree from a single root node and copy all nodes from the provided map
         Tree(NodePtr root, std::unordered_map<unsigned int, NodePtr> nodeMap);
 
+        // Recursively destruct the provided node and all of its children
         void destructBranch(NodePtr root);
+        // Get a map containing the provided node and all of its children (mapped to node ID)
         std::unordered_map<unsigned int, NodePtr> branchNodeMap(NodePtr branchRoot);
+        // Given a source root node and a destination root node, recursively copy all source children nodes as children of the destination node
         void copyNodeStructure(NodePtr source, NodePtr destination);
 
     public:
+        // Construct a tree from a single root value
         Tree(T rootValue);
+
         Tree(const Tree<T>& other);
         Tree<T>& operator=(const Tree<T>& other);
         ~Tree();
 
+        // Get a weak pointer to the tree root
         NodeWPtr getRoot();
+        // Get a weak pointer to the node whose ID is provided, if it's part of the tree
         NodeWPtr operator[](unsigned int id);
+        // Whether the tree has a node with provided ID
         bool hasNode(unsigned int id);
-        bool hasNode(NodeWPtr node);
+        // Whether the tree has the node referenced by the provided weak pointer
+        bool hasNode(NodeWPtr wNode);
+        // Add a node to the tree. It will have the provided value and will be a child of the node with provided ID.
         unsigned int addNode(T value, unsigned int parentId);
+        // Add a whole branch to the tree. Its structure will be copied from the provided tree, and it will be a child of the node with provided ID.
         unsigned int addBranch(const Tree<T>& tree, unsigned int parentId);
+        // Remove the whole branch whose root node has the provided ID
         void removeBranch(unsigned int branchRootId);
-        void removeBranch(NodeWPtr branchRootNode);
+        // Remove the whole branch whose root is referenced by the provided pointer
+        void removeBranch(NodeWPtr wBranchRootNode);
+        // Remove the whole branch whose root node has the provided ID, and return it as a tree
         Tree<T> popBranch(unsigned int branchRootId);
-        Tree<T> popBranch(NodeWPtr branchRootNode);
+        // Remove the whole branch whose root is referenced by the provided pointer, and return it as a tree
+        Tree<T> popBranch(NodeWPtr wBranchRootNode);
+        // Get (as a tree) the whole branch whose root node has the provided ID
         Tree<T> getBranch(unsigned int branchRootId);
-        Tree<T> getBranch(NodeWPtr branchRootNode);
+        // Get (as a tree) the whole branch whose root is referenced by the provided pointer
+        Tree<T> getBranch(NodeWPtr wBranchRootNode);
+        // Change the parent of a branch whose root has the provided root ID
         void moveBranch(unsigned int branchRootId, unsigned int newParentId);
-        void moveBranch(NodeWPtr branchRootNode, NodeWPtr newParentNode);
+        // Change the parent of a branch whose root is referenced by the provided root pointer
+        void moveBranch(NodeWPtr wBranchRootNode, NodeWPtr wNewParentNode);
 };
 
 template<typename T>
@@ -55,6 +79,7 @@ Tree<T>::Tree(T rootValue) :
     _root(nullptr),
     _nodes()
 {
+    // Create a node from the root value and register it in the node map
     _root = std::make_shared<Node>(rootValue);
     _nodes[_root->id] = _root;
 }
@@ -64,25 +89,33 @@ Tree<T>::Tree(const Tree<T>& other) :
     _root(nullptr),
     _nodes()
 {
-    _root = std::make_shared<Node>(nullptr, other._root->value);
+    // Copy the root node value from the other tree, make it this tree's own root
+    _root = std::make_shared<Node>(other._root->value);
+    // Copy the node structure from the other tree's root to this tree's root
     copyNodeStructure(other._root, _root);
+    // Compute the node map
     _nodes = branchNodeMap(_root);
 }
 
 template<typename T>
 Tree<T>& Tree<T>::operator=(const Tree<T>& other)
 {
+    // As this tree is being assigned to, its current content must be deleted
     destructBranch(_root);
     _nodes.clear();
 
-    _root = std::make_shared<Node>(nullptr, other._root->value);
+    // Copy the root node value from the other tree, make it this tree's own root
+    _root = std::make_shared<Node>(other._root->value);
+    // Copy the node structure from the other tree's root to this tree's root
     copyNodeStructure(other._root, _root);
+    // Compute the new node map
     _nodes = branchNodeMap(_root);
 }
 
 template<typename T>
 Tree<T>::~Tree()
 {
+    // Basically delete everything
     destructBranch(_root);
     _nodes.clear();
 }
@@ -92,7 +125,7 @@ Tree<T>::Tree(NodePtr root) :
     _root(root),
     _nodes()
 {
-    _nodes = branchNodeMap(root);
+    _nodes = branchNodeMap(_root);
 }
 
 template<typename T>
@@ -119,21 +152,28 @@ typename Tree<T>::NodeWPtr Tree<T>::operator[](unsigned int id)
         throw std::runtime_error(s.c_str());
     }
 
+    // Return a weak pointer constructed from the actual pointer
     return NodeWPtr(it->second);
 }
 
 template<typename T>
 bool Tree<T>::hasNode(unsigned int id)
 {
-    auto it = _nodes.find(id);
+    NodePtr it = _nodes.find(id);
     return it != _nodes.end();
 }
 
 template<typename T>
-bool Tree<T>::hasNode(NodeWPtr node)
+bool Tree<T>::hasNode(NodeWPtr wNode)
 {
-    auto strongNode = node.lock();
-    return hasNode(strongNode->id);
+    NodePtr node = wNode.lock();
+    if (node == nullptr)
+    {
+        std::string s = "Tree: provided node pointer is dangling, cannot remove branch.";
+        throw std::runtime_error(s.c_str());
+    }
+    // Defer the processing to the ID-version of that method
+    return hasNode(node->id);
 }
 
 template<typename T>
@@ -146,7 +186,7 @@ unsigned int Tree<T>::addNode(T value, unsigned int parentId)
         throw std::runtime_error(s.c_str());
     }
 
-    // Create the new node and have it automatically registered in its parent.
+    // Create the new node and have it automatically registered in its parent
     NodePtr node = std::make_shared<Node>(value);
     node->setParent(it->second);
     _nodes[node->id] = node;
@@ -163,11 +203,16 @@ unsigned int Tree<T>::addBranch(const Tree<T>& tree, unsigned int parentId)
         throw std::runtime_error(s.c_str());
     }
 
+    // Copy the other tree's root value as a new node of this tree, whose parent is a node with the provided ID
     unsigned int newBranchRootId = addNode(tree._root->value, parentId);
+    // Get the pointer to the new node
     NodePtr newBranchRoot = _nodes[newBranchRootId];
+    // Copy everything from the provided tree into the new node
     copyNodeStructure(tree._root, newBranchRoot);
+    // Compute new node map starting from new node and merge it with the current node map
     std::unordered_map<unsigned int, NodePtr> newNodes = branchNodeMap(newBranchRoot);
     _nodes.insert(newNodes.begin(), newNodes.end());
+
     return newBranchRootId;
 }
 
@@ -183,15 +228,23 @@ void Tree<T>::removeBranch(unsigned int branchRootId)
 
     NodePtr node = _nodes[branchRootId];
     NodePtr parent = it->second->getParent().lock();
+    // Detach the node with provided ID from its parent
     parent->removeChild(branchRootId);
+    // Destruct all content starting from that node
     destructBranch(node);
 }
 
 template<typename T>
-void Tree<T>::removeBranch(NodeWPtr branchRootNode)
+void Tree<T>::removeBranch(NodeWPtr wBranchRootNode)
 {
-    auto strongNode = branchRootNode.lock();
-    removeBranch(strongNode->id);
+    NodePtr node = wBranchRootNode.lock();
+    if (node == nullptr)
+    {
+        std::string s = "Tree: provided node pointer is dangling, cannot remove branch.";
+        throw std::runtime_error(s.c_str());
+    }
+    // Defer the processing to the ID-version of that method
+    removeBranch(node->id);
 }
 
 template<typename T>
@@ -206,22 +259,32 @@ Tree<T> Tree<T>::popBranch(unsigned int branchRootId)
 
     NodePtr node = _nodes[branchRootId];
     NodePtr parent = node->getParent().lock();
+    // Detach the node with provided ID from its parent
     parent->removeChild(branchRootId);
 
-    std::unordered_map<unsigned int, NodePtr> newTreeNodes;
-    for (auto it = newTreeNodes.begin(); it != newTreeNodes.end(); it++)
+    // Construct new tree from that node
+    Tree<T> newTree = Tree<T>(node);
+
+    // Delete all children pointers from this tree's node map, using the new tree's node map
+    for (auto it = newTree._nodes.begin(); it != newTree._nodes.end(); it++)
     {
         _nodes.erase(it->first);
     }
 
-    return Tree<T>(node);
+    return newTree;
 }
 
 template<typename T>
-Tree<T> Tree<T>::popBranch(NodeWPtr branchRootNode)
+Tree<T> Tree<T>::popBranch(NodeWPtr wBranchRootNode)
 {
-    auto strongNode = branchRootNode.lock();
-    return popBranch(strongNode->id);
+    NodePtr node = wBranchRootNode.lock();
+    if (node == nullptr)
+    {
+        std::string s = "Tree: provided node pointer is dangling, cannot pop branch.";
+        throw std::runtime_error(s.c_str());
+    }
+    // Defer the processing to the ID-version of that method
+    return popBranch(node->id);
 }
 
 template<typename T>
@@ -234,16 +297,25 @@ Tree<T> Tree<T>::getBranch(unsigned int branchRootId)
         throw std::runtime_error(s.c_str());
     }
 
-    NodePtr root = std::make_shared<Node>(nullptr, it->second->value);
+    // Create a new node with a copy of the branch root node
+    NodePtr root = std::make_shared<Node>(it->second->value);
+    // Copy the branch structure into the new root
     copyNodeStructure(it->second, root);
+    // Make a tree out of it
     return Tree<T>(root);
 }
 
 template<typename T>
-Tree<T> Tree<T>::getBranch(NodeWPtr branchRootNode)
+Tree<T> Tree<T>::getBranch(NodeWPtr wBranchRootNode)
 {
-    auto strongNode = branchRootNode.lock();
-    return getBranch(strongNode->id);
+    NodePtr node = wBranchRootNode.lock();
+    if (node == nullptr)
+    {
+        std::string s = "Tree: provided node pointer is dangling, cannot get branch.";
+        throw std::runtime_error(s.c_str());
+    }
+    // Defer the processing to the ID-version of that method
+    return getBranch(node->id);
 }
 
 template<typename T>
@@ -263,27 +335,44 @@ void Tree<T>::moveBranch(unsigned int branchRootId, unsigned int newParentId)
         throw std::runtime_error(s.c_str());
     }
 
+    // Simply reset the parent of the branch root node to new parent node
     branchIt->second->setParent(parentIt->second);
 }
 
 template<typename T>
-void Tree<T>::moveBranch(NodeWPtr branchRootNode, NodeWPtr newParentNode)
+void Tree<T>::moveBranch(NodeWPtr wBranchRootNode, NodeWPtr wNewParentNode)
 {
-    auto strongRoot = branchRootNode.lock();
-    auto strongParent = newParentNode.lock();
-    moveBranch(strongRoot->id, strongParent->id);
+    auto root = wBranchRootNode.lock();
+    if (root == nullptr)
+    {
+        std::string s = "Tree: provided root node pointer is dangling, cannot move branch.";
+        throw std::runtime_error(s.c_str());
+    }
+
+    auto parent = wNewParentNode.lock();
+    if (parent == nullptr)
+    {
+        std::string s = "Tree: provided parent node pointer is dangling, cannot move branch.";
+        throw std::runtime_error(s.c_str());
+    }
+
+    // Defer the processing to the ID-version of that method
+    moveBranch(root->id, parent->id);
 }
 
 template<typename T>
 void Tree<T>::destructBranch(NodePtr root)
 {
+    // First destroy all children of root
     std::vector<NodeWPtr> children = root->getChildren();
     for (auto it = children.begin(); it != children.end(); it++)
     {
-        auto strongChild = it->lock();
-        destructBranch(strongChild);
+        auto child = it->lock();
+        destructBranch(child);
     }
+    // Reset root parent
     root->setParent(NodeWPtr());
+    // Delete pointer to root
     _nodes.erase(root->id);
 }
 
@@ -295,11 +384,14 @@ std::unordered_map<unsigned int, typename Tree<T>::NodePtr> Tree<T>::branchNodeM
     std::vector<NodeWPtr> children = branchRoot->getChildren();
     for (auto it = children.begin(); it != children.end(); it++)
     {
-        auto strongChild = it->lock();
-        std::unordered_map<unsigned int, NodePtr> childNodes = branchNodeMap(strongChild);
+        NodePtr child = it->lock();
+        // Compute the node map of each child
+        std::unordered_map<unsigned int, NodePtr> childNodes = branchNodeMap(child);
+        // Merge it with the current node map
         registeredNodes.insert(childNodes.begin(), childNodes.end());
     }
 
+    // Add root node to map
     registeredNodes[branchRoot->id] = branchRoot;
     return registeredNodes;
 }
@@ -310,9 +402,12 @@ void Tree<T>::copyNodeStructure(NodePtr source, NodePtr destination)
     std::vector<NodeWPtr> sourceChildren = source->getChildren();
     for (auto it = sourceChildren.begin(); it != sourceChildren.end(); it++)
     {
-        auto strongChild = it->lock();
-        NodePtr newChild = std::make_shared<Node>(destination, strongChild->value);
-        copyNodeStructure(strongChild, newChild);
+        NodePtr child = it->lock();
+        // Make new nodes by copying each child node's value
+        NodePtr newChild = std::make_shared<Node>(child->value);
+        newChild->setParent(destination);
+        // Copy the node structure from each child to the corresponding newly created node
+        copyNodeStructure(child, newChild);
     }
 }
 
