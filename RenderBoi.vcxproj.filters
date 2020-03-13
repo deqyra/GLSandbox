@@ -151,9 +151,6 @@
     <ClCompile Include="src\core\scripts\fps_camera_script.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\gl_sandboxes\lighting_example.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\scene\components\script_component.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -166,9 +163,6 @@
     <ClCompile Include="src\core\scripts\lambda_script.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\tools\basic_input_manager.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\lights\directional_light.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -176,6 +170,15 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\core\mesh_generators\tetrahedron_generator.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gl_sandboxes\lighting_sandbox.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\glfw_window_callbacks.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\scripts\basic_input_manager.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -300,9 +303,6 @@
     <ClInclude Include="src\core\scene\scene_types_decl.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\gl_sandboxes\lighting_example.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="src\gl_sandbox.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -318,9 +318,6 @@
     <ClInclude Include="src\core\scripts\lambda_script.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="src\tools\basic_input_manager.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\lights\directional_light.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -331,6 +328,15 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="include\vsgl_info_lib.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gl_sandboxes\lighting_sandbox.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\glfw_window_callbacks.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\scripts\basic_input_manager.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

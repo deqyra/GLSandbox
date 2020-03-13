@@ -7,67 +7,81 @@
 #include "../tools/exceptions/index_out_of_bounds_error.hpp"
 
 std::unordered_map<unsigned int, unsigned int> Texture2D::_refCount = std::unordered_map<unsigned int, unsigned int>();
-std::unordered_map<std::string , unsigned int> Texture2D::_pathIds  = std::unordered_map<std::string, unsigned int>();
+std::unordered_map<std::string , unsigned int> Texture2D::_pathsToIds  = std::unordered_map<std::string, unsigned int>();
 
 Texture2D::Texture2D(std::string path) :
     _path(path)
 {
-    auto it = _pathIds.find(path);
-    if (it != _pathIds.end())
+    auto it = _pathsToIds.find(path);
+    // If the image is already handled by a Texture2D instance...
+    if (it != _pathsToIds.end())
     {
-        _id = it->second;
-        _refCount[_id]++;
+        // Just copy the location and increase the refcount
+        _location = it->second;
+        _refCount[_location]++;
     }
+    // If the image is not being handled by a Texture2D instance...
     else
     {
-        _id = loadTextureFromFile(path);
-        _pathIds[path] = _id;
-        _refCount[_id] = 1;
+        // Load the image
+        _location = loadTextureFromFile(path);
+        // Map the new texture location to image path and set a refcount
+        _pathsToIds[path] = _location;
+        _refCount[_location] = 1;
     }
 }
 
 Texture2D::Texture2D(const Texture2D& other) :
-    _id(other._id),
+    _location(other._location),
     _path(other._path)
 {
-    _refCount[_id]++;
+    // The same texture is being handled by one more resource: increase the refcount
+    _refCount[_location]++;
 }
 
 Texture2D& Texture2D::operator=(const Texture2D& other)
 {
+    // Let go of the content currently in place
     cleanup();
 
-    _id = other._id;
+    // Copy the path, location, and increase the ref count
+    _location = other._location;
     _path = other._path;
-    _refCount[_id]++;
+    _refCount[_location]++;
 
     return *this;
 }
 
 Texture2D::~Texture2D()
 {
+    // Let go of the content currently in place
     cleanup();
 }
 
 void Texture2D::cleanup()
 {
     // Decrease the ref count
-    unsigned int count = --_refCount[_id];
-    // If empty, destroy resource
+    unsigned int count = --_refCount[_location];
+    // If the resource is not used anymore...
     if (!count)
     {
-        _pathIds.erase(_path);
-        glDeleteTextures(1, &_id);
+        // Remove ID map
+        _pathsToIds.erase(_path);
+        // Free the resource on the GPU
+        glDeleteTextures(1, &_location);
     };
 }
 
 unsigned int Texture2D::loadTextureFromFile(const std::string path)
 {
-    unsigned int name;
-    glGenTextures(1, &name);
+    // Create a texture resource on the GPU
+    unsigned int location;
+    glGenTextures(1, &location);
 
+    // Load the image from disk
     int width, height, nChannels;
     unsigned char *data = stbi_load(path.c_str(), &width, &height, &nChannels, 0);
+
     if (data)
     {
         GLenum format = GL_RGB;
@@ -76,10 +90,12 @@ unsigned int Texture2D::loadTextureFromFile(const std::string path)
         else if (nChannels == 4)
             format = GL_RGBA;
 
-        glBindTexture(GL_TEXTURE_2D, name);
+        // Send the texture to the GPU
+        glBindTexture(GL_TEXTURE_2D, location);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
+        // Set texture wrapping and filtering options
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -90,34 +106,32 @@ unsigned int Texture2D::loadTextureFromFile(const std::string path)
     else
     {
         stbi_image_free(data);
-        std::string s = "Texture2D: failed to load path " + path;
+        std::string s = "Texture2D: failed to load image located at \"" + path + "\".";
         throw std::runtime_error(s.c_str());
     }
 
-    return name;
+    return location;
 }
 
-// Get texture ID.
-unsigned int Texture2D::id()
+unsigned int Texture2D::location()
 {
-    return _id;
+    return _location;
 }
 
-// Bind the texture.
 void Texture2D::bind()
 {
-    glBindTexture(GL_TEXTURE_2D, _id);
+    glBindTexture(GL_TEXTURE_2D, _location);
 }
 
 void Texture2D::bind(unsigned int unit)
 {
     unsigned int realUnit = GL_TEXTURE0 + unit;
-    if (realUnit)
+    if (realUnit > MAX_TEXTURE_UNIT)
     {
         std::string s = "Texture2D: cannot bind to texture unit " + std::to_string(realUnit) + ".";
         throw IndexOutOfBoundsError(s);
     }
 
     glActiveTexture(realUnit);
-    glBindTexture(GL_TEXTURE_2D, _id);
+    glBindTexture(GL_TEXTURE_2D, _location);
 }

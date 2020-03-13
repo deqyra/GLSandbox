@@ -1,13 +1,5 @@
-/**
-    GLTest, shader.hpp
-    Purpose: Shader program handler. Reads source files and compiles and links them.
-
-    @author François Brachais (deqyra)
-    @version 1.0 11/09/2019
- */
-
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#ifndef CORE__SHADER_HPP
+#define CORE__SHADER_HPP
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -21,24 +13,28 @@
 #include "material.hpp"
 #include "lights/point_light.hpp"
 
+// Handle to a shader resource on the GPU
 class Shader
 {
     private:
+        // The paths of the files from which the shader was constructed, combined together
         std::string _programKey;
-        unsigned int _id;
+        // The location of the shader resource on the GPU
+        unsigned int _location;
 
         // Structure storing uniform locations against their name AND the ID of the program they belong to:
-        // program ID -> uniform name -> actual location
+        // program GPU location -> uniform name -> uniform location
         static std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>> _uniformLocations;
 
         // Structure storing program locations against the path of the shaders they were constructed from:
-        // program shader names -> program location
+        // program key -> program GPU location
         static std::unordered_map<std::string, unsigned int> _programMaps;
 
         // Structure storing how many shader instances are referencing a shader resource on the GPU:
-        // program ID -> reference count
+        // program GPU location -> reference count
         static std::unordered_map<unsigned int, unsigned int> _refCount;
 
+        // Free resources
         void cleanup();
 
     public:
@@ -47,13 +43,13 @@ class Shader
         Shader& operator=(const Shader& other);
         ~Shader();
 
-        // Get program ID.
-        unsigned int id() const;
+        // Get program location
+        unsigned int location() const;
 
-        // Enable the shader.
+        // Enable the shader
         void use() const;
 
-        // Utility uniform functions.
+        // Utility uniform functions
         unsigned int getUniformLocation(const std::string& name) const;
 
         void setBool(const std::string& name, bool value);
@@ -68,4 +64,4 @@ class Shader
         void setPointLightArray(const std::string& name, unsigned int index, PointLight value, glm::vec3 position);
 };
 
-#endif//SHADER_HPP
+#endif//CORE__SHADER_HPP

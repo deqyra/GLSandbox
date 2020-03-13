@@ -54,6 +54,7 @@
     <ClCompile Include="src\core\scene\script.cpp" />
     <ClCompile Include="src\core\scene\tools.cpp" />
     <ClCompile Include="src\core\scene_renderer.cpp" />
+    <ClCompile Include="src\core\scripts\basic_input_manager.cpp" />
     <ClCompile Include="src\core\scripts\fps_camera_script.cpp" />
     <ClCompile Include="src\core\scripts\lambda_script.cpp" />
     <ClCompile Include="src\core\shader.cpp" />
@@ -62,14 +63,14 @@
     <ClCompile Include="src\core\ubo\matrix_ubo.cpp" />
     <ClCompile Include="src\core\uniform_buffer_object.cpp" />
     <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\gl_sandboxes\lighting_example.cpp" />
+    <ClCompile Include="src\gl_sandboxes\lighting_sandbox.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
-    <ClCompile Include="src\tools\basic_input_manager.cpp" />
     <ClCompile Include="src\tools\exceptions\file_not_found_error.cpp" />
     <ClCompile Include="src\tools\exceptions\index_out_of_bounds_error.cpp" />
     <ClCompile Include="src\tools\exceptions\range_bounds_exceeded_error.cpp" />
     <ClCompile Include="src\tools\exceptions\unmatched_array_size_error.cpp" />
+    <ClCompile Include="src\tools\glfw_window_callbacks.cpp" />
     <ClCompile Include="src\tools\gl_utils.cpp" />
     <ClCompile Include="src\tools\gl_window.cpp" />
     <ClCompile Include="src\tools\input_processor.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="src\core\scene\tools.hpp" />
     <ClInclude Include="src\core\scene_object_type.hpp" />
     <ClInclude Include="src\core\scene_renderer.hpp" />
+    <ClInclude Include="src\core\scripts\basic_input_manager.hpp" />
     <ClInclude Include="src\core\scripts\fps_camera_script.hpp" />
     <ClInclude Include="src\core\scripts\lambda_script.hpp" />
     <ClInclude Include="src\core\shader.hpp" />
@@ -114,12 +116,12 @@
     <ClInclude Include="src\core\ubo\matrix_ubo.hpp" />
     <ClInclude Include="src\core\uniform_buffer_object.hpp" />
     <ClInclude Include="src\gl_sandbox.hpp" />
-    <ClInclude Include="src\gl_sandboxes\lighting_example.hpp" />
-    <ClInclude Include="src\tools\basic_input_manager.hpp" />
+    <ClInclude Include="src\gl_sandboxes\lighting_sandbox.hpp" />
     <ClInclude Include="src\tools\exceptions\file_not_found_error.hpp" />
     <ClInclude Include="src\tools\exceptions\index_out_of_bounds_error.hpp" />
     <ClInclude Include="src\tools\exceptions\range_bounds_exceeded_error.hpp" />
     <ClInclude Include="src\tools\exceptions\unmatched_array_size_error.hpp" />
+    <ClInclude Include="src\tools\glfw_window_callbacks.hpp" />
     <ClInclude Include="src\tools\gl_utils.hpp" />
     <ClInclude Include="src\tools\gl_window.hpp" />
     <ClInclude Include="src\tools\input_processor.hpp" />

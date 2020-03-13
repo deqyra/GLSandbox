@@ -1,13 +1,14 @@
-#ifndef UNIFORM_BUFFER_OBJECT_HPP
-#define UNIFORM_BUFFER_OBJECT_HPP
+#ifndef CORE__UNIFORM_BUFFER_OBJECT_HPP
+#define CORE__UNIFORM_BUFFER_OBJECT_HPP
 
 #include <string>
 #include <glm/glm.hpp>
 
+// Abstract class to represent a handle to a uniform buffer object resource on the GPU
 class UniformBufferObject
 {
     protected:
-        unsigned int _id;
+        unsigned int _location;
 
     public:
         UniformBufferObject();
@@ -16,4 +17,4 @@ class UniformBufferObject
         virtual unsigned int getSize() = 0;
 };
 
-#endif//UNIFORM_BUFFER_OBJECT_HPP
+#endif//CORE__UNIFORM_BUFFER_OBJECT_HPP
