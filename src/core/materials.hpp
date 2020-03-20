@@ -1,8 +1,9 @@
-#ifndef MATERIALS_HPP
-#define MATERIALS_HPP
+#ifndef CORE__MATERIALS_HPP
+#define CORE__MATERIALS_HPP
 
 #include "material.hpp"
 
+// A library of standard materials
 namespace Materials
 {
     const Material Default = Material();
@@ -183,4 +184,4 @@ namespace Materials
 	);
 }//namespace Materials
 
-#endif//MATERIALS_HPP
+#endif//CORE__MATERIALS_HPP

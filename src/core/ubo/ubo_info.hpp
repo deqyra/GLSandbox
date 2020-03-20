@@ -1,5 +1,5 @@
-#ifndef UBO_BINDING_POINTS_HPP
-#define UBO_BINDING_POINTS_HPP
+#ifndef CORE__UBO__UBO_INFO_HPP
+#define CORE__UBO__UBO_INFO_HPP
 
 /* UNIFORM BLOCK LAYOUT RULE
  * =========================
@@ -24,6 +24,10 @@
  *
  * - Structs have a base alignment computed from all of the above rules applied to their members,
  *   and they are padded to be a multiple of the base alignment of a vec4.
+ *
+ * - TO BE CLARIFIED:
+ *   It looks like vec3's immediately followed by a float in a struct are packed together and form a vec4.
+ *   This happens in GLSL version 460 core on a NVidia GTX 1660Ti.
  *
  * EXAMPLES
  * ========
@@ -55,5 +59,6 @@
 
 #define MATRIX_UBO_BINDING_POINT   0
 #define LIGHT_UBO_BINDING_POINT    1
+#define NEXT_UBO_BINDING_POINT     2
 
-#endif//UBO_BINDING_POINTS_HPP
+#endif//CORE__UBO__UBO_INFO_HPP

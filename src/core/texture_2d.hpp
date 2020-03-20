@@ -7,7 +7,7 @@
 #define MAX_TEXTURE_UNIT        GL_TEXTURE31
 #define MAX_TEXTURE_UNIT_OFFSET MAX_TEXTURE_UNIT - GL_TEXTURE0
 
-// Handle to a texture 2D resource on the GPU
+// Proxy class to a texture 2D resource on the GPU
 class Texture2D
 {
     private:

@@ -13,7 +13,7 @@
 #include "material.hpp"
 #include "lights/point_light.hpp"
 
-// Handle to a shader resource on the GPU
+// Proxy class to a shader resource on the GPU
 class Shader
 {
     private:

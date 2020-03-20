@@ -4,7 +4,7 @@
 #include <string>
 #include <glm/glm.hpp>
 
-// Abstract class to represent a handle to a uniform buffer object resource on the GPU
+// Abstract proxy class to a uniform buffer object resource on the GPU
 class UniformBufferObject
 {
     protected:

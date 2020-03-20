@@ -2,6 +2,7 @@
 #define LIGHT_UBO_HPP
 
 #include <glm/glm.hpp>
+
 #include "../uniform_buffer_object.hpp"
 #include "../lights/point_light.hpp"
 #include "../lights/directional_light.hpp"

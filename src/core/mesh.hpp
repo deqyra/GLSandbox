@@ -14,6 +14,7 @@
 class Mesh;
 using MeshPtr = std::shared_ptr<Mesh>;
 
+// Any mesh composed of vertices to be rendered by indexed drawing
 class Mesh : public PositionedObject
 {
     private:
