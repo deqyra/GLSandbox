@@ -1,11 +1,3 @@
-/**
-    GLTest, camera.hpp
-    Purpose: Implementation of class Camera. See .hpp file.
-
-    @author François Brachais (deqyra)
-    @version 1.0 05/02/2020
-*/
-
 #include "camera.hpp"
 
 #include <glm/glm.hpp>
@@ -31,11 +23,13 @@ Camera::~Camera()
 void Camera::updateVectors()
 {
     glm::vec3 front;
+    // Compute new front based on yaw and pitch
     front.x = cos(glm::radians(_yaw)) * cos(glm::radians(_pitch));
     front.y = sin(glm::radians(_pitch));
     front.z = sin(glm::radians(_yaw)) * cos(glm::radians(_pitch));
     _front = glm::normalize(front);
 
+    // Compute new right and up from new front and world up
     _right = glm::normalize(glm::cross(_front, _worldUp));
     _up = glm::normalize(glm::cross(_right, _front));
 }

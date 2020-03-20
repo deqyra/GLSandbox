@@ -1,20 +1,8 @@
-/**
-    GLTest, camera.hpp
-    Purpose: Define a camera class handling user input to simulate walking and looking around.
-
-    @author François Brachais (deqyra)
-    @version 1.0 05/02/2020
-*/
-
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#ifndef CORE__CAMERA_HPP
+#define CORE__CAMERA_HPP
 
 #include <memory>
 #include <glm/glm.hpp>
-
-#include "direction.hpp"
-
-#include "../include/glad/glad.h"
 
 #define UP glm::vec3(0.f, 1.f, 0.f)
 
@@ -25,14 +13,12 @@
 class Camera
 {
     private:
-        // Camera Attributes
         glm::vec3 _front;
         glm::vec3 _up;
         glm::vec3 _right;
         glm::vec3 _worldUp;
         float _zoom;
 
-        // Euler Angles
         float _yaw;
         float _pitch;
 
@@ -64,4 +50,4 @@ class Camera
 using CameraPtr = std::shared_ptr<Camera>;
 using CameraWPtr = std::weak_ptr<Camera>;
 
-#endif//CAMERA_HPP
+#endif//CORE__CAMERA_HPP

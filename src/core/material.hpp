@@ -1,5 +1,5 @@
-#ifndef MATERIAL_HPP
-#define MATERIAL_HPP
+#ifndef CORE__MATERIAL_HPP
+#define CORE__MATERIAL_HPP
 
 #include <glm/glm.hpp>
 #include <vector>
@@ -9,6 +9,7 @@
 #define DIFFUSE_MAP_MAX_COUNT   8
 #define SPECULAR_MAP_MAX_COUNT  8
 
+// Material with fixed ambient, diffuse and specular components (and shininess), as well as diffuse and specular maps
 class Material
 {
     private:
@@ -17,18 +18,16 @@ class Material
 
     public:
         Material();
-        Material(glm::vec3 ambient,
-                 glm::vec3 diffuse,
-                 glm::vec3 specular,
-                 float shininess
-        );
+        Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess);
 
         std::vector<Texture2D> getDiffuseMaps();
         std::vector<Texture2D> getSpecularMaps();
+
         unsigned int pushDiffuseMap(Texture2D tex);
         unsigned int pushSpecularMap(Texture2D tex);
         unsigned int popDiffuseMap();
         unsigned int popSpecularMap();
+        
         unsigned int setDiffuseMaps(std::vector<Texture2D> diffuseMaps);
         unsigned int setSpecularMaps(std::vector<Texture2D> specularMaps);
         unsigned int getDiffuseMapCount();
@@ -42,4 +41,4 @@ class Material
         float shininess;
 };
 
-#endif//MATERIAL_HPP
+#endif//CORE__MATERIAL_HPP
