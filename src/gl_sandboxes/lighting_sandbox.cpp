@@ -109,7 +109,8 @@ void LightingSandbox::run(GLFWwindow* window)
         float frameTime = (float)glfwGetTime();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Draw meshes
+        // Update and draw scene
+        scene->triggerUpdate();
         sceneRenderer.renderScene(scene);
 
         // Refresh screen and process input

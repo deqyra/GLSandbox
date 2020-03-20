@@ -1,22 +1,15 @@
-/**
-    GLTest, mesh.hpp
-    Purpose: Define an abstract class to represent any mesh.
-
-    @author François Brachais (deqyra)
-    @version 1.0 07/02/2020
- */
-#ifndef MESH_HPP
-#define MESH_HPP
+#ifndef CORE__MESH_HPP
+#define CORE__MESH_HPP
 
 #include "../../include/glad/glad.h"
-
-#include "positioned_object.hpp"
-#include "vertex.hpp"
-#include "material.hpp"
 
 #include <string>
 #include <vector>
 #include <memory>
+
+#include "material.hpp"
+#include "positioned_object.hpp"
+#include "vertex.hpp"
 
 class Mesh;
 using MeshPtr = std::shared_ptr<Mesh>;
@@ -24,25 +17,35 @@ using MeshPtr = std::shared_ptr<Mesh>;
 class Mesh : public PositionedObject
 {
     private:
+        // Keeps track of how many Mesh objects were created (used as an ID system)
         static unsigned int _count;
 
-        // Structure storing how many mesh instances are referencing a VAO resource on the GPU:
+        // Map storing how many mesh instances are referencing a VAO resource on the GPU:
         // VAO ID -> reference count
         static std::unordered_map<unsigned int, unsigned int> _arrayRefCount;
 
-        // Structure storing how many mesh instances are referencing a buffer resource on the GPU:
+        // Map storing how many mesh instances are referencing a buffer resource on the GPU:
         // Buffer ID -> reference count
         static std::unordered_map<unsigned int, unsigned int> _bufferRefCount;
 
+        // Update reference counts before destruction
         void cleanup();
+        // Send mesh data to the GPU
+        void setupBuffers();
 
     protected:
+        // Vertex data of the mesh
         std::vector<Vertex> _vertices;
+        // Index data of the mesh
         std::vector<unsigned int> _indices;
+        // Draw mode
         unsigned int _drawMode;
 
+        // Handle to a VAO on the GPU
         unsigned int _vao;
+        // Handle to a VBO on the GPU
         unsigned int _vbo;
+        // Handle to an EBO on the GPU
         unsigned int _ebo;
 
     public:
@@ -51,13 +54,11 @@ class Mesh : public PositionedObject
         Mesh& operator=(const Mesh& other);
         ~Mesh();
 
-        void setupBuffers();
+        // Issue GPU draw commands
         void draw();
 
-        MeshPtr getPtr();
-        static MeshPtr getPtr(Mesh mesh);
-
+        // ID of the Mesh object
         const unsigned int id;
 };
 
-#endif//MESH_HPP
+#endif//CORE__MESH_HPP

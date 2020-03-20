@@ -1,11 +1,9 @@
-/**
-    GLTest, positioned_object.cpp
-    Purpose: Implementation of class PositionedObject. See .hpp file.
-
-    @author François Brachais (deqyra)
-    @version 1.0 08/02/2020
- */
 #include "positioned_object.hpp"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 PositionedObject::PositionedObject() :
     _position(glm::vec3(0.f)),
@@ -39,15 +37,19 @@ void PositionedObject::setPosition(glm::vec3 position)
 {
     _position = position;
 
+    // Update flags
     _transformModifiedFlag = true;
     _matrixOutdated = true;
 }
 
 glm::vec3 PositionedObject::translate(glm::vec3 translation)
 {
+    // Translate the current position
     glm::vec4 position4 = glm::vec4(_position, 1.f);
-    _position = glm::vec3(glm::translate(glm::mat4(1.f), translation) * position4);
+    glm::vec4 translated = glm::translate(glm::mat4(1.f), translation) * position4;
+    _position = glm::vec3(translated);
 
+    // Update flags
     _transformModifiedFlag = true;
     _matrixOutdated = true;
     return _position;
@@ -55,16 +57,19 @@ glm::vec3 PositionedObject::translate(glm::vec3 translation)
 
 void PositionedObject::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
+    // Orbit around the axis and center
     glm::vec4 tmpPos = glm::vec4(_position - center, 1.f);
     glm::mat4 orbit = glm::rotate(glm::mat4(1.f), radAngle, axis);
     tmpPos = orbit * tmpPos;
     _position = glm::vec3(tmpPos) + center;
 
+    // Update rotation if needed
     if (selfRotate)
     {
         rotate(-radAngle, axis);
     }
 
+    // Update flags
     _transformModifiedFlag = true;
     _matrixOutdated = true;
 }
@@ -79,16 +84,19 @@ void PositionedObject::setOrientation(glm::quat orientation)
     _orientation = orientation;
     _orientation = glm::normalize(_orientation);
 
+    // Update flags
     _transformModifiedFlag = true;
     _matrixOutdated = true;
 }
 
 glm::quat PositionedObject::rotate(glm::quat rotation)
 {
+    // Rotate the object
     _orientation = rotation * _orientation;
     _orientation = glm::normalize(_orientation);
-    _matrixOutdated = true;
 
+    // Update flags
+    _matrixOutdated = true;
     _transformModifiedFlag = true;
     return _orientation;
 }
@@ -99,9 +107,20 @@ glm::quat PositionedObject::rotate(float radAngle, glm::vec3 axis, bool localAxi
     {
         axis = _orientation * axis;
     }
+
+    // TO TEST
+    /*
+    if (!localAxis)
+    {
+        axis = glm::inverse(_orientation) * axis;
+    }
+    */
+
+    // Rotate the object
     _orientation = glm::rotate(_orientation, radAngle, axis);
     _orientation = glm::normalize(_orientation);
 
+    // Update flags
     _transformModifiedFlag = true;
     _matrixOutdated = true;
     return _orientation;
@@ -109,6 +128,8 @@ glm::quat PositionedObject::rotate(float radAngle, glm::vec3 axis, bool localAxi
 
 glm::quat PositionedObject::lookAt(glm::vec3 target)
 {
+    // FIXME
+
     glm::vec3 direction = glm::normalize(target - _position);
     glm::vec3 axis = glm::cross(WORLD_Z, direction);
     axis = glm::normalize(axis);
@@ -136,16 +157,19 @@ void PositionedObject::setScale(glm::vec3 scale)
 {
     _scale = scale;
 
+    // Update flags
     _transformModifiedFlag = true;
     _matrixOutdated = true;
 }
 
 glm::vec3 PositionedObject::scale(glm::vec3 scaling)
 {
+    // Scale the object
     _scale[0] *= scaling[0];
     _scale[1] *= scaling[1];
     _scale[2] *= scaling[2];
 
+    // Update flags
     _transformModifiedFlag = true;
     _matrixOutdated = true;
     return _scale;
@@ -166,11 +190,11 @@ void PositionedObject::updateMatrix()
     // Generate 4x4 matrix from quaternion
     _modelMatrix = glm::toMat4(glm::inverse(_orientation));
     // Scale things up
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.f), _scale);
-    _modelMatrix = _modelMatrix * scaleMatrix;
+    _modelMatrix[0][0] *= _scale[0];
+    _modelMatrix[1][1] *= _scale[1];
+    _modelMatrix[2][2] *= _scale[2];
     // Include translation to current position
-    glm::vec4 position4 = glm::vec4(_position, 1.f);
-    _modelMatrix[3] = position4;
+    _modelMatrix[3] = glm::vec4(_position, 1.f);
 
     _matrixOutdated = false;
 }

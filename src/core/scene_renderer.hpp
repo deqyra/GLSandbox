@@ -1,8 +1,8 @@
-#ifndef SCENE_RENDERER_HPP
-#define SCENE_RENDERER_HPP
+#ifndef CORE__SCENE_RENDERER_HPP
+#define CORE__SCENE_RENDERER_HPP
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "scene.hpp"
 #include "scene/scene_object.hpp"
@@ -16,18 +16,24 @@
 #include "material.hpp"
 #include "shader.hpp"
 
+// Render a scene
 class SceneRenderer
 {
     private:
+        // Handle to a UBO for matrices on the GPU
         MatrixUBO _matrixUbo;
+        // Handle to a UBO for lights on the GPU
         LightUBO _lightUbo;
 
+        // Send the scene lights to the GPU
         void sendLightData(std::vector<LightPtr>& lights, std::vector<glm::mat4>& modelMats, glm::mat4 view);
+        // Issue draw commands for a single mesh
         void drawMesh(MeshPtr mesh, glm::mat4 model, glm::mat4 view, Material mat, Shader shader);
 
     public:
         SceneRenderer();
+        // Render the provided scene
         void renderScene(SceneWPtr wScene);
 };
 
-#endif//SCENE_RENDERER_HPP
+#endif//CORE__SCENE_RENDERER_HPP

@@ -1,13 +1,13 @@
-/**
-    GLTest, mesh.hpp
-    Purpose: Implement part of class Mesh. See .hpp file.
-
-    @author François Brachais (deqyra)
-    @version 1.0 13/02/2020
- */
-
 #include "mesh.hpp"
+
+#include <string>
+#include <vector>
+#include <memory>
+
+#include "material.hpp"
 #include "materials.hpp"
+#include "positioned_object.hpp"
+#include "vertex.hpp"
 
 unsigned int Mesh::_count = 0;
 std::unordered_map<unsigned int, unsigned int> Mesh::_arrayRefCount = std::unordered_map<unsigned int, unsigned int>();
@@ -22,8 +22,10 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsi
     _ebo(0),
     id(_count++)
 {
+    // Setup resources on the GPU
     setupBuffers();
 
+    // Create refcounts to resources if non existing, increase it otherwise
     if (_arrayRefCount.find(_vao) != _arrayRefCount.end())
         _arrayRefCount[_vao] = 1;
     else
@@ -49,6 +51,7 @@ Mesh::Mesh(const Mesh& other) :
     _ebo(other._ebo),
     id(_count++)
 {
+    // Copy everything and update refcounts
     _arrayRefCount[_vao]++;
     _bufferRefCount[_vbo]++;
     _bufferRefCount[_ebo]++;
@@ -56,8 +59,10 @@ Mesh::Mesh(const Mesh& other) :
 
 Mesh& Mesh::operator=(const Mesh& other)
 {
+    // Free current resources
     cleanup();
 
+    // Copy everything
     _vertices = other._vertices;
     _indices = other._indices;
     _drawMode = other._drawMode;
@@ -65,6 +70,7 @@ Mesh& Mesh::operator=(const Mesh& other)
     _vbo = other._vbo;
     _ebo = other._ebo;
 
+    // Update refcounts
     _arrayRefCount[_vao]++;
     _bufferRefCount[_vbo]++;
     _bufferRefCount[_ebo]++;
@@ -74,11 +80,13 @@ Mesh& Mesh::operator=(const Mesh& other)
 
 Mesh::~Mesh()
 {
+    // Free current resources
     cleanup();
 }
 
 void Mesh::cleanup()
 {
+    // Update all refcounts and delete resources on the GPU if appropriate
     unsigned int count = --_arrayRefCount[_vao];
     if (!count)
     {
@@ -100,17 +108,23 @@ void Mesh::cleanup()
 
 void Mesh::setupBuffers()
 {
+    // Generate arrays and buffers on the GPU
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);
     glGenBuffers(1, &_ebo);
   
+    // Bind VAO
     glBindVertexArray(_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
+    // Bind VBO and send vertex data
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(Vertex), &_vertices[0], GL_STATIC_DRAW);  
 
+    // Bind EBO and send index data
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), &_indices[0], GL_STATIC_DRAW);
+
+    // Setup vertex attributes:
 
     // Vertex positions
     glEnableVertexAttribArray(0);	
@@ -124,6 +138,9 @@ void Mesh::setupBuffers()
     // Vertex texture coords
     glEnableVertexAttribArray(3);	
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+
+    // Unbind VAO
+    glBindVertexArray(0);
 }
 
 void Mesh::draw()
@@ -131,14 +148,4 @@ void Mesh::draw()
     // Draw mesh
     glBindVertexArray(_vao);
     glDrawElements(_drawMode, (unsigned int) _indices.size(), GL_UNSIGNED_INT, 0);
-}
-
-MeshPtr Mesh::getPtr()
-{
-    return std::make_shared<Mesh>(*this);
-}
-
-MeshPtr Mesh::getPtr(Mesh mesh)
-{
-    return std::make_shared<Mesh>(mesh);
 }

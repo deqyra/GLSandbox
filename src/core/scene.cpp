@@ -1,5 +1,24 @@
 #include "scene.hpp"
 
+#include <algorithm>
+#include <chrono>
+#include <functional>
+#include <memory>
+#include <unordered_map>
+#include <vector>
+
+#include <glm/glm.hpp>
+
+#include "scene/scene_types_decl.hpp"
+#include "scene/scene_object.hpp"
+#include "scene/script.hpp"
+#include "scene/input_processing_script.hpp"
+
+#include "../tools/tree.hpp"
+#include "../tools/input_processor.hpp"
+
+// As this->shared_from_this cannot be called until the Scene is fully constructed, the object graph is initialized with a null weak pointer,
+// hence why this->init needs to be called immediately thereafter in order to properly initialize the root node with a shared pointer to this.
 Scene::Scene() :
     InputProcessor(),
     _graph(SceneObjectPtr()),
@@ -11,11 +30,13 @@ Scene::Scene() :
 
 unsigned int Scene::init()
 {
-    auto rootNode = _graph.getRoot().lock();
-    auto matRootNode = _modelMatrices.getRoot().lock();
+    ObjTree::NodePtr rootNode = _graph.getRoot().lock();
+    MatTree::NodePtr matRootNode = _modelMatrices.getRoot().lock();
 
+    // Reset the object graph root node pointer to a scene object initialized with a pointer to this Scene.
     rootNode->value.reset(new SceneObject(this->shared_from_this()));
 
+    // Set the graph nodes ID mappings
     unsigned int rootObjId = rootNode->value->id;
     _objectIdsToNodeIds[rootObjId] = { rootNode->id, matRootNode->id };
     
@@ -31,14 +52,17 @@ SceneObjectWPtr Scene::operator[](unsigned int id)
         throw std::runtime_error(s.c_str());
     }
 
-    auto pair = it->second;
-    auto node = _graph[pair.first].lock();
+    // Retrieve the node ID in the object graph
+    std::pair<unsigned int, unsigned int> pair = it->second;
+    // Retrieve the node
+    ObjTree::NodePtr node = _graph[pair.first].lock();
     return node->value;
 }
 
 SceneObjectWPtr Scene::newObject()
 {
-    auto node = _graph.getRoot().lock();
+    ObjTree::NodePtr node = _graph.getRoot().lock();
+    // Create the new object as a child of the root node
     return newObject(node->value->id);
 }
 
@@ -51,14 +75,25 @@ SceneObjectWPtr Scene::newObject(unsigned int parentId)
         throw std::runtime_error(s.c_str());
     }
 
-    auto pair = it->second;
+    // Retrieve the parent node IDs in the graphs
+    std::pair<unsigned int, unsigned int> pair = it->second;
 
+    // Create the new object, initialized with a pointer to this Scene
     SceneObjectPtr obj = std::make_shared<SceneObject>(this->shared_from_this());
-    unsigned int objHandle = _graph.addNode(obj, pair.first);
-    unsigned int matHandle = _modelMatrices.addNode(glm::mat4(1.f), pair.second);
-    _objectIdsToNodeIds[obj->id] = { objHandle, matHandle };
+    // Create nodes in graphs, using retrieved parent node IDs
+    unsigned int objNodeId = _graph.addNode(obj, pair.first);
+    unsigned int matNodeId = _modelMatrices.addNode(glm::mat4(1.f), pair.second);
+    // Map IDs
+    _objectIdsToNodeIds[obj->id] = { objNodeId, matNodeId };
 
     return obj;
+}
+
+void Scene::registerObject(SceneObjectPtr object)
+{
+    ObjTree::NodePtr node = _graph.getRoot().lock();
+    // Register object as a root child
+    registerObject(object, node->value->id);
 }
 
 void Scene::registerObject(SceneObjectPtr object, unsigned int parentId)
@@ -76,20 +111,19 @@ void Scene::registerObject(SceneObjectPtr object, unsigned int parentId)
         std::string s = "Scene: SceneObject with ID " + std::to_string(object->id) + " already has a parent Scene, cannot register new object.";
         throw std::runtime_error(s.c_str());
     }
+    // Set the scene pointer upon registering the object
     object->setScene(this->weak_from_this());
 
-    auto pair = it->second;
+    // Retrieve the parent node IDs in the graphs
+    std::pair<unsigned int, unsigned int> pair = it->second;
+    // Create nodes in graphs, using retrieved parent node IDs
     unsigned int graphNodeId = _graph.addNode(object, pair.first);
     unsigned int matrixNodeId = _modelMatrices.addNode(glm::mat4(1.f), pair.second);
 
+    // Map IDs
     _objectIdsToNodeIds[object->id] = { graphNodeId, matrixNodeId };
+    // Update world model matrix
     recalculateModelMatrix(object->id);
-}
-
-void Scene::registerObject(SceneObjectPtr object)
-{
-    auto node = _graph.getRoot().lock();
-    registerObject(object, node->value->id);
 }
 
 void Scene::removeObject(unsigned int id)
@@ -101,11 +135,13 @@ void Scene::removeObject(unsigned int id)
         throw std::runtime_error(s.c_str());
     }
 
-    auto pair = it->second;
+    // Retrieve the parent node IDs in the graphs
+    std::pair<unsigned int, unsigned int> pair = it->second;
+    // Remove nodes in graphs, using retrieved parent node IDs
     _graph.removeBranch(pair.first);
     _modelMatrices.removeBranch(pair.second);
 
-    removeIdMapping(id);
+    removeIdMappings(id);
 }
 
 void Scene::moveObject(unsigned int id, unsigned int newParentId)
@@ -124,11 +160,14 @@ void Scene::moveObject(unsigned int id, unsigned int newParentId)
         throw std::runtime_error(s.c_str());
     }
 
-    auto objectPair = objectIt->second;
-    auto parentPair = parentIt->second;
+    // Retrieve IDs of both nodes in both graphs
+    std::pair<unsigned int, unsigned int> objectPair = objectIt->second;
+    std::pair<unsigned int, unsigned int> parentPair = parentIt->second;
 
+    // Move nodes in both graphs
     _graph.moveBranch(objectPair.first, parentPair.first);
     _modelMatrices.moveBranch(objectPair.second, parentPair.second);
+    // Update transforms
     recalculateModelMatrix(id);
 }
 
@@ -141,10 +180,12 @@ glm::mat4 Scene::getWorldModelMatrix(unsigned int id)
         throw std::runtime_error(s.c_str());
     }
 
+    // Update transform if required
     processOutdatedTransformsFromNode(id);
 
-    auto pair = it->second;
-    auto node = _modelMatrices[pair.second].lock();
+    // Retrieve matrix graph node ID and return matrix
+    std::pair<unsigned int, unsigned int> pair = it->second;
+    MatTree::NodePtr node = _modelMatrices[pair.second].lock();
     return node->value;
 }
 
@@ -157,12 +198,14 @@ glm::vec3 Scene::getWorldPosition(unsigned int id)
         throw std::runtime_error(s.c_str());
     }
 
+    // Update transform if required
     processOutdatedTransformsFromNode(id);
 
-    auto pair = it->second;
+    // Retrieve matrix graph node ID and return matrix
+    std::pair<unsigned int, unsigned int> pair = it->second;
+    // Retrieve matrix, return it translation component (which is what a null homogenous vector multiplied by the whole model matrix would be equal to)
     glm::mat4 model = _modelMatrices[pair.second].lock()->value;
-    glm::vec4 position = model * glm::vec4(glm::vec3(0.f), 1.f);
-    return glm::vec3(position);
+    return glm::vec3(model[3]);
 }
 
 std::vector<SceneObjectWPtr> Scene::getAllObjects()
@@ -171,8 +214,8 @@ std::vector<SceneObjectWPtr> Scene::getAllObjects()
 
     for (auto it = _objectIdsToNodeIds.begin(); it != _objectIdsToNodeIds.end(); it++)
     {
-        auto pair = it->second;
-        auto node = _graph[pair.first].lock();
+        std::pair<unsigned int, unsigned int> pair = it->second;
+        ObjTree::NodePtr node = _graph[pair.first].lock();
         result.push_back(node->value);
     }
 
@@ -196,10 +239,12 @@ void Scene::removeScript(unsigned int id)
 
 void Scene::triggerUpdate()
 {
-    auto now = std::chrono::system_clock::now();
+    // Get time delta and upate last update time
+    std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
     std::chrono::duration<double> delta = now - _lastTime;
     _lastTime = now;
 
+    // Update all registered scripts
     for (auto it = _scripts.begin(); it != _scripts.end(); it++)
     {
         it->second->update((float)(delta.count()));
@@ -223,6 +268,7 @@ void Scene::removeInputProcessor(unsigned int id)
 
 void Scene::registerInputProcessingScript(InputProcessingScriptPtr script)
 {
+    // Register the input processing script both as a script and an input processor
     ScriptPtr baseScriptPtr = std::static_pointer_cast<Script>(script);
     InputProcessorPtr baseIpPtr = std::static_pointer_cast<InputProcessor>(script);
     registerScript(baseScriptPtr);
@@ -237,6 +283,7 @@ void Scene::removeInputProcessingScript(InputProcessingScriptPtr script)
 
 void Scene::processFramebufferResize(GLFWwindow* window, int width, int height)
 {
+    // Forward framebuffer resize event to all input processors
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
         it->second->processFramebufferResize(window, width, height);
@@ -245,6 +292,7 @@ void Scene::processFramebufferResize(GLFWwindow* window, int width, int height)
 
 void Scene::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    // Forward keyboard event to all input processors
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
         it->second->processKeyboard(window, key, scancode, action, mods);
@@ -253,6 +301,7 @@ void Scene::processKeyboard(GLFWwindow* window, int key, int scancode, int actio
 
 void Scene::processMouseButton(GLFWwindow* window, int button, int action, int mods)
 {
+    // Forward mouse button event to all input processors
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
         it->second->processMouseButton(window, button, action, mods);
@@ -261,6 +310,7 @@ void Scene::processMouseButton(GLFWwindow* window, int button, int action, int m
 
 void Scene::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
 {
+    // Forward mouse cursor event to all input processors
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
     {
         it->second->processMouseCursor(window, xpos, ypos);
@@ -270,16 +320,19 @@ void Scene::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
 void Scene::processOutdatedTransformsFromNode(unsigned int id)
 {
     auto it = _objectIdsToNodeIds.find(id);
-    auto pair = it->second;
-
+    // Retrieve the object node ID, the node pointer as well as its parent chain
+    std::pair<unsigned int, unsigned int> pair = it->second;
     ObjTree::NodePtr objNode = _graph[pair.first].lock();
     std::vector<ObjTree::NodeWPtr> parentChain = objNode->getParentChain();
 
+    // Check whether a transform is outdated in the node's parent chain
     bool outdated = false;
+    // Keep track of the furthest parent in the chain whose transform was outdated
     unsigned int uppermostOutdatedId;
-    for (auto it = parentChain.begin(); it != parentChain.end(); it++)
+    for (auto parentIt = parentChain.begin(); parentIt != parentChain.end(); parentIt++)
     {
-        SceneObjectPtr obj = it->lock()->value;
+        SceneObjectPtr obj = parentIt->lock()->value;
+        // Use the flag to check on the modified state of the object transform
         if (obj->transformModifiedFlagState())
         {
             obj->resetTransformModifiedFlag();
@@ -288,10 +341,12 @@ void Scene::processOutdatedTransformsFromNode(unsigned int id)
         }
     }
 
+    // Recalculate the furthest parent's model matrix (which will cascade to all of its children as well)
     if (outdated)
     {
         recalculateModelMatrix(uppermostOutdatedId);
     }
+    // If no parent was updated just update the node transform if appropriate
     else if (objNode->value->transformModifiedFlagState())
     {
         objNode->value->resetTransformModifiedFlag();
@@ -302,53 +357,64 @@ void Scene::processOutdatedTransformsFromNode(unsigned int id)
 void Scene::recalculateModelMatrix(unsigned int id)
 {
     auto it = _objectIdsToNodeIds.find(id);
-    auto pair = it->second;
+    // Retrieve graph node IDs
+    std::pair<unsigned int, unsigned int> pair = it->second;
 
+    // Get graph node pointers as well as the parent matrix node pointer
     ObjTree::NodePtr objNode = _graph[pair.first].lock();
     MatTree::NodePtr matNode = _modelMatrices[pair.second].lock();
     MatTree::NodePtr parentMatNode = matNode->getParent().lock();
 
     glm::mat4 localTransform = objNode->value->getModelMatrix();
+    // The default world transform is a neutral transform (in case the parent matrix node is null)
     glm::mat4 worldTransform = glm::mat4(1.f);
+    // Otherwise it is the parent transform
     if (parentMatNode.get() != nullptr) worldTransform = parentMatNode->value;
 
+    // Compute the new world transform
     matNode->value = worldTransform * localTransform;
 
-    auto children = objNode->getChildren();
+    // Reverberate changes to children transforms
+    std::vector<ObjTree::NodeWPtr> children = objNode->getChildren();
     for (auto childIt = children.begin(); childIt != children.end(); childIt++)
     {
-        auto strongChild = childIt->lock();
-        recalculateModelMatrix(strongChild->id);
+        ObjTree::NodePtr child = childIt->lock();
+        recalculateModelMatrix(child->id);
     }
 }
 
-void Scene::removeIdMapping(unsigned int id)
+void Scene::removeIdMappings(unsigned int id)
 {
     auto it = _objectIdsToNodeIds.find(id);
-    auto pair = it->second;
-
+    // Retrieve graph node IDs, object node pointer and node children pointers
+    std::pair<unsigned int, unsigned int> pair = it->second;
     ObjTree::NodePtr objNode = _graph[pair.first].lock();
-    auto children = objNode->getChildren();
+    std::vector<ObjTree::NodeWPtr> children = objNode->getChildren();
+
     for (auto childIt = children.begin(); childIt != children.end(); childIt++)
     {
-        auto strongChild = childIt->lock();
-        removeIdMapping(strongChild->id);
+        // Remove mappings for all children
+        ObjTree::NodePtr child = childIt->lock();
+        removeIdMappings(child->id);
     }
 
+    // Remove the current object ID mapping
     _objectIdsToNodeIds.erase(id);
 }
 
 bool Scene::hasDisabledParent(unsigned int id)
 {
     auto it = _objectIdsToNodeIds.find(id);
-    auto pair = it->second;
-
+    // Retrieve graph node IDs, object node pointer and node parent chain
+    std::pair<unsigned int, unsigned int> pair = it->second;
     ObjTree::NodePtr objNode = _graph[pair.first].lock();
     std::vector<ObjTree::NodeWPtr> parents = objNode->getParentChain();
+
     for (auto it = parents.begin(); it != parents.end(); it++)
     {
-        auto strongParent = it->lock();
-        if (!strongParent->value->enabled) return true;
+        // Return whether any parent in the chain is disabled
+        auto parent = it->lock();
+        if (!parent->value->enabled) return true;
     }
     return false;
 }
