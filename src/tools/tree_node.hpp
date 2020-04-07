@@ -60,11 +60,11 @@ class TreeNode : public std::enable_shared_from_this<TreeNode<T>>
         bool hasChild(TreeNodeWPtr wChild);
         // Whether the node with provided ID is a child of this node
         bool hasChild(unsigned int id);
-        // Whether this node is a parent (to any degree) of the provided weak pointer
+        // Whether this node is a parent (to any degree) of the provided node weak pointer
         bool isParentOf(TreeNodeWPtr wNode);
-        // Whether this node is a child (to any degree) of the provided weak pointer
+        // Whether this node is a child (to any degree) of the provided node weak pointer
         bool isChildOf(TreeNodeWPtr wNode);
-        // Whether this node is a child (to any degree) of the ndoe with provided ID
+        // Whether this node is a child (to any degree) of the node with provided ID
         bool isChildOf(unsigned int id);
         
         // Unique ID of this node

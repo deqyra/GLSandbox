@@ -1,6 +1,6 @@
 #include "mesh_component.hpp"
 
-using CompType = SceneObjectComponentType;
+using CompType = ComponentType;
 
 MeshComponent::MeshComponent(MeshPtr mesh) :
     MeshComponent(mesh, Material(), Shader())
@@ -21,7 +21,7 @@ MeshComponent::MeshComponent(MeshPtr mesh, Shader shader) :
 }
 
 MeshComponent::MeshComponent(MeshPtr mesh, Material material, Shader shader) :
-    SceneObjectComponent(CompType::Mesh),
+    Component(CompType::Mesh),
     mesh(mesh),
     material(material),
     shader(shader)
@@ -35,13 +35,13 @@ MeshComponent::~MeshComponent()
 }
 
 template<>
-SceneObjectComponentType SceneObjectComponent::componentType<MeshComponent>()
+ComponentType Component::componentType<MeshComponent>()
 {
-    return SceneObjectComponentType::Mesh;
+    return ComponentType::Mesh;
 }
 
 template<>
-std::string SceneObjectComponent::componentTypeString<MeshComponent>()
+std::string Component::componentTypeString<MeshComponent>()
 {
     return "Mesh";
 }

@@ -5,7 +5,7 @@
 #include "../scene_object_component_type.hpp"
 #include "../../light.hpp"
 
-class LightComponent : public SceneObjectComponent
+class LightComponent : public Component
 {
     public:
         LightComponent(LightPtr light);
@@ -15,9 +15,9 @@ class LightComponent : public SceneObjectComponent
 };
 
 template<>
-SceneObjectComponentType SceneObjectComponent::componentType<LightComponent>();
+ComponentType Component::componentType<LightComponent>();
 
 template<>
-std::string SceneObjectComponent::componentTypeString<LightComponent>();
+std::string Component::componentTypeString<LightComponent>();
 
 #endif//LIGHT_COMPONENT

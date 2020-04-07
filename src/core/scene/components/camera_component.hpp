@@ -1,13 +1,13 @@
 #ifndef CAMERA_COMPONENT_HPP
 #define CAMERA_COMPONENT_HPP
 
-#include "../scene_object_component.hpp"
-#include "../scene_object_component_type.hpp"
+#include "../component.hpp"
+#include "../component_type.hpp"
 #include "../../camera.hpp"
 
 #include <string>
 
-class CameraComponent : public SceneObjectComponent
+class CameraComponent : public Component
 {
     public:
         CameraComponent(CameraPtr camera);
@@ -20,14 +20,16 @@ class CameraComponent : public SceneObjectComponent
         virtual glm::mat4 getProjectionMatrix();
         virtual glm::mat4 getViewProjectionMatrix();
 
+        virtual CameraComponent* clone();
+
     private:
         glm::vec3 getNewWorldUp();
 };
 
 template<>
-SceneObjectComponentType SceneObjectComponent::componentType<CameraComponent>();
+ComponentType Component::componentType<CameraComponent>();
 
 template<>
-std::string SceneObjectComponent::componentTypeString<CameraComponent>();
+std::string Component::componentTypeString<CameraComponent>();
 
 #endif//CAMERA_COMPONENT_HPP

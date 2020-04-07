@@ -2,10 +2,10 @@
 #include "camera_component.hpp"
 #include "../../scene.hpp"
 
-using CompType = SceneObjectComponentType;
+using CompType = ComponentType;
 
 CameraComponent::CameraComponent(CameraPtr camera) :
-    SceneObjectComponent(CompType::Camera),
+    Component(CompType::Camera),
     camera(camera)
 {
 
@@ -44,6 +44,11 @@ glm::mat4 CameraComponent::getViewProjectionMatrix()
     return camera->getViewProjectionMatrix(worldPosition);
 }
 
+CameraComponent* CameraComponent::clone()
+{
+
+}
+
 glm::vec3 CameraComponent::getNewWorldUp()
 {
     std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
@@ -55,13 +60,13 @@ glm::vec3 CameraComponent::getNewWorldUp()
 }
 
 template<>
-SceneObjectComponentType SceneObjectComponent::componentType<CameraComponent>()
+ComponentType Component::componentType<CameraComponent>()
 {
-    return SceneObjectComponentType::Camera;
+    return ComponentType::Camera;
 }
 
 template<>
-std::string SceneObjectComponent::componentTypeString<CameraComponent>()
+std::string Component::componentTypeString<CameraComponent>()
 {
     return "Camera";
 }

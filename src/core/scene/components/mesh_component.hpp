@@ -9,7 +9,7 @@
 
 #include <string>
 
-class MeshComponent : public SceneObjectComponent
+class MeshComponent : public Component
 {
     public:
         MeshComponent(MeshPtr mesh);
@@ -25,9 +25,9 @@ class MeshComponent : public SceneObjectComponent
 };
 
 template<>
-SceneObjectComponentType SceneObjectComponent::componentType<MeshComponent>();
+ComponentType Component::componentType<MeshComponent>();
 
 template<>
-std::string SceneObjectComponent::componentTypeString<MeshComponent>();
+std::string Component::componentTypeString<MeshComponent>();
 
 #endif//MESH_COMPONENT_HPP

@@ -1,46 +1,57 @@
 #ifndef CORE__SCENE__COMPONENT_HPP
 #define CORE__SCENE__COMPONENT_HPP
 
-#include "../../tools/clonable.hpp"
-
 #include "component_type.hpp"
 
 #include <memory>
 #include <string>
 
+// Empty declaration of class SceneObject, used as a pointer in class Component
 class SceneObject;
 using SceneObjectPtr = std::shared_ptr<SceneObject>;
 using SceneObjectWPtr = std::weak_ptr<SceneObject>;
 
-class Component;
-using ComponentPtr = std::shared_ptr<Component>;
-using ComponentWPtr = std::weak_ptr<Component>;
-
-class Component : public Clonable<Component>
+// Abstract class meant to represent a certain aspect in a scene object: a mesh, a light, etc.
+class Component
 {
     private:
         Component() = delete;
 
     protected:
+        // To be called by all derived Components at construction
         Component(ComponentType type, SceneObjectWPtr sceneObject = SceneObjectWPtr());
+        // Reference to the parent scene object
         SceneObjectWPtr _sceneObject;
 
     public:
         virtual ~Component();
 
+        // Get reference to parent scene object
         virtual SceneObjectWPtr getSceneObject();
+        // Get reference to parent scene object
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 
-        virtual ComponentPtr clone() = 0;
+        // Get a raw pointer to a new Component instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        virtual Component* clone() = 0;
 
+        // Litteral representing the type of this component
+        const ComponentType type;
+
+        // Get a litteral representing the type of a Component subclass (template parameter)
         template<class T>
         static ComponentType componentType();
 
+        // Get a string representing the type of a Component subclass (template parameter)
         template<class T>
         static std::string componentTypeString();
-
-        const ComponentType type;
 };
+
+using ComponentPtr = std::shared_ptr<Component>;
+using ComponentWPtr = std::weak_ptr<Component>;
+
+// For any passed type, componentType and componentTypeString return default values.
+// New specialized version of these functions should be written with any new Component subclass,
+// in order for a non-default, meaningful litteral to be returned for that new subclass.
 
 template<class T>
 ComponentType Component::componentType()
@@ -54,19 +65,19 @@ std::string Component::componentTypeString()
     return "Unknown";
 }
 
-/* INHERITING FROM Component
+/* DERIVING FROM Component
  * ====================================
  * (waiting for a better solution)
  *
  * - Write new component
  * - Add enum value to ComponentType
- * - Include the following functions in the header :
+ * - Declare following functions in header:
  *     template<>
- *     ComponentType Component::componentType<NewComponent>();
+ *     ComponentType Component::componentType<MyNewComponent>();        // return ComponentType::MyNewComponent;
  *
  *     template<>
- *     std::string Component::componentTypeString<NewComponent>();
- * - Implement them in the source file
+ *     std::string Component::componentTypeString<MyNewComponent>();    // return "MyNewComponent";
+ * - Implement in source file
  */
 
 #endif//CORE__SCENE__COMPONENT_HPP
