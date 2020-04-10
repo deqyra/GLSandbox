@@ -11,12 +11,6 @@
 // A special flavor of Script, also able to process input from a GLFW window
 class InputProcessingScript : public Script, public InputProcessor, public std::enable_shared_from_this<InputProcessingScript>
 {
-    protected:
-        // Register self as an input processor in the referenced SceneObject's Scene
-        void registerInputProcessor();
-        // Remove self as an input processor from the referenced SceneObject's Scene
-        void removeInputProcessor();
-
     public:
         InputProcessingScript();
         virtual ~InputProcessingScript();
@@ -32,9 +26,6 @@ class InputProcessingScript : public Script, public InputProcessor, public std::
 
         // To be called once per frame
         virtual void update(float timeElapsed);
-
-        // Set the scene object reference which the input processing script is attached to
-        virtual void setSceneObject(SceneObjectWPtr sceneObject);
 };
 
 using InputProcessingScriptPtr = std::shared_ptr<InputProcessingScript>;

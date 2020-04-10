@@ -1,14 +1,19 @@
-#include "../scene_object.hpp"
 #include "camera_component.hpp"
-#include "../../scene.hpp"
-
-using CompType = ComponentType;
+#include "../scene_object.hpp"
+#include "../scene.hpp"
 
 CameraComponent::CameraComponent(CameraPtr camera) :
-    Component(CompType::Camera),
+    Component(ComponentType::Camera),
     camera(camera)
 {
 
+}
+
+CameraComponent::CameraComponent(CameraComponent& other) :
+    Component(ComponentType::Camera)
+{
+    // Clone the camera
+    camera = std::make_shared<Camera>(*(other.camera));
 }
 
 CameraComponent::~CameraComponent()
@@ -21,12 +26,13 @@ glm::mat4 CameraComponent::getViewMatrix()
     std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
     glm::vec3 worldPosition = sceneObject->getWorldPosition();
 
-    glm::vec3 newUp = getNewWorldUp();
-    camera->setWorldUp(newUp);
+    // Update camera and compute view matrix
+    glm::vec3 newUp = getParentUp();
+    camera->setParentUp(newUp);
     return camera->getViewMatrix(worldPosition);
 }
 
-glm::vec3 CameraComponent::transformWorldPosition(glm::vec3 worldPosition)
+glm::vec3 CameraComponent::worldPositionToViewSpace(glm::vec3 worldPosition)
 {
     glm::vec4 viewPosition = getViewMatrix() * glm::vec4(worldPosition, 1.f);
     return glm::vec3(viewPosition);
@@ -46,14 +52,21 @@ glm::mat4 CameraComponent::getViewProjectionMatrix()
 
 CameraComponent* CameraComponent::clone()
 {
+    // This shared pointer will be destroyed at the end of this scope, but responsibilty for the 
+    // resources will already have been shared with the cloned CameraComponent by this point.
+    CameraPtr cameraClone = std::make_shared<Camera>(*camera);
 
+    return new CameraComponent(cameraClone);
 }
 
-glm::vec3 CameraComponent::getNewWorldUp()
+glm::vec3 CameraComponent::getParentUp()
 {
     std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
     std::shared_ptr<Scene> scene = sceneObject->getScene().lock();
     glm::mat4 worldMat = scene->getWorldModelMatrix(sceneObject->id);
+
+    // In order to get what "upwards" is (in world coordinates) for the parent scene object,
+    // have (0, 1, 0) go through the world model matrix of the object.
     glm::vec4 up = glm::vec4(WORLD_Y, 0.f);
     up = worldMat * up;
     return glm::vec3(up);

@@ -21,6 +21,9 @@ class Light
         const unsigned int id;
         // Type of light
         const LightType lightType;
+
+        // Get a raw pointer to a new Light instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        virtual Light* clone() = 0;
 };
 
 using LightPtr = std::shared_ptr<Light>;

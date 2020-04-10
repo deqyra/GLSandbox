@@ -11,6 +11,17 @@ Material::Material() :
 
 }
 
+Material::Material(const Material& other) :
+    ambient(other.ambient),
+    diffuse(other.diffuse),
+    specular(other.specular),
+    shininess(other.shininess),
+    _diffuseMaps(other._diffuseMaps),
+    _specularMaps(other._specularMaps)
+{
+
+}
+
 Material::Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess) :
     ambient(ambient),
     diffuse(diffuse),

@@ -34,6 +34,14 @@ MeshComponent::~MeshComponent()
 
 }
 
+MeshComponent* MeshComponent::clone()
+{
+    // By the time this shared pointer is destroyed (end of scope), responsibility will already have been shared with the cloned MeshComponent
+    MeshPtr clonedMesh = std::make_shared<Mesh>(*mesh);
+    // Material and shader clones are automatically copy-constructed by the following call
+    return new MeshComponent(clonedMesh, material, shader);
+}
+
 template<>
 ComponentType Component::componentType<MeshComponent>()
 {

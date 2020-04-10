@@ -1,11 +1,9 @@
 #include "script_component.hpp"
 
-#include "../../scene.hpp"
-
-using CompType = SceneObjectComponentType;
+#include "../../scene/scene.hpp"
 
 ScriptComponent::ScriptComponent(ScriptPtr script) :
-    SceneObjectComponent(CompType::Script),
+    Component(ComponentType::Script),
     _script(script)
 {
 
@@ -26,28 +24,32 @@ void ScriptComponent::setSceneObject(SceneObjectWPtr sceneObject)
 
 void ScriptComponent::registerScript()
 {
+    // Get a pointer to the scene hosting the parent object
     SceneObjectPtr sceneObject = _sceneObject.lock();
     ScenePtr scene = sceneObject->getScene().lock();
+    // Subscribe script to updates
     scene->registerScript(_script);
 }
 
 void ScriptComponent::removeScript()
 {
+    // Get a pointer to the scene hosting the parent object
     SceneObjectPtr sceneObject = _sceneObject.lock();
     if (sceneObject == nullptr) return;
 
+    // If applicable, detach script from scene updates
     ScenePtr scene = sceneObject->getScene().lock();
-    scene->removeInputProcessor(_script->id);
+    scene->removeScript(_script->id);
 }
 
 template<>
-SceneObjectComponentType SceneObjectComponent::componentType<ScriptComponent>()
+ComponentType Component::componentType<ScriptComponent>()
 {
-    return SceneObjectComponentType::Script;
+    return ComponentType::Script;
 }
 
 template<>
-std::string SceneObjectComponent::componentTypeString<ScriptComponent>()
+std::string Component::componentTypeString<ScriptComponent>()
 {
     return "Script";
 }

@@ -1,5 +1,4 @@
 #include "input_processing_script.hpp"
-#include "../scene.hpp"
 
 InputProcessingScript::InputProcessingScript()
 {
@@ -8,7 +7,7 @@ InputProcessingScript::InputProcessingScript()
 
 InputProcessingScript::~InputProcessingScript()
 {
-    removeInputProcessor();
+
 }
 
 void InputProcessingScript::processFramebufferResize(GLFWwindow* window, int width, int height)
@@ -34,28 +33,4 @@ void InputProcessingScript::processMouseCursor(GLFWwindow* window, double xpos, 
 void InputProcessingScript::update(float timeElapsed)
 {
 
-}
-
-void InputProcessingScript::setSceneObject(SceneObjectWPtr sceneObject)
-{
-    removeInputProcessor();
-    Script::setSceneObject(sceneObject);
-    registerInputProcessor();
-}
-
-void InputProcessingScript::registerInputProcessor()
-{
-    SceneObjectPtr sceneObject = _sceneObject.lock();
-    ScenePtr scene = sceneObject->getScene().lock();
-    InputProcessorPtr ptr = std::static_pointer_cast<InputProcessor>(this->shared_from_this());
-    scene->registerInputProcessor(ptr);
-}
-
-void InputProcessingScript::removeInputProcessor()
-{
-    SceneObjectPtr sceneObject = _sceneObject.lock();
-    if (sceneObject == nullptr) return;
-
-    ScenePtr scene = sceneObject->getScene().lock();
-    scene->removeInputProcessor(InputProcessor::id);
 }

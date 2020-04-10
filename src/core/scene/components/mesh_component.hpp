@@ -1,14 +1,15 @@
-#ifndef MESH_COMPONENT_HPP
-#define MESH_COMPONENT_HPP
+#ifndef CORE__SCENE__COMPONENTS__MESH_COMPONENT_HPP
+#define CORE__SCENE__COMPONENTS__MESH_COMPONENT_HPP
 
-#include "../scene_object_component.hpp"
-#include "../scene_object_component_type.hpp"
+#include "../component.hpp"
+#include "../component_type.hpp"
 #include "../../mesh.hpp"
 #include "../../material.hpp"
 #include "../../shader.hpp"
 
 #include <string>
 
+// Component derived class representing the mesh of a scene object
 class MeshComponent : public Component
 {
     public:
@@ -19,8 +20,14 @@ class MeshComponent : public Component
 
         virtual ~MeshComponent();
 
+        // Get a raw pointer to a new MeshComponent instance cloned from this. The inner light is cloned as well. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        virtual MeshComponent* clone();
+
+        // Pointer to the mesh data of the object
         MeshPtr mesh;
+        // Material to paint on the mesh
         Material material;
+        // Shader to use to render the mesh
         Shader shader;
 };
 
@@ -30,4 +37,4 @@ ComponentType Component::componentType<MeshComponent>();
 template<>
 std::string Component::componentTypeString<MeshComponent>();
 
-#endif//MESH_COMPONENT_HPP
+#endif//CORE__SCENE__COMPONENTS__MESH_COMPONENT_HPP

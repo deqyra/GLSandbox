@@ -3,8 +3,9 @@
 
 #include <memory>
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 
-#define UP glm::vec3(0.f, 1.f, 0.f)
+#define WORLD_Y glm::vec3(0.f, 1.f, 0.f)
 
 #define YAW -90.f
 #define PITCH 0.f
@@ -13,37 +14,61 @@
 class Camera
 {
     private:
+        // Camera facing direction
         glm::vec3 _front;
-        glm::vec3 _up;
+        // Camera right direction
         glm::vec3 _right;
-        glm::vec3 _worldUp;
+        // Camera upwards direction
+        glm::vec3 _up;
+        // Upwards direction of an object the camera might be attached to
+        glm::vec3 _parentUp;
+        // Rotation between the parent's upwards direction and the world Y vector
+        glm::quat _parentUpRotation;
+        // Camera zoom factor
         float _zoom;
 
+        // Camera yaw (rotation around Y) in degrees
         float _yaw;
+        // Camera yaw (rotation around X) in degrees
         float _pitch;
 
-        void updateVectors();
-
+        // Calera projection matrix (perspective and lens)
         glm::mat4 _projectionMatrix;
 
+        // Recalculate vectors based on yaw, pitch and parent rotation
+        void updateVectors();
+
     public:
-        Camera(glm::mat4 projection, float yaw = YAW, float pitch = PITCH, glm::vec3 up = UP);
+        Camera(const Camera& other);
+        Camera(glm::mat4 projection, float yaw = YAW, float pitch = PITCH, glm::vec3 up = WORLD_Y);
         virtual ~Camera();
 
-        void processRotation(float yawOffset, float pitchOffset, bool constrainPitch = true);
+        // Update vectors to reflect a new camera rotation
+        void processRotation(float yawOffset, float pitchOffset);
+        // DO NOT USE - update projection matrix to simulate camera zoom
         void processZoom(float scrollOffset);
 
+        // Get the facing direction of the camera
         glm::vec3 front();
+        // Get the right direction of the camera
         glm::vec3 right();
+        // Get the upwards direction of the camera
         glm::vec3 up();
 
-        glm::vec3 getWorldUp();
-        void setWorldUp(glm::vec3 up);
+        // Get the upwards direction of the camera's parent (if any)
+        glm::vec3 getParentUp();
+        // Update the registered upwards direction of the camera's parent (if any)
+        void setParentUp(glm::vec3 up);
+        // Set the projection matrix of the camera
         void setProjectionMatrix(glm::mat4 projection);
 
+        // Get the view matrix of the camera
         virtual glm::mat4 getViewMatrix(glm::vec3 position);
-        virtual glm::vec3 transformWorldPosition(glm::vec3 viewPos, glm::vec3 worldPosition);
+        // Transform a vector from world space to view space
+        virtual glm::vec3 worldPositionToViewSpace(glm::vec3 viewPoint, glm::vec3 worldPosition);
+        // Get the projection matrix registered for the camera
         virtual glm::mat4 getProjectionMatrix();
+        // Get the VP matrix of the camera
         virtual glm::mat4 getViewProjectionMatrix(glm::vec3 viewPos);
 };
 

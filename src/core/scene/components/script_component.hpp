@@ -1,30 +1,31 @@
-#ifndef SCRIPT_COMPONENT_HPP
-#define SCRIPT_COMPONENT_HPP
+#ifndef CORE__SCENE__COMPONENTS__SCRIPT_COMPONENT_HPP
+#define CORE__SCENE__COMPONENTS__SCRIPT_COMPONENT_HPP
 
-#include "../scene_object_component.hpp"
-#include "../scene_object_component_type.hpp"
+#include "../component.hpp"
+#include "../component_type.hpp"
 #include "../script.hpp"
 
 #include <string>
 
-class ScriptComponent : public SceneObjectComponent
+class ScriptComponent : public Component
 {
     private:
+        // Pointer to the actual script resource
         ScriptPtr _script;
+        // Register script to the scene which the parent scene object is part of
         void registerScript();
+        // Detach script from the scene
         void removeScript();
 
     public:
         ScriptComponent(ScriptPtr script);
         virtual ~ScriptComponent();
-
-        virtual void setSceneObject(SceneObjectWPtr sceneObject);
 };
 
 template<>
-SceneObjectComponentType SceneObjectComponent::componentType<ScriptComponent>();
+ComponentType Component::componentType<ScriptComponent>();
 
 template<>
-std::string SceneObjectComponent::componentTypeString<ScriptComponent>();
+std::string Component::componentTypeString<ScriptComponent>();
 
-#endif//SCRIPT_COMPONENT_HPP
+#endif//CORE__SCENE__COMPONENTS__SCRIPT_COMPONENT_HPP
