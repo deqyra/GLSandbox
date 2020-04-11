@@ -1,5 +1,5 @@
-#ifndef TETRAHEDRON_GENERATOR_HPP
-#define TETRAHEDRON_GENERATOR_HPP
+#ifndef CORE__MESH_GENERATORS__TETRAHEDRON_GENERATOR_HPP
+#define CORE__MESH_GENERATORS__TETRAHEDRON_GENERATOR_HPP
 
 #include "../mesh_generator.hpp"
 #include "../mesh.hpp"
@@ -29,4 +29,4 @@ class TetrahedronGenerator : public MeshGenerator
         Parameters parameters;
 };
 
-#endif//TETRAHEDRON_GENERATOR_HPP
+#endif//CORE__MESH_GENERATORS__TETRAHEDRON_GENERATOR_HPP

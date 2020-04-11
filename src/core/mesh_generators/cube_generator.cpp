@@ -1,10 +1,3 @@
-/**
-    GLTest, cube.cpp
-    Purpose: Implementation of class CubeGenerator. See .hpp file.
-
-    @author François Brachais (deqyra)
-    @version 1.0 08/02/2020
- */
 #include "cube_generator.hpp"
 
 #include <vector>

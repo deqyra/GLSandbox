@@ -1,10 +1,3 @@
-/**
-    GLTest, TorusGenerator.cpp
-    Purpose: Implementation of class TorusGenerator. See .hpp file.
-
-    @author François Brachais (deqyra)
-    @version 1.0 08/02/2020
- */
 #include "torus_generator.hpp"
 
 #include <vector>

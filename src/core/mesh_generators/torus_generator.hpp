@@ -1,12 +1,5 @@
-/**
-    GLTest, torus.hpp
-    Purpose: Define a mesh class to represent a torus.
-
-    @author François Brachais (deqyra)
-    @version 1.0 08/02/2020
- */
-#ifndef TORUS_GENERATOR_HPP
-#define TORUS_GENERATOR_HPP
+#ifndef CORE__MESH_GENERATORS__TORUS_GENERATOR_HPP
+#define CORE__MESH_GENERATORS__TORUS_GENERATOR_HPP
 
 #include "../mesh_generator.hpp"
 #include "../mesh.hpp"
@@ -36,4 +29,4 @@ class TorusGenerator : public MeshGenerator
         Parameters parameters;
 };
 
-#endif//TORUS_GENERATOR_HPP
+#endif//CORE__MESH_GENERATORS__TORUS_GENERATOR_HPP

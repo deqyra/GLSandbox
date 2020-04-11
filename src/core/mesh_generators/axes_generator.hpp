@@ -1,12 +1,5 @@
-/**
-    GLTest, axes.hpp
-    Purpose: Define a mesh class to represent 3D axes.
-
-    @author François Brachais (deqyra)
-    @version 1.0 08/02/2020
- */
-#ifndef AXES_GENERATOR_HPP
-#define AXES_GENERATOR_HPP
+#ifndef CORE__MESH_GENERATORS__AXES_GENERATOR_HPP
+#define CORE__MESH_GENERATORS__AXES_GENERATOR_HPP
 
 #include "../mesh_generator.hpp"
 #include "../mesh.hpp"
@@ -30,4 +23,4 @@ class AxesGenerator : public MeshGenerator
         Parameters parameters;
 };
 
-#endif//AXES_GENERATOR_HPP
+#endif//CORE__MESH_GENERATORS__AXES_GENERATOR_HPP

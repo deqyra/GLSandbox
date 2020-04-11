@@ -1,12 +1,5 @@
-/**
-    GLTest, cube.hpp
-    Purpose: Define a mesh class to represent a cube.
-
-    @author François Brachais (deqyra)
-    @version 1.0 08/02/2020
- */
-#ifndef CUBE_GENERATOR_HPP
-#define CUBE_GENERATOR_HPP
+#ifndef CORE__MESH_GENERATORS__CUBE_GENERATOR_HPP
+#define CORE__MESH_GENERATORS__CUBE_GENERATOR_HPP
 
 #include "../mesh_generator.hpp"
 #include "../mesh.hpp"
@@ -36,4 +29,4 @@ class CubeGenerator : public MeshGenerator
         Parameters parameters;
 };
 
-#endif//CUBE_GENERATOR_HPP
+#endif//CORE__MESH_GENERATORS__CUBE_GENERATOR_HPP
