@@ -1,7 +1,6 @@
 #include "fps_camera_script.hpp"
 
 #include "../include/GLFW/glfw3.h"
-#include "../direction.hpp"
 #include "../scene/components/camera_component.hpp"
 
 FPSCameraScript::FPSCameraScript() :
@@ -123,12 +122,17 @@ void FPSCameraScript::update(float timeElapsed)
 
 void FPSCameraScript::setSceneObject(SceneObjectWPtr sceneObject)
 {
-    // Perform base class operations
-    InputProcessingScript::setSceneObject(sceneObject);
+    _sceneObject = sceneObject;
 
     // Retrieve camera component
     SceneObjectPtr realSceneObject = sceneObject.lock();
-    auto cameraComponent = realSceneObject->getComponent<CameraComponent>();
-    auto realComponent = cameraComponent.lock();
-    _camera = realComponent->camera;
+    std::shared_ptr<CameraComponent> cameraComponent = realSceneObject->getComponent<CameraComponent>();
+
+    if (!cameraComponent)
+    {
+        std::string s = "FPSCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was attached to a scene object with no camera component.";
+        throw std::runtime_error(s.c_str());
+    }
+
+    _camera = cameraComponent->getCamera();
 }

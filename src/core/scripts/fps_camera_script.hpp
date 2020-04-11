@@ -17,6 +17,11 @@
 class FPSCameraScript : public InputProcessingScript
 {
     private:
+        // Disallow copy-constructor and copy-assignment operator as Scripts are meant to be used only through pointers
+        FPSCameraScript(const FPSCameraScript& other) = delete;
+        FPSCameraScript& operator=(const FPSCameraScript& other) = delete;
+
+        // Pointer to the camera controlled by the script
         CameraPtr _camera;
 
         // Camera move speed (WASD)
@@ -49,6 +54,9 @@ class FPSCameraScript : public InputProcessingScript
 
         // Set the scene object reference which the input processing script is attached to, retrieve camera from SceneObject
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
+
+        // Get a raw pointer to a new FPSCameraScript instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        virtual FPSCameraScript* clone();
 };
 
 #endif//CORE__SCRIPTS__FPS_CAMERA_SCRIPT_HPP

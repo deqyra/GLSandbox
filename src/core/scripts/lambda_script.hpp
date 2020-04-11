@@ -8,6 +8,11 @@
 // Provide event callbacks which can be set on the fly using lambdas
 class LambdaScript : public InputProcessingScript
 {
+    private:
+        // Disallow copy-constructor and copy-assignment operator as Scripts are meant to be used only through pointers
+        LambdaScript(const LambdaScript& other) = delete;
+        LambdaScript& operator=(const LambdaScript& other) = delete;
+
     public:
         using Update_CB = std::function<void(float)>;
         using FramebufferResize_CB = std::function<void(GLFWwindow*, int, int)>;

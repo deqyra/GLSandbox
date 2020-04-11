@@ -10,10 +10,25 @@
 // Component derived class representing a camera fixed to a scene object
 class CameraComponent : public Component
 {
+    private:
+        // Disallow copy-constructor and copy-assignment operator as Components are meant to be used only through pointers
+        CameraComponent(CameraComponent& other) = delete;
+        CameraComponent& operator=(const CameraComponent& other) = delete;
+
+        // Pointer to the camera used by the component
+        CameraPtr _camera;
+
+        // Get the direction "upwards" locally to the parent scene object
+        glm::vec3 getParentUp();
+
     public:
         CameraComponent(CameraPtr camera);
-        CameraComponent(CameraComponent& other);
         virtual ~CameraComponent();
+
+        // Get a pointer to the camera used by the component
+        CameraPtr getCamera();
+        // Set the camera pointer used by the component
+        void setCamera(CameraPtr camera);
 
         // Get the view matrix corresponding to the position and facing of the camera
         virtual glm::mat4 getViewMatrix();
@@ -26,13 +41,6 @@ class CameraComponent : public Component
 
         // Get a raw pointer to a new CameraComponent instance cloned from this. The inner camera is cloned as well. Ownership and responsibility for the allocated resources are fully transferred to the caller.
         virtual CameraComponent* clone();
-
-    private:
-        // Pointer to the camera used by the component
-        CameraPtr camera;
-
-        // Get the direction "upwards" locally to the parent scene object
-        glm::vec3 getParentUp();
 };
 
 template<>

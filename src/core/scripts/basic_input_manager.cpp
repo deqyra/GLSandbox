@@ -51,6 +51,11 @@ void BasicInputManager::processMouseCursor(GLFWwindow* window, double xpos, doub
 
 }
 
+BasicInputManager* BasicInputManager::clone()
+{
+    return new BasicInputManager();
+}
+
 std::string glfwActionName(int action)
 {
     switch (action)

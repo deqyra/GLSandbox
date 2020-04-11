@@ -6,6 +6,11 @@
 // Provide event callbacks associated with basic window management
 class BasicInputManager : public InputProcessingScript
 {
+    private:
+        // Disallow copy-constructor and copy-assignment operator as Scripts are meant to be used only through pointers
+        BasicInputManager(const BasicInputManager& other) = delete;
+        BasicInputManager& operator=(const BasicInputManager& other) = delete;
+
     public:
         BasicInputManager();
 
@@ -17,6 +22,9 @@ class BasicInputManager : public InputProcessingScript
         virtual void processMouseButton(GLFWwindow* window, int button, int action, int mods);
         // To be called upon a mouse cursor event
         virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
+
+        // Get a raw pointer to a new BasicInputManager instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        virtual BasicInputManager* clone();
 };
 
 // Return GLFW keyboard/mouse action name in a string

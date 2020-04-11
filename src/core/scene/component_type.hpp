@@ -8,7 +8,8 @@ enum class ComponentType
     Mesh,
     Light,
     Camera,
-    Script
+    Script,
+    InputProcessingScript
 };
 
 // New litterals representing new classes derived from Component must be added here

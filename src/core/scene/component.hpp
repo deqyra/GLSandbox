@@ -16,6 +16,9 @@ class Component
 {
     private:
         Component() = delete;
+        // Disallow copy-constructor and copy-assignment operator as Components are meant to be used only through pointers
+        Component(const Component& other) = delete;
+        Component& operator=(const Component& other) = delete;
 
     protected:
         // To be called by all derived Components at construction
@@ -28,7 +31,7 @@ class Component
 
         // Get reference to parent scene object
         virtual SceneObjectWPtr getSceneObject();
-        // Get reference to parent scene object
+        // Set reference to parent scene object
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 
         // Get a raw pointer to a new Component instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
@@ -66,7 +69,7 @@ std::string Component::componentTypeString()
 }
 
 /* DERIVING FROM Component
- * ====================================
+ * ===============================
  * (waiting for a better solution)
  *
  * - Write new component

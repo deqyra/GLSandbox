@@ -1,5 +1,5 @@
-#ifndef INPUT_PROCESSING_SCRIPT
-#define INPUT_PROCESSING_SCRIPT
+#ifndef CORE__SCENE__INPUT_PROCESSING_SCRIPT
+#define CORE__SCENE__INPUT_PROCESSING_SCRIPT
 
 #include "script.hpp"
 #include "../../tools/input_processor.hpp"
@@ -11,6 +11,11 @@
 // A special flavor of Script, also able to process input from a GLFW window
 class InputProcessingScript : public Script, public InputProcessor, public std::enable_shared_from_this<InputProcessingScript>
 {
+    private:
+        // Disallow copy-constructor and copy-assignment operator as Scripts are meant to be used only through pointers
+        InputProcessingScript(const InputProcessingScript& other) = delete;
+        InputProcessingScript& operator=(const InputProcessingScript& other) = delete;
+
     public:
         InputProcessingScript();
         virtual ~InputProcessingScript();
@@ -26,9 +31,12 @@ class InputProcessingScript : public Script, public InputProcessor, public std::
 
         // To be called once per frame
         virtual void update(float timeElapsed);
+
+        // Get a raw pointer to a new InputProcessingScript instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        virtual InputProcessingScript* clone() = 0;
 };
 
 using InputProcessingScriptPtr = std::shared_ptr<InputProcessingScript>;
 using InputProcessingScriptWPtr = std::weak_ptr<InputProcessingScript>;
 
-#endif//INPUT_PROCESSING_SCRIPT
+#endif//CORE__SCENE__INPUT_PROCESSING_SCRIPT

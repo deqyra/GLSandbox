@@ -226,12 +226,12 @@ void Scene::registerScript(ScriptPtr script)
     _scripts[script->id] = script;
 }
 
-void Scene::removeScript(ScriptPtr script)
+void Scene::detachScript(ScriptPtr script)
 {
     _scripts.erase(script->id);
 }
 
-void Scene::removeScript(unsigned int id)
+void Scene::detachScript(unsigned int id)
 {
     _scripts.erase(id);
 }
@@ -255,12 +255,12 @@ void Scene::registerInputProcessor(InputProcessorPtr inputProcessor)
     _inputProcessors[inputProcessor->id] = inputProcessor;
 }
 
-void Scene::removeInputProcessor(InputProcessorPtr inputProcessor)
+void Scene::detachInputProcessor(InputProcessorPtr inputProcessor)
 {
     _inputProcessors.erase(inputProcessor->id);
 }
 
-void Scene::removeInputProcessor(unsigned int id)
+void Scene::detachInputProcessor(unsigned int id)
 {
     _inputProcessors.erase(id);
 }
@@ -274,7 +274,7 @@ void Scene::registerInputProcessingScript(InputProcessingScriptPtr script)
     registerInputProcessor(baseIpPtr);
 }
 
-void Scene::removeInputProcessingScript(InputProcessingScriptPtr script)
+void Scene::detachInputProcessingScript(InputProcessingScriptPtr script)
 {
     _scripts.erase(script->Script::id);
     _inputProcessors.erase(script->InputProcessor::id);

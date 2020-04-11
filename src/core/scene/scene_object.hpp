@@ -1,5 +1,5 @@
-#ifndef SCENE_OBJECT_HPP
-#define SCENE_OBJECT_HPP
+#ifndef CORE__SCENE__SCENE_OBJECT_HPP
+#define CORE__SCENE__SCENE_OBJECT_HPP
 
 #include "../positioned_object.hpp"
 
@@ -9,70 +9,94 @@
 #include <string>
 #include <exception>
 
-#include "scene_types_decl.hpp"
-#include "scene_object_component.hpp"
-#include "scene_object_component_type.hpp"
+#include "component.hpp"
+#include "component_type.hpp"
 
 #include "components/mesh_component.hpp"
 #include "components/light_component.hpp"
 #include "components/camera_component.hpp"
-#include "components/script_component.hpp"
 
+class Scene;
+using ScenePtr = std::shared_ptr<Scene>;
+using SceneWPtr = std::weak_ptr<Scene>;
+
+// An object meant to be part of a scene. Abstract entity made up of components that give it concrete aspects in the context of a scene.
 class SceneObject : public PositionedObject, public std::enable_shared_from_this<SceneObject>
 {
     private:
+        // Copy constructor and copy-assignment operator disallowed because SceneObjects are meant to be used through pointers only. Use clone() instead.
+        // Also, calls to weak_from_this(), which are prohibited during construction, would have to be made from within the copy constructor.
+        SceneObject(const SceneObject& other) = delete;
+        SceneObject& operator=(const SceneObject& other) = delete;
+
+        // Keeps track of how many SceneObjects were created (used as an ID system)
         static unsigned int _count;
 
-        std::vector<SceneObjectComponentPtr> _components;
+        // Components making up this scene object
+        std::vector<ComponentPtr> _components;
+        // The parent scene of this object
         SceneWPtr _scene;
 
     public:
         SceneObject(SceneWPtr scene);
-        SceneObject(const SceneObject& other);
-        SceneObject& operator=(const SceneObject& other);
 
+        // Get the world position of the object in the scene (see getPosition() for local position)
         glm::vec3 getWorldPosition();
+        // Get the parent scene of this object
         SceneWPtr getScene();
+        // Set the parent scene of this object
         void setScene(SceneWPtr scene);
 
-        template<class T, class... ArgTypes>
-        std::weak_ptr<T> addComponent(ArgTypes&&... args);
+        // Get a pointer to a new SceneObject instance cloned from this. All components are cloned as well.
+        SceneObjectPtr clone();
 
+        // Add a component of type T to this object
+        template<class T, class... ArgTypes>
+        std::shared_ptr<T> addComponent(ArgTypes&&... args);
+
+        // Whether this object has a component of type T
         template<class T>
         bool hasComponent();
 
+        // Get a pointer to the component of type T on this object (if any)
         template<class T>
-        std::weak_ptr<T> getComponent();
+        std::shared_ptr<T> getComponent();
 
-        template<class T>
-        std::weak_ptr<T> getAllComponents();
+        // Get pointers to all components this object is made of
+        std::vector<ComponentWPtr> getAllComponents();
 
+        // Unique ID of the object
         const unsigned int id;
+        // Whether this object is enabled in the scene
         bool enabled;
 };
 
 template<class T, class... ArgTypes>
-std::weak_ptr<T> SceneObject::addComponent(ArgTypes&& ... args)
+std::shared_ptr<T> SceneObject::addComponent(ArgTypes&& ... args)
 {
-    if (hasComponent<T>() && SceneObjectComponent::componentType<T>() != SceneObjectComponentType::Script)
+    // Disallow more than one component of the same type per object
+    if (hasComponent<T>())
     {
-        std::string s = "SceneObject: object with ID " + std::to_string(id) + " already has a component of type " + SceneObjectComponent::componentTypeString<T>() + " and cannot have another.";
+        std::string s = "SceneObject: object with ID " + std::to_string(id) + " already has a component of type " + Component::componentTypeString<T>() + " and cannot have another one.";
         throw std::runtime_error(s.c_str());
     }
 
-    std::shared_ptr<T> realComp = std::make_shared<T>(std::forward<ArgTypes>(args)...);
-    realComp->setSceneObject(this->weak_from_this());
+    // Construct component from passed arguments
+    std::shared_ptr<T> realComponent = std::make_shared<T>(std::forward<ArgTypes>(args)...);
+    realComponent->setSceneObject(this->weak_from_this());
 
-    SceneObjectComponentPtr baseComp = std::static_pointer_cast<SceneObjectComponent>(realComp);
-    _components.push_back(baseComp);
+    // std::shared_ptr<Component> and std::shared_ptr<MyComponent> are not covariant types, even if Component and MyComponent are.
+    // Cast to base Component in order to add to collection.
+    ComponentPtr baseComponent = std::static_pointer_cast<Component>(realComponent);
+    _components.push_back(baseComponent);
 
-    return realComp;
+    return realComponent;
 }
 
 template<class T>
 bool SceneObject::hasComponent()
 {
-    SceneObjectComponentType expectedType = SceneObjectComponent::componentType<T>();
+    ComponentType expectedType = Component::componentType<T>();
     for (auto it = _components.begin(); it != _components.end(); it++)
     {
         if ((*it)->type == expectedType)
@@ -85,37 +109,20 @@ bool SceneObject::hasComponent()
 }
 
 template<class T>
-std::weak_ptr<T> SceneObject::getComponent()
+std::shared_ptr<T> SceneObject::getComponent()
 {
-    SceneObjectComponentType expectedType = SceneObjectComponent::componentType<T>();
+    ComponentType expectedType = SceneObjectComponent::componentType<T>();
     for (auto it = _components.begin(); it != _components.end(); it++)
     {
         if ((*it)->type == expectedType)
         {
-            return std::static_pointer_cast<T>(*it);
+            // Given that there's at most one component of each type in a single SceneObject,
+            // return the first matching component as soon as it is found.
+            return *it;
         }
     }
 
-    return std::weak_ptr<T>();
+    return std::shared_ptr<T>(nullptr);
 }
 
-template<class T>
-std::weak_ptr<T> SceneObject::getAllComponents()
-{
-    std::vector<std::weak_ptr<T>> components;
-
-    SceneObjectComponentType expectedType = SceneObjectComponent::componentType<T>();
-    for (auto it = _components.begin(); it != _components.end(); it++)
-    {
-        if ((*it)->type == expectedType)
-        {
-            SceneObjectComponentWPtr wComponent = std::static_pointer_cast<T>(*it);
-            std::weak_ptr<T> wRealComponent = std::weak_ptr<T>(wComponent);
-            components.push_back(wRealComponent);
-        }
-    }
-
-    return components;
-}
-
-#endif//SCENE_OBJECT_HPP
+#endif//CORE__SCENE__SCENE_OBJECT_HPP

@@ -13,6 +13,11 @@ Script::~Script()
 
 }
 
+SceneObjectWPtr Script::getSceneObject()
+{
+    return _sceneObject;
+}
+
 void Script::setSceneObject(SceneObjectWPtr sceneObject)
 {
     _sceneObject = sceneObject;

@@ -12,6 +12,11 @@
 // Component derived class representing the mesh of a scene object
 class MeshComponent : public Component
 {
+    private:
+        // Disallow copy-constructor and copy-assignment operator as Components are meant to be used only through pointers
+        MeshComponent(MeshComponent& other) = delete;
+        MeshComponent& operator=(const MeshComponent& other) = delete;
+
     public:
         MeshComponent(MeshPtr mesh);
         MeshComponent(MeshPtr mesh, Material material);

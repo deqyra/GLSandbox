@@ -2,8 +2,7 @@
 
 #include <stdexcept>
 
-#include "../scene.hpp"
-#include "tools.hpp"
+#include "scene.hpp"
 
 unsigned int SceneObject::_count = 0;
 
@@ -14,33 +13,6 @@ SceneObject::SceneObject(SceneWPtr scene) :
     _components()
 {
 
-}
-
-SceneObject::SceneObject(const SceneObject& other) :
-    id(_count++),
-    enabled(other.enabled),
-    _components()
-{
-    for (auto it = other._components.begin(); it != other._components.end(); it++)
-    {
-        SceneObjectComponentPtr newComponent = cloneComponent(*it);
-        newComponent->setSceneObject(this->weak_from_this());
-        _components.push_back(newComponent);
-    }
-}
-
-SceneObject& SceneObject::operator=(const SceneObject& other)
-{
-    enabled = other.enabled;
-    _components.clear();
-    for (auto it = other._components.begin(); it != other._components.end(); it++)
-    {
-        SceneObjectComponentPtr newComponent = cloneComponent(*it);
-        newComponent->setSceneObject(this->weak_from_this());
-        _components.push_back(newComponent);
-    }
-
-    return (*this);
 }
 
 glm::vec3 SceneObject::getWorldPosition()
@@ -57,4 +29,29 @@ SceneWPtr SceneObject::getScene()
 void SceneObject::setScene(SceneWPtr scene)
 {
     _scene = scene;
+}
+
+SceneObjectPtr SceneObject::clone()
+{
+    SceneObjectPtr clonedObject = SceneObjectPtr(new SceneObject(_scene));
+    clonedObject->enabled = enabled;
+    for (auto it = _components.begin(); it != _components.end(); it++)
+    {
+        ComponentPtr newComponent = ComponentPtr((*it)->clone());
+        newComponent->setSceneObject(clonedObject);
+        clonedObject->_components.push_back(newComponent);
+    }
+
+    return clonedObject;
+}
+
+std::vector<ComponentWPtr> SceneObject::getAllComponents()
+{
+    std::vector<ComponentWPtr> components;
+    components.reserve(_components.size());
+
+    // During this copy, all ComponentPtrs are copied as ComponentsWPtrs)
+    std::copy(_components.begin(), _components.end(), std::back_inserter(components));
+
+    return components;
 }
