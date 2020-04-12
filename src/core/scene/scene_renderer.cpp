@@ -47,7 +47,7 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
 
     // Get the actual camera
     SceneObjectPtr cameraObj = cameraComponents[0].lock();
-    std::shared_ptr<CameraComponent> cameraComp = cameraObj->getComponent<CameraComponent>().lock();
+    std::shared_ptr<CameraComponent> cameraComp = cameraObj->getComponent<CameraComponent>();
 
     // Set up matrices in their UBO
     glm::mat4 view = cameraComp->getViewMatrix();
@@ -62,9 +62,9 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
     {
         // Get the light component
         SceneObjectPtr lightObj = it->lock();
-        std::shared_ptr<LightComponent> lightComp = lightObj->getComponent<LightComponent>().lock();
+        std::shared_ptr<LightComponent> lightComp = lightObj->getComponent<LightComponent>();
         // Get the actual light and its world model matrix (needed to compute its world position)
-        lights.push_back(lightComp->light);
+        lights.push_back(lightComp->getLight());
         modelMats.push_back(scene->getWorldModelMatrix(lightObj->id));
     }
     sendLightData(lights, modelMats, view);
@@ -73,7 +73,7 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
     {
         // Get the mesh component
         SceneObjectPtr meshObj = it->lock();
-        std::shared_ptr<MeshComponent> meshComp = meshObj->getComponent<MeshComponent>().lock();
+        std::shared_ptr<MeshComponent> meshComp = meshObj->getComponent<MeshComponent>();
         // Draw the mesh
         glm::mat4 modelMatrix = scene->getWorldModelMatrix(meshObj->id);
         drawMesh(meshComp->mesh, modelMatrix, cameraComp->getViewMatrix(), meshComp->material, meshComp->shader);

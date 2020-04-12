@@ -2,12 +2,12 @@
 
 const std::function<float(float)> PointLight::linearCoeffFromDesiredRange = [](float range) -> float
 {
-    return 1.f / ((5.07867e-4 * range * range) + (2.03957e-1 * range));
+    return (float)(1.f / ((5.07867e-4 * range * range) + (2.03957e-1 * range)));
 };
 
 const std::function<float(float)> PointLight::quadraticCoeffFromDesiredRange = [](float range) -> float
 {
-    return 1.f / ((1.51749e-2 * range * range) + (-2.68263e-2 * range));
+    return (float)(1.f / ((1.51749e-2 * range * range) + (-2.68263e-2 * range)));
 };
 
 PointLight::PointLight() :
@@ -43,4 +43,9 @@ PointLight::PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
     quadratic(quadratic)
 {
 
+}
+
+PointLight* PointLight::clone()
+{
+    return new PointLight(ambient, diffuse, specular, constant, linear, quadratic);
 }

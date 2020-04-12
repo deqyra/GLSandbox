@@ -8,7 +8,7 @@
 #include "scene_object.hpp"
 #include "component.hpp"
 
-#include "../light.hpp"
+#include "../lights/light.hpp"
 #include "../ubo/matrix_ubo.hpp"
 #include "../ubo/light_ubo.hpp"
 

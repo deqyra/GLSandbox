@@ -62,6 +62,8 @@ class LightingSandboxScript : public InputProcessingScript
         virtual void update(float timeElapsed);
         // Process keyboard input
         virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+        virtual LightingSandboxScript* clone();
 };
 
 #endif//LIGHTING_EXAMPLE_HPP

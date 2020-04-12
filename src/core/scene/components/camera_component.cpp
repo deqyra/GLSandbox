@@ -2,6 +2,8 @@
 #include "../scene_object.hpp"
 #include "../scene.hpp"
 
+#include "../../positioned_object.hpp"
+
 CameraComponent::CameraComponent(CameraPtr camera) :
     Component(ComponentType::Camera)
 {
@@ -79,7 +81,7 @@ glm::vec3 CameraComponent::getParentUp()
 
     // In order to get what "upwards" is (in world coordinates) for the parent scene object,
     // have (0, 1, 0) go through the world model matrix of the object.
-    glm::vec4 up = glm::vec4(WORLD_Y, 0.f);
+    glm::vec4 up = glm::vec4(PositionedObject::WorldY, 0.f);
     up = worldMat * up;
     return glm::vec3(up);
 }

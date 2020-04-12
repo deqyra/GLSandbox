@@ -111,14 +111,14 @@ bool SceneObject::hasComponent()
 template<class T>
 std::shared_ptr<T> SceneObject::getComponent()
 {
-    ComponentType expectedType = SceneObjectComponent::componentType<T>();
+    ComponentType expectedType = Component::componentType<T>();
     for (auto it = _components.begin(); it != _components.end(); it++)
     {
         if ((*it)->type == expectedType)
         {
             // Given that there's at most one component of each type in a single SceneObject,
             // return the first matching component as soon as it is found.
-            return *it;
+            return static_pointer_cast<T>(*it);
         }
     }
 

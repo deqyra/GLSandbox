@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-#include "../uniform_buffer_object.hpp"
+#include "uniform_buffer_object.hpp"
 
 /* UNIFORM BLOCK LAYOUT
  * ====================

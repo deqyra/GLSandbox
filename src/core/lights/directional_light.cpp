@@ -15,3 +15,8 @@ DirectionalLight::DirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::
 {
 
 }
+
+DirectionalLight* DirectionalLight::clone()
+{
+    return new DirectionalLight(direction, ambient, diffuse, specular);
+}

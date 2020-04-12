@@ -91,8 +91,8 @@ void LightingSandbox::run(GLFWwindow* window)
     cameraObj->setPosition(StartingCameraPosition);
     scene->registerObject(cameraObj);
     std::shared_ptr<FPSCameraScript> fpsScript = std::make_shared<FPSCameraScript>();
-    std::shared_ptr<Script> baseFpsScript = std::static_pointer_cast<Script>(fpsScript);
-    cameraObj->addComponent<ScriptComponent>(baseFpsScript);
+    std::shared_ptr<InputProcessingScript> baseFpsScript = std::static_pointer_cast<InputProcessingScript>(fpsScript);
+    cameraObj->addComponent<InputProcessingScriptComponent>(baseFpsScript);
     
     // ROTATION SCRIPT
     std::shared_ptr<LightingSandboxScript> rotationScript = std::make_shared<LightingSandboxScript>(cubeObj, bigTorusObj, smallTorusObj, tetrahedronObj);
@@ -181,4 +181,9 @@ void LightingSandboxScript::processKeyboard(GLFWwindow* window, int key, int sca
     {
         _autoRotate = !_autoRotate;
     }
+}
+
+LightingSandboxScript* LightingSandboxScript::clone()
+{
+    return nullptr;
 }

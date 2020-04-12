@@ -2,12 +2,12 @@
 
 const std::function<float(float)> SpotLight::linearCoeffFromDesiredRange = [](float range) -> float
 {
-    return (2.041118599e-7 * range * range) - (7.382441708e-4 * range) + 2.481753022e-1;
+    return (float)((2.041118599e-7 * range * range) - (7.382441708e-4 * range) + 2.481753022e-1);
 };
 
 const std::function<float(float)> SpotLight::quadraticCoeffFromDesiredRange = [](float range) -> float
 {
-    return (3.682978425e-7 * range * range) - (1.318877109e-3 * range) + 4.032644093e-1;
+    return (float)((3.682978425e-7 * range * range) - (1.318877109e-3 * range) + 4.032644093e-1);
 };
 
 SpotLight::SpotLight(glm::vec3 direction) :
@@ -77,4 +77,9 @@ SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, 
 	outerCutoff(outerCutoff)
 {
 
+}
+
+SpotLight* SpotLight::clone()
+{
+    return new SpotLight(direction, ambient, diffuse, specular, constant, linear, quadratic, innerCutoff, outerCutoff);
 }

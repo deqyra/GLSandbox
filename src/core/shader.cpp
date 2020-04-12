@@ -222,7 +222,7 @@ void Shader::setMaterial(const std::string& name, Material value)
     for (unsigned int i = 0; i < count; i++)
     {
         std::string samplerName = name + ".specularMaps[" + std::to_string(i) + "]";
-        setInt(samplerName, SPECULAR_MAP_MAX_COUNT + (int)i);
+        setInt(samplerName, Material::SpecularMapMaxCount + (int)i);
     }
     setUint(name + ".specularMapCount", count);
 }

@@ -8,7 +8,7 @@
 Camera::Camera(const Camera& other) :
     _front(other._front),
     _right(other._right),
-    _up(other.up),
+    _up(other._up),
     _parentUp(other._parentUp),
     _parentUpRotation(other._parentUpRotation),
     _zoom(other._zoom),

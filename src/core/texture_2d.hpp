@@ -4,6 +4,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "../../include/glad/glad.h"
+
 // Proxy class to a texture 2D resource on the GPU
 class Texture2D
 {

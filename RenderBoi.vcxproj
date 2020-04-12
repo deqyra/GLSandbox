@@ -32,7 +32,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\camera.cpp" />
-    <ClCompile Include="src\core\light.cpp" />
     <ClCompile Include="src\core\lights\directional_light.cpp" />
     <ClCompile Include="src\core\lights\light.cpp" />
     <ClCompile Include="src\core\lights\point_light.cpp" />
@@ -44,20 +43,17 @@
     <ClCompile Include="src\core\mesh_generators\tetrahedron_generator.cpp" />
     <ClCompile Include="src\core\mesh_generators\torus_generator.cpp" />
     <ClCompile Include="src\core\positioned_object.cpp" />
-    <ClCompile Include="src\core\scene.cpp" />
     <ClCompile Include="src\core\scene\component.cpp" />
     <ClCompile Include="src\core\scene\components\camera_component.cpp" />
+    <ClCompile Include="src\core\scene\components\input_processing_script_component.cpp" />
     <ClCompile Include="src\core\scene\components\light_component.cpp" />
     <ClCompile Include="src\core\scene\components\mesh_component.cpp" />
     <ClCompile Include="src\core\scene\components\script_component.cpp" />
     <ClCompile Include="src\core\scene\input_processing_script.cpp" />
     <ClCompile Include="src\core\scene\scene.cpp" />
     <ClCompile Include="src\core\scene\scene_object.cpp" />
-    <ClCompile Include="src\core\scene\scene_object_component.cpp" />
     <ClCompile Include="src\core\scene\scene_renderer.cpp" />
     <ClCompile Include="src\core\scene\script.cpp" />
-    <ClCompile Include="src\core\scene\tools.cpp" />
-    <ClCompile Include="src\core\scene_renderer.cpp" />
     <ClCompile Include="src\core\scripts\basic_input_manager.cpp" />
     <ClCompile Include="src\core\scripts\fps_camera_script.cpp" />
     <ClCompile Include="src\core\scripts\lambda_script.cpp" />
@@ -66,7 +62,6 @@
     <ClCompile Include="src\core\ubo\light_ubo.cpp" />
     <ClCompile Include="src\core\ubo\matrix_ubo.cpp" />
     <ClCompile Include="src\core\ubo\uniform_buffer_object.cpp" />
-    <ClCompile Include="src\core\uniform_buffer_object.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\gl_sandboxes\lighting_sandbox.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -83,12 +78,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\camera.hpp" />
-    <ClInclude Include="src\core\light.hpp" />
     <ClInclude Include="src\core\lights\directional_light.hpp" />
     <ClInclude Include="src\core\lights\light.hpp" />
+    <ClInclude Include="src\core\lights\light_type.hpp" />
     <ClInclude Include="src\core\lights\point_light.hpp" />
     <ClInclude Include="src\core\lights\spot_light.hpp" />
-    <ClInclude Include="src\core\light_type.hpp" />
     <ClInclude Include="src\core\material.hpp" />
     <ClInclude Include="src\core\materials.hpp" />
     <ClInclude Include="src\core\mesh.hpp" />
@@ -98,10 +92,10 @@
     <ClInclude Include="src\core\mesh_generators\tetrahedron_generator.hpp" />
     <ClInclude Include="src\core\mesh_generators\torus_generator.hpp" />
     <ClInclude Include="src\core\positioned_object.hpp" />
-    <ClInclude Include="src\core\scene.hpp" />
     <ClInclude Include="src\core\scene\component.hpp" />
     <ClInclude Include="src\core\scene\components\all_components.hpp" />
     <ClInclude Include="src\core\scene\components\camera_component.hpp" />
+    <ClInclude Include="src\core\scene\components\input_processing_script_component.hpp" />
     <ClInclude Include="src\core\scene\components\light_component.hpp" />
     <ClInclude Include="src\core\scene\components\mesh_component.hpp" />
     <ClInclude Include="src\core\scene\components\script_component.hpp" />
@@ -109,13 +103,8 @@
     <ClInclude Include="src\core\scene\input_processing_script.hpp" />
     <ClInclude Include="src\core\scene\scene.hpp" />
     <ClInclude Include="src\core\scene\scene_object.hpp" />
-    <ClInclude Include="src\core\scene\scene_object_component.hpp" />
-    <ClInclude Include="src\core\scene\scene_object_component_type.hpp" />
     <ClInclude Include="src\core\scene\scene_renderer.hpp" />
-    <ClInclude Include="src\core\scene\scene_types_decl.hpp" />
     <ClInclude Include="src\core\scene\script.hpp" />
-    <ClInclude Include="src\core\scene\tools.hpp" />
-    <ClInclude Include="src\core\scene_renderer.hpp" />
     <ClInclude Include="src\core\scripts\basic_input_manager.hpp" />
     <ClInclude Include="src\core\scripts\fps_camera_script.hpp" />
     <ClInclude Include="src\core\scripts\lambda_script.hpp" />
@@ -125,11 +114,9 @@
     <ClInclude Include="src\core\ubo\matrix_ubo.hpp" />
     <ClInclude Include="src\core\ubo\ubo_info.hpp" />
     <ClInclude Include="src\core\ubo\uniform_buffer_object.hpp" />
-    <ClInclude Include="src\core\uniform_buffer_object.hpp" />
     <ClInclude Include="src\core\vertex.hpp" />
     <ClInclude Include="src\gl_sandbox.hpp" />
     <ClInclude Include="src\gl_sandboxes\lighting_sandbox.hpp" />
-    <ClInclude Include="src\tools\clonable.hpp" />
     <ClInclude Include="src\tools\exceptions\file_not_found_error.hpp" />
     <ClInclude Include="src\tools\exceptions\index_out_of_bounds_error.hpp" />
     <ClInclude Include="src\tools\exceptions\range_bounds_exceeded_error.hpp" />
@@ -257,7 +244,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
