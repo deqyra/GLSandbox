@@ -17,6 +17,7 @@ The cube shows the position of a point light.
 
 * Development conducted using OpenGL 4.6 (core profile) on a GTX 1660 Ti.
 * To use the project, [generate a loader](https://glad.dav1d.de/) that suits your platform, and replace `include/glad/glad.h` and `src/glad.cpp` with it.
+* See this [sort of a diagram](https://github.com/deqyra/RenderBoi/blob/master/system_diagram.png) as well as this [class diagram](https://github.com/deqyra/RenderBoi/blob/master/class_diagram.png) to get a basic understanding of how everything works.
 
 ## Current features
 
@@ -47,6 +48,7 @@ The cube shows the position of a point light.
 * `.obj` file loading
 * Shadows
 * Transparency
-* Portals
+* Dynamic meshes
 * Particles
 * PBR
+* Portals
