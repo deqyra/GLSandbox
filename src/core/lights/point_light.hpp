@@ -4,8 +4,8 @@
 #include <functional>
 #include <glm/glm.hpp>
 
-#include "../light.hpp"
-#include "../light_type.hpp"
+#include "light.hpp"
+#include "light_type.hpp"
 
 class PointLight : public Light
 {

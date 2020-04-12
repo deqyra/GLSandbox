@@ -5,11 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#define WORLD_Y glm::vec3(0.f, 1.f, 0.f)
-
-#define YAW -90.f
-#define PITCH 0.f
-#define ZOOM 45.f
+#include "positioned_object.hpp"
 
 class Camera
 {
@@ -39,8 +35,12 @@ class Camera
         void updateVectors();
 
     public:
+        static constexpr float DefaultYaw = -90.f;
+        static constexpr float DefaultPitch = 0.f;
+        static constexpr float DefaultZoomFactor = 1.f;
+
         Camera(const Camera& other);
-        Camera(glm::mat4 projection, float yaw = YAW, float pitch = PITCH, glm::vec3 up = WORLD_Y);
+        Camera(glm::mat4 projection, float yaw = DefaultYaw, float pitch = DefaultPitch, float zoom = DefaultZoomFactor, glm::vec3 up = PositionedObject::WorldY);
         virtual ~Camera();
 
         // Update vectors to reflect a new camera rotation

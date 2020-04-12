@@ -28,7 +28,7 @@ class GLWindow
         // Register new input processor
         void registerInputProcessor(InputProcessorPtr inputProcessor);
         // Discard custom input processor
-        void removeInputProcessor();
+        void detachInputProcessor();
 
     private:
         // The GLFW window being managed

@@ -9,7 +9,7 @@
 
 #include "../../tools/gl_utils.hpp"
 
-#define M_PI 3.14159265358979323846
+constexpr double Pi = glm::pi<double>();
 
 TorusGenerator::TorusGenerator() :
     TorusGenerator(DefaultToroidalRadius, DefaultPoloidalRadius, DefaultToroidalVertexResolution, DefaultPoloidalVertexResolution)
@@ -40,8 +40,8 @@ MeshPtr TorusGenerator::generatePtr()
     unsigned int stripTotalLength = p.poloidalVertexRes * singleStripLength;
     std::vector<unsigned int> indices = std::vector<unsigned int>(stripTotalLength);
 
-    float toroidalAngleStep = (float)(2 * M_PI) / (float)(p.toroidalVertexRes);
-    float poloidalAngleStep = (float)(2 * M_PI) / (float)(p.poloidalVertexRes);
+    float toroidalAngleStep = (float)(2 * Pi) / (float)(p.toroidalVertexRes);
+    float poloidalAngleStep = (float)(2 * Pi) / (float)(p.poloidalVertexRes);
 
     // Generate vertex position, colors and normals
     for (unsigned int i = 0; i < p.poloidalVertexRes; i++)

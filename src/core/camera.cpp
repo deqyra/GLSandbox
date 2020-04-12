@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "positioned_object.hpp"
+
 Camera::Camera(const Camera& other) :
     _front(other._front),
     _right(other._right),
@@ -17,13 +19,13 @@ Camera::Camera(const Camera& other) :
 
 }
 
-Camera::Camera(glm::mat4 projection, float yaw, float pitch, glm::vec3 up) :
+Camera::Camera(glm::mat4 projection, float yaw, float pitch, float zoom, glm::vec3 up) :
     _front(glm::vec3(0.f, 0.f, -1.f)),
     _right(glm::vec3(1.f, 0.f, 0.f)),
     _up(glm::vec3(0.f, 1.f, 0.f)),
     _parentUp(glm::vec3(0.f, 1.f, 0.f)),
     _parentUpRotation(),
-    _zoom(ZOOM),
+    _zoom(zoom),
     _yaw(yaw),
     _pitch(pitch),
     _projectionMatrix(projection)
@@ -103,7 +105,7 @@ glm::vec3 Camera::getParentUp()
 void Camera::setParentUp(glm::vec3 up)
 {
     _parentUp = glm::normalize(up);
-    _parentUpRotation = glm::quat(WORLD_Y, _parentUp);
+    _parentUpRotation = glm::quat(PositionedObject::WorldY, _parentUp);
 
     updateVectors();
 }

@@ -11,7 +11,7 @@ const std::function<float(float)> SpotLight::quadraticCoeffFromDesiredRange = []
 };
 
 SpotLight::SpotLight(glm::vec3 direction) :
-    SpotLight(direction, DEFAULT_SPOT_LIGHT_RANGE)
+    SpotLight(direction, DefaultSpotLightRange)
 {
 
 }
@@ -35,19 +35,19 @@ SpotLight::SpotLight(glm::vec3 direction, float range, float innerCutoff, float 
 }
 
 SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) :
-	SpotLight(direction, ambient, diffuse, specular, DEFAULT_SPOT_LIGHT_RANGE, DEFAULT_SPOT_LIGHT_INNER_CUTOFF, DEFAULT_SPOT_LIGHT_OUTER_CUTOFF)
+	SpotLight(direction, ambient, diffuse, specular, DefaultSpotLightRange, DefaultSpotLightInnerCutoff, DefaultSpotLightOuterCutoff)
 {
 
 }
 
 SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float range) :
-	SpotLight(direction, ambient, diffuse, specular, range, DEFAULT_SPOT_LIGHT_INNER_CUTOFF, DEFAULT_SPOT_LIGHT_OUTER_CUTOFF)
+	SpotLight(direction, ambient, diffuse, specular, range, DefaultSpotLightInnerCutoff, DefaultSpotLightOuterCutoff)
 {
 
 }
 
 SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float innerCutoff, float outerCutoff) : 
-	SpotLight(direction, ambient, diffuse, specular, DEFAULT_SPOT_LIGHT_RANGE, innerCutoff, outerCutoff)
+	SpotLight(direction, ambient, diffuse, specular, DefaultSpotLightRange, innerCutoff, outerCutoff)
 {
 
 }

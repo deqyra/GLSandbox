@@ -78,23 +78,23 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         // Register a script in the scene, to be triggered at each updates
         void registerScript(ScriptPtr script);
         // Detach a script from the scene so that an update no longer affects it
-        void removeScript(ScriptPtr script);
+        void detachScript(ScriptPtr script);
         // Detach the script with provided ID from the scene
-        void removeScript(unsigned int id);
+        void detachScript(unsigned int id);
         // Trigger a scene update (update all registered scripts)
         void triggerUpdate();
 
         // Register an input processor in the scene; input events forwarded to the scene will also be forwarded to it
         void registerInputProcessor(InputProcessorPtr inputProcessor);
         // Detach an input processor from the scene so that input events are no longer forwarded to it
-        void removeInputProcessor(InputProcessorPtr inputProcessor);
+        void detachInputProcessor(InputProcessorPtr inputProcessor);
         // Detach the input processor with provided ID from the scene
-        void removeInputProcessor(unsigned int id);
+        void detachInputProcessor(unsigned int id);
 
         // Register an input processing script in the scene (behaves as both a script and an input processor)
         void registerInputProcessingScript(InputProcessingScriptPtr script);
         // Detach an input processing script from the scene
-        void removeInputProcessingScript(InputProcessingScriptPtr script);
+        void detachInputProcessingScript(InputProcessingScriptPtr script);
 
         // The Scene itself is an input processor, and should be registered to the GLFW window as such.
         // Following methods forward all input events to registered input processors.

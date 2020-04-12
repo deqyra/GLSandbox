@@ -126,7 +126,7 @@ void Texture2D::bind()
 void Texture2D::bind(unsigned int unit)
 {
     unsigned int realUnit = GL_TEXTURE0 + unit;
-    if (realUnit > MAX_TEXTURE_UNIT)
+    if (realUnit > MaxTextureUnit)
     {
         std::string s = "Texture2D: cannot bind to texture unit " + std::to_string(realUnit) + ".";
         throw IndexOutOfBoundsError(s);

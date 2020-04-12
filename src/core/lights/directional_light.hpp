@@ -3,8 +3,8 @@
 
 #include <glm/glm.hpp>
 
-#include "../light.hpp"
-#include "../light_type.hpp"
+#include "light.hpp"
+#include "light_type.hpp"
 
 class DirectionalLight : public Light
 {

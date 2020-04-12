@@ -41,7 +41,7 @@ void GLWindow::registerInputProcessor(InputProcessorPtr inputProcessor)
     _inputProcessor = inputProcessor;
 }
 
-void GLWindow::removeInputProcessor()
+void GLWindow::detachInputProcessor()
 {
     _inputProcessor = std::make_shared<InputProcessor>();
 }

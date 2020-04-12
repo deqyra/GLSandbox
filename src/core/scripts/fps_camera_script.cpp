@@ -3,10 +3,11 @@
 #include "../include/GLFW/glfw3.h"
 #include "../scene/components/camera_component.hpp"
 
-FPSCameraScript::FPSCameraScript() :
-    _moveSpeed(SPEED),
-    _mouseSensitivity(SENSITIVITY),
-    _movement{false},
+FPSCameraScript::FPSCameraScript(float speed, float sensitivity, float sprintMultiplier) :
+    _moveSpeed(speed),
+    _lookSensitivity(sensitivity),
+    _sprintMultiplier(sprintMultiplier),
+    _movement{ false },
     _sprint(false),
     _lastMouseX(0),
     _lastMouseY(0),
@@ -23,34 +24,34 @@ void FPSCameraScript::processKeyboard(GLFWwindow* window, int key, int scancode,
     {
         // If pressed or on repeat, move forward
         if (action == GLFW_PRESS || action == GLFW_REPEAT)
-            _movement[DIR_INDEX_FORWARD] = true;
+            _movement[IndexForward] = true;
         // If released, stop moving forward
         if (action == GLFW_RELEASE)
-            _movement[DIR_INDEX_FORWARD] = false;
+            _movement[IndexForward] = false;
     }
     // S (backward)
     if (key == GLFW_KEY_S)
     {
         if (action == GLFW_PRESS || action == GLFW_REPEAT)
-            _movement[DIR_INDEX_BACKWARD] = true;
+            _movement[IndexBackward] = true;
         if (action == GLFW_RELEASE)
-            _movement[DIR_INDEX_BACKWARD] = false;
+            _movement[IndexBackward] = false;
     }
     // A (left)
     if (key == GLFW_KEY_A)
     {
         if (action == GLFW_PRESS || action == GLFW_REPEAT)
-            _movement[DIR_INDEX_LEFT] = true;
+            _movement[IndexLeft] = true;
         if (action == GLFW_RELEASE)
-            _movement[DIR_INDEX_LEFT] = false;
+            _movement[IndexLeft] = false;
     }
     // D (right)
     if (key == GLFW_KEY_D)
     {
         if (action == GLFW_PRESS || action == GLFW_REPEAT)
-            _movement[DIR_INDEX_RIGHT] = true;
+            _movement[IndexRight] = true;
         if (action == GLFW_RELEASE)
-            _movement[DIR_INDEX_RIGHT] = false;
+            _movement[IndexRight] = false;
     }
     // For any key event, update sprint mode depending on Shift key status
     if (mods & GLFW_MOD_SHIFT)
@@ -59,15 +60,15 @@ void FPSCameraScript::processKeyboard(GLFWwindow* window, int key, int scancode,
         _sprint = false;
 
     // Cancel directions if opposite
-    if (_movement[DIR_INDEX_FORWARD] && _movement[DIR_INDEX_BACKWARD])
+    if (_movement[IndexForward] && _movement[IndexBackward])
     {
-        _movement[DIR_INDEX_FORWARD] = false;
-        _movement[DIR_INDEX_BACKWARD] = false;
+        _movement[IndexForward] = false;
+        _movement[IndexBackward] = false;
     }
-    if (_movement[DIR_INDEX_LEFT] && _movement[DIR_INDEX_RIGHT])
+    if (_movement[IndexLeft] && _movement[IndexRight])
     {
-        _movement[DIR_INDEX_LEFT] = false;
-        _movement[DIR_INDEX_RIGHT] = false;
+        _movement[IndexLeft] = false;
+        _movement[IndexRight] = false;
     }
 }
 
@@ -76,23 +77,23 @@ void FPSCameraScript::processMouseCursor(GLFWwindow* window, double xpos, double
     // If the mouse was never updated before, record its position and skip this update
     if (!_mouseWasUpdatedOnce)
     {
-        _lastMouseX = (float) xpos;
-        _lastMouseY = (float) ypos;
+        _lastMouseX = (float)xpos;
+        _lastMouseY = (float)ypos;
         _mouseWasUpdatedOnce = true;
         return;
     }
     // This is to avoid a huge mouse jump upon entering the window with the mouse
 
     // Compute offsets
-    float yawOffset = (float)(xpos - _lastMouseX) * _mouseSensitivity;
+    float yawOffset = (float)(xpos - _lastMouseX) * _lookSensitivity;
     // Y offset reversed since y-coordinates range from bottom to top
-    float pitchOffset = (float)(_lastMouseY - ypos) * _mouseSensitivity;
+    float pitchOffset = (float)(_lastMouseY - ypos) * _lookSensitivity;
 
     // Translate to Euler angles
     _camera->processRotation(yawOffset, pitchOffset);
     // Record mouse position
-    _lastMouseX = (float) xpos;
-    _lastMouseY = (float) ypos;
+    _lastMouseX = (float)xpos;
+    _lastMouseY = (float)ypos;
 }
 
 void FPSCameraScript::update(float timeElapsed)
@@ -100,20 +101,20 @@ void FPSCameraScript::update(float timeElapsed)
     // Compute distance to cover in this frame
     float velocity = timeElapsed * _moveSpeed;
     if (_sprint)
-        velocity *= SPRINT_MUTLIPLIER;
+        velocity *= _sprintMultiplier;
 
     // Retrieve the linked scene object (i.e the camera)
     SceneObjectPtr sceneObject = _sceneObject.lock();
     glm::vec3 position = sceneObject->getPosition();
 
     // Depending on which directional flags were raised, compute new position
-    if (_movement[DIR_INDEX_FORWARD])
+    if (_movement[IndexForward])
         position += _camera->front() * velocity;
-    if (_movement[DIR_INDEX_BACKWARD])
+    if (_movement[IndexBackward])
         position -= _camera->front() * velocity;
-    if (_movement[DIR_INDEX_LEFT])
+    if (_movement[IndexLeft])
         position -= _camera->right() * velocity;
-    if (_movement[DIR_INDEX_RIGHT])
+    if (_movement[IndexRight])
         position += _camera->right() * velocity;
 
     // Update camera position
@@ -135,4 +136,9 @@ void FPSCameraScript::setSceneObject(SceneObjectWPtr sceneObject)
     }
 
     _camera = cameraComponent->getCamera();
+}
+
+FPSCameraScript* FPSCameraScript::clone()
+{
+    return new FPSCameraScript(_moveSpeed, _lookSensitivity, _sprintMultiplier);
 }

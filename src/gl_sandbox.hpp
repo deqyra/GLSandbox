@@ -5,6 +5,7 @@
 
 #define GLFW_INCLUDE_NONE
 #include "../include/GLFW/glfw3.h"
+#undef GLFW_INCLUDE_NONE
 
 // Abstract class to run any 3D scene in a GLFW window
 class GLSandbox

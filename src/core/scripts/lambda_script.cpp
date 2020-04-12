@@ -1,6 +1,11 @@
 #include "lambda_script.hpp"
 
-LambdaScript::LambdaScript()
+LambdaScript::LambdaScript() :
+    updateCallback([](float){}),
+    framebufferResizeCallback([](GLFWwindow*, int, int){}),
+    keyboardCallback([](GLFWwindow*, int, int, int, int){}),
+    mouseButtonCallback([](GLFWwindow*, int, int, int){}),
+    mouseCursorCallback([](GLFWwindow*, double, double){})
 {
 
 }
@@ -28,4 +33,9 @@ void LambdaScript::processMouseButton(GLFWwindow* window, int button, int action
 void LambdaScript::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
 {
     mouseCursorCallback(window, xpos, ypos);
+}
+
+LambdaScript* LambdaScript::clone()
+{
+    return new LambdaScript();
 }

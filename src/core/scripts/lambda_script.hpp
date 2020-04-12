@@ -43,6 +43,8 @@ class LambdaScript : public InputProcessingScript
         virtual void processMouseButton(GLFWwindow* window, int button, int action, int mods);
         // To be called upon a mouse cursor event; forwards the call to the custom callback
         virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
+
+        virtual LambdaScript* clone();
 };
 
 #endif//CORE__SCRIPTS__LAMBDA_SCRIPT_HPP

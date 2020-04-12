@@ -6,9 +6,6 @@
 
 #include "texture_2d.hpp"
 
-#define DIFFUSE_MAP_MAX_COUNT   8
-#define SPECULAR_MAP_MAX_COUNT  8
-
 // Material with fixed ambient, diffuse and specular components (and shininess), as well as diffuse and specular maps
 class Material
 {
@@ -17,6 +14,9 @@ class Material
         std::vector<Texture2D> _specularMaps;
 
     public:
+        static constexpr unsigned int DiffuseMapMaxCount = 8;
+        static constexpr unsigned int SpecularMapMaxCount = 8;
+
         Material();
         Material(const Material& other);
         Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess);

@@ -4,9 +4,6 @@
 #include <string>
 #include <unordered_map>
 
-#define MAX_TEXTURE_UNIT        GL_TEXTURE31
-#define MAX_TEXTURE_UNIT_OFFSET MAX_TEXTURE_UNIT - GL_TEXTURE0
-
 // Proxy class to a texture 2D resource on the GPU
 class Texture2D
 {
@@ -31,6 +28,9 @@ class Texture2D
         void cleanup();
 
     public:
+        static constexpr unsigned int MaxTextureUnit = GL_TEXTURE31;
+        static constexpr unsigned int MaxTextureUnitOffset = MaxTextureUnit - GL_TEXTURE0;
+
         Texture2D(std::string path);
         Texture2D(const Texture2D& other);
         Texture2D& operator=(const Texture2D& other);

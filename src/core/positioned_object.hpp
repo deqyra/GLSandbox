@@ -6,11 +6,6 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#define ORIGIN  glm::vec3(0.f, 0.f, 0.f)
-#define WORLD_X glm::vec3(1.f, 0.f, 0.f)
-#define WORLD_Y glm::vec3(0.f, 1.f, 0.f)
-#define WORLD_Z glm::vec3(0.f, 0.f, 1.f)
-
 // Any object that has 3D-space properties like position, rotation and scale
 class PositionedObject
 {
@@ -34,6 +29,11 @@ class PositionedObject
         void updateMatrix();
 
     public:
+        static constexpr glm::vec3 Origin = glm::vec3(0.f, 0.f, 0.f);
+        static constexpr glm::vec3 WorldX = glm::vec3(1.f, 0.f, 0.f);
+        static constexpr glm::vec3 WorldY = glm::vec3(0.f, 1.f, 0.f);
+        static constexpr glm::vec3 WorldZ = glm::vec3(0.f, 0.f, 1.f);
+
         PositionedObject();
         PositionedObject(glm::vec3 position, glm::quat orientation, glm::vec3 scale);
 

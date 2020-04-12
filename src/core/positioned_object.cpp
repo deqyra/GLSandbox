@@ -131,14 +131,14 @@ glm::quat PositionedObject::lookAt(glm::vec3 target)
     // FIXME
 
     glm::vec3 direction = glm::normalize(target - _position);
-    glm::vec3 axis = glm::cross(WORLD_Z, direction);
+    glm::vec3 axis = glm::cross(WorldZ, direction);
     axis = glm::normalize(axis);
     /*
     _orientation = glm::quat(direction);
     _orientation = glm::normalize(_orientation);
     */
 
-    float dot = glm::dot(WORLD_Z, direction);
+    float dot = glm::dot(WorldZ, direction);
     float angle = glm::acos(dot);
 
     _orientation = glm::normalize(glm::quat(axis * angle));

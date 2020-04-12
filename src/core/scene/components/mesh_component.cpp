@@ -1,7 +1,5 @@
 #include "mesh_component.hpp"
 
-using CompType = ComponentType;
-
 MeshComponent::MeshComponent(MeshPtr mesh) :
     MeshComponent(mesh, Material(), Shader())
 {
@@ -21,7 +19,7 @@ MeshComponent::MeshComponent(MeshPtr mesh, Shader shader) :
 }
 
 MeshComponent::MeshComponent(MeshPtr mesh, Material material, Shader shader) :
-    Component(CompType::Mesh),
+    Component(ComponentType::Mesh),
     mesh(mesh),
     material(material),
     shader(shader)

@@ -13,6 +13,7 @@
 
 class Mesh;
 using MeshPtr = std::shared_ptr<Mesh>;
+using MeshWPtr = std::weak_ptr<Mesh>;
 
 // Any mesh composed of vertices to be rendered by indexed drawing
 class Mesh : public PositionedObject

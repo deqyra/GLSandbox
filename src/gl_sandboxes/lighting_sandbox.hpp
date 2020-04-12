@@ -23,6 +23,8 @@ class LightingSandbox : public GLSandbox
         std::shared_ptr<SceneObject> generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat = Material(), Shader shader = Shader());
 
     public:
+        static constexpr glm::vec3 StartingCameraPosition = glm::vec3(5.f, 3.f, 5.f);
+
         LightingSandbox();
         virtual ~LightingSandbox();
 
@@ -48,6 +50,12 @@ class LightingSandboxScript : public InputProcessingScript
         float _speedFactor;
 
     public:
+        static constexpr glm::vec3 CubeOrbitAxis = glm::vec3(0.f, 1.f, 0.f);
+        static constexpr glm::vec3 BigTorusRotationAxis = glm::vec3(1.f, 0.f, 0.f);
+        static constexpr glm::vec3 SmallTorusRotationAxis = glm::vec3(0.f, 1.f, 0.f);
+        static constexpr glm::vec3 TetrahedronRotationAxis = glm::vec3(0.f, 1.f, 0.f);
+        static constexpr glm::vec3 TetrahedronOrbitAxis = glm::vec3(0.f, 1.f, 0.f);
+
         LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj);
 
         // Update the transforms of the different scene objects

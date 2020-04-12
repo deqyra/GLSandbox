@@ -4,19 +4,15 @@
 #include "../camera.hpp"
 #include "../scene/input_processing_script.hpp"
 
-#define DIR_INDEX_FORWARD 0
-#define DIR_INDEX_BACKWARD 1
-#define DIR_INDEX_LEFT 2
-#define DIR_INDEX_RIGHT 3
-
-#define SPEED 4.f
-#define SPRINT_MUTLIPLIER 1.5f
-#define SENSITIVITY 0.1f
-
 // Provide event callbacks to manage a camera as in a FPS game
 class FPSCameraScript : public InputProcessingScript
 {
     private:
+        static constexpr unsigned int IndexForward = 0;
+        static constexpr unsigned int IndexBackward = 1;
+        static constexpr unsigned int IndexLeft = 2;
+        static constexpr unsigned int IndexRight = 3;
+
         // Disallow copy-constructor and copy-assignment operator as Scripts are meant to be used only through pointers
         FPSCameraScript(const FPSCameraScript& other) = delete;
         FPSCameraScript& operator=(const FPSCameraScript& other) = delete;
@@ -27,7 +23,9 @@ class FPSCameraScript : public InputProcessingScript
         // Camera move speed (WASD)
         float _moveSpeed;
         // Camera sensitivity (mouse)
-        float _mouseSensitivity;
+        float _lookSensitivity;
+        // Speed multiplier when sprinting
+        float _sprintMultiplier;
 
         // Movement flags
         bool _movement[4];
@@ -42,7 +40,11 @@ class FPSCameraScript : public InputProcessingScript
         bool _mouseWasUpdatedOnce;
 
     public:
-        FPSCameraScript();
+        static constexpr float DefaultMoveSpeed = 4.f;
+        static constexpr float DefaultLookSensitivity = 0.1f;
+        static constexpr float DefaultSprintMultiplier = 1.5f;
+
+        FPSCameraScript(float speed = DefaultMoveSpeed, float sensitivity = DefaultLookSensitivity, float sprintMultiplier = DefaultSprintMultiplier);
 
         // To be called upon a keyboard event; handles WASD keys and moves camera
         virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);

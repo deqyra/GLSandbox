@@ -30,8 +30,8 @@ Material::Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, flo
     _diffuseMaps(),
     _specularMaps()
 {
-    _diffuseMaps.reserve(DIFFUSE_MAP_MAX_COUNT);
-    _specularMaps.reserve(SPECULAR_MAP_MAX_COUNT);
+    _diffuseMaps.reserve(DiffuseMapMaxCount);
+    _specularMaps.reserve(SpecularMapMaxCount);
 }
 
 std::vector<Texture2D> Material::getDiffuseMaps()
@@ -47,7 +47,7 @@ std::vector<Texture2D> Material::getSpecularMaps()
 unsigned int Material::pushDiffuseMap(Texture2D tex)
 {
     unsigned int size = (unsigned int) _diffuseMaps.size();
-    if (size >= DIFFUSE_MAP_MAX_COUNT)
+    if (size >= DiffuseMapMaxCount)
     {
         std::string s = "Material: cannot push diffuse map as array is full.";
         throw IndexOutOfBoundsError(s);
@@ -60,7 +60,7 @@ unsigned int Material::pushDiffuseMap(Texture2D tex)
 unsigned int Material::pushSpecularMap(Texture2D tex)
 {
     unsigned int size = (unsigned int) _specularMaps.size();
-    if (size >= SPECULAR_MAP_MAX_COUNT)
+    if (size >= SpecularMapMaxCount)
     {
         std::string s = "Material: cannot push specular map as array is full.";
         throw IndexOutOfBoundsError(s);
@@ -99,7 +99,7 @@ unsigned int Material::popSpecularMap()
 unsigned int Material::setDiffuseMaps(std::vector<Texture2D> diffuseMaps)
 {
     unsigned int size = (unsigned int) diffuseMaps.size();
-    if (size > DIFFUSE_MAP_MAX_COUNT)
+    if (size > DiffuseMapMaxCount)
     {
         std::string s = "Material: cannot set diffuse maps to array of size " + std::to_string(_diffuseMaps.size()) + ".";
         throw UnmatchedArraySizeError(s);
@@ -112,7 +112,7 @@ unsigned int Material::setDiffuseMaps(std::vector<Texture2D> diffuseMaps)
 unsigned Material::setSpecularMaps(std::vector<Texture2D> specularMaps)
 {
     unsigned int size = (unsigned int) specularMaps.size();
-    if (specularMaps.size() >= SPECULAR_MAP_MAX_COUNT)
+    if (specularMaps.size() >= SpecularMapMaxCount)
     {
         std::string s = "Material: cannot set specular maps to array of size " + std::to_string(_specularMaps.size()) + ".";
         throw UnmatchedArraySizeError(s);
@@ -141,6 +141,6 @@ void Material::bindTextures()
 
     for (unsigned int i = 0; i < _diffuseMaps.size(); i++)
     {
-        _diffuseMaps[i].bind(DIFFUSE_MAP_MAX_COUNT + i);
+        _diffuseMaps[i].bind(DiffuseMapMaxCount + i);
     }
 }

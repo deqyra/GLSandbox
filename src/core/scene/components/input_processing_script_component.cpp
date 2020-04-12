@@ -46,7 +46,8 @@ InputProcessingScriptComponent* InputProcessingScriptComponent::clone()
 {
     InputProcessingScriptPtr clonedScript = InputProcessingScriptPtr(_script->clone());
     InputProcessingScriptComponent* clonedComponent = new InputProcessingScriptComponent(clonedScript);
-    // The parent scene object needs to be registered in the component, which is to be done by the caller
+    // The parent scene object needs to be registered in the cloned component, which is to be done by the caller.
+    // In doing so, the parent scene object will also be registered in the inner script.
     return clonedComponent;
 }
 
