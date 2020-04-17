@@ -8,7 +8,7 @@
 #undef GLFW_INCLUDE_NONE
 
 // Create a GL context within a GLFW window, bind callbacks and initialize GL function pointers
-GLFWwindow* makeWindow(std::string name, int width = 640, int height = 480, int glVersionMajor = 4, int glVersionMinor = 6, bool debug = true);
+GLFWwindow* makeWindow(std::string name, int width = 640, int height = 480, int glVersionMajor = -1, int glVersionMinor = -1, int glProfile = GLFW_OPENGL_CORE_PROFILE, bool debug = false);
 
 // Destroy the provided GLFW window along with the object managing its callbacks
 void destroyWindow(GLFWwindow* window);

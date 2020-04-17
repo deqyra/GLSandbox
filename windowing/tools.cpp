@@ -12,12 +12,12 @@
 #include "gl_window.hpp"
 #include "glfw_window_callbacks.hpp"
 
-GLFWwindow* makeWindow(std::string name, int width, int height, int glVersionMajor, int glVersionMinor, bool debug)
+GLFWwindow* makeWindow(std::string name, int width, int height, int glVersionMajor, int glVersionMinor, int glProfile, bool debug)
 {
 	// GL metadata
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	if (glVersionMajor > -1) glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
+    if (glVersionMinor > -1) glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, glProfile);
 
     if (debug)
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);

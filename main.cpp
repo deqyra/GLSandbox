@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 
 	glfwInit();
 	// Init window, GL context and GL pointers
-	GLFWwindow* window = makeWindow("Test", 1280, 720);
+	GLFWwindow* window = makeWindow("RenderBoi", 1280, 720, 4, 6, GLFW_OPENGL_CORE_PROFILE, true);
 
 	if (!window)
 	{

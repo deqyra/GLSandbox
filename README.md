@@ -10,13 +10,17 @@ Originally a pet project to get started with real-time rendering app architectur
 
 All meshes here are entirely parametrically generated.
 The tetrahedron is a child of the golden torus, itself being a child of the emerald, larger torus.
-It is apparent that children objects are affected by their parent's transform.
+It is apparent that children objects are affected by their parent.
 The cube shows the position of a point light.
 
 ## Info
 
 * Development conducted using OpenGL 4.6 (core profile) on a GTX 1660 Ti.
 * To use the project, [generate a loader](https://glad.dav1d.de/) that suits your platform, and replace `include/glad/glad.h` and `src/glad.cpp` with it.
+* Other things might need changing, such as:
+  * `#version` directives in all shaders (located in folder [assets/shaders/](https://github.com/deqyra/RenderBoi/blob/master/assets/shaders))
+  * OpenGL version numbers in the call to `makeWindow` in [`main.cpp`](https://github.com/deqyra/RenderBoi/blob/master/main.cpp#L37)
+* This is still being figured out, but there seems to be a discrepancy in how GPU memory format `std140` is implemented by some drivers, which is a more serious problem as UBO data structures use it.
 * See this [sort of a diagram](https://github.com/deqyra/RenderBoi/blob/master/system_diagram.png) as well as this [class diagram](https://github.com/deqyra/RenderBoi/blob/master/class_diagram.png) to get a basic understanding of how everything works.
 
 ## Current features
