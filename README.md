@@ -38,9 +38,9 @@ The cube shows the position of a point light.
   * Children scene object global positions depend on their successive parents'
   * Scene objects can have several components:
     * **Mesh component:** a mesh is rendered at the scene object's position;
-	* **Light component:** a light source is simulated at the scene object's position;
-	* **Camera component:** a camera is attached to the scene object and provides the view-projection matrix;
-	* **Script component:** a script controls the aspects of the scene object based on time, user input, etc.
+	  * **Light component:** a light source is simulated at the scene object's position;
+	  * **Camera component:** a camera is attached to the scene object and provides the view-projection matrix;
+	  * **Script component:** a script controls the aspects of the scene object based on time, user input, etc.
 * **FPS camera and key bindings**, implemented as a script component attached to the scene camera
 
 ## Roadmap
@@ -50,5 +50,7 @@ The cube shows the position of a point light.
 * Transparency
 * Dynamic meshes
 * Particles
-* PBR
 * Portals
+* PBR
+
+See file [`list.todo`](https://github.com/deqyra/RenderBoi/blob/master/list.todo) for a more concise view of what is likely to be worked on at present.
