@@ -10,7 +10,7 @@ class GLSandbox
 {
 	public:
         // Run something in the provided GLFW window
-		virtual void run(GLWindow* window) = 0;
+		virtual void run(GLWindowPtr window) = 0;
 };
 
 #endif//EXAMPLES__GL_SANDBOX_HPP

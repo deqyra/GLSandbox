@@ -15,9 +15,15 @@ std::enum_map<GLWindow::InputModeValue, unsigned int> GLWindow::_enumValues = st
 
 GLWindow::GLWindow(GLFWwindow* window, std::string title) :
     _w(window),
-    _inputProcessor(std::make_shared<InputProcessor>())
+    _inputProcessor(std::make_shared<InputProcessor>()),
+    _title(title)
 {
     if (!_enumMapsPopulated) populateEnumMaps();
+}
+
+GLWindow::~GLWindow()
+{
+    glfwDestroyWindow(_w);
 }
 
 GLFWwindow* GLWindow::getWindow()

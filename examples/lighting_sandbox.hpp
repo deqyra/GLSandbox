@@ -26,7 +26,7 @@ class LightingSandbox : public GLSandbox
         virtual ~LightingSandbox();
 
         // Run the scene in the provided GLFW window
-        virtual void run(GLWindow* window);
+        virtual void run(GLWindowPtr window);
 };
 
 // Handle object movement in the scene displayed by LightingSandbox

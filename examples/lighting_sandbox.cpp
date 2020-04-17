@@ -39,8 +39,12 @@ LightingSandbox::~LightingSandbox()
 
 }
 
-void LightingSandbox::run(GLWindow* window)
+void LightingSandbox::run(GLWindowPtr window)
 {
+    // Update window title
+    std::string title = window->getTitle();
+    window->setTitle(title + " - Lighting");
+
     // Remove cursor from window
     window->setInputMode(GLWindow::InputModeTarget::Cursor, GLWindow::InputModeValue::DisabledCursor);
 
@@ -120,11 +124,12 @@ void LightingSandbox::run(GLWindow* window)
         window->pollEvents();
     }
     window->setShouldClose(false);
-    window->setInputMode(GLWindow::InputModeTarget::Cursor, GLWindow::InputModeValue::NormalCursor);
-
     scene->detachInputProcessingScript(ipRotationScript);
 
+    // Reset everything back to how it was
+    window->setInputMode(GLWindow::InputModeTarget::Cursor, GLWindow::InputModeValue::NormalCursor);
     window->detachInputProcessor();
+    window->setTitle(title);
 }
 
 std::shared_ptr<SceneObject> LightingSandbox::generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat, Shader shader)

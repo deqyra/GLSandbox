@@ -1,6 +1,8 @@
 #ifndef TOOLS__ENUM_MAP_HPP
 #define TOOLS__ENUM_MAP_HPP
 
+#include <unordered_map>
+
 namespace std
 {
     struct EnumClassHash

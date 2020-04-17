@@ -92,13 +92,14 @@
                     tools/string_tools.cpp                              tools/string_tools.hpp
                     tools/tree.hpp                                      tools/tree_node.hpp
                                                                         tools/make_basic_exception.hpp
+                                                                        tools/enum_map.hpp
                     tools/exceptions/index_out_of_bounds_error.cpp      tools/exceptions/index_out_of_bounds_error.hpp
                     tools/exceptions/file_not_found_error.cpp           tools/exceptions/file_not_found_error.hpp 
                     tools/exceptions/range_bounds_exceeded_error.cpp    tools/exceptions/range_bounds_exceeded_error.hpp 
                     tools/exceptions/unmatched_array_size_error.cpp     tools/exceptions/unmatched_array_size_error.hpp
                     )
 
-    # Build tools lib
+    # Build STBI lib
         add_library( ${STBI_LIB_NAME} ${STATIC_OR_SHARED}
                     stb_image.cpp                                       include/stb_image.hpp
                     )
@@ -172,7 +173,7 @@
     # Build executable
         add_executable( ${EXECUTABLE_NAME}
                         main.cpp
-                        cmake_defines.config.hpp     cmake_defines.hpp )        
+                        project_macros.config.hpp           project_macros.hpp )        
         target_link_libraries( ${EXECUTABLE_NAME} PUBLIC
                                 ${TOOLS_LIB_NAME}
                                 ${CORE_LIB_NAME}

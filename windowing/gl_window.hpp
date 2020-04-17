@@ -1,6 +1,7 @@
 #ifndef WINDOWING__GL_WINDOW_HPP
 #define WINDOWING__GL_WINDOW_HPP
 
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -19,6 +20,7 @@ class GLWindow
         enum class InputModeValue;
 
         GLWindow(GLFWwindow* window, std::string title);
+        ~GLWindow();
 
         // Get a pointer to the managed window
         GLFWwindow* getWindow();
@@ -91,5 +93,7 @@ class GLWindow
             DisabledCursor
         };
 };
+
+using GLWindowPtr = std::shared_ptr<GLWindow>;
 
 #endif//WINDOWING__GL_WINDOW_HPP

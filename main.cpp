@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 
 	glfwInit();
 	// Init window, GL context and GL pointers
-	GLFWwindow* window = makeWindow("RenderBoi", 1280, 720, 4, 6, GLFW_OPENGL_CORE_PROFILE, true);
+	GLWindowPtr window = makeWindow("RenderBoi", 1280, 720, 4, 6, GLFW_OPENGL_CORE_PROFILE, true);
 
 	if (!window)
 	{
@@ -49,8 +49,8 @@ int main(int argc, char** argv)
         delete (*it);
     }
 
-	// Tear down GL context and destroy window
-	destroyWindow(window);
+	// Destroy window by resetting what should be the only shared pointer to it
+	window = nullptr;
 	glfwTerminate();
 	return EXIT_SUCCESS;
 }
