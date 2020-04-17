@@ -6,7 +6,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "cmake_defines.hpp"
+#include "project_macros.hpp"
 
 #include "windowing/tools.hpp"
 #include "examples/gl_sandbox.hpp"

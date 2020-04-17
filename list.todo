@@ -1,0 +1,44 @@
+RenderBoi:
+    Project:
+        ✔ Port to VSCode @done(20-04-17 03:59)
+        ☐ Write test suite
+        ☐ Set up continuous integration
+    Core:
+        VertexDataManager:
+            ☐ A VertexDataManager holds actual vertex data and takes care of memory management
+            ☐ Meshes now only keep handles to vertex content held in a VertexDataManager
+            ☐ Investigate better buffering methods
+        Camera:
+            ☐ Set the projection matrix in terms of parameters rather than a full matrix
+            ☐ Clean up smart updates depending on parameter values
+        Scene:
+            ☐ In `moveObject`, add possibility to keep world position of moved object
+            ☐ Add something like `registerObjectTree(ScenePtr)` to import complex objects into a scene
+        SceneRenderer:
+            ☐ Make drawing methods and buffer queries queuable
+            ☐ Mesh rendering order based on their VertexDataManager handle, then on the requested shader
+            ☐ Eliminate buffer swaps between objects sharing the same vertex data
+        PositionedObject:
+            ☐ Viable alternative to the ugly `transformModified` flag fix
+        ☐ Dynamic meshes
+        ☐ Unity-like prefab system?
+        ☐ Shadows
+        ☐ Transparency
+        ☐ Portals
+        ☐ Particle systems
+    I/O:
+        ☐ (De)serialize scenes
+        ☐ Load models with Assimp
+    Windowing:
+    Examples:
+        ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
+        ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)
+    FIXME:
+        ☐ PositionedObject::lookAt
+        ☐ PositionedObject::rotate with localAxis==true
+        ☐ Light attenuation
+    Online resources:
+        https://www.youtube.com/watch?v=-bCeNzgiJ8I&list=PLckFgM6dUP2hc4iy-IdKFtqR9TeZWMPjm
+        http://media.steampowered.com/apps/steamdevdays/slides/beyondporting.pdf
+        https://www.slideshare.net/CassEveritt/approaching-zero-driver-overhead
+    

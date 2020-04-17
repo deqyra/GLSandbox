@@ -73,7 +73,7 @@
         set( PROJECT_COPYLEFT "${PROJECT_COPYLEFT} ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>" )
 
 # Header configuration
-    configure_file( "cmake_defines.config.hpp" "${CMAKE_SOURCE_DIR}/cmake_defines.hpp" )
+    configure_file( "project_macros.config.hpp" "${CMAKE_SOURCE_DIR}/project_macros.hpp" )
 
 # Project definition
     project( ${PROJECT_TARGET_NAME} VERSION ${PROJECT_VERSION}
