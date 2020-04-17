@@ -3,11 +3,8 @@
 
 #include <string>
 
-#include "../include/glad/glad.h"
-#include "../include/GLFW/glfw3.h"
-
-
 #include "gl_sandbox.hpp"
+#include "../windowing/gl_window.hpp"
 #include "../core/shader.hpp"
 #include "../core/texture_2d.hpp"
 #include "../core/mesh_generator.hpp"
@@ -29,7 +26,7 @@ class LightingSandbox : public GLSandbox
         virtual ~LightingSandbox();
 
         // Run the scene in the provided GLFW window
-        virtual void run(GLFWwindow* window);
+        virtual void run(GLWindow* window);
 };
 
 // Handle object movement in the scene displayed by LightingSandbox

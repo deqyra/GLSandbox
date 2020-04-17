@@ -4,17 +4,24 @@
 #include <sstream>
 #include <string>
 
-#include "../core/input_processor.hpp"
-
 #define GLFW_INCLUDE_NONE
 #include <../include/GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
+
+#include "../core/input_processor.hpp"
+#include "../tools/enum_map.hpp"
 
 // To be attached to a GLFWwindow object, providing event callback functionality through a custom InputProcessor
 class GLWindow
 {
     public:
-        GLWindow(GLFWwindow* window);
+        enum class InputModeTarget;
+        enum class InputModeValue;
+
+        GLWindow(GLFWwindow* window, std::string title);
+
+        // Get a pointer to the managed window
+        GLFWwindow* getWindow();
 
         // To be called upon a framebuffer resize event; forwards the call to the custom input processor
         void processFramebufferResize(GLFWwindow* window, int width, int height);
@@ -30,11 +37,59 @@ class GLWindow
         // Discard custom input processor
         void detachInputProcessor();
 
+        // Whether the window was flagged for closing
+        bool shouldClose();
+        // Set the window closing flaf
+        void setShouldClose(bool value);
+
+        // Swap GLFW buffers
+        void swapBuffers();
+        // Poll GLFW events
+        void pollEvents();
+
+        // Set GLFW input mode
+        void setInputMode(InputModeTarget target, InputModeValue value);
+
+        // Get title of managed window
+        std::string getTitle();
+        // Get title of managed window
+        void setTitle(std::string title);
+
     private:
         // The GLFW window being managed
         GLFWwindow* _w;
         // Custom input processor to be registered at any time, providing custom callbacks
         InputProcessorPtr _inputProcessor;
+        // Window title
+        std::string _title;
+
+        // Maps from enum values to their corresponding unsigned int values in GLFW
+        static std::enum_map<InputModeTarget, unsigned int> _enumTargets;
+        static std::enum_map<InputModeValue, unsigned int> _enumValues;
+
+        // Whether the enum maps contain data
+        static bool _enumMapsPopulated;
+        // Populate the enum maps
+        static void populateEnumMaps();
+
+    public:
+        enum class InputModeTarget
+        {
+            Cursor,
+            StickyKeys,
+            StickyMouseButtons,
+            LockKeyMods,
+            RawMouseMotion
+        };
+
+        enum class InputModeValue
+        {
+            True,
+            False,
+            NormalCursor,
+            HiddenCursor,
+            DisabledCursor
+        };
 };
 
 #endif//WINDOWING__GL_WINDOW_HPP

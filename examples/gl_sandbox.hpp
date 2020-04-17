@@ -3,16 +3,14 @@
 
 #include <string>
 
-#define GLFW_INCLUDE_NONE
-#include "../include/GLFW/glfw3.h"
-#undef GLFW_INCLUDE_NONE
+#include "../windowing/gl_window.hpp"
 
 // Abstract class to run any 3D scene in a GLFW window
 class GLSandbox
 {
 	public:
         // Run something in the provided GLFW window
-		virtual void run(GLFWwindow* window) = 0;
+		virtual void run(GLWindow* window) = 0;
 };
 
 #endif//EXAMPLES__GL_SANDBOX_HPP

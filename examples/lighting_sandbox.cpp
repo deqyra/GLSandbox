@@ -39,12 +39,10 @@ LightingSandbox::~LightingSandbox()
 
 }
 
-void LightingSandbox::run(GLFWwindow* window)
+void LightingSandbox::run(GLWindow* window)
 {
-    glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
     // Remove cursor from window
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+    window->setInputMode(GLWindow::InputModeTarget::Cursor, GLWindow::InputModeValue::DisabledCursor);
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), glAspectRatio(), 0.1f, 100.0f);
     CameraPtr _camera = std::make_shared<Camera>(projection, -135.f, -25.f);
@@ -56,8 +54,7 @@ void LightingSandbox::run(GLFWwindow* window)
     scene->init();
 
     // Retrieve the custom window pointer, register the scene as an input processor
-    GLWindow* windowHandler = static_cast<GLWindow*>(glfwGetWindowUserPointer(window));
-    windowHandler->registerInputProcessor(scene);
+    window->registerInputProcessor(scene);
 
     // BIG TORUS
     std::shared_ptr<SceneObject> bigTorusObj = generateSceneMesh(scene, std::make_shared<TorusGenerator>(2.f, 0.5f, 72, 48), Materials::Emerald, lightingShader);
@@ -106,7 +103,10 @@ void LightingSandbox::run(GLFWwindow* window)
     scene->registerInputProcessingScript(ipWindowScript);
 
     SceneRenderer sceneRenderer;
-    while (!glfwWindowShouldClose(window))
+
+    glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+    while (!window->shouldClose())
     {
         float frameTime = (float)glfwGetTime();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -116,15 +116,15 @@ void LightingSandbox::run(GLFWwindow* window)
         sceneRenderer.renderScene(scene);
 
         // Refresh screen and process input
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        window->swapBuffers();
+        window->pollEvents();
     }
-    glfwSetWindowShouldClose(window, false);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    window->setShouldClose(false);
+    window->setInputMode(GLWindow::InputModeTarget::Cursor, GLWindow::InputModeValue::NormalCursor);
 
     scene->detachInputProcessingScript(ipRotationScript);
 
-    windowHandler->detachInputProcessor();
+    window->detachInputProcessor();
 }
 
 std::shared_ptr<SceneObject> LightingSandbox::generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat, Shader shader)
