@@ -4,9 +4,13 @@
 #include <string>
 #include <memory>
 
-#define GLFW_INCLUDE_NONE
-#include "../include/GLFW/glfw3.h"
-#undef GLFW_INCLUDE_NONE
+#include "../window/enums.hpp"
+
+namespace Window
+{
+    class GLWindow;
+    using GLWindowPtr = std::shared_ptr<GLWindow>;
+}
 
 // Callback manager to handle input from a GLFW window
 class InputProcessor
@@ -19,13 +23,13 @@ class InputProcessor
         InputProcessor();
 
         // To be called upon a framebuffer resize event
-        virtual void processFramebufferResize(GLFWwindow* window, int width, int height);
+        virtual void processFramebufferResize(Window::GLWindowPtr window, int width, int height);
         // To be called upon a keyboard event
-        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void processKeyboard(Window::GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
         // To be called upon a mouse button event
-        virtual void processMouseButton(GLFWwindow* window, int button, int action, int mods);
+        virtual void processMouseButton(Window::GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods);
         // To be called upon a mouse cursor event
-        virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
+        virtual void processMouseCursor(Window::GLWindowPtr window, double xpos, double ypos);
 
         // Unique ID of the input processor
         const unsigned int id;

@@ -1,5 +1,4 @@
 #include "input_processor.hpp"
-#include "../include/GLFW/glfw3.h"
 
 // Initialize static stuff
 unsigned int InputProcessor::_count = 0;
@@ -12,22 +11,22 @@ InputProcessor::InputProcessor() :
 
 // Default callbacks do nothing
 
-void InputProcessor::processFramebufferResize(GLFWwindow* window, int width, int height)
+void InputProcessor::processFramebufferResize(Window::GLWindowPtr window, int width, int height)
 {
 
 }
 
-void InputProcessor::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+void InputProcessor::processKeyboard(Window::GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
 {
 
 }
 
-void InputProcessor::processMouseButton(GLFWwindow* window, int button, int action, int mods)
+void InputProcessor::processMouseButton(Window::GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods)
 {
 
 }
 
-void InputProcessor::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
+void InputProcessor::processMouseCursor(Window::GLWindowPtr window, double xpos, double ypos)
 {
 
 }
