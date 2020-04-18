@@ -443,7 +443,7 @@ namespace GLFW3Adapter
         }
     }// namespace ValueMaps
 
-    void initialise()
+    void initialize()
     {
         if (!EnumMaps::_mapsPopulated)
         {

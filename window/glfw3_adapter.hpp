@@ -44,7 +44,7 @@ namespace GLFW3Adapter
         void populateMaps();
     }
 
-    void initialise();
+    void initialize();
 
     template<typename Enum>
     Enum getEnum(int constant);

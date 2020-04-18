@@ -18,6 +18,9 @@
 
 GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
 {
+    static bool glfw3AdapterInitialized = false;
+    if (!glfw3AdapterInitialized) Window::GLFW3Adapter::initialize();
+    
 	// GL metadata
 	if (glVersionMajor > -1) glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
     if (glVersionMinor > -1) glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
