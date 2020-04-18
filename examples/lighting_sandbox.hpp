@@ -58,7 +58,7 @@ class LightingSandboxScript : public InputProcessingScript
         // Update the transforms of the different scene objects
         virtual void update(float timeElapsed);
         // Process keyboard input
-        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
 
         virtual LightingSandboxScript* clone();
 };

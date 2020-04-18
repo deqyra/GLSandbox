@@ -170,21 +170,25 @@ void LightingSandboxScript::update(float timeElapsed)
     }
 }
 
-void LightingSandboxScript::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+void LightingSandboxScript::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
 {
+    using Key = Window::Input::Key;
+    using Action = Window::Input::Action;
+    using Mod = Window::Input::Modifier;
+
     if (_autoRotate)
     {
-        if (key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT) && (mods & GLFW_MOD_CONTROL) && _speedFactor < 200)
+        if (key == Key::Up && (action == Action::Press || action == Action::Repeat) && (mods & Mod::Control) && _speedFactor < 200)
         {
             _speedFactor *= 1.1f;
         }
-        else if (key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT) && (mods & GLFW_MOD_CONTROL) && _speedFactor > 10)
+        else if (key == Key::Down && (action == Action::Press || action == Action::Repeat) && (mods & Mod::Control) && _speedFactor > 10)
         {
             _speedFactor /= 1.1f;
         }
     }
 
-    if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+    if (key == Key::Enter && action == Action::Press)
     {
         _autoRotate = !_autoRotate;
     }
