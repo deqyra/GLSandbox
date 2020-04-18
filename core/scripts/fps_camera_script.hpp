@@ -47,9 +47,9 @@ class FPSCameraScript : public InputProcessingScript
         FPSCameraScript(float speed = DefaultMoveSpeed, float sensitivity = DefaultLookSensitivity, float sprintMultiplier = DefaultSprintMultiplier);
 
         // To be called upon a keyboard event; handles WASD keys and moves camera
-        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
         // To be called upon a mouse cursor event; handles mouse position shift and rotates camera
-        virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
+        virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
 
         // To be called upon a frame update; does nothing
         virtual void update(float timeElapsed);

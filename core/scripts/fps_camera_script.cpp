@@ -1,6 +1,5 @@
 #include "fps_camera_script.hpp"
 
-#include "../include/GLFW/glfw3.h"
 #include "../scene/components/camera_component.hpp"
 
 FPSCameraScript::FPSCameraScript(float speed, float sensitivity, float sprintMultiplier) :
@@ -16,45 +15,49 @@ FPSCameraScript::FPSCameraScript(float speed, float sensitivity, float sprintMul
 
 }
 
-void FPSCameraScript::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+void FPSCameraScript::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
 {
+    using Key = Window::Input::Key;
+    using Action = Window::Input::Action;
+    using Mod = Window::Input::Modifier;
+
     // Enable or disable directional movement flags depending on key input
     // W (forward)
-    if (key == GLFW_KEY_W)
+    if (key == Key::W)
     {
         // If pressed or on repeat, move forward
-        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        if (action == Action::Press || action == Action::Repeat)
             _movement[IndexForward] = true;
         // If released, stop moving forward
-        if (action == GLFW_RELEASE)
+        if (action == Action::Release)
             _movement[IndexForward] = false;
     }
     // S (backward)
-    if (key == GLFW_KEY_S)
+    if (key == Key::S)
     {
-        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        if (action == Action::Press || action == Action::Repeat)
             _movement[IndexBackward] = true;
-        if (action == GLFW_RELEASE)
+        if (action == Action::Release)
             _movement[IndexBackward] = false;
     }
     // A (left)
-    if (key == GLFW_KEY_A)
+    if (key == Key::A)
     {
-        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        if (action == Action::Press || action == Action::Repeat)
             _movement[IndexLeft] = true;
-        if (action == GLFW_RELEASE)
+        if (action == Action::Release)
             _movement[IndexLeft] = false;
     }
     // D (right)
-    if (key == GLFW_KEY_D)
+    if (key == Key::D)
     {
-        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        if (action == Action::Press || action == Action::Repeat)
             _movement[IndexRight] = true;
-        if (action == GLFW_RELEASE)
+        if (action == Action::Release)
             _movement[IndexRight] = false;
     }
     // For any key event, update sprint mode depending on Shift key status
-    if (mods & GLFW_MOD_SHIFT)
+    if (mods & Mod::Shift)
         _sprint = true;
     else
         _sprint = false;
@@ -72,7 +75,7 @@ void FPSCameraScript::processKeyboard(GLFWwindow* window, int key, int scancode,
     }
 }
 
-void FPSCameraScript::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
+void FPSCameraScript::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
 {
     // If the mouse was never updated before, record its position and skip this update
     if (!_mouseWasUpdatedOnce)

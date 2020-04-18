@@ -280,7 +280,7 @@ void Scene::detachInputProcessingScript(InputProcessingScriptPtr script)
     _inputProcessors.erase(script->InputProcessor::id);
 }
 
-void Scene::processFramebufferResize(GLFWwindow* window, int width, int height)
+void Scene::processFramebufferResize(GLWindowPtr window, int width, int height)
 {
     // Forward framebuffer resize event to all input processors
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
@@ -289,7 +289,7 @@ void Scene::processFramebufferResize(GLFWwindow* window, int width, int height)
     }
 }
 
-void Scene::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Scene::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
 {
     // Forward keyboard event to all input processors
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
@@ -298,7 +298,7 @@ void Scene::processKeyboard(GLFWwindow* window, int key, int scancode, int actio
     }
 }
 
-void Scene::processMouseButton(GLFWwindow* window, int button, int action, int mods)
+void Scene::processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods)
 {
     // Forward mouse button event to all input processors
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
@@ -307,7 +307,7 @@ void Scene::processMouseButton(GLFWwindow* window, int button, int action, int m
     }
 }
 
-void Scene::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
+void Scene::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
 {
     // Forward mouse cursor event to all input processors
     for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)

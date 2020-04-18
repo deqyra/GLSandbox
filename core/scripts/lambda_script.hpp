@@ -15,10 +15,10 @@ class LambdaScript : public InputProcessingScript
 
     public:
         using Update_CB = std::function<void(float)>;
-        using FramebufferResize_CB = std::function<void(GLFWwindow*, int, int)>;
-        using Keyboard_CB = std::function<void(GLFWwindow*, int, int, int, int)>;
-        using MouseButton_CB = std::function<void(GLFWwindow*, int, int, int)>;
-        using MouseCursor_CB = std::function<void(GLFWwindow*, double, double)>;
+        using FramebufferResize_CB = std::function<void(GLWindowPtr, int, int)>;
+        using Keyboard_CB = std::function<void(GLWindowPtr, Window::Input::Key, int, Window::Input::Action, int)>;
+        using MouseButton_CB = std::function<void(GLWindowPtr, Window::Input::MouseButton, Window::Input::Action, int)>;
+        using MouseCursor_CB = std::function<void(GLWindowPtr, double, double)>;
 
         LambdaScript();
 
@@ -36,13 +36,13 @@ class LambdaScript : public InputProcessingScript
         // To be called upon a frame update; forwards the call to the custom callback
         virtual void update(float timeElapsed);
         // To be called upon a framebuffer resize event; forwards the call to the custom callback
-        virtual void processFramebufferResize(GLFWwindow* window, int width, int height);
+        virtual void processFramebufferResize(GLWindowPtr window, int width, int height);
         // To be called upon a keyboard event; forwards the call to the custom callback
-        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
         // To be called upon a mouse button event; forwards the call to the custom callback
-        virtual void processMouseButton(GLFWwindow* window, int button, int action, int mods);
+        virtual void processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods);
         // To be called upon a mouse cursor event; forwards the call to the custom callback
-        virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
+        virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
 
         virtual LambdaScript* clone();
 };

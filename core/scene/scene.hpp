@@ -100,13 +100,13 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         // Following methods forward all input events to registered input processors.
 
         // Forward framebuffer resize event to all input processors
-        virtual void processFramebufferResize(GLFWwindow* window, int width, int height);
+        virtual void processFramebufferResize(GLWindowPtr window, int width, int height);
         // Forward keyboard event to all input processors
-        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
         // Forward mouse buttons event to all input processors
-        virtual void processMouseButton(GLFWwindow* window, int button, int action, int mods);
+        virtual void processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods);
         // Forward mouse cursor event to all input processors
-        virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
+        virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
 
         // Get weak pointers to all scene objects which have a certain component
         template<class T>

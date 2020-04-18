@@ -3,34 +3,38 @@
 #include <iostream>
 #include <string>
 
-#include "../include/glad/glad.h"
-#include "../include/GLFW/glfw3.h"
+#include <glad/glad.h>
+
+#include "../../window/gl_window.hpp"
+#include "../../window/enums.hpp"
 
 BasicInputManager::BasicInputManager()
 {
 
 }
 
-void BasicInputManager::processFramebufferResize(GLFWwindow* window, int width, int height)
+void BasicInputManager::processFramebufferResize(GLWindowPtr window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-void BasicInputManager::processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+void BasicInputManager::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
 {
-    if ((key == GLFW_KEY_ESCAPE || key == GLFW_KEY_SPACE) && action == GLFW_PRESS)
+    using Key = Window::Input::Key;
+    using Action = Window::Input::Action;
+    if ((key == Key::Escape || key == Key::Space) && action == Action::Press)
     {
-        glfwSetWindowShouldClose(window, true);
+        window->setShouldClose(true);
     }
-    else if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+    else if (key == Key::Key1 && action == Action::Press)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);      // Normal draw mode
     }
-    else if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+    else if (key == Key::Key2 && action == Action::Press)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);      // Wireframe draw mode
     }
-    else if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+    else if (key == Key::Key3 && action == Action::Press)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);     // Vertices only draw mode
     }
@@ -38,15 +42,15 @@ void BasicInputManager::processKeyboard(GLFWwindow* window, int key, int scancod
     // cout << "Key event: " << glfwKeyName(key) << " " << glfwActionName(action) << endl;
 }
 
-void BasicInputManager::processMouseButton(GLFWwindow* window, int button, int action, int mods)
+void BasicInputManager::processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods)
 {
     double xpos, ypos;
-    glfwGetCursorPos(window, &xpos, &ypos);
+    window->getCursorPos(&xpos, &ypos);
 
     std::cout << "x: " << xpos << "; y: " << ypos << "; event: mouse " << glfwButtonName(button) << " " << glfwActionName(action) << std::endl;
 }
 
-void BasicInputManager::processMouseCursor(GLFWwindow* window, double xpos, double ypos)
+void BasicInputManager::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
 {
 
 }
@@ -56,62 +60,17 @@ BasicInputManager* BasicInputManager::clone()
     return new BasicInputManager();
 }
 
-std::string glfwActionName(int action)
+std::string glfwActionName(Window::Input::Action action)
 {
-    switch (action)
-    {
-        case GLFW_PRESS:
-            return "pressed";
-        case GLFW_REPEAT:
-            return "held";
-        case GLFW_RELEASE:
-            return "released";
-        default:
-            return "???";
-    }
+    return "???";
 }
 
-std::string glfwKeyName(int key)
+std::string glfwKeyName(Window::Input::Key key)
 {
-    if (key >= 0 && key <= 255)
-    {
-        return std::to_string((char)(key));
-    }
-    else
-    {
-        switch (key)
-        {
-            case GLFW_KEY_ESCAPE:
-                return "Escape";
-            case GLFW_KEY_SPACE:
-                return "Space";
-            case GLFW_KEY_ENTER:
-                return "Enter";
-            case GLFW_KEY_LEFT:
-                return "left arrow";
-            case GLFW_KEY_RIGHT:
-                return "right arrow";
-            case GLFW_KEY_UP:
-                return "up arrow";
-            case GLFW_KEY_DOWN:
-                return "down arrow";
-            default:
-                return "???";
-        }
-    }
+    return "???";
 }
 
-std::string glfwButtonName(int button)
+std::string glfwButtonName(Window::Input::MouseButton button)
 {
-    switch (button)
-    {
-        case GLFW_MOUSE_BUTTON_LEFT:
-            return "left button";
-        case GLFW_MOUSE_BUTTON_RIGHT:
-            return "right button";
-        case GLFW_MOUSE_BUTTON_MIDDLE:
-            return "middle button";
-        default:
-            return std::string("button ") + std::to_string(button + 1);
-    }
+    return "???";
 }
