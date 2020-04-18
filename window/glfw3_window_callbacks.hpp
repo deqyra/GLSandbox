@@ -1,5 +1,5 @@
-#ifndef WINDOWING__GLFW_WINDOW_CALLBACKS_HPP
-#define WINDOWING__GLFW_WINDOW_CALLBACKS_HPP
+#ifndef WINDOW__GLFW_WINDOW_CALLBACKS_HPP
+#define WINDOW__GLFW_WINDOW_CALLBACKS_HPP
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -14,4 +14,4 @@ void globalGlfwMouseButtonCallback(GLFWwindow* window, int button, int action, i
 // Fetch the GLWindow object associated with the GLFWwindow object, and call the custom mouse cursor callback
 void globalGlfwMouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
 
-#endif//WINDOWING__GLFW_WINDOW_CALLBACKS_HPP
+#endif//WINDOW__GLFW_WINDOW_CALLBACKS_HPP

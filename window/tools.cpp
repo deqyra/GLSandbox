@@ -6,20 +6,22 @@
 #include <iostream>
 #include <string>
 
-#include "../include/glad/glad.h"
+#include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
+#include "enums.hpp"
 #include "gl_window.hpp"
-#include "glfw_window_callbacks.hpp"
+#include "glfw3_adapter.hpp"
+#include "glfw3_window_callbacks.hpp"
 
-GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, int glProfile, bool debug)
+GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
 {
 	// GL metadata
 	if (glVersionMajor > -1) glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
     if (glVersionMinor > -1) glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, glProfile);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, Window::GLFW3Adapter::getValue(glProfile));
 
     if (debug)
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
@@ -58,8 +60,8 @@ GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMa
     // It is not possible to set methods of a user-defined class as the callbacks of a window, because of function pointer type mismatch
     // Instead, use the user pointer of the GLFWwindow object, which can be set to point to any user-defined window class
 
-    GLWindow* glWindow = new GLWindow(window, title);           // Initialize a GLWindow instance with a GLFWwindow object
-    glfwSetWindowUserPointer(window, glWindow);                 // Set the user pointer of the GLFWwindow to the newly created GLWindow instance
+    GLWindowPtr glWindow = std::make_shared<GLWindow>(window, title);   // Initialize a GLWindow instance with a GLFWwindow object
+    glfwSetWindowUserPointer(window, glWindow.get());                   // Set the user pointer of the GLFWwindow to the newly created GLWindow instance
 
     // Then, a function can retrieve the GLWindow instance from the GLFWwindow object and call the appropriate callback on the GLWindow instance
     // Bind all relevant callbacks to such functions
@@ -69,7 +71,7 @@ GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMa
     glfwSetCursorPosCallback(window, globalGlfwMouseCursorCallback);
 
     // Return a shared pointer
-    return GLWindowPtr(glWindow);
+    return glWindow;
 }
 
 void simpleErrorCallback(int error, const char* description)
