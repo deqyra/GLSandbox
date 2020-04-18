@@ -6,8 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "../windowing/gl_window.hpp"
-#include "../windowing/tools.hpp"
+#include "../window/gl_window.hpp"
+#include "../window/tools.hpp"
 
 #include "../core/gl_macros.hpp"
 #include "../core/mesh.hpp"
@@ -46,7 +46,8 @@ void LightingSandbox::run(GLWindowPtr window)
     window->setTitle(title + " - Lighting");
 
     // Remove cursor from window
-    window->setInputMode(GLWindow::InputModeTarget::Cursor, GLWindow::InputModeValue::DisabledCursor);
+    namespace InputMode = Window::Input::Mode;
+    window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), glAspectRatio(), 0.1f, 100.0f);
     CameraPtr _camera = std::make_shared<Camera>(projection, -135.f, -25.f);
@@ -127,7 +128,7 @@ void LightingSandbox::run(GLWindowPtr window)
     scene->detachInputProcessingScript(ipRotationScript);
 
     // Reset everything back to how it was
-    window->setInputMode(GLWindow::InputModeTarget::Cursor, GLWindow::InputModeValue::NormalCursor);
+    window->setInputMode(InputMode::Target::Cursor, InputMode::Value::NormalCursor);
     window->detachInputProcessor();
     window->setTitle(title);
 }

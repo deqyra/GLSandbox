@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "../windowing/gl_window.hpp"
+#include "../window/gl_window.hpp"
 
 // Abstract class to run any 3D scene in a GLFW window
 class GLSandbox

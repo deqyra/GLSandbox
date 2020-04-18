@@ -4,7 +4,7 @@
 #include <string>
 
 #include "gl_sandbox.hpp"
-#include "../windowing/gl_window.hpp"
+#include "../window/gl_window.hpp"
 #include "../core/shader.hpp"
 #include "../core/texture_2d.hpp"
 #include "../core/mesh_generator.hpp"
