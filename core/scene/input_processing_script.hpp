@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "scene_object.hpp"
+#include "../../window/gl_window.hpp"
 
 // A special flavor of Script, also able to process input from a GLFW window
 class InputProcessingScript : public Script, public InputProcessor, public std::enable_shared_from_this<InputProcessingScript>
@@ -21,13 +22,13 @@ class InputProcessingScript : public Script, public InputProcessor, public std::
         virtual ~InputProcessingScript();
 
         // To be called upon a framebuffer resize event
-        virtual void processFramebufferResize(GLFWwindow* window, int width, int height);
+        virtual void processFramebufferResize(GLWindowPtr window, int width, int height);
         // To be called upon a keyboard event
-        virtual void processKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
         // To be called upon a mouse button event
-        virtual void processMouseButton(GLFWwindow* window, int button, int action, int mods);
+        virtual void processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods);
         // To be called upon a mouse cursor event
-        virtual void processMouseCursor(GLFWwindow* window, double xpos, double ypos);
+        virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
 
         // To be called once per frame
         virtual void update(float timeElapsed);
