@@ -8,7 +8,8 @@
 
 #include "project_macros.hpp"
 
-#include "windowing/tools.hpp"
+#include "window/enums.hpp"
+#include "window/tools.hpp"
 #include "examples/gl_sandbox.hpp"
 #include "examples/lighting_sandbox.hpp"
 
@@ -34,7 +35,7 @@ int main(int argc, char** argv)
 
 	glfwInit();
 	// Init window, GL context and GL pointers
-	GLWindowPtr window = makeWindow("RenderBoi", 1280, 720, 4, 6, GLFW_OPENGL_CORE_PROFILE, true);
+	GLWindowPtr window = makeWindow("RenderBoi", 1280, 720, 4, 6, Window::OpenGLProfile::Core, true);
 
 	if (!window)
 	{

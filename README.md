@@ -16,7 +16,7 @@ The cube shows the position of a point light.
 ## Info
 
 * Development conducted using OpenGL 4.6 (core profile) on a GTX 1660 Ti.
-* To use the project, [generate a loader](https://glad.dav1d.de/) that suits your platform, and replace `include/glad/glad.h` and `src/glad.cpp` with it.
+* To use the project, [generate a loader](https://glad.dav1d.de/) that suits your platform, and replace `include/glad/glad.h` and `glad.cpp` with it.
 * Other things might need changing, such as:
   * `#version` directives in all shaders (located in folder [assets/shaders/](https://github.com/deqyra/RenderBoi/blob/master/assets/shaders))
   * OpenGL version numbers in the call to `makeWindow` in [`main.cpp`](https://github.com/deqyra/RenderBoi/blob/master/main.cpp#L37)

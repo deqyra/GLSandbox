@@ -31,7 +31,7 @@
     set( GL_LOADER_LIB_NAME "GLAD" )
     set( STBI_LIB_NAME "STBImage" )
     set( CORE_LIB_NAME "${PROJECT_TARGET_NAME}.Core" )
-    set( WINDOWING_LIB_NAME "${PROJECT_TARGET_NAME}.Windowing" )
+    set( WINDOW_LIB_NAME "${PROJECT_TARGET_NAME}.Window" )
     set( EXAMPLE_LIB_NAME "${PROJECT_TARGET_NAME}.Examples" )
     set( EXECUTABLE_NAME ${PROJECT_TARGET_NAME} )
     set( TEST_TARGET_NAME "tests" )
@@ -108,14 +108,16 @@
         add_library( ${GL_LOADER_LIB_NAME} ${STATIC_OR_SHARED} glad.c include/glad/glad.h )
         target_link_libraries( ${GL_LOADER_LIB_NAME} PUBLIC "${CMAKE_DL_LIBS}" )
 
-    # Build windowing lib
-        add_library( ${WINDOWING_LIB_NAME} ${STATIC_OR_SHARED}
-                    windowing/glfw_window_callbacks.cpp                     windowing/glfw_window_callbacks.hpp
-                    windowing/gl_window.cpp                                 windowing/gl_window.hpp
-                    windowing/tools.cpp                                     windowing/tools.hpp
+    # Build window lib
+        add_library( ${WINDOW_LIB_NAME} ${STATIC_OR_SHARED}
+                    window/glfw3_window_callbacks.cpp                   window/glfw3_window_callbacks.hpp
+                    window/glfw3_adapter.cpp                            window/glfw3_adapter.hpp
+                    window/gl_window.cpp                                window/gl_window.hpp
+                    window/tools.cpp                                    window/tools.hpp
+                    window/enums.cpp                                    window/enums.hpp
                     )
-        target_link_libraries( ${WINDOWING_LIB_NAME} PUBLIC ${GLFW3_LIB} )
-        target_link_libraries( ${WINDOWING_LIB_NAME} PUBLIC ${GL_LOADER_LIB_NAME} "${CMAKE_DL_LIBS}" )
+        target_link_libraries( ${WINDOW_LIB_NAME} PUBLIC ${GLFW3_LIB} )
+        target_link_libraries( ${WINDOW_LIB_NAME} PUBLIC ${GL_LOADER_LIB_NAME} "${CMAKE_DL_LIBS}" )
 
     # Build core lib
         add_library( ${CORE_LIB_NAME} ${STATIC_OR_SHARED}
@@ -168,7 +170,7 @@
                                                             examples/gl_sandbox.hpp
                     examples/lighting_sandbox.cpp           examples/lighting_sandbox.hpp
                     )
-        target_link_libraries( ${EXAMPLE_LIB_NAME} PUBLIC ${CORE_LIB_NAME} ${TOOLS_LIB_NAME} ${WINDOWING_LIB_NAME} )
+        target_link_libraries( ${EXAMPLE_LIB_NAME} PUBLIC ${CORE_LIB_NAME} ${TOOLS_LIB_NAME} ${WINDOW_LIB_NAME} )
 
     # Build executable
         add_executable( ${EXECUTABLE_NAME}

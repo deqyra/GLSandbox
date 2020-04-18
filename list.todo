@@ -29,7 +29,7 @@ RenderBoi:
     I/O:
         ☐ (De)serialize scenes
         ☐ Load models with Assimp
-    Windowing:
+    Window:
     Examples:
         ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
         ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)
