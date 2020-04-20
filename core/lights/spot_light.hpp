@@ -11,14 +11,9 @@
 class SpotLight : public Light
 {
     public:
-        static constexpr float DefaultSpotLightRange = 50.f;
-        static constexpr float DefaultSpotLightInnerCutoff = glm::radians(15.f);
-        static constexpr float DefaultSpotLightOuterCutoff = glm::radians(20.f);
-
-        // Lambda returning a linear coefficient for light attenuation given a range
-        static const std::function<float(float)> linearCoeffFromDesiredRange;
-        // Lambda returning a quadratic coefficient for light attenuation given a range
-        static const std::function<float(float)> quadraticCoeffFromDesiredRange;
+        static constexpr float DefaultRange = 50.f;
+        static constexpr float DefaultInnerCutoff = glm::radians(15.f);
+        static constexpr float DefaultOuterCutoff = glm::radians(20.f);
 
         SpotLight(glm::vec3 direction);
         SpotLight(glm::vec3 direction, float range);
@@ -29,9 +24,6 @@ class SpotLight : public Light
         SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float innerCutoff, float outerCutoff);
         SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float range, float innerCutoff, float outerCutoff);
         SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic, float innerCutoff, float outerCutoff);
-
-        // Get a raw pointer to a new SpotLight instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
-        SpotLight* clone();
 
         // Direction the spot light is facing
         glm::vec3 direction;
@@ -52,6 +44,11 @@ class SpotLight : public Light
         float innerCutoff;
         // Angle at which the light finishes fading out
         float outerCutoff;
+
+        // Get a raw pointer to a new SpotLight instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        SpotLight* clone();
+        // Recompute light attenuation factors according to a new range
+        void setRange(float range);
 };
 
 #endif//CORE__LIGHTS__SPOT_LIGHT_HPP
