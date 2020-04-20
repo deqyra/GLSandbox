@@ -41,6 +41,8 @@ LightingSandbox::~LightingSandbox()
 
 void LightingSandbox::run(GLWindowPtr window)
 {
+    const float lightBaseRange = 50.f;
+
     // Update window title
     std::string title = window->getTitle();
     window->setTitle(title + " - Lighting");
@@ -76,8 +78,8 @@ void LightingSandbox::run(GLWindowPtr window)
     scene->registerObject(axesObj);
     
     // CUBE
-    std::shared_ptr<SceneObject> cubeObj = generateSceneMesh(scene, std::make_shared<CubeGenerator>());
-    std::shared_ptr<PointLight> light = std::make_shared<PointLight>(5000.f);
+    std::shared_ptr<SceneObject> cubeObj = generateSceneMesh(scene, std::make_shared<CubeGenerator>(), Material(), lightingShader);
+    std::shared_ptr<PointLight> light = std::make_shared<PointLight>(lightBaseRange);
     cubeObj->addComponent<LightComponent>(light);
     cubeObj->setPosition(glm::vec3(-3.f, 3.f, 0.f));
     scene->registerObject(cubeObj);
@@ -98,7 +100,7 @@ void LightingSandbox::run(GLWindowPtr window)
     cameraObj->addComponent<InputProcessingScriptComponent>(baseFpsScript);
     
     // ROTATION SCRIPT
-    std::shared_ptr<LightingSandboxScript> rotationScript = std::make_shared<LightingSandboxScript>(cubeObj, bigTorusObj, smallTorusObj, tetrahedronObj);
+    std::shared_ptr<LightingSandboxScript> rotationScript = std::make_shared<LightingSandboxScript>(cubeObj, bigTorusObj, smallTorusObj, tetrahedronObj, light, lightBaseRange);
     std::shared_ptr<InputProcessingScript> ipRotationScript = std::static_pointer_cast<InputProcessingScript>(rotationScript);
     scene->registerInputProcessingScript(ipRotationScript);
     
@@ -141,19 +143,23 @@ std::shared_ptr<SceneObject> LightingSandbox::generateSceneMesh(std::shared_ptr<
     return obj;
 }
 
-LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj) :
+LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj, std::shared_ptr<PointLight> light, float baseLightRange) :
     _cubeObj(cubeObj),
     _bigTorusObj(bigTorusObj),
     _smallTorusObj(smallTorusObj),
     _tetrahedronObj(tetrahedronObj),
+    _light(light),
     _autoRotate(true),
-    _speedFactor(10.f)
+    _speedFactor(10.f),
+    _sine(LightVariationFrequency),
+    _baseRange(baseLightRange)
 {
-
+    _sine.start();
 }
 
 void LightingSandboxScript::update(float timeElapsed)
 {
+    _light->setRange(_baseRange + _sine.get() * (LightVariationAmplitude / 2.f));
     if (_autoRotate)
     {
         // Update object transforms

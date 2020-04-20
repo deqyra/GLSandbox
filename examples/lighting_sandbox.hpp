@@ -5,6 +5,7 @@
 
 #include "gl_sandbox.hpp"
 #include "../window/gl_window.hpp"
+#include "../tools/sine_generator.hpp"
 #include "../core/shader.hpp"
 #include "../core/texture_2d.hpp"
 #include "../core/mesh_generator.hpp"
@@ -41,10 +42,16 @@ class LightingSandboxScript : public InputProcessingScript
         SceneObjectPtr _smallTorusObj;
         // Pointer to the tetrahedron of the LightingSandbox
         SceneObjectPtr _tetrahedronObj;
+        // Pointer to the light whose range to vary
+        std::shared_ptr<PointLight> _light;
         // Whether objects should move
         bool _autoRotate;
         // How fast objects should move
         float _speedFactor;
+        // Sine along which to vary the light range
+        SineGenerator<float> _sine;
+        // Base range of the light
+        float _baseRange;
 
     public:
         static constexpr glm::vec3 CubeOrbitAxis = glm::vec3(0.f, 1.f, 0.f);
@@ -52,8 +59,10 @@ class LightingSandboxScript : public InputProcessingScript
         static constexpr glm::vec3 SmallTorusRotationAxis = glm::vec3(0.f, 1.f, 0.f);
         static constexpr glm::vec3 TetrahedronRotationAxis = glm::vec3(0.f, 1.f, 0.f);
         static constexpr glm::vec3 TetrahedronOrbitAxis = glm::vec3(0.f, 1.f, 0.f);
+        static constexpr float LightVariationAmplitude = 50.f;
+        static constexpr float LightVariationFrequency = 4.f;
 
-        LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj);
+        LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj, std::shared_ptr<PointLight> light, float baseLightRange);
 
         // Update the transforms of the different scene objects
         virtual void update(float timeElapsed);
