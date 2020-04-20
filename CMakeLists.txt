@@ -91,6 +91,7 @@
         add_library( ${TOOLS_LIB_NAME} ${STATIC_OR_SHARED}
                     tools/string_tools.cpp                              tools/string_tools.hpp
                     tools/tree.hpp                                      tools/tree_node.hpp
+                                                                        tools/sine_generator.hpp
                                                                         tools/make_basic_exception.hpp
                                                                         tools/enum_map.hpp
                     tools/exceptions/index_out_of_bounds_error.cpp      tools/exceptions/index_out_of_bounds_error.hpp
@@ -137,6 +138,7 @@
                                                                                 core/lights/light_type.hpp
                     core/lights/point_light.cpp                                 core/lights/point_light.hpp
                     core/lights/spot_light.cpp                                  core/lights/spot_light.hpp 
+                    core/lights/tools.cpp                                       core/lights/tools.hpp 
                     core/mesh_generators/axes_generator.cpp                     core/mesh_generators/axes_generator.hpp
                     core/mesh_generators/cube_generator.cpp                     core/mesh_generators/cube_generator.hpp
                     core/mesh_generators/tetrahedron_generator.cpp              core/mesh_generators/tetrahedron_generator.hpp

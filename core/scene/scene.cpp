@@ -238,7 +238,7 @@ void Scene::detachScript(unsigned int id)
 
 void Scene::triggerUpdate()
 {
-    // Get time delta and upate last update time
+    // Get time delta (in seconds) and upate last update time
     std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
     std::chrono::duration<double> delta = now - _lastTime;
     _lastTime = now;
