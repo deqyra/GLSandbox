@@ -132,15 +132,3 @@ void APIENTRY glDebugOutput(
     } std::cout << std::endl;
     std::cout << std::endl;
 }
-
-float glAspectRatio()
-{
-    int dims[4] = { 0 };
-    glGetIntegerv(GL_VIEWPORT, dims);
-    // dims[0] = viewport position X
-    // dims[1] = viewport position Y
-    // dims[2] = viewport width
-    // dims[3] = viewport height
-
-    return (float)(dims[2]) / (float)(dims[3]);
-}

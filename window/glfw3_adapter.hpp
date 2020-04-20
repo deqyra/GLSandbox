@@ -10,6 +10,7 @@ namespace Window
 {
 namespace GLFW3Adapter
 {
+    // Mappings from RenderBoi enums to GLFW3 macros
     namespace ValueMaps
     {
         extern std::unordered_map<Input::Mode::Target, unsigned int> _inputModeTargetValueMap;
@@ -23,10 +24,13 @@ namespace GLFW3Adapter
         extern std::unordered_map<Input::Gamepad::Axis, unsigned int> _gamepadAxisValueMap;
         extern std::unordered_map<OpenGLProfile, unsigned int> _glProfileValueMap;
 
+        // Whether maps were populated
         extern bool _mapsPopulated;
+        // Populate maps
         void populateMaps();
     }
 
+    // Mappings from GLFW3 macros to RenderBoi enums
     namespace EnumMaps
     {
         extern std::unordered_map<unsigned int, Input::Mode::Target> _inputModeTargetEnumMap;
@@ -40,12 +44,16 @@ namespace GLFW3Adapter
         extern std::unordered_map<unsigned int, Input::Gamepad::Axis> _gamepadAxisEnumMap;
         extern std::unordered_map<unsigned int, OpenGLProfile> _glProfileEnumMap;
 
+        // Whether maps were populated
         extern bool _mapsPopulated;
+        // Populate maps
         void populateMaps();
     }
 
+    // Populate all maps if not done already
     void initialize();
 
+    // Get the RenderBoi enum corresponding to the given GLFW3 macro
     template<typename Enum>
     Enum getEnum(int constant);
 
@@ -79,6 +87,7 @@ namespace GLFW3Adapter
     template<>
     OpenGLProfile getEnum(int litteral);
 
+    // Get the GLFW3 macro corresponding to the given RenderBoi enum
     template<typename Enum>
     int getValue(Enum litteral);
 

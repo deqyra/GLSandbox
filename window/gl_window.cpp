@@ -11,7 +11,7 @@ GLWindow::GLWindow(GLFWwindow* window, std::string title) :
     _inputProcessor(std::make_shared<InputProcessor>()),
     _title(title)
 {
-
+    glfwGetFramebufferSize(_w, &_width, &_height);
 }
 
 GLWindow::~GLWindow()
@@ -27,6 +27,8 @@ GLFWwindow* GLWindow::getWindow()
 void GLWindow::processFramebufferResize(int width, int height)
 {
     _inputProcessor->processFramebufferResize(shared_from_this(), width, height);
+    _width = width;
+    _height = height;
 }
 
 void GLWindow::processKeyboard(Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
@@ -90,6 +92,11 @@ void GLWindow::setTitle(std::string title)
 {
     _title = title;
     glfwSetWindowTitle(_w, _title.c_str());
+}
+
+float GLWindow::getAspectRatio()
+{
+    return (float)_width / (float)_height;
 }
 
 void GLWindow::getCursorPos(double* x, double* y)

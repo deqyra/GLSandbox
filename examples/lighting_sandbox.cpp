@@ -49,7 +49,7 @@ void LightingSandbox::run(GLWindowPtr window)
     namespace InputMode = Window::Input::Mode;
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
 
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), glAspectRatio(), 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), window->getAspectRatio(), 0.1f, 100.0f);
     CameraPtr _camera = std::make_shared<Camera>(projection, -135.f, -25.f);
     
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");

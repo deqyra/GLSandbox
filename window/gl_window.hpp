@@ -56,6 +56,8 @@ class GLWindow : public std::enable_shared_from_this<GLWindow>
         std::string getTitle();
         // Get title of managed window
         void setTitle(std::string title);
+        // Get aspect ratio of framebuffer displayed in managed window
+        float getAspectRatio();
 
         // Get cursor position in managed window
         void getCursorPos(double* x, double* y);
@@ -65,8 +67,13 @@ class GLWindow : public std::enable_shared_from_this<GLWindow>
         GLFWwindow* _w;
         // Custom input processor to be registered at any time, providing custom callbacks
         InputProcessorPtr _inputProcessor;
+
         // Window title
         std::string _title;
+        // Window width
+        int _width;
+        // Window height
+        int _height;
 };
 }//namespace Window
 
