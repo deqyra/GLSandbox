@@ -87,7 +87,7 @@ void LightingSandbox::run(GLWindowPtr window)
     // TETRAHEDRON
     std::shared_ptr<SceneObject> tetrahedronObj = generateSceneMesh(scene, std::make_shared<TetrahedronGenerator>(0.5f));
     scene->registerObject(tetrahedronObj, smallTorusObj->id);
-    tetrahedronObj->translate(glm::vec3(1.2f, 0.f, 0.f));
+    //tetrahedronObj->translate(glm::vec3(1.2f, 0.f, 0.f));
     tetrahedronObj->rotate(glm::radians(90.f), glm::vec3(0.F, 0.f, 1.f));
     
     // CAMERA
@@ -164,11 +164,12 @@ void LightingSandboxScript::update(float timeElapsed)
     {
         // Update object transforms
         float angleDiff = _speedFactor * timeElapsed;
-        _cubeObj->orbit((float)glm::radians(0.618f * angleDiff), CubeOrbitAxis, glm::vec3(0.f, 3.f, 0.f));
-        _bigTorusObj->rotate((float)glm::radians(angleDiff), BigTorusRotationAxis);
-        _smallTorusObj->orbit((float)glm::radians(-1.f * angleDiff), SmallTorusRotationAxis, glm::vec3(0.f, 0.f, 0.f), true);
-        //_tetrahedronObj->rotate((float)glm::radians(1.5f * angleDiff), TetrahedronRotationAxis, true);
-        _tetrahedronObj->orbit((float)glm::radians(1.5f * angleDiff), TetrahedronOrbitAxis, glm::vec3(0.f), true);
+        //_cubeObj->orbit((float)glm::radians(0.618f * angleDiff), CubeOrbitAxis, glm::vec3(0.f, 3.f, 0.f));
+        //_bigTorusObj->rotate((float)glm::radians(angleDiff), BigTorusRotationAxis);
+        //_smallTorusObj->orbit((float)glm::radians(-1.f * angleDiff), SmallTorusRotationAxis, glm::vec3(0.f, 0.f, 0.f), true);
+        _tetrahedronObj->rotate((float)glm::radians(1.5f * angleDiff), TetrahedronRotationAxis, true);
+        _cubeObj->rotate((float)glm::radians(1.5f * angleDiff), TetrahedronRotationAxis, true);
+        //_tetrahedronObj->orbit((float)glm::radians(1.5f * angleDiff), TetrahedronOrbitAxis, glm::vec3(0.f), true);
     }
     else
     {

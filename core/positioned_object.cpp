@@ -103,18 +103,10 @@ glm::quat PositionedObject::rotate(glm::quat rotation)
 
 glm::quat PositionedObject::rotate(float radAngle, glm::vec3 axis, bool localAxis)
 {
-    if (localAxis)
-    {
-        axis = _orientation * axis;
-    }
-
-    // TO TEST
-    /*
     if (!localAxis)
     {
         axis = glm::inverse(_orientation) * axis;
     }
-    */
 
     // Rotate the object
     _orientation = glm::rotate(_orientation, radAngle, axis);

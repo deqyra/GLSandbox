@@ -36,7 +36,7 @@ RenderBoi:
     FIXME:
         ☐ PositionedObject::lookAt
         ☐ PositionedObject::rotate with localAxis==true
-        ☐ Light attenuation
+        ✔ Light attenuation @done(20-04-20 06:55)
     Online resources:
         https://www.youtube.com/watch?v=-bCeNzgiJ8I&list=PLckFgM6dUP2hc4iy-IdKFtqR9TeZWMPjm
         http://media.steampowered.com/apps/steamdevdays/slides/beyondporting.pdf

@@ -200,7 +200,7 @@ glm::vec3 Scene::getWorldPosition(unsigned int id)
     // Update transform if required
     processOutdatedTransformsFromNode(id);
 
-    // Retrieve matrix graph node ID and return matrix
+    // Retrieve matrix graph node ID
     std::pair<unsigned int, unsigned int> pair = it->second;
     // Retrieve matrix, return it translation component (which is what a null homogenous vector multiplied by the whole model matrix would be equal to)
     glm::mat4 model = _modelMatrices[pair.second].lock()->value;
@@ -372,6 +372,8 @@ void Scene::recalculateModelMatrix(unsigned int id)
 
     // Compute the new world transform
     matNode->value = worldTransform * localTransform;
+    // If the transform modified flag was raised, it is now no longer relevant
+    objNode->value->resetTransformModifiedFlag();
 
     // Reverberate changes to children transforms
     std::vector<ObjTree::NodeWPtr> children = objNode->getChildren();

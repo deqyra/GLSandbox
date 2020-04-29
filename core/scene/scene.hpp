@@ -71,6 +71,8 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         glm::mat4 getWorldModelMatrix(unsigned int id);
         // Get the world position of the object with provided ID
         glm::vec3 getWorldPosition(unsigned int id);
+        // Get the world rotation of the object with provided ID
+        glm::quat getWorldRotation(unsigned int id);
 
         // Get weak pointers to all enabled scene objects
         std::vector<SceneObjectWPtr> getAllObjects();
@@ -120,14 +122,14 @@ std::vector<SceneObjectWPtr> Scene::getObjectsWithComponent(bool mustBeEnabled)
     std::vector<SceneObjectWPtr> result;
 
     // Tells whether an object whose weak pointer is provided should be added to the result vector
-    std::function<bool(SceneObjectWPtr)> componentChecker = [this, mustBeEnabled](SceneObjectWPtr obj)
+    std::function<bool(SceneObjectWPtr)> componentChecker = [this, mustBeEnabled](SceneObjectWPtr wObj)
     {
-        SceneObjectPtr strongObj = obj.lock();
+        SceneObjectPtr obj = obj.lock();
         // Skip if the object is not enabled or if any of its parents is not enabled
-        if (mustBeEnabled && !strongObj->enabled) return false;
-        if (mustBeEnabled && hasDisabledParent(strongObj->id)) return false;
+        if (mustBeEnabled && !obj->enabled) return false;
+        if (mustBeEnabled && hasDisabledParent(obj->id)) return false;
         // Return whether the object has the component being asked for
-        return strongObj->hasComponent<T>();
+        return obj->hasComponent<T>();
     };
 
     // Copy all object pointers into the result vector using the check function

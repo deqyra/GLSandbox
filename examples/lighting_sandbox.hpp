@@ -60,7 +60,7 @@ class LightingSandboxScript : public InputProcessingScript
         static constexpr glm::vec3 TetrahedronRotationAxis = glm::vec3(0.f, 1.f, 0.f);
         static constexpr glm::vec3 TetrahedronOrbitAxis = glm::vec3(0.f, 1.f, 0.f);
         static constexpr float LightVariationAmplitude = 50.f;
-        static constexpr float LightVariationFrequency = 4.f;
+        static constexpr float LightVariationFrequency = 0.f;
 
         LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj, std::shared_ptr<PointLight> light, float baseLightRange);
 
