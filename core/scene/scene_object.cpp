@@ -35,6 +35,7 @@ SceneObjectPtr SceneObject::clone()
 {
     SceneObjectPtr clonedObject = SceneObjectPtr(new SceneObject(_scene));
     clonedObject->enabled = enabled;
+    clonedObject->transform = transform;
     for (auto it = _components.begin(); it != _components.end(); it++)
     {
         ComponentPtr newComponent = ComponentPtr((*it)->clone());

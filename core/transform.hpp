@@ -1,13 +1,13 @@
-#ifndef CORE__POSITIONED_OBJECT_HPP
-#define CORE__POSITIONED_OBJECT_HPP
+#ifndef CORE__TRANSFORM_HPP
+#define CORE__TRANSFORM_HPP
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-// Any object that has 3D-space properties like position, rotation and scale
-class PositionedObject
+// An object that has 3D-space properties : position, orientation and scale
+class Transform
 {
     protected:
         // 3D position of the object
@@ -30,12 +30,14 @@ class PositionedObject
 
     public:
         static constexpr glm::vec3 Origin = glm::vec3(0.f, 0.f, 0.f);
-        static constexpr glm::vec3 WorldX = glm::vec3(1.f, 0.f, 0.f);
-        static constexpr glm::vec3 WorldY = glm::vec3(0.f, 1.f, 0.f);
-        static constexpr glm::vec3 WorldZ = glm::vec3(0.f, 0.f, 1.f);
+        static constexpr glm::vec3 X = glm::vec3(1.f, 0.f, 0.f);
+        static constexpr glm::vec3 Y = glm::vec3(0.f, 1.f, 0.f);
+        static constexpr glm::vec3 Z = glm::vec3(0.f, 0.f, 1.f);
 
-        PositionedObject();
-        PositionedObject(glm::vec3 position, glm::quat orientation, glm::vec3 scale);
+        Transform();
+        Transform(glm::vec3 position, glm::quat orientation, glm::vec3 scale);
+        Transform(const Transform& other);
+        Transform& operator=(const Transform& other);
 
         // Get the position of the object
         glm::vec3 getPosition();
@@ -73,4 +75,4 @@ class PositionedObject
         void resetTransformModifiedFlag();
 };
 
-#endif//CORE__POSITIONED_OBJECT_HPP
+#endif//CORE__TRANSFORM_HPP

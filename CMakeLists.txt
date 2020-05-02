@@ -129,7 +129,7 @@
                                                                                 core/materials.hpp
                     core/mesh.cpp                                               core/mesh.hpp
                                                                                 core/mesh_generator.hpp
-                    core/positioned_object.cpp                                  core/positioned_object.hpp
+                    core/transform.cpp                                          core/transform.hpp
                     core/shader.cpp                                             core/shader.hpp
                     core/texture_2d.cpp                                         core/texture_2d.hpp
                                                                                 core/vertex.hpp

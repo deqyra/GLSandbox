@@ -364,7 +364,7 @@ void Scene::recalculateModelMatrix(unsigned int id)
     MatTree::NodePtr matNode = _modelMatrices[pair.second].lock();
     MatTree::NodePtr parentMatNode = matNode->getParent().lock();
 
-    glm::mat4 localTransform = objNode->value->getModelMatrix();
+    glm::mat4 localTransform = objNode->value->transform.getModelMatrix();
     // The default world transform is a neutral transform (in case the parent matrix node is null)
     glm::mat4 worldTransform = glm::mat4(1.f);
     // Otherwise it is the parent transform

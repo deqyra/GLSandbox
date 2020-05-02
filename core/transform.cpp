@@ -1,11 +1,11 @@
-#include "positioned_object.hpp"
+#include "transform.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-PositionedObject::PositionedObject() :
+Transform::Transform() :
     _position(glm::vec3(0.f)),
     _orientation(glm::quat(1.f, glm::vec3(0.f))),
     _scale(glm::vec3(1.f)),
@@ -16,7 +16,7 @@ PositionedObject::PositionedObject() :
 
 }
 
-PositionedObject::PositionedObject(glm::vec3 position, glm::quat orientation, glm::vec3 scale) :
+Transform::Transform(glm::vec3 position, glm::quat orientation, glm::vec3 scale) :
     _position(position),
     _orientation(orientation),
     _scale(scale),
@@ -28,12 +28,45 @@ PositionedObject::PositionedObject(glm::vec3 position, glm::quat orientation, gl
     updateMatrix();
 }
 
-glm::vec3 PositionedObject::getPosition()
+Transform::Transform(const Transform& other) :
+    _position(other._position),
+    _orientation(other._orientation),
+    _scale(other._scale),
+    _modelMatrix(other._modelMatrix),
+    _transformModifiedFlag(other._transformModifiedFlag),
+    _matrixOutdated(other._matrixOutdated)
+{
+    if (_matrixOutdated)
+    {
+        // Generate model matrix according to parameters
+        updateMatrix();
+    }
+}
+
+Transform& Transform::operator=(const Transform& other)
+{
+    _position = other._position;
+    _orientation = other._orientation;
+    _scale = other._scale;
+    _modelMatrix = other._modelMatrix;
+    _transformModifiedFlag = other._transformModifiedFlag;
+    _matrixOutdated = other._matrixOutdated;
+    if (_matrixOutdated)
+    {
+        // Generate model matrix according to parameters
+        updateMatrix();
+    }
+
+    return *this;
+}
+
+
+glm::vec3 Transform::getPosition()
 {
     return _position;
 }
 
-void PositionedObject::setPosition(glm::vec3 position)
+void Transform::setPosition(glm::vec3 position)
 {
     _position = position;
 
@@ -42,7 +75,7 @@ void PositionedObject::setPosition(glm::vec3 position)
     _matrixOutdated = true;
 }
 
-glm::vec3 PositionedObject::translate(glm::vec3 translation)
+glm::vec3 Transform::translate(glm::vec3 translation)
 {
     // Translate the current position
     glm::vec4 position4 = glm::vec4(_position, 1.f);
@@ -55,7 +88,7 @@ glm::vec3 PositionedObject::translate(glm::vec3 translation)
     return _position;
 }
 
-void PositionedObject::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+void Transform::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
     // Orbit around the axis and center
     glm::vec4 tmpPos = glm::vec4(_position - center, 1.f);
@@ -74,12 +107,12 @@ void PositionedObject::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, b
     _matrixOutdated = true;
 }
 
-glm::quat PositionedObject::getOrientation()
+glm::quat Transform::getOrientation()
 {
     return _orientation;
 }
 
-void PositionedObject::setOrientation(glm::quat orientation)
+void Transform::setOrientation(glm::quat orientation)
 {
     _orientation = orientation;
     _orientation = glm::normalize(_orientation);
@@ -89,7 +122,7 @@ void PositionedObject::setOrientation(glm::quat orientation)
     _matrixOutdated = true;
 }
 
-glm::quat PositionedObject::rotate(glm::quat rotation)
+glm::quat Transform::rotate(glm::quat rotation)
 {
     // Rotate the object
     _orientation = rotation * _orientation;
@@ -101,7 +134,7 @@ glm::quat PositionedObject::rotate(glm::quat rotation)
     return _orientation;
 }
 
-glm::quat PositionedObject::rotate(float radAngle, glm::vec3 axis, bool localAxis)
+glm::quat Transform::rotate(float radAngle, glm::vec3 axis, bool localAxis)
 {
     if (!localAxis)
     {
@@ -118,19 +151,19 @@ glm::quat PositionedObject::rotate(float radAngle, glm::vec3 axis, bool localAxi
     return _orientation;
 }
 
-glm::quat PositionedObject::lookAt(glm::vec3 target)
+glm::quat Transform::lookAt(glm::vec3 target)
 {
     // FIXME
 
     glm::vec3 direction = glm::normalize(target - _position);
-    glm::vec3 axis = glm::cross(WorldZ, direction);
+    glm::vec3 axis = glm::cross(Z, direction);
     axis = glm::normalize(axis);
     /*
     _orientation = glm::quat(direction);
     _orientation = glm::normalize(_orientation);
     */
 
-    float dot = glm::dot(WorldZ, direction);
+    float dot = glm::dot(Z, direction);
     float angle = glm::acos(dot);
 
     _orientation = glm::normalize(glm::quat(axis * angle));
@@ -140,12 +173,12 @@ glm::quat PositionedObject::lookAt(glm::vec3 target)
     return _orientation;
 }
 
-glm::vec3 PositionedObject::getScale()
+glm::vec3 Transform::getScale()
 {
     return _scale;
 }
 
-void PositionedObject::setScale(glm::vec3 scale)
+void Transform::setScale(glm::vec3 scale)
 {
     _scale = scale;
 
@@ -154,7 +187,7 @@ void PositionedObject::setScale(glm::vec3 scale)
     _matrixOutdated = true;
 }
 
-glm::vec3 PositionedObject::scale(glm::vec3 scaling)
+glm::vec3 Transform::scale(glm::vec3 scaling)
 {
     // Scale the object
     _scale[0] *= scaling[0];
@@ -167,7 +200,7 @@ glm::vec3 PositionedObject::scale(glm::vec3 scaling)
     return _scale;
 }
 
-glm::mat4 PositionedObject::getModelMatrix()
+glm::mat4 Transform::getModelMatrix()
 {
     if (_matrixOutdated)
     {
@@ -177,7 +210,7 @@ glm::mat4 PositionedObject::getModelMatrix()
     return _modelMatrix;
 }
 
-void PositionedObject::updateMatrix()
+void Transform::updateMatrix()
 {
     // Generate 4x4 matrix from quaternion
     _modelMatrix = glm::toMat4(glm::inverse(_orientation));
@@ -191,12 +224,12 @@ void PositionedObject::updateMatrix()
     _matrixOutdated = false;
 }
 
-bool PositionedObject::transformModifiedFlagState()
+bool Transform::transformModifiedFlagState()
 {
     return _transformModifiedFlag;
 }
 
-void PositionedObject::resetTransformModifiedFlag()
+void Transform::resetTransformModifiedFlag()
 {
     _transformModifiedFlag = false;
 }
