@@ -332,9 +332,9 @@ void Scene::processOutdatedTransformsFromNode(unsigned int id)
     {
         SceneObjectPtr obj = parentIt->lock()->value;
         // Use the flag to check on the modified state of the object transform
-        if (obj->transformModifiedFlagState())
+        if (obj->transform.transformModifiedFlagState())
         {
-            obj->resetTransformModifiedFlag();
+            obj->transform.resetTransformModifiedFlag();
             uppermostOutdatedId = obj->id;
             outdated = true;
         }
@@ -346,9 +346,9 @@ void Scene::processOutdatedTransformsFromNode(unsigned int id)
         recalculateModelMatrix(uppermostOutdatedId);
     }
     // If no parent was updated just update the node transform if appropriate
-    else if (objNode->value->transformModifiedFlagState())
+    else if (objNode->value->transform.transformModifiedFlagState())
     {
-        objNode->value->resetTransformModifiedFlag();
+        objNode->value->transform.resetTransformModifiedFlag();
         recalculateModelMatrix(id);
     }
 }
@@ -373,7 +373,7 @@ void Scene::recalculateModelMatrix(unsigned int id)
     // Compute the new world transform
     matNode->value = worldTransform * localTransform;
     // If the transform modified flag was raised, it is now no longer relevant
-    objNode->value->resetTransformModifiedFlag();
+    objNode->value->transform.resetTransformModifiedFlag();
 
     // Reverberate changes to children transforms
     std::vector<ObjTree::NodeWPtr> children = objNode->getChildren();

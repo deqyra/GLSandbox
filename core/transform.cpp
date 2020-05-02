@@ -56,7 +56,7 @@ Transform& Transform::operator=(const Transform& other)
         // Generate model matrix according to parameters
         updateMatrix();
     }
-
+    
     return *this;
 }
 

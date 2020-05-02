@@ -108,7 +108,7 @@ void FPSCameraScript::update(float timeElapsed)
 
     // Retrieve the linked scene object (i.e the camera)
     SceneObjectPtr sceneObject = _sceneObject.lock();
-    glm::vec3 position = sceneObject->getPosition();
+    glm::vec3 position = sceneObject->transform.getPosition();
 
     // Depending on which directional flags were raised, compute new position
     if (_movement[IndexForward])
@@ -121,7 +121,7 @@ void FPSCameraScript::update(float timeElapsed)
         position += _camera->right() * velocity;
 
     // Update camera position
-    sceneObject->setPosition(position);
+    sceneObject->transform.setPosition(position);
 }
 
 void FPSCameraScript::setSceneObject(SceneObjectWPtr sceneObject)
