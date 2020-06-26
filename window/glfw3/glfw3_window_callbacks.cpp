@@ -4,8 +4,7 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
-#include "gl_window.hpp"
-
+#include "../gl_window.hpp"
 #include "glfw3_adapter.hpp"
 
 void globalGlfwFramebufferResizeCallback(GLFWwindow* window, int width, int height)
