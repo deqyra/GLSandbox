@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 
 	glfwInit();
 	// Init window, GL context and GL pointers
-	GLWindowPtr window = makeWindow("RenderBoi", 1280, 720, 4, 6, Window::OpenGLProfile::Core, true);
+	GLWindowPtr window = makeGLFWWindow("RenderBoi", 1280, 720, 4, 6, Window::OpenGLProfile::Core, true);
 
 	if (!window)
 	{

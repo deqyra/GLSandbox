@@ -13,13 +13,17 @@
 
 #include "enums.hpp"
 #include "gl_window.hpp"
-#include "glfw3_adapter.hpp"
-#include "glfw3_window_callbacks.hpp"
 
-GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
+#include "glfw3/glfw3_window.hpp"
+#include "glfw3/glfw3_adapter.hpp"
+#include "glfw3/glfw3_window_callbacks.hpp"
+
+GLWindowPtr makeGLFWWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
 {
     static bool glfw3AdapterInitialized = false;
     if (!glfw3AdapterInitialized) Window::GLFW3Adapter::initialize();
+
+    glfw3AdapterInitialized = true;
     
 	// GL metadata
 	if (glVersionMajor > -1) glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
@@ -63,7 +67,7 @@ GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMa
     // It is not possible to set methods of a user-defined class as the callbacks of a window, because of function pointer type mismatch
     // Instead, use the user pointer of the GLFWwindow object, which can be set to point to any user-defined window class
 
-    GLWindowPtr glWindow = std::make_shared<GLWindow>(window, title);   // Initialize a GLWindow instance with a GLFWwindow object
+    GLWindowPtr glWindow = std::make_shared<GLFW3Window>(window, title); // Initialize a GLWindow instance with a GLFWwindow object
     glfwSetWindowUserPointer(window, glWindow.get());                   // Set the user pointer of the GLFWwindow to the newly created GLWindow instance
 
     // Then, a function can retrieve the GLWindow instance from the GLFWwindow object and call the appropriate callback on the GLWindow instance

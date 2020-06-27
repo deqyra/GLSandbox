@@ -115,8 +115,9 @@
 
     # Build window lib
         add_library( ${WINDOW_LIB_NAME} ${STATIC_OR_SHARED}
-                    window/glfw3_window_callbacks.cpp                   window/glfw3_window_callbacks.hpp
-                    window/glfw3_adapter.cpp                            window/glfw3_adapter.hpp
+                    window/glfw3/glfw3_window_callbacks.cpp             window/glfw3/glfw3_window_callbacks.hpp
+                    window/glfw3/glfw3_adapter.cpp                      window/glfw3/glfw3_adapter.hpp
+                    window/glfw3/glfw3_window.cpp                       window/glfw3/glfw3_window.hpp
                     window/gl_window.cpp                                window/gl_window.hpp
                     window/tools.cpp                                    window/tools.hpp
                     window/enums.cpp                                    window/enums.hpp
