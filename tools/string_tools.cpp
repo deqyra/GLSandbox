@@ -4,7 +4,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <limits>
 #include "../tools/exceptions/file_not_found_error.hpp"
 #include "../tools/exceptions/range_bounds_exceeded_error.hpp"
 

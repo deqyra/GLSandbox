@@ -39,8 +39,13 @@
     set( COPY_DLLS_TARGET_NAME "copy_dlls" )
 
 # Project library dependency names
-    set( GLFW3_LIB "glfw3.lib" )
-    set( ASSIMP_LIB "assimp.lib" )
+    if( WIN32 )
+        set( GLFW3_LIB "glfw3.lib" )
+        set( ASSIMP_LIB "assimp.lib" )
+    else(  )
+        set( GLFW3_LIB "glfw" )
+        set( ASSIMP_LIB "assimp" )
+    endif(  )
 
 # Copy assets folder
     add_custom_target( ${COPY_ASSETS_TARGET_NAME} )
