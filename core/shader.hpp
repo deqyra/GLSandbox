@@ -1,7 +1,7 @@
 #ifndef CORE__SHADER_HPP
 #define CORE__SHADER_HPP
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <glm/glm.hpp>
 
 #include <fstream>

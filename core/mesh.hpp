@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include "material.hpp"
 #include "positioned_object.hpp"

@@ -11,7 +11,7 @@
     option( BUILD_STATIC_LIBS "Build libraries as static libraries" OFF )
 
     if( WIN32 )
-        message( "Windows detected, forcing static libs." )
+        message( STATUS "Windows detected, forcing static libs." )
         set( BUILD_STATIC_LIBS ON )
     endif(  )
 
@@ -39,13 +39,17 @@
     set( COPY_DLLS_TARGET_NAME "copy_dlls" )
 
 # Project library dependency names
+    set( GLFW3_LIB "glfw" )
+    set( ASSIMP_LIB "assimp" )
     if( WIN32 )
-        set( GLFW3_LIB "glfw3.lib" )
-        set( ASSIMP_LIB "assimp.lib" )
-    else(  )
-        set( GLFW3_LIB "glfw" )
-        set( ASSIMP_LIB "assimp" )
+        set( GLFW3_LIB "${GLFW3_LIB}.lib" )
+        set( ASSIMP_LIB "${ASSIMP_LIB}.lib" )
     endif(  )
+
+# GL loader information
+    set(LOADER_FILES "glad/gl.c" "include/glad/gl.h")
+    set(GL_CONTEXT_VERSION_MAJOR "4")
+    set(GL_CONTEXT_VERSION_MINOR "2")
 
 # Copy assets folder
     add_custom_target( ${COPY_ASSETS_TARGET_NAME} )
@@ -110,7 +114,7 @@
                     )
     
     # Build GL loader
-        add_library( ${GL_LOADER_LIB_NAME} ${STATIC_OR_SHARED} glad.c include/glad/glad.h )
+        add_library( ${GL_LOADER_LIB_NAME} ${STATIC_OR_SHARED} ${LOADER_FILES} )
         target_link_libraries( ${GL_LOADER_LIB_NAME} PUBLIC "${CMAKE_DL_LIBS}" )
 
     # Build window lib
@@ -186,6 +190,7 @@
                                 ${TOOLS_LIB_NAME}
                                 ${CORE_LIB_NAME}
                                 ${EXAMPLE_LIB_NAME}
+                                ${GL_LOADER_LIB_NAME}
                             )
         add_dependencies( ${EXECUTABLE_NAME} ${COPY_ASSETS_TARGET_NAME} )
 

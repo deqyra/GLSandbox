@@ -2,11 +2,12 @@
 
 #include <cstdlib>
 #include <cstdarg>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <string>
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
@@ -26,9 +27,9 @@ GLWindowPtr makeGLFWWindow(std::string title, int width, int height, int glVersi
     glfw3AdapterInitialized = true;
     
 	// GL metadata
-	if (glVersionMajor > -1) glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
-    if (glVersionMinor > -1) glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, Window::GLFW3Adapter::getValue(glProfile));
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, Window::GLFW3Adapter::getValue(glProfile));
 
     if (debug)
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
@@ -45,7 +46,7 @@ GLWindowPtr makeGLFWWindow(std::string title, int width, int height, int glVersi
 	glfwMakeContextCurrent(window);
 
 	// Load GL pointers
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress))
 	{
 		glfwDestroyWindow(window);
         throw std::runtime_error("Failed to load GL function pointers.");
@@ -55,12 +56,11 @@ GLWindowPtr makeGLFWWindow(std::string title, int width, int height, int glVersi
     {
         GLint flags;
         glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-        if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+        if (flags & glfwExtensionSupported("GL_ARB_debug_output"))
         {
-            glEnable(GL_DEBUG_OUTPUT);
-            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-            glDebugMessageCallback(glDebugOutput, nullptr);
-            glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+            glDebugMessageCallbackARB(glDebugOutput, nullptr);
+            glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         }
     }
 
@@ -68,7 +68,7 @@ GLWindowPtr makeGLFWWindow(std::string title, int width, int height, int glVersi
     // Instead, use the user pointer of the GLFWwindow object, which can be set to point to any user-defined window class
 
     GLWindowPtr glWindow = std::make_shared<GLFW3Window>(window, title); // Initialize a GLWindow instance with a GLFWwindow object
-    glfwSetWindowUserPointer(window, glWindow.get());                   // Set the user pointer of the GLFWwindow to the newly created GLWindow instance
+    glfwSetWindowUserPointer(window, glWindow.get());                    // Set the user pointer of the GLFWwindow to the newly created GLWindow instance
 
     // Then, a function can retrieve the GLWindow instance from the GLFWwindow object and call the appropriate callback on the GLWindow instance
     // Bind all relevant callbacks to such functions
@@ -106,33 +106,33 @@ void APIENTRY glDebugOutput(
     // Print error info on the console
     switch (source)
     {
-        case GL_DEBUG_SOURCE_API:             std::cout << "Source: API"; break;
-        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   std::cout << "Source: Window System"; break;
-        case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Source: Shader Compiler"; break;
-        case GL_DEBUG_SOURCE_THIRD_PARTY:     std::cout << "Source: Third Party"; break;
-        case GL_DEBUG_SOURCE_APPLICATION:     std::cout << "Source: Application"; break;
-        case GL_DEBUG_SOURCE_OTHER:           std::cout << "Source: Other"; break;
+        case GL_DEBUG_SOURCE_API_ARB:             std::cout << "Source: API"; break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:   std::cout << "Source: Window System"; break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB: std::cout << "Source: Shader Compiler"; break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:     std::cout << "Source: Third Party"; break;
+        case GL_DEBUG_SOURCE_APPLICATION_ARB:     std::cout << "Source: Application"; break;
+        case GL_DEBUG_SOURCE_OTHER_ARB:           std::cout << "Source: Other"; break;
     } std::cout << std::endl;
 
     switch (type)
     {
-        case GL_DEBUG_TYPE_ERROR:               std::cout << "Type: Error"; break;
-        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Type: Deprecated Behaviour"; break;
-        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Type: Undefined Behaviour"; break;
-        case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Type: Portability"; break;
-        case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Type: Performance"; break;
-        case GL_DEBUG_TYPE_MARKER:              std::cout << "Type: Marker"; break;
-        case GL_DEBUG_TYPE_PUSH_GROUP:          std::cout << "Type: Push Group"; break;
-        case GL_DEBUG_TYPE_POP_GROUP:           std::cout << "Type: Pop Group"; break;
-        case GL_DEBUG_TYPE_OTHER:               std::cout << "Type: Other"; break;
+        case GL_DEBUG_TYPE_ERROR_ARB:               std::cout << "Type: Error"; break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: std::cout << "Type: Deprecated Behaviour"; break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:  std::cout << "Type: Undefined Behaviour"; break;
+        case GL_DEBUG_TYPE_PORTABILITY_ARB:         std::cout << "Type: Portability"; break;
+        case GL_DEBUG_TYPE_PERFORMANCE_ARB:         std::cout << "Type: Performance"; break;
+        // case GL_DEBUG_TYPE_MARKER:               std::cout << "Type: Marker"; break;
+        // case GL_DEBUG_TYPE_PUSH_GROUP:           std::cout << "Type: Push Group"; break;
+        // case GL_DEBUG_TYPE_POP_GROUP:            std::cout << "Type: Pop Group"; break;
+        case GL_DEBUG_TYPE_OTHER_ARB:               std::cout << "Type: Other"; break;
     } std::cout << std::endl;
 
     switch (severity)
     {
-        case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high"; break;
-        case GL_DEBUG_SEVERITY_MEDIUM:       std::cout << "Severity: medium"; break;
-        case GL_DEBUG_SEVERITY_LOW:          std::cout << "Severity: low"; break;
-        case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << "Severity: notification"; break;
+        case GL_DEBUG_SEVERITY_HIGH_ARB:         std::cout << "Severity: high"; break;
+        case GL_DEBUG_SEVERITY_MEDIUM_ARB:       std::cout << "Severity: medium"; break;
+        case GL_DEBUG_SEVERITY_LOW_ARB:          std::cout << "Severity: low"; break;
+        // case GL_DEBUG_SEVERITY_NOTIFICATION:  std::cout << "Severity: notification"; break;
     } std::cout << std::endl;
     std::cout << std::endl;
 }

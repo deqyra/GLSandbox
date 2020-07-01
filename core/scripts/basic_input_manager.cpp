@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include "../../window/gl_window.hpp"
 #include "../../window/enums.hpp"
