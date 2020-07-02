@@ -3,8 +3,7 @@
 
 #include <unordered_map>
 
-#include "../tools/enum_map.hpp"
-#include "enums.hpp"
+#include "../enums.hpp"
 
 namespace Window
 {

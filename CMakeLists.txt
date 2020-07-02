@@ -9,10 +9,16 @@
 
 # Toggles
     option( BUILD_STATIC_LIBS "Build libraries as static libraries" OFF )
+    set( GLFW_PROFILE_HINT_COMMENT "" )
 
     if( WIN32 )
-        message( "Windows detected, forcing static libs." )
+        message( STATUS "Windows detected, forcing static libs." )
         set( BUILD_STATIC_LIBS ON )
+    elseif( UNIX )
+        if ( DEFINED ENV{WAYLAND_DISPLAY} )
+            message( STATUS "Wayland detected, disabling GLFW context profile hint for compatibility with EGL." )
+            set( GLFW_PROFILE_HINT_COMMENT "/*" )
+        endif(  )
     endif(  )
 
     if( ${BUILD_STATIC_LIBS} )
@@ -39,8 +45,17 @@
     set( COPY_DLLS_TARGET_NAME "copy_dlls" )
 
 # Project library dependency names
-    set( GLFW3_LIB "glfw3.lib" )
-    set( ASSIMP_LIB "assimp.lib" )
+    set( GLFW3_LIB "glfw" )
+    set( ASSIMP_LIB "assimp" )
+    if( WIN32 )
+        set( GLFW3_LIB "${GLFW3_LIB}.lib" )
+        set( ASSIMP_LIB "${ASSIMP_LIB}.lib" )
+    endif(  )
+
+# GL loader information
+    set(LOADER_FILES "glad/gl.c" "include/glad/gl.h")
+    set(GL_CONTEXT_VERSION_MAJOR "4")
+    set(GL_CONTEXT_VERSION_MINOR "2")
 
 # Copy assets folder
     add_custom_target( ${COPY_ASSETS_TARGET_NAME} )
@@ -72,8 +87,9 @@
         # "(C) 2019-2020 François Brachais <deqyra@gmail.com>"
         set( PROJECT_COPYLEFT "${PROJECT_COPYLEFT} ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>" )
 
-# Header configuration
-    configure_file( "project_macros.config.hpp" "${CMAKE_SOURCE_DIR}/project_macros.hpp" )
+# File configuration
+    configure_file( "${CMAKE_SOURCE_DIR}/config/project_macros.config.hpp" "${CMAKE_SOURCE_DIR}/project_macros.hpp" )
+    configure_file( "${CMAKE_SOURCE_DIR}/config/window_tools.config.cpp" "${CMAKE_SOURCE_DIR}/window/tools.cpp" )
 
 # Project definition
     project( ${PROJECT_TARGET_NAME} VERSION ${PROJECT_VERSION}
@@ -106,13 +122,14 @@
                     )
     
     # Build GL loader
-        add_library( ${GL_LOADER_LIB_NAME} ${STATIC_OR_SHARED} glad.c include/glad/glad.h )
+        add_library( ${GL_LOADER_LIB_NAME} ${STATIC_OR_SHARED} ${LOADER_FILES} )
         target_link_libraries( ${GL_LOADER_LIB_NAME} PUBLIC "${CMAKE_DL_LIBS}" )
 
     # Build window lib
         add_library( ${WINDOW_LIB_NAME} ${STATIC_OR_SHARED}
-                    window/glfw3_window_callbacks.cpp                   window/glfw3_window_callbacks.hpp
-                    window/glfw3_adapter.cpp                            window/glfw3_adapter.hpp
+                    window/glfw3/glfw3_window_callbacks.cpp             window/glfw3/glfw3_window_callbacks.hpp
+                    window/glfw3/glfw3_adapter.cpp                      window/glfw3/glfw3_adapter.hpp
+                    window/glfw3/glfw3_window.cpp                       window/glfw3/glfw3_window.hpp
                     window/gl_window.cpp                                window/gl_window.hpp
                     window/tools.cpp                                    window/tools.hpp
                     window/enums.cpp                                    window/enums.hpp
@@ -176,12 +193,12 @@
 
     # Build executable
         add_executable( ${EXECUTABLE_NAME}
-                        main.cpp
-                        project_macros.config.hpp           project_macros.hpp )        
+                        main.cpp            project_macros.hpp )        
         target_link_libraries( ${EXECUTABLE_NAME} PUBLIC
                                 ${TOOLS_LIB_NAME}
                                 ${CORE_LIB_NAME}
                                 ${EXAMPLE_LIB_NAME}
+                                ${GL_LOADER_LIB_NAME}
                             )
         add_dependencies( ${EXECUTABLE_NAME} ${COPY_ASSETS_TARGET_NAME} )
 

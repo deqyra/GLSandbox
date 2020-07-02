@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "glad/glad.h"
+#include "glad/gl.h"
 #ifdef _WIN32
 #endif
 
@@ -1063,7 +1063,11 @@ VSGLInfoLib::addMessage(std::string format, ...) {
 
 	va_list args;
 	va_start(args,format);
+#ifdef _WIN32
 	vsprintf_s(spAux, format.c_str(), args);
+#elif __linux__
+	vsprintf(spAux, format.c_str(), args);
+#endif
 	va_end(args);
 
 	*spOutS << spAux << "\n";

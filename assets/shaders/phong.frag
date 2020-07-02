@@ -1,4 +1,4 @@
-#version 460 core
+#version 420 core
 in VertexOut 
 {
 	vec3 fragPos;
@@ -73,6 +73,7 @@ layout (std140, binding = 1) uniform lights
 	SpotLight spot[SPOT_LIGHT_MAX_COUNT];					// 64 * 96			//     0
 	PointLight point[POINT_LIGHT_MAX_COUNT];				// 64 * 80			//  6144
 	DirectionalLight direct[DIRECTIONAL_LIGHT_MAX_COUNT];	//  4 * 64			// 11264
+
 	uint pointCount;										// 4				// 11520
 	uint spotCount;											// 4				// 11524
 	uint directionalCount;									// 4				// 11528

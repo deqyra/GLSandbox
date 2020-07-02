@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <stb_image.hpp>
 
 #include "../tools/exceptions/index_out_of_bounds_error.hpp"

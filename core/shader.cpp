@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <cstdarg>
 #include <unordered_map>
 
 #include "ubo/ubo_info.hpp"

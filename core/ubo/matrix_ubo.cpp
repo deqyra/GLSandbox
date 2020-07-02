@@ -1,7 +1,7 @@
 #include "matrix_ubo.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include "ubo_info.hpp"
 
