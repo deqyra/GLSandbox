@@ -38,7 +38,7 @@ RenderBoi:
         ☐ PositionedObject::rotate with localAxis==true
         ☐ Light attenuation
     Crossplatform-ability:
-        ☐ Provide OpenGL core context hint for GLFW except when EGL is used (i.e. on Wayland systems)
+        ✔ Provide OpenGL core context hint for GLFW except when EGL is used (i.e. on Wayland systems) @done(20-07-02 14:19)
     Online resources:
         https://www.youtube.com/watch?v=-bCeNzgiJ8I&list=PLckFgM6dUP2hc4iy-IdKFtqR9TeZWMPjm
         http://media.steampowered.com/apps/steamdevdays/slides/beyondporting.pdf
