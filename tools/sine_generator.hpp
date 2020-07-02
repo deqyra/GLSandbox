@@ -102,7 +102,7 @@ void SineGenerator<P>::setPhase(P value)
 template<typename P>
 void SineGenerator<P>::runningCycleModulo2Pi()
 {
-    if (_runningCycle > M_PI) _runningCycle -= (P)(2.0) * (P)M_PI;
+    while (_runningCycle > M_PI) _runningCycle -= (P)(2.0) * (P)M_PI;
 }
 
 #endif//TOOLS__SINE_GENERATOR_HPP
