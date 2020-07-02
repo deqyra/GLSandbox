@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 		SetConsoleOutputCP(65001);
 	#endif
 
-    std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << std::endl;
+    std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << '\n';
     std::cout << COPYLEFT_NOTICE << std::endl;
 
 	glfwSetErrorCallback(glfwErrorCallback);
@@ -41,13 +41,17 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 
 	// Init window, GL context and GL pointers
-	GLWindowPtr window = makeGLFWWindow("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
-
-	if (!window)
+	GLWindowPtr window;
+	try
 	{
+		window = makeGLFWWindow("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "Exception thrown during window creation:" << '\n'<< e.what() << std::endl;
 		return abortWithError("Window creation failed. Aborting...");
 	}
-
+	
     // Instantiate and run examples
 	std::vector<GLSandbox*> examples = createAllSandboxes();
     for (auto it = examples.begin(); it != examples.end(); it++)

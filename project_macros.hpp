@@ -1,3 +1,15 @@
+/*     // \\
+      //   \\
+     //     \\
+    //WARNING\\
+   //         \\
+   =============
+   
+   DO NOT edit project_macros.hpp, or your changes
+   will be OVERWRITTEN at the next run of CMake.
+   Instead, edit config/project_macros.config.hpp.
+*/
+
 #ifndef PROJECT_MACROS_HPP
 #define PROJECT_MACROS_HPP
 

@@ -9,10 +9,16 @@
 
 # Toggles
     option( BUILD_STATIC_LIBS "Build libraries as static libraries" OFF )
+    set( GLFW_PROFILE_HINT_COMMENT "" )
 
     if( WIN32 )
         message( STATUS "Windows detected, forcing static libs." )
         set( BUILD_STATIC_LIBS ON )
+    elseif( UNIX )
+        if ( DEFINED ENV{WAYLAND_DISPLAY} )
+            message( STATUS "Wayland detected, disabling GLFW context profile hint for compatibility with EGL." )
+            set( GLFW_PROFILE_HINT_COMMENT "/*" )
+        endif(  )
     endif(  )
 
     if( ${BUILD_STATIC_LIBS} )
@@ -81,8 +87,9 @@
         # "(C) 2019-2020 François Brachais <deqyra@gmail.com>"
         set( PROJECT_COPYLEFT "${PROJECT_COPYLEFT} ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>" )
 
-# Header configuration
-    configure_file( "project_macros.config.hpp" "${CMAKE_SOURCE_DIR}/project_macros.hpp" )
+# File configuration
+    configure_file( "${CMAKE_SOURCE_DIR}/config/project_macros.config.hpp" "${CMAKE_SOURCE_DIR}/project_macros.hpp" )
+    configure_file( "${CMAKE_SOURCE_DIR}/config/window_tools.config.cpp" "${CMAKE_SOURCE_DIR}/window/tools.cpp" )
 
 # Project definition
     project( ${PROJECT_TARGET_NAME} VERSION ${PROJECT_VERSION}
@@ -184,8 +191,7 @@
 
     # Build executable
         add_executable( ${EXECUTABLE_NAME}
-                        main.cpp
-                        project_macros.config.hpp           project_macros.hpp )        
+                        main.cpp            project_macros.hpp )        
         target_link_libraries( ${EXECUTABLE_NAME} PUBLIC
                                 ${TOOLS_LIB_NAME}
                                 ${CORE_LIB_NAME}
