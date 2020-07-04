@@ -6,6 +6,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "../tools/notifier.hpp"
+
 // An object that has 3D-space properties : position, orientation and scale
 class Transform
 {
@@ -24,6 +26,9 @@ class Transform
         bool _transformModifiedFlag;
         // Whether the model matrix no longer reflects the transform parameters
         bool _matrixOutdated;
+
+        // Will notify subscribers that the transform has been modified
+        Notifier<unsigned int, glm::vec3, glm::quat> _transformNotifier;
 
         // Update the model matrix of the object so that it reflects the transform parameters
         void updateMatrix();
