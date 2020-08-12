@@ -164,6 +164,7 @@
                                                                                 core/scene/component_type.hpp 
                     core/scene/input_processing_script.cpp                      core/scene/input_processing_script.hpp 
                     core/scene/scene.cpp                                        core/scene/scene.hpp 
+                                                                                core/scene/scene_object_metadata.hpp 
                     core/scene/scene_object.cpp                                 core/scene/scene_object.hpp 
                     core/scene/scene_renderer.cpp                               core/scene/scene_renderer.hpp 
                     core/scene/script.cpp                                       core/scene/script.hpp 

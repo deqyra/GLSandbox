@@ -5,42 +5,33 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-Transform::Transform() :
+#include "scene/scene_object.hpp"
+
+Transform::Transform(SceneObjectPtr sceneObj) :
     _position(glm::vec3(0.f)),
     _orientation(glm::quat(1.f, glm::vec3(0.f))),
     _scale(glm::vec3(1.f)),
     _modelMatrix(glm::mat4(1.f)),
-    _transformModifiedFlag(false),
-    _matrixOutdated(false)
+    _matrixOutdated(false),
+    _transformNotifier(),
+    sceneObject(sceneObj)
 {
 
 }
 
-Transform::Transform(glm::vec3 position, glm::quat orientation, glm::vec3 scale) :
+Transform::Transform(SceneObjectPtr sceneObj, glm::vec3 position, glm::quat orientation, glm::vec3 scale) :
     _position(position),
     _orientation(orientation),
     _scale(scale),
     _modelMatrix(glm::mat4(1.f)),
-    _transformModifiedFlag(false),
-    _matrixOutdated(true)
+    _matrixOutdated(true),
+    _transformNotifier(),
+    sceneObject(sceneObj)
 {
     // Generate model matrix according to parameters
     updateMatrix();
-}
-
-Transform::Transform(const Transform& other) :
-    _position(other._position),
-    _orientation(other._orientation),
-    _scale(other._scale),
-    _modelMatrix(other._modelMatrix),
-    _transformModifiedFlag(other._transformModifiedFlag),
-    _matrixOutdated(other._matrixOutdated)
-{
-    if (_matrixOutdated)
-    {
-        // Generate model matrix according to parameters
-        updateMatrix();
-    }
+    // Notify transform change
+    notifyChange();
 }
 
 Transform& Transform::operator=(const Transform& other)
@@ -49,12 +40,14 @@ Transform& Transform::operator=(const Transform& other)
     _orientation = other._orientation;
     _scale = other._scale;
     _modelMatrix = other._modelMatrix;
-    _transformModifiedFlag = other._transformModifiedFlag;
     _matrixOutdated = other._matrixOutdated;
+    // The TransformNotifier and the referenced SceneObject are left untouched
     if (_matrixOutdated)
     {
         // Generate model matrix according to parameters
         updateMatrix();
+        // Notify transform change
+        notifyChange();
     }
     
     return *this;
@@ -71,8 +64,9 @@ void Transform::setPosition(glm::vec3 position)
     _position = position;
 
     // Update flags
-    _transformModifiedFlag = true;
     _matrixOutdated = true;
+    // Notify transform change
+    notifyChange();
 }
 
 glm::vec3 Transform::translate(glm::vec3 translation)
@@ -83,8 +77,9 @@ glm::vec3 Transform::translate(glm::vec3 translation)
     _position = glm::vec3(translated);
 
     // Update flags
-    _transformModifiedFlag = true;
     _matrixOutdated = true;
+    // Notify transform change
+    notifyChange();
     return _position;
 }
 
@@ -103,8 +98,9 @@ void Transform::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool sel
     }
 
     // Update flags
-    _transformModifiedFlag = true;
     _matrixOutdated = true;
+    // Notify transform change
+    notifyChange();
 }
 
 glm::quat Transform::getOrientation()
@@ -118,8 +114,9 @@ void Transform::setOrientation(glm::quat orientation)
     _orientation = glm::normalize(_orientation);
 
     // Update flags
-    _transformModifiedFlag = true;
     _matrixOutdated = true;
+    // Notify transform change
+    notifyChange();
 }
 
 glm::quat Transform::rotate(glm::quat rotation)
@@ -130,7 +127,8 @@ glm::quat Transform::rotate(glm::quat rotation)
 
     // Update flags
     _matrixOutdated = true;
-    _transformModifiedFlag = true;
+    // Notify transform change
+    notifyChange();
     return _orientation;
 }
 
@@ -146,8 +144,9 @@ glm::quat Transform::rotate(float radAngle, glm::vec3 axis, bool localAxis)
     _orientation = glm::normalize(_orientation);
 
     // Update flags
-    _transformModifiedFlag = true;
     _matrixOutdated = true;
+    // Notify transform change
+    notifyChange();
     return _orientation;
 }
 
@@ -168,8 +167,10 @@ glm::quat Transform::lookAt(glm::vec3 target)
 
     _orientation = glm::normalize(glm::quat(axis * angle));
 
-    _transformModifiedFlag = true;
+    // Update flags
     _matrixOutdated = true;
+    // Notify transform change
+    notifyChange();
     return _orientation;
 }
 
@@ -183,8 +184,9 @@ void Transform::setScale(glm::vec3 scale)
     _scale = scale;
 
     // Update flags
-    _transformModifiedFlag = true;
     _matrixOutdated = true;
+    // Notify transform change
+    notifyChange();
 }
 
 glm::vec3 Transform::scale(glm::vec3 scaling)
@@ -195,8 +197,9 @@ glm::vec3 Transform::scale(glm::vec3 scaling)
     _scale[2] *= scaling[2];
 
     // Update flags
-    _transformModifiedFlag = true;
     _matrixOutdated = true;
+    // Notify transform change
+    notifyChange();
     return _scale;
 }
 
@@ -208,6 +211,11 @@ glm::mat4 Transform::getModelMatrix()
     }
 
     return _modelMatrix;
+}
+
+Transform::TransformNotifier& Transform::getNotifier()
+{
+    return _transformNotifier;
 }
 
 void Transform::updateMatrix()
@@ -224,12 +232,7 @@ void Transform::updateMatrix()
     _matrixOutdated = false;
 }
 
-bool Transform::transformModifiedFlagState()
+void Transform::notifyChange()
 {
-    return _transformModifiedFlag;
-}
-
-void Transform::resetTransformModifiedFlag()
-{
-    _transformModifiedFlag = false;
+    _transformNotifier.notify(sceneObject->id);
 }
