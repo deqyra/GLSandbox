@@ -10,7 +10,8 @@ SceneObject::SceneObject(SceneWPtr scene) :
     id(_count++),
     enabled(true),
     _scene(scene),
-    _components()
+    _components(),
+    transform(this->shared_from_this())
 {
 
 }

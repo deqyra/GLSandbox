@@ -146,6 +146,7 @@
                                                                                 core/materials.hpp
                     core/mesh.cpp                                               core/mesh.hpp
                                                                                 core/mesh_generator.hpp
+                    core/object_transform.cpp                                   core/object_transform.hpp
                     core/transform.cpp                                          core/transform.hpp
                     core/shader.cpp                                             core/shader.hpp
                     core/texture_2d.cpp                                         core/texture_2d.hpp
