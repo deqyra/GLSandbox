@@ -1,6 +1,8 @@
 #ifndef CORE__TRANSFORM_HPP
 #define CORE__TRANSFORM_HPP
 
+#include <memory>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -82,7 +84,7 @@ class Transform
         glm::vec3 forward() const;
 
         // Apply this transform to another one
-        Transform applyTo(const Transform& base) const;
+        Transform applyTo(const Transform& other) const;
 
         // Get the model matrix of the object
         glm::mat4 getModelMatrix() const;

@@ -160,6 +160,11 @@ glm::vec3 ObjectTransform::scaleBy(glm::vec3 scaling)
     return newScale;
 }
 
+void ObjectTransform::applyTo(ObjectTransform& other)
+{
+    other = this->Transform::applyTo((Transform) other);
+}
+
 ObjectTransform::TransformNotifier& ObjectTransform::getNotifier()
 {
     return _transformNotifier;

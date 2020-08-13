@@ -235,21 +235,27 @@ glm::mat4 Transform::getModelMatrix() const
     return _modelMatrix;
 }
 
-Transform Transform::applyTo(const Transform& base) const
+Transform Transform::applyTo(const Transform& other) const
 {
-    // Compute new transform position: rotated base position + this position
-    glm::vec3 newPosition = _rotation * base._position * glm::conjugate(_rotation);
+    // Compute new transform position:
+    // other position scaled and rotated + this position
+    glm::vec3 newPosition = glm::vec3(
+        other._position[0] * _scale[0],
+        other._position[1] * _scale[1],
+        other._position[2] * _scale[2]
+    );
+    newPosition = _rotation * newPosition * glm::conjugate(_rotation);
     newPosition += _position;
 
     // Combine rotations
-    glm::quat newRotation = base._rotation * _rotation;
+    glm::quat newRotation = other._rotation * _rotation;
     newRotation = glm::normalize(newRotation);
 
     // Multiply scales
     glm::vec3 newScale = glm::vec3(
-        _scale[0] * base._scale[0],
-        _scale[1] * base._scale[1],
-        _scale[2] * base._scale[2]
+        _scale[0] * other._scale[0],
+        _scale[1] * other._scale[1],
+        _scale[2] * other._scale[2]
     );
 
     return Transform(newPosition, newRotation, newScale);

@@ -45,9 +45,9 @@ class Tree
         ~Tree();
 
         // Get a weak pointer to the tree root
-        NodeWPtr getRoot();
+        NodePtr getRoot();
         // Get a weak pointer to the node whose ID is provided, if it's part of the tree
-        NodeWPtr operator[](unsigned int id);
+        NodePtr operator[](unsigned int id);
         // Whether the tree has a node with provided ID
         bool hasNode(unsigned int id);
         // Whether the tree has the node referenced by the provided weak pointer
@@ -137,13 +137,13 @@ Tree<T>::Tree(NodePtr root, std::unordered_map<unsigned int, NodePtr> nodeMap) :
 }
 
 template<typename T>
-typename Tree<T>::NodeWPtr Tree<T>::getRoot()
+typename Tree<T>::NodePtr Tree<T>::getRoot()
 {
-    return NodeWPtr(_root);
+    return _root;
 }
 
 template<typename T>
-typename Tree<T>::NodeWPtr Tree<T>::operator[](unsigned int id)
+typename Tree<T>::NodePtr Tree<T>::operator[](unsigned int id)
 {
     auto it = _nodes.find(id);
     if (it == _nodes.end())
@@ -153,7 +153,7 @@ typename Tree<T>::NodeWPtr Tree<T>::operator[](unsigned int id)
     }
 
     // Return a weak pointer constructed from the actual pointer
-    return NodeWPtr(it->second);
+    return it->second;
 }
 
 template<typename T>

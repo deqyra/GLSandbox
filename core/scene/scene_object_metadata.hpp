@@ -8,8 +8,8 @@ struct SceneObjectMetadata
     unsigned int id;
     // ID of the graph node containing the object
     unsigned int objectNodeId;
-    // ID of the graph node containing the world matrix of the object
-    unsigned int matrixNodeId;
+    // ID of the graph node containing the world transform of the object
+    unsigned int transformNodeId;
     // ID of the graph node containing the update flag of the object
     unsigned int updateNodeId;
     // ID of the subscription to the transform notifier of the object
