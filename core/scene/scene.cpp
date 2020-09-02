@@ -38,7 +38,7 @@ unsigned int Scene::init()
     BoolTree::NodePtr updateRootNode = _updateMarkers.getRoot();
 
     // Reset the object graph root node pointer to a scene object initialized with a pointer to this Scene.
-    objectRootNode->value.reset(new SceneObject(this->shared_from_this()));
+    objectRootNode->value.reset(new SceneObject(this->weak_from_this()));
 
     // Set and map metadata
     SceneObjectMetadata meta = {
@@ -46,7 +46,7 @@ unsigned int Scene::init()
         objectRootNode->id,         // ID of the graph node containing the object
         transformRootNode->id,      // ID of the graph node containing the world matrix of the object
         updateRootNode->id,         // ID of the graph node containing the update flag of the object
-        -1                          // ID of the subscription to the transform notifier of the object
+        MaxUInt                     // ID of the subscription to the transform notifier of the object
     };
     _objectMetadata[meta.id] = meta;
     
@@ -216,7 +216,7 @@ void Scene::updateAllTransforms()
     for(auto it = childNodes.begin(); it != childNodes.end(); it++)
     {
         SceneObjectPtr object = it->lock()->value;
-        updateWorldTransformDFS(object->id);
+        worldTransformDFSUpdate(object->id);
     }
 
     _transformsUpToDate = false;
@@ -238,16 +238,16 @@ Transform Scene::getWorldTransform(unsigned int id)
         unsigned int outdated = findFurthestOutdatedParent(id);
 
         // If no outdated parent was found, -1 was returned
-        if (outdated == -1)
+        if (outdated == MaxUInt)
         {
             SceneObjectMetadata meta = it->second;
             // If the update marker of the considered object is set, update its transform along with all of its children's
-            if (_updateMarkers[meta.updateNodeId]) cascadeWorldTransformUpdate(id);
+            if (_updateMarkers[meta.updateNodeId]) worldTransformCascadeUpdate(id);
 
             // If it isn't set, the transform of that is up to date and no action is required
         }
         // If an outdated parent was found, update its transform along with all of its children's
-        else cascadeWorldTransformUpdate(outdated);
+        else worldTransformCascadeUpdate(outdated);
     }
 
     // Retrieve matrix graph node ID and return matrix
@@ -388,14 +388,14 @@ void Scene::markForUpdate(unsigned int id)
     _transformsUpToDate = false;
 }
 
-void Scene::updateWorldTransformDFS(unsigned int startingId)
+void Scene::worldTransformDFSUpdate(unsigned int startingId)
 {
     SceneObjectMetadata meta = _objectMetadata[startingId];
 
     if (_updateMarkers[meta.updateNodeId]->value)
     {
         // If the current object is marked for update, update all transforms downwards
-        cascadeWorldTransformUpdate(startingId);
+        worldTransformCascadeUpdate(startingId);
     }
     else
     {
@@ -406,7 +406,7 @@ void Scene::updateWorldTransformDFS(unsigned int startingId)
         for (auto it = children.begin(); it != children.end(); it++)
         {
             SceneObjectPtr child = it->lock()->value;
-            updateWorldTransformDFS(child->id);
+            worldTransformDFSUpdate(child->id);
         }
     }
 }
@@ -420,7 +420,7 @@ unsigned int Scene::findFurthestOutdatedParent(unsigned int id)
     std::vector<ObjectTree::NodeWPtr> parentChain = objectNode->getParentChain();
 
     // Keep track of the furthest parent in the chain whose transform was outdated
-    unsigned int furthestOutdatedId = -1;
+    unsigned int furthestOutdatedId = MaxUInt;
     for (auto parentIt = parentChain.begin(); parentIt != parentChain.end(); parentIt++)
     {
         unsigned int id = parentIt->lock()->value->id;
@@ -436,7 +436,7 @@ unsigned int Scene::findFurthestOutdatedParent(unsigned int id)
     return furthestOutdatedId;
 }
 
-void Scene::cascadeWorldTransformUpdate(unsigned int id)
+void Scene::worldTransformCascadeUpdate(unsigned int id)
 {
     auto it = _objectMetadata.find(id);
     // Retrieve node metadata
@@ -466,7 +466,7 @@ void Scene::cascadeWorldTransformUpdate(unsigned int id)
     for (auto childIt = children.begin(); childIt != children.end(); childIt++)
     {
         ObjectTree::NodePtr child = childIt->lock();
-        cascadeWorldTransformUpdate(child->id);
+        worldTransformCascadeUpdate(child->id);
     }
 }
 

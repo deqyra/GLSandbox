@@ -42,8 +42,11 @@ class SceneObject : public std::enable_shared_from_this<SceneObject>
     public:
         SceneObject(SceneWPtr scene);
 
+        // To be called before anything else of a scene object. Set a reference to itself within its transform.
+        void init();
+
         // Get the world position of the object in the scene (use transform.getPosition() for local position)
-        glm::vec3 getWorldPosition();
+        Transform getWorldTransform();
         // Get the parent scene of this object
         SceneWPtr getScene();
         // Set the parent scene of this object

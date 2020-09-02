@@ -11,15 +11,20 @@ SceneObject::SceneObject(SceneWPtr scene) :
     enabled(true),
     _scene(scene),
     _components(),
-    transform(this->shared_from_this())
+    transform(std::shared_ptr<SceneObject>(nullptr))
 {
 
 }
 
-glm::vec3 SceneObject::getWorldPosition()
+void SceneObject::init()
+{
+    transform._sceneObject = weak_from_this();
+}
+
+Transform SceneObject::getWorldTransform()
 {
     std::shared_ptr<Scene> scene = _scene.lock();
-    return scene->getWorldPosition(id);
+    return scene->getWorldTransform(id);
 }
 
 SceneWPtr SceneObject::getScene()

@@ -18,11 +18,16 @@ using SceneObjectPtr = std::shared_ptr<SceneObject>;
 // An object that has 3D-space properties : position, orientation and scale
 class ObjectTransform : public Transform
 {
+    friend class SceneObject;
+
     public:
         // A TransformNotifier callback simply needs the ID of the object whose transform was updated.
         using TransformNotifier = Notifier<const unsigned int&>;
 
     protected:
+        // Pointer to the SceneObject this transform is attached to
+        SceneObjectWPtr _sceneObject;
+
         // Will notify subscribers that the transform has been modified
         TransformNotifier _transformNotifier;
 
@@ -30,14 +35,13 @@ class ObjectTransform : public Transform
         void notifyChange();
 
     public:
-        ObjectTransform(SceneObjectPtr sceneObj);
-        ObjectTransform(SceneObjectPtr sceneObj, glm::vec3 position, glm::quat orientation, glm::vec3 scale);
+        ObjectTransform(SceneObjectWPtr sceneObj);
+        ObjectTransform(SceneObjectWPtr sceneObj, glm::vec3 position, glm::quat orientation, glm::vec3 scale);
         ObjectTransform(const ObjectTransform& other) = delete;
         ObjectTransform& operator=(const ObjectTransform& other);
         ObjectTransform& operator=(const Transform& other);
-        operator Transform();
 
-        const SceneObjectPtr sceneObject;
+        SceneObjectWPtr getSceneObject();
 
         // Get the position of the object - no need to overload, here for convenience
         // glm::vec3 getPosition();

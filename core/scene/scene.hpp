@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <chrono>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <tuple>
 #include <unordered_map>
@@ -53,14 +54,16 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         void markForUpdate(unsigned int id);
 
         // Recursively update world transforms in DFS order, starting with that of the object with provided ID
-        void updateWorldTransformDFS(unsigned int startingId);
+        void worldTransformDFSUpdate(unsigned int startingId);
 
         // For an object with given ID, find the topmost parent node whose update marker is set
         unsigned int findFurthestOutdatedParent(unsigned int id);
         // Update the world transform of the node corresponding to the provided scene object ID, as well as all of its children's
-        void cascadeWorldTransformUpdate(unsigned int id);
+        void worldTransformCascadeUpdate(unsigned int id);
         // Whether the object with the provided ID has a disabled parent in the scene graph (and thus should be processed or not)
         bool hasDisabledParent(unsigned int id);
+
+        static constexpr unsigned int MaxUInt = std::numeric_limits<unsigned int>::max();
 
     public:
         Scene();
@@ -125,17 +128,17 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
 
         // Get weak pointers to all scene objects which have a certain component
         template<class T>
-        std::vector<SceneObjectWPtr> getObjectsWithComponent(bool mustBeEnabled = true);
+        std::vector<SceneObjectPtr> getObjectsWithComponent(bool mustBeEnabled = true);
 };
 
 template<class T>
-std::vector<SceneObjectWPtr> Scene::getObjectsWithComponent(bool mustBeEnabled)
+std::vector<SceneObjectPtr> Scene::getObjectsWithComponent(bool mustBeEnabled)
 {
-    std::vector<SceneObjectWPtr> all = getAllObjects();
-    std::vector<SceneObjectWPtr> result;
+    std::vector<SceneObjectPtr> all = getAllObjects();
+    std::vector<SceneObjectPtr> result;
 
     // Tells whether an object whose weak pointer is provided should be added to the result vector
-    std::function<bool(SceneObjectWPtr)> componentChecker = [this, mustBeEnabled](SceneObjectPtr obj)
+    std::function<bool(SceneObjectPtr)> componentChecker = [this, mustBeEnabled](SceneObjectPtr obj)
     {
         // Skip if the object is not enabled or if any of its parents is not enabled
         if (mustBeEnabled && !obj->enabled) return false;

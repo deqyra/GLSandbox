@@ -1,4 +1,4 @@
-#include "transform.hpp"
+#include "object_transform.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -7,22 +7,22 @@
 
 #include "scene/scene_object.hpp"
 
-ObjectTransform::ObjectTransform(SceneObjectPtr sceneObj) :
+ObjectTransform::ObjectTransform(SceneObjectWPtr sceneObj) :
     Transform(glm::vec3(0.f),
               glm::quat(1.f, glm::vec3(0.f)),
               glm::vec3(1.f)),
     _transformNotifier(),
-    sceneObject(sceneObj)
+    _sceneObject(sceneObj)
 {
 
 }
 
-ObjectTransform::ObjectTransform(SceneObjectPtr sceneObj, glm::vec3 position, glm::quat orientation, glm::vec3 scale) :
+ObjectTransform::ObjectTransform(SceneObjectWPtr sceneObj, glm::vec3 position, glm::quat orientation, glm::vec3 scale) :
     Transform(position,
               orientation,
               scale),
     _transformNotifier(),
-    sceneObject(sceneObj)
+    _sceneObject(sceneObj)
 {
 
 }
@@ -60,9 +60,9 @@ ObjectTransform& ObjectTransform::operator=(const Transform& other)
     return *this;
 }
 
-ObjectTransform::operator Transform()
+SceneObjectWPtr ObjectTransform::getSceneObject()
 {
-    return Transform(_position, _rotation, _scale);
+    return _sceneObject;
 }
 
 /* 
@@ -128,7 +128,7 @@ glm::quat ObjectTransform::rotateBy(float radAngle, glm::vec3 axis, bool localAx
     return newRotation;
 }
 
-glm::quat ObjectTransform::lookAt(glm::vec3 target, glm::vec3 yConstraint, bool localTarget = false)
+glm::quat ObjectTransform::lookAt(glm::vec3 target, glm::vec3 yConstraint, bool localTarget)
 {
     glm::quat newRotation = Transform::lookAt(target, yConstraint, localTarget);
     // Notify transform change
@@ -172,5 +172,5 @@ ObjectTransform::TransformNotifier& ObjectTransform::getNotifier()
 
 void ObjectTransform::notifyChange()
 {
-    _transformNotifier.notify(sceneObject->id);
+    _transformNotifier.notify(_sceneObject.lock()->id);
 }

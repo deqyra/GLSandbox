@@ -7,8 +7,10 @@
 template <typename ...ArgTypes>
 class Notifier
 {
+    public:
+        using ListenerType = std::function<void(ArgTypes&&...)>;
     private:
-        std::unordered_map<unsigned int, std::function<void(ArgTypes&&...)>> _listeners;
+        std::unordered_map<unsigned int, ListenerType> _listeners;
         unsigned int _count;
 
     public:
@@ -46,7 +48,8 @@ void Notifier<ArgTypes...>::notify(ArgTypes&&... args)
 {
     for (auto it = _listeners.begin(); it != _listeners.end(); it++)
     {
-        (*it)(std::forward<ArgTypes>(args)...);
+        ListenerType listener = it->second;
+        listener(std::forward<ArgTypes>(args)...);
     }
 }
 
