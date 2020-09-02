@@ -16,7 +16,7 @@
 #include "glfw3_adapter.hpp"
 #include "glfw3_window_callbacks.hpp"
 
-GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
+GLWindowPtr makeGLFWWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
 {
     static bool glfw3AdapterInitialized = false;
     if (!glfw3AdapterInitialized) Window::GLFW3Adapter::initialize();
