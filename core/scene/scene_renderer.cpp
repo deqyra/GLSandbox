@@ -31,9 +31,9 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
     ScenePtr scene = wScene.lock();
 
     // Get pointers to meshes, lights, and the scene camera
-    std::vector<SceneObjectWPtr> meshComponents = scene->getObjectsWithComponent<MeshComponent>();
-    std::vector<SceneObjectWPtr> lightComponents = scene->getObjectsWithComponent<LightComponent>();
-    std::vector<SceneObjectWPtr> cameraComponents = scene->getObjectsWithComponent<CameraComponent>();
+    std::vector<SceneObjectPtr> meshComponents = scene->getObjectsWithComponent<MeshComponent>();
+    std::vector<SceneObjectPtr> lightComponents = scene->getObjectsWithComponent<LightComponent>();
+    std::vector<SceneObjectPtr> cameraComponents = scene->getObjectsWithComponent<CameraComponent>();
 
     if (cameraComponents.size() == 0)
     {
@@ -46,7 +46,7 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
     }
 
     // Get the actual camera
-    SceneObjectPtr cameraObj = cameraComponents[0].lock();
+    SceneObjectPtr cameraObj = cameraComponents[0];
     std::shared_ptr<CameraComponent> cameraComp = cameraObj->getComponent<CameraComponent>();
 
     // Set up matrices in their UBO
@@ -61,21 +61,21 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
     for (auto it = lightComponents.begin(); it != lightComponents.end(); it++)
     {
         // Get the light component
-        SceneObjectPtr lightObj = it->lock();
+        SceneObjectPtr lightObj = *it;
         std::shared_ptr<LightComponent> lightComp = lightObj->getComponent<LightComponent>();
         // Get the actual light and its world model matrix (needed to compute its world position)
         lights.push_back(lightComp->getLight());
-        modelMats.push_back(scene->getWorldModelMatrix(lightObj->id));
+        modelMats.push_back(scene->getWorldTransform(lightObj->id).getModelMatrix());
     }
     sendLightData(lights, modelMats, view);
 
     for (auto it = meshComponents.begin(); it != meshComponents.end(); it++)
     {
         // Get the mesh component
-        SceneObjectPtr meshObj = it->lock();
+        SceneObjectPtr meshObj = *it;
         std::shared_ptr<MeshComponent> meshComp = meshObj->getComponent<MeshComponent>();
         // Draw the mesh
-        glm::mat4 modelMatrix = scene->getWorldModelMatrix(meshObj->id);
+        glm::mat4 modelMatrix = scene->getWorldTransform(meshObj->id).getModelMatrix();
         drawMesh(meshComp->mesh, modelMatrix, cameraComp->getViewMatrix(), meshComp->material, meshComp->shader);
     }
 }

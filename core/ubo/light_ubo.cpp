@@ -1,6 +1,6 @@
 #include "light_ubo.hpp"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ubo_info.hpp"

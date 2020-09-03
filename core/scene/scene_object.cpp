@@ -6,19 +6,20 @@
 
 unsigned int SceneObject::_count = 0;
 
-SceneObject::SceneObject(SceneWPtr scene) :
+SceneObject::SceneObject() :
     id(_count++),
     enabled(true),
-    _scene(scene),
-    _components()
+    _scene(std::shared_ptr<Scene>(nullptr)),
+    _components(),
+    transform(id)
 {
 
 }
 
-glm::vec3 SceneObject::getWorldPosition()
+Transform SceneObject::getWorldTransform()
 {
     std::shared_ptr<Scene> scene = _scene.lock();
-    return scene->getWorldPosition(id);
+    return scene->getWorldTransform(id);
 }
 
 SceneWPtr SceneObject::getScene()
@@ -33,8 +34,9 @@ void SceneObject::setScene(SceneWPtr scene)
 
 SceneObjectPtr SceneObject::clone()
 {
-    SceneObjectPtr clonedObject = SceneObjectPtr(new SceneObject(_scene));
+    SceneObjectPtr clonedObject = std::make_shared<SceneObject>();
     clonedObject->enabled = enabled;
+    clonedObject->transform = transform;
     for (auto it = _components.begin(); it != _components.end(); it++)
     {
         ComponentPtr newComponent = ComponentPtr((*it)->clone());

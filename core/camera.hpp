@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "positioned_object.hpp"
+#include "object_transform.hpp"
 
 class Camera
 {
@@ -40,7 +40,7 @@ class Camera
         static constexpr float DefaultZoomFactor = 1.f;
 
         Camera(const Camera& other);
-        Camera(glm::mat4 projection, float yaw = DefaultYaw, float pitch = DefaultPitch, float zoom = DefaultZoomFactor, glm::vec3 up = PositionedObject::WorldY);
+        Camera(glm::mat4 projection, float yaw = DefaultYaw, float pitch = DefaultPitch, float zoom = DefaultZoomFactor, glm::vec3 up = ObjectTransform::Y);
         virtual ~Camera();
 
         // Update vectors to reflect a new camera rotation

@@ -3,11 +3,12 @@
 #include <iostream>
 #include <string>
 
-#include "glfw3_adapter.hpp"
+#include "glfw3/glfw3_adapter.hpp"
 #include "../core/input_processor.hpp"
 
-GLWindow::GLWindow(GLFWwindow* window, std::string title) :
-    _w(window),
+namespace Window
+{
+GLWindow::GLWindow(std::string title) :
     _inputProcessor(std::make_shared<InputProcessor>()),
     _title(title)
 {
@@ -16,17 +17,14 @@ GLWindow::GLWindow(GLFWwindow* window, std::string title) :
 
 GLWindow::~GLWindow()
 {
-    glfwDestroyWindow(_w);
-}
 
-GLFWwindow* GLWindow::getWindow()
-{
-    return _w;
 }
 
 void GLWindow::processFramebufferResize(int width, int height)
 {
     _inputProcessor->processFramebufferResize(shared_from_this(), width, height);
+    _width = width;
+    _height = height;
 }
 
 void GLWindow::processKeyboard(Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
@@ -54,45 +52,8 @@ void GLWindow::detachInputProcessor()
     _inputProcessor = std::make_shared<InputProcessor>();
 }
 
-bool GLWindow::shouldClose()
-{
-    return glfwWindowShouldClose(_w);
-}
-
-void GLWindow::setShouldClose(bool value)
-{
-    glfwSetWindowShouldClose(_w, value);
-}
-
-void GLWindow::swapBuffers()
-{
-    glfwSwapBuffers(_w);
-}
-
-void GLWindow::pollEvents()
-{
-    glfwPollEvents();
-}
-
-void GLWindow::setInputMode(Window::Input::Mode::Target target, Window::Input::Mode::Value value)
-{
-    unsigned int glfw3Target = Window::GLFW3Adapter::getValue(target);
-    unsigned int glfw3Value = Window::GLFW3Adapter::getValue(value);
-    glfwSetInputMode(_w, glfw3Target, glfw3Value);
-}
-
 std::string GLWindow::getTitle()
 {
     return _title;
 }
-
-void GLWindow::setTitle(std::string title)
-{
-    _title = title;
-    glfwSetWindowTitle(_w, _title.c_str());
-}
-
-void GLWindow::getCursorPos(double* x, double* y)
-{
-    glfwGetCursorPos(_w, x, y);
 }

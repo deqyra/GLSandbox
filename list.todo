@@ -19,7 +19,8 @@ RenderBoi:
             ☐ Mesh rendering order based on their VertexDataManager handle, then on the requested shader
             ☐ Eliminate buffer swaps between objects sharing the same vertex data
         PositionedObject:
-            ☐ Viable alternative to the ugly `transformModified` flag fix
+            ✔ Change SceneObject inheritance into a compoud Transform object @done(20-07-02 17:00)
+            ✔ Viable alternative to the ugly `transformModified` flag fix (observer pattern) @done(20-09-02 15:12)
         ☐ Dynamic meshes
         ☐ Unity-like prefab system?
         ☐ Shadows
@@ -30,13 +31,17 @@ RenderBoi:
         ☐ (De)serialize scenes
         ☐ Load models with Assimp
     Window:
+        ✔ Isolate calls to GLFW in a windowing tool module @done(20-07-02 15:04)
+        ☐ Move functionality to get input action/button names (used in BasicInputManager)
     Examples:
         ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
         ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)
     FIXME:
-        ☐ PositionedObject::lookAt
-        ☐ PositionedObject::rotate with localAxis==true
-        ☐ Light attenuation
+        ☐ Transform::lookAt
+        ☐ Transform::rotate with localAxis==true
+        ✔ Light attenuation @done(20-04-20 06:55)
+    Crossplatform-ability:
+        ✔ Provide OpenGL core context hint for GLFW except when EGL is used (i.e. on Wayland systems) @done(20-07-02 14:19)
     Online resources:
         https://www.youtube.com/watch?v=-bCeNzgiJ8I&list=PLckFgM6dUP2hc4iy-IdKFtqR9TeZWMPjm
         http://media.steampowered.com/apps/steamdevdays/slides/beyondporting.pdf

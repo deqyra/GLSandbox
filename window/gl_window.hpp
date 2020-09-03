@@ -11,63 +11,66 @@
 
 #include "enums.hpp"
 #include "../core/input_processor.hpp"
-#include "../tools/enum_map.hpp"
 
 namespace Window
 {
-// To be attached to a GLFWwindow object, providing event callback functionality through a custom InputProcessor
+// To be attached to a concrete window object (provided by a backend), providing event callback functionality through a custom InputProcessor
 class GLWindow : public std::enable_shared_from_this<GLWindow>
 {
     public:
-        GLWindow(GLFWwindow* window, std::string title);
+        GLWindow(std::string title);
         ~GLWindow();
 
-        // Get a pointer to the managed window
-        GLFWwindow* getWindow();
-
         // To be called upon a framebuffer resize event; forwards the call to the custom input processor
-        void processFramebufferResize(int width, int height);
+        virtual void processFramebufferResize(int width, int height);
         // To be called upon a keyboard event; forwards the call to the custom input processor
-        void processKeyboard(Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
+        virtual void processKeyboard(Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
         // To be called upon a mouse button event; forwards the call to the custom input processor
-        void processMouseButton(Window::Input::MouseButton button, Window::Input::Action action, int mods);
+        virtual void processMouseButton(Window::Input::MouseButton button, Window::Input::Action action, int mods);
         // To be called upon a mouse cursor event; forwards the call to the custom input processor
-        void processMouseCursor(double xpos, double ypos);
+        virtual void processMouseCursor(double xpos, double ypos);
 
         // Register new input processor
-        void registerInputProcessor(InputProcessorPtr inputProcessor);
+        virtual void registerInputProcessor(InputProcessorPtr inputProcessor);
         // Discard custom input processor
-        void detachInputProcessor();
+        virtual void detachInputProcessor();
 
         // Whether the window was flagged for closing
-        bool shouldClose();
-        // Set the window closing flaf
-        void setShouldClose(bool value);
+        virtual bool shouldClose() = 0;
+        // Set the window closing flag
+        virtual void setShouldClose(bool value) = 0;
 
-        // Swap GLFW buffers
-        void swapBuffers();
-        // Poll GLFW events
-        void pollEvents();
+        // Swap buffers
+        virtual void swapBuffers() = 0;
+        // Poll events
+        virtual void pollEvents() = 0;
 
-        // Set GLFW input mode
-        void setInputMode(Window::Input::Mode::Target target, Window::Input::Mode::Value value);
+        // Set input mode
+        virtual void setInputMode(Window::Input::Mode::Target target, Window::Input::Mode::Value value) = 0;
 
         // Get title of managed window
-        std::string getTitle();
-        // Get title of managed window
-        void setTitle(std::string title);
+        virtual std::string getTitle();
+        // Set title of managed window
+        virtual void setTitle(std::string title) = 0;
+        // Get aspect ratio of framebuffer displayed in managed window
+        virtual float getAspectRatio() = 0;
 
         // Get cursor position in managed window
-        void getCursorPos(double* x, double* y);
+        virtual void getCursorPos(double* x, double* y) = 0;
 
     private:
-        // The GLFW window being managed
-        GLFWwindow* _w;
         // Custom input processor to be registered at any time, providing custom callbacks
         InputProcessorPtr _inputProcessor;
+
         // Window title
         std::string _title;
+        // Window width
+        int _width;
+        // Window height
+        int _height;
 };
+
+
 }//namespace Window
 
 using GLWindow = Window::GLWindow;

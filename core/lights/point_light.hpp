@@ -11,18 +11,12 @@
 class PointLight : public Light
 {
     public:
-        // Lambda returning a linear coefficient for light attenuation given a range
-        static const std::function<float(float)> linearCoeffFromDesiredRange;
-        // Lambda returning a quadratic coefficient for light attenuation given a range
-        static const std::function<float(float)> quadraticCoeffFromDesiredRange;
+        static constexpr float DefaultRange = 50.f;
 
         PointLight();
         PointLight(float range);
         PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float range);
         PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
-
-        // Get a raw pointer to a new PointLight instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
-        PointLight* clone();
 
         // RGB color of the ambient component of the emitted light
         glm::vec3 ambient;
@@ -37,6 +31,11 @@ class PointLight : public Light
         float linear;
         // Quadratic coefficient of the light attenuation computation
         float quadratic;
+
+        // Get a raw pointer to a new PointLight instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        PointLight* clone();
+        // Recompute light attenuation factors according to a new range
+        void setRange(float range);
 };
 
 #endif//POINT_LIGHT_HPP

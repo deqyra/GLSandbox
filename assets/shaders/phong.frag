@@ -1,4 +1,4 @@
-#version 460 core
+#version 420 core
 in VertexOut 
 {
 	vec3 fragPos;
@@ -61,8 +61,8 @@ struct Material
 	sampler2D diffuseMaps[DIFFUSE_MAP_MAX_COUNT];
 	sampler2D specularMaps[SPECULAR_MAP_MAX_COUNT];
 
-	unsigned int diffuseMapCount;
-	unsigned int specularMapCount;
+	uint diffuseMapCount;
+	uint specularMapCount;
 };
 
 // Uniforms
@@ -73,9 +73,10 @@ layout (std140, binding = 1) uniform lights
 	SpotLight spot[SPOT_LIGHT_MAX_COUNT];					// 64 * 96			//     0
 	PointLight point[POINT_LIGHT_MAX_COUNT];				// 64 * 80			//  6144
 	DirectionalLight direct[DIRECTIONAL_LIGHT_MAX_COUNT];	//  4 * 64			// 11264
-	unsigned int pointCount;								// 4				// 11520
-	unsigned int spotCount;									// 4				// 11524
-	unsigned int directionalCount;							// 4				// 11528
+
+	uint pointCount;										// 4				// 11520
+	uint spotCount;											// 4				// 11524
+	uint directionalCount;									// 4				// 11528
 };															// Size: 11532
 
 uniform Material material;
@@ -114,8 +115,8 @@ vec4 processPointLight(int i)
 	vec3 positionDiff = vertOut.fragPos - point[i].position;
 	vec3 lightDirection = normalize(positionDiff);
 	float dist = length(positionDiff);
-	float attenuation = 1.f;
-	// float attenuation = 1.f / (point[i].constant + (point[i].linear * dist) + (point[i].quadratic * dist * dist));
+	// float attenuation = 1.f;
+	float attenuation = 1.f / (point[i].constant + (point[i].linear * dist) + (point[i].quadratic * dist * dist));
 
 	return attenuation * calculatePhong(lightDirection, point[i].ambient, point[i].diffuse, point[i].specular);
 }

@@ -1,17 +1,8 @@
 #include "spot_light.hpp"
-
-const std::function<float(float)> SpotLight::linearCoeffFromDesiredRange = [](float range) -> float
-{
-    return (float)((2.041118599e-7 * range * range) - (7.382441708e-4 * range) + 2.481753022e-1);
-};
-
-const std::function<float(float)> SpotLight::quadraticCoeffFromDesiredRange = [](float range) -> float
-{
-    return (float)((3.682978425e-7 * range * range) - (1.318877109e-3 * range) + 4.032644093e-1);
-};
+#include "tools.hpp"
 
 SpotLight::SpotLight(glm::vec3 direction) :
-    SpotLight(direction, DefaultSpotLightRange)
+    SpotLight(direction, DefaultRange)
 {
 
 }
@@ -35,19 +26,19 @@ SpotLight::SpotLight(glm::vec3 direction, float range, float innerCutoff, float 
 }
 
 SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) :
-	SpotLight(direction, ambient, diffuse, specular, DefaultSpotLightRange, DefaultSpotLightInnerCutoff, DefaultSpotLightOuterCutoff)
+	SpotLight(direction, ambient, diffuse, specular, DefaultRange, DefaultInnerCutoff, DefaultOuterCutoff)
 {
 
 }
 
 SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float range) :
-	SpotLight(direction, ambient, diffuse, specular, range, DefaultSpotLightInnerCutoff, DefaultSpotLightOuterCutoff)
+	SpotLight(direction, ambient, diffuse, specular, range, DefaultInnerCutoff, DefaultOuterCutoff)
 {
 
 }
 
 SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float innerCutoff, float outerCutoff) : 
-	SpotLight(direction, ambient, diffuse, specular, DefaultSpotLightRange, innerCutoff, outerCutoff)
+	SpotLight(direction, ambient, diffuse, specular, DefaultRange, innerCutoff, outerCutoff)
 {
 
 }
@@ -60,9 +51,7 @@ SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, 
 	innerCutoff(innerCutoff),
 	outerCutoff(outerCutoff)
 {
-    constant = 1.f;
-    linear = linearCoeffFromDesiredRange(range);
-    quadratic = quadraticCoeffFromDesiredRange(range);
+    attenuationFromRange(range, constant, linear, quadratic);
 }
 
 SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic, float innerCutoff, float outerCutoff) :
@@ -82,4 +71,9 @@ SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, 
 SpotLight* SpotLight::clone()
 {
     return new SpotLight(direction, ambient, diffuse, specular, constant, linear, quadratic, innerCutoff, outerCutoff);
+}
+
+void SpotLight::setRange(float range)
+{
+    attenuationFromRange(range, constant, linear, quadratic);
 }

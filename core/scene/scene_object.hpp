@@ -1,13 +1,15 @@
 #ifndef CORE__SCENE__SCENE_OBJECT_HPP
 #define CORE__SCENE__SCENE_OBJECT_HPP
 
-#include "../positioned_object.hpp"
+#include "../transform.hpp"
 
 #include <vector>
 #include <memory>
 #include <type_traits>
 #include <string>
 #include <exception>
+
+#include "../object_transform.hpp"
 
 #include "component.hpp"
 #include "component_type.hpp"
@@ -21,7 +23,7 @@ using ScenePtr = std::shared_ptr<Scene>;
 using SceneWPtr = std::weak_ptr<Scene>;
 
 // An object meant to be part of a scene. Abstract entity made up of components that give it concrete aspects in the context of a scene.
-class SceneObject : public PositionedObject, public std::enable_shared_from_this<SceneObject>
+class SceneObject : public std::enable_shared_from_this<SceneObject>
 {
     private:
         // Copy constructor and copy-assignment operator disallowed because SceneObjects are meant to be used through pointers only. Use clone() instead.
@@ -38,16 +40,16 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
         SceneWPtr _scene;
 
     public:
-        SceneObject(SceneWPtr scene);
+        SceneObject();
 
-        // Get the world position of the object in the scene (see getPosition() for local position)
-        glm::vec3 getWorldPosition();
+        // Get the world position of the object in the scene (use transform.getPosition() for local position)
+        Transform getWorldTransform();
         // Get the parent scene of this object
         SceneWPtr getScene();
         // Set the parent scene of this object
         void setScene(SceneWPtr scene);
 
-        // Get a pointer to a new SceneObject instance cloned from this. All components are cloned as well.
+        // Get a pointer to a new SceneObject instance cloned from this. All components are cloned as well. The cloned SceneObject 
         SceneObjectPtr clone();
 
         // Add a component of type T to this object
@@ -69,6 +71,8 @@ class SceneObject : public PositionedObject, public std::enable_shared_from_this
         const unsigned int id;
         // Whether this object is enabled in the scene
         bool enabled;
+        // The 3D transform of this object
+        ObjectTransform transform;
 };
 
 template<class T, class... ArgTypes>

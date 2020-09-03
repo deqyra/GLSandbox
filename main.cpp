@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 #include "project_macros.hpp"
@@ -20,6 +20,8 @@
 // Shortcut-function to halt the execution of the program with a clean exit
 int abortWithError(std::string message, bool terminateGLFW = true);
 
+static void glfwErrorCallback(int error, const char* description);
+
 // Instantiate all available sandboxes
 std::vector<GLSandbox*> createAllSandboxes();
 
@@ -30,18 +32,26 @@ int main(int argc, char** argv)
 		SetConsoleOutputCP(65001);
 	#endif
 
-    std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << std::endl;
+    std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << '\n';
     std::cout << COPYLEFT_NOTICE << std::endl;
 
-	glfwInit();
-	// Init window, GL context and GL pointers
-	GLWindowPtr window = makeGLFWWindow("RenderBoi", 1280, 720, 4, 6, Window::OpenGLProfile::Core, true);
+	glfwSetErrorCallback(glfwErrorCallback);
 
-	if (!window)
+	if (!glfwInit())
+		return EXIT_FAILURE;
+
+	// Init window, GL context and GL pointers
+	GLWindowPtr window;
+	try
 	{
+		window = makeGLFWWindow("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "Exception thrown during window creation:" << '\n'<< e.what() << std::endl;
 		return abortWithError("Window creation failed. Aborting...");
 	}
-
+	
     // Instantiate and run examples
 	std::vector<GLSandbox*> examples = createAllSandboxes();
     for (auto it = examples.begin(); it != examples.end(); it++)
@@ -65,6 +75,11 @@ int abortWithError(std::string message, bool terminateGLFW)
 	}
 
 	return EXIT_FAILURE;
+}
+
+static void glfwErrorCallback(int error, const char* description)
+{
+	std::cerr << "GLFW error: 0x" << std::hex << error << ", \"" << description << "\"" << std::endl;
 }
 
 std::vector<GLSandbox*> createAllSandboxes()

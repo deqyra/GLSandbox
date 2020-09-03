@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "positioned_object.hpp"
+#include "object_transform.hpp"
 
 Camera::Camera(const Camera& other) :
     _front(other._front),
@@ -105,7 +105,7 @@ glm::vec3 Camera::getParentUp()
 void Camera::setParentUp(glm::vec3 up)
 {
     _parentUp = glm::normalize(up);
-    _parentUpRotation = glm::quat(PositionedObject::WorldY, _parentUp);
+    _parentUpRotation = glm::quat(ObjectTransform::Y, _parentUp);
 
     updateVectors();
 }

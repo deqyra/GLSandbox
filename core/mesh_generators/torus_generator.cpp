@@ -4,6 +4,7 @@
 #include <cmath>
 #include <memory>
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 #include "../vertex.hpp"
 

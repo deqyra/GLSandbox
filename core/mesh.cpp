@@ -6,7 +6,6 @@
 
 #include "material.hpp"
 #include "materials.hpp"
-#include "positioned_object.hpp"
 #include "vertex.hpp"
 
 unsigned int Mesh::_count = 0;

@@ -2,7 +2,7 @@ RenderBoi
 =========
 
 A simple rendering engine with a modest feature set.  
-Originally a pet project to get started with real-time rendering app architecture.
+Originally a pet project to get started with real-time rendering app architecture and the 3D graphics software stack.
 
 **Example screenshot:** (click to open a video)  
 
@@ -15,12 +15,9 @@ The cube shows the position of a point light.
 
 ## Info
 
-* Development conducted using OpenGL 4.6 (core profile) on a GTX 1660 Ti.
-* To use the project, [generate a loader](https://glad.dav1d.de/) that suits your platform, and replace `include/glad/glad.h` and `glad.cpp` with it.
-* Other things might need changing, such as:
-  * `#version` directives in all shaders (located in folder [assets/shaders/](https://github.com/deqyra/RenderBoi/blob/master/assets/shaders))
-  * OpenGL version numbers in the call to `makeWindow` in [`main.cpp`](https://github.com/deqyra/RenderBoi/blob/master/main.cpp#L37)
-* This is still being figured out, but there seems to be a discrepancy in how GPU memory format `std140` is implemented by some drivers, which is a more serious problem as UBO data structures use it.
+* Requirements:
+  * an OpenGL 4.2-capable environment,
+  * which supports GL_ARB_debug_output.
 * See this [sort of a diagram](https://github.com/deqyra/RenderBoi/blob/master/system_diagram.png) as well as this [class diagram](https://github.com/deqyra/RenderBoi/blob/master/class_diagram.png) to get a basic understanding of how everything works.
 
 ## Current features

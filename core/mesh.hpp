@@ -5,10 +5,9 @@
 #include <vector>
 #include <memory>
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include "material.hpp"
-#include "positioned_object.hpp"
 #include "vertex.hpp"
 
 class Mesh;
@@ -16,7 +15,7 @@ using MeshPtr = std::shared_ptr<Mesh>;
 using MeshWPtr = std::weak_ptr<Mesh>;
 
 // Any mesh composed of vertices to be rendered by indexed drawing
-class Mesh : public PositionedObject
+class Mesh
 {
     private:
         // Keeps track of how many Mesh objects were created (used as an ID system)

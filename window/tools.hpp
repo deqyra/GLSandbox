@@ -10,12 +10,9 @@
 #include "gl_window.hpp"
 
 // Create a GL context within a GLFW window, bind callbacks and initialize GL function pointers
-GLWindowPtr makeGLFWWindow(std::string title, int width = 640, int height = 480, int glVersionMajor = -1, int glVersionMinor = -1, Window::OpenGLProfile glProfile = Window::OpenGLProfile::Core, bool debug = false);
+GLWindowPtr makeGLFWWindow(std::string title, int width = 640, int height = 480, int glVersionMajor = 1, int glVersionMinor = 0, Window::OpenGLProfile glProfile = Window::OpenGLProfile::Core, bool debug = false);
 
 // Output callback, called upon getting GL errors
 void APIENTRY glDebugOutput(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char* message, const void* userParam);
-
-// Return the aspect ratio (width / height) of the current context
-float glAspectRatio();
 
 #endif//WINDOW__TOOLS_HPP
