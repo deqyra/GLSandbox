@@ -22,7 +22,7 @@ Transform::Transform() :
 
 Transform::Transform(glm::vec3 position, glm::quat rotation, glm::vec3 scale) :
     _position(position),
-    _rotation(rotation),
+    _rotation(glm::normalize(rotation)),
     _scale(scale),
     _left(glm::vec3(1.f, 0.f, 0.f)),
     _up(glm::vec3(0.f, 1.f, 0.f)),
@@ -70,7 +70,7 @@ void Transform::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool sel
     // Update rotation if needed
     if (selfRotate)
     {
-        rotateBy(-radAngle, axis);
+        rotateBy(radAngle, axis);
     }
 
     // Update flags
@@ -84,18 +84,17 @@ glm::quat Transform::getRotation() const
 
 void Transform::setRotation(glm::quat orientation)
 {
-    _rotation = orientation;
-    _rotation = glm::normalize(_rotation);
+    _rotation = glm::normalize(orientation);
 
     // Update flags
     _matrixOutdated = true;
+    _localVectorsOutdated = true;
 }
 
 glm::quat Transform::rotateBy(glm::quat other)
 {
     // Rotate the object
-    _rotation = other * _rotation;
-    _rotation = glm::normalize(_rotation);
+    _rotation = glm::normalize(other * _rotation);
 
     // Update flags
     _matrixOutdated = true;
@@ -111,12 +110,14 @@ glm::quat Transform::rotateBy(float radAngle, glm::vec3 axis, bool localAxis)
     }
 
     // Rotate the object
-    _rotation = glm::rotate(_rotation, radAngle, axis);
-    _rotation = glm::normalize(_rotation);
+    float cos = glm::cos(radAngle * 0.5f);
+    float sin = glm::sin(radAngle * 0.5f);
 
-    // Update flags
-    _matrixOutdated = true;
-    _localVectorsOutdated = true;
+    glm::vec3 tmp = glm::normalize(axis);
+    glm::quat newRotation = glm::quat(cos, sin*axis.x, sin*axis.y, sin*axis.z);
+
+    rotateBy(newRotation);
+
     return _rotation;
 }
 
@@ -248,8 +249,7 @@ Transform Transform::applyTo(const Transform& other) const
     newPosition += _position;
 
     // Combine rotations
-    glm::quat newRotation = other._rotation * _rotation;
-    newRotation = glm::normalize(newRotation);
+    glm::quat newRotation = glm::normalize(_rotation * other._rotation);
 
     // Multiply scales
     glm::vec3 newScale = glm::vec3(

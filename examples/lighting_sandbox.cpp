@@ -1,6 +1,7 @@
 #include "lighting_sandbox.hpp"
 
 #include <memory>
+#include <iostream>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -41,7 +42,7 @@ LightingSandbox::~LightingSandbox()
 
 void LightingSandbox::run(GLWindowPtr window)
 {
-    const float lightBaseRange = 50.f;
+    const float lightBaseRange = 30.f;
 
     // Update window title
     std::string title = window->getTitle();
@@ -52,7 +53,7 @@ void LightingSandbox::run(GLWindowPtr window)
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), window->getAspectRatio(), 0.1f, 100.0f);
-    CameraPtr _camera = std::make_shared<Camera>(projection, -135.f, -25.f);
+    CameraPtr _camera = std::make_shared<Camera>(projection, -45.f, -70.f);
     
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
 
@@ -95,6 +96,7 @@ void LightingSandbox::run(GLWindowPtr window)
     scene->registerObject(cameraObj);
     cameraObj->addComponent<CameraComponent>(_camera);
     cameraObj->transform.setPosition(StartingCameraPosition);
+    cameraObj->transform.setPosition(glm::vec3(-3.f, 9.f, 3.f));
     std::shared_ptr<FPSCameraScript> fpsScript = std::make_shared<FPSCameraScript>();
     std::shared_ptr<InputProcessingScript> baseFpsScript = std::static_pointer_cast<InputProcessingScript>(fpsScript);
     cameraObj->addComponent<InputProcessingScriptComponent>(baseFpsScript);
@@ -150,7 +152,7 @@ LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObject
     _tetrahedronObj(tetrahedronObj),
     _light(light),
     _autoRotate(true),
-    _speedFactor(10.f),
+    _speedFactor(1.f),
     _sine(LightVariationFrequency),
     _baseRange(baseLightRange)
 {
@@ -159,17 +161,37 @@ LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObject
 
 void LightingSandboxScript::update(float timeElapsed)
 {
-    _light->setRange(_baseRange + _sine.get() * (LightVariationAmplitude / 2.f));
+    static float cumulative = 0.f;
+
+    //_light->setRange(_baseRange + _sine.get() * (LightVariationAmplitude / 2.f));
+
     if (_autoRotate)
     {
         // Update object transforms
-        float angleDiff = _speedFactor * timeElapsed;
-        _cubeObj->transform.orbit((float)glm::radians(0.618f * angleDiff), CubeOrbitAxis, glm::vec3(0.f, 3.f, 0.f));
-        _bigTorusObj->transform.rotateBy((float)glm::radians(angleDiff), BigTorusRotationAxis);
-        _smallTorusObj->transform.orbit((float)glm::radians(-1.f * angleDiff), SmallTorusRotationAxis, glm::vec3(0.f, 0.f, 0.f), true);
-        _tetrahedronObj->transform.rotateBy((float)glm::radians(1.5f * angleDiff), TetrahedronRotationAxis, true);
-        _cubeObj->transform.rotateBy((float)glm::radians(1.5f * angleDiff), TetrahedronRotationAxis, true);
-        _tetrahedronObj->transform.orbit((float)glm::radians(1.5f * angleDiff), TetrahedronOrbitAxis, glm::vec3(0.f), true);
+        float delta = _speedFactor * timeElapsed;
+
+        //_cubeObj->transform.orbit((float)glm::radians(45.f * delta), CubeOrbitAxis, glm::vec3(0.f, 3.f, 0.f));
+        //_bigTorusObj->transform.rotateBy((float)glm::radians(delta), BigTorusRotationAxis);
+        //_smallTorusObj->transform.orbit((float)glm::radians(-45.f * delta), SmallTorusRotationAxis, glm::vec3(0.f, 0.f, 0.f), true);
+        //_tetrahedronObj->transform.rotateBy((float)glm::radians(1.5f * delta), TetrahedronRotationAxis, true);
+        _cubeObj->transform.rotateBy((float)glm::radians(45.f * delta), TetrahedronRotationAxis, true);
+        //_tetrahedronObj->transform.orbit((float)glm::radians(1.5f * delta), TetrahedronOrbitAxis, glm::vec3(0.f), true);
+
+        cumulative += 45.f * delta;
+        if (cumulative > 90.f)
+        {
+            _autoRotate = false;
+            cumulative -= 90.f;
+            glm::quat r = _cubeObj->transform.getRotation();
+            std::cout   << "Cube rotation: \n"
+                        << "s: " << r.w << "\n"
+                        << "x: " << r.x << "\n"
+                        << "y: " << r.y << "\n"
+                        << "z: " << r.z << "\n"
+                        << "2acos(s): " << glm::degrees(2*glm::acos(r.w)) << "\n"
+                        << "2asin(y): " << glm::degrees(2*glm::asin(r.y)) << "\n"
+                        << std::endl;
+        }
     }
     else
     {
@@ -185,11 +207,11 @@ void LightingSandboxScript::processKeyboard(GLWindowPtr window, Window::Input::K
 
     if (_autoRotate)
     {
-        if (key == Key::Up && (action == Action::Press || action == Action::Repeat) && (mods & Mod::Control) && _speedFactor < 200)
+        if (key == Key::Up && (action == Action::Press || action == Action::Repeat) && (mods & Mod::Control) && _speedFactor < 10.f)
         {
             _speedFactor *= 1.1f;
         }
-        else if (key == Key::Down && (action == Action::Press || action == Action::Repeat) && (mods & Mod::Control) && _speedFactor > 10)
+        else if (key == Key::Down && (action == Action::Press || action == Action::Repeat) && (mods & Mod::Control) && _speedFactor > 0.2f)
         {
             _speedFactor /= 1.1f;
         }
