@@ -6,6 +6,8 @@
 #include <glm/gtx/component_wise.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "frame_of_reference.hpp"
+
 Transform::Transform() :
     _position(glm::vec3(0.f)),
     _rotation(glm::quat(1.f, glm::vec3(0.f))),
@@ -59,7 +61,7 @@ glm::vec3 Transform::translateBy(glm::vec3 other)
     return _position;
 }
 
-void Transform::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+void Transform::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, FrameOfReference source, bool selfRotate)
 {
     // Orbit around the axis and center
     glm::vec4 tmpPos = glm::vec4(_position - center, 1.f);
@@ -274,7 +276,8 @@ void Transform::updateLocalVectors() const
 void Transform::updateMatrix() const
 {
     // Generate 4x4 matrix from quaternion
-    _modelMatrix = glm::toMat4(glm::inverse(_rotation));
+    //_modelMatrix = glm::toMat4(glm::inverse(_rotation));
+    _modelMatrix = glm::toMat4(_rotation);
 
     // Scale things up
     _modelMatrix[0][0] *= _scale[0];

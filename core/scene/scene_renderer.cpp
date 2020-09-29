@@ -29,6 +29,7 @@ SceneRenderer::SceneRenderer() :
 void SceneRenderer::renderScene(SceneWPtr wScene)
 {
     ScenePtr scene = wScene.lock();
+    //scene->updateAllTransforms();
 
     // Get pointers to meshes, lights, and the scene camera
     std::vector<SceneObjectPtr> meshComponents = scene->getObjectsWithComponent<MeshComponent>();

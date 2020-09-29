@@ -8,6 +8,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "frame_of_reference.hpp"
+
 // An object that has 3D-space properties : position, orientation and scale
 class Transform
 {
@@ -54,7 +56,7 @@ class Transform
         // Translate the position of the object by a 3D vector
         glm::vec3 translateBy(glm::vec3 other);
         // Orbit the object around an axis and center
-        void orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate = false);
+        void orbit(float radAngle, glm::vec3 axis, glm::vec3 center, FrameOfReference source, bool selfRotate = false);
 
         // Get the orientation of the object
         glm::quat getRotation() const;
@@ -63,11 +65,10 @@ class Transform
         // Rotate the object by a quaternion
         glm::quat rotateBy(glm::quat other);
         // Rotate the object around an axis
-        glm::quat rotateBy(float radAngle, glm::vec3 axis, bool localAxis = false);
-        // Rotate the object so that its front is directed to the target position, with respect to a constraint on the upwards direction
-        // localTarget indicates whether the provided target position is local to the transform
+        glm::quat rotateBy(float radAngle, glm::vec3 axis, FrameOfReference source);
+        // Rotate the object so that its own Z axis (front) is directed to the target position, with respect to a constraint on the upwards direction
         // yConstraint vector should always be given in world coordinates; provide the null vector to remove the constraint
-        glm::quat lookAt(glm::vec3 target, glm::vec3 yConstraint, bool localTarget = false);
+        glm::quat lookAt(glm::vec3 target, glm::vec3 yConstraint, FrameOfReference source);
 
         // Get the scale of the object
         glm::vec3 getScale() const;

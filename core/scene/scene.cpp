@@ -214,17 +214,20 @@ void Scene::moveObject(unsigned int id, unsigned int newParentId)
 
 void Scene::updateAllTransforms()
 {
-    ObjectTree::NodePtr objectRootNode = _objects.getRoot();
-    std::vector<ObjectTree::NodeWPtr> childNodes = objectRootNode->getChildren();
-
-    // Start the DFS routine on each of the root children
-    for(auto it = childNodes.begin(); it != childNodes.end(); it++)
+    if (!_transformsUpToDate)
     {
-        SceneObjectPtr object = it->lock()->value;
-        worldTransformDFSUpdate(object->id);
-    }
+        ObjectTree::NodePtr objectRootNode = _objects.getRoot();
+        std::vector<ObjectTree::NodeWPtr> childNodes = objectRootNode->getChildren();
 
-    _transformsUpToDate = false;
+        // Start the DFS routine on each of the root children
+        for(auto it = childNodes.begin(); it != childNodes.end(); it++)
+        {
+            SceneObjectPtr object = it->lock()->value;
+            worldTransformDFSUpdate(object->id);
+        }
+
+        _transformsUpToDate = true;
+    }
 }
 
 Transform Scene::getWorldTransform(unsigned int id)
@@ -247,7 +250,7 @@ Transform Scene::getWorldTransform(unsigned int id)
         {
             SceneObjectMetadata meta = it->second;
             // If the update marker of the considered object is set, update its transform along with all of its children's
-            if (_updateMarkers[meta.updateNodeId]) worldTransformCascadeUpdate(id);
+            if (_updateMarkers[meta.updateNodeId]->value) worldTransformCascadeUpdate(id);
 
             // If it isn't set, the transform of that is up to date and no action is required
         }
@@ -432,7 +435,7 @@ unsigned int Scene::findFurthestOutdatedParent(unsigned int id)
         SceneObjectMetadata meta = _objectMetadata[id];
 
         // Use the flag to check on the modified state of the object transform
-        if (_updateMarkers[meta.updateNodeId])
+        if (_updateMarkers[meta.updateNodeId]->value)
         {
             furthestOutdatedId = id;
         }

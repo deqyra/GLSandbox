@@ -14,9 +14,9 @@ RenderBoi:
         Scene:
             ☐ In `moveObject`, add possibility to keep world position of moved object
             ☐ Add something like `registerObjectTree(ScenePtr)` to import complex objects into a scene
+            ☐ In `getWorldTransform`, the `_transformsUpToDate` test is useless in most cases
         SceneRenderer:
-            ☐ Make drawing methods and buffer queries queuable
-            ☐ Mesh rendering order based on their VertexDataManager handle, then on the requested shader
+            ☐ Mesh rendering order based on the requested shader, then on their VertexDataManager handle
             ☐ Eliminate buffer swaps between objects sharing the same vertex data
         PositionedObject:
             ✔ Change SceneObject inheritance into a compoud Transform object @done(20-07-02 17:00)
