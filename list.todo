@@ -15,12 +15,15 @@ RenderBoi:
             ☐ In `moveObject`, add possibility to keep world position of moved object
             ☐ Add something like `registerObjectTree(ScenePtr)` to import complex objects into a scene
             ☐ In `getWorldTransform`, the `_transformsUpToDate` test is useless in most cases
+            ☐ Clean up the bullshit with `Scene::init` and `SceneObject::setScene` and whatnot, implement a clean factory instead
         SceneRenderer:
             ☐ Mesh rendering order based on the requested shader, then on their VertexDataManager handle
             ☐ Eliminate buffer swaps between objects sharing the same vertex data
-        PositionedObject:
-            ✔ Change SceneObject inheritance into a compoud Transform object @done(20-07-02 17:00)
+        Transform:
+            ✔ Change SceneObject inheritance from PositionedObject into a compoud Transform object @done(20-07-02 17:00)
             ✔ Viable alternative to the ugly `transformModified` flag fix (observer pattern) @done(20-09-02 15:12)
+            ☐ Implement transformations relative to different frames of reference
+            ☐ Implement `Transform::compoundFrom(const Transform& other)`, which returns the transforms which needs to be applied to `other` in order to result in itself
         ☐ Dynamic meshes
         ☐ Unity-like prefab system?
         ☐ Shadows

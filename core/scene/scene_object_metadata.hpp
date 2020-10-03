@@ -6,6 +6,8 @@ struct SceneObjectMetadata
 {
     // ID of the object this metadata refers to
     unsigned int id;
+    // ID of the parent object of the object this metadata refers to
+    unsigned int parentId;
     // ID of the graph node containing the object
     unsigned int objectNodeId;
     // ID of the graph node containing the world transform of the object

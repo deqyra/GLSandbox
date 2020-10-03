@@ -26,9 +26,10 @@ Scene::Scene() :
     _transformsUpToDate(true),
     _objectMetadata(),
     _scripts(),
-    _inputProcessors()
+    _inputProcessors(),
+    _lastTime(std::chrono::system_clock::now())
 {
-    _lastTime = std::chrono::system_clock::now();
+    
 }
 
 unsigned int Scene::init()
@@ -39,11 +40,12 @@ unsigned int Scene::init()
 
     // Reset the object graph root node pointer to a scene object initialized with a pointer to this Scene.
     objectRootNode->value.reset(new SceneObject());
-    objectRootNode->value->setScene(this->weak_from_this());
+    objectRootNode->value->setScene(this->shared_from_this());
 
     // Set and map metadata
     SceneObjectMetadata meta = {
         objectRootNode->value->id,  // ID of the object this metadata refers to
+        MaxUInt,                    // ID of the object which is parent to the object this metadata refers to
         objectRootNode->id,         // ID of the graph node containing the object
         transformRootNode->id,      // ID of the graph node containing the world matrix of the object
         updateRootNode->id,         // ID of the graph node containing the update flag of the object
@@ -81,6 +83,7 @@ SceneObjectWPtr Scene::newObject(unsigned int parentId)
 {
     // Create the new object, initialized with a pointer to this Scene
     SceneObjectPtr obj = std::make_shared<SceneObject>();
+    obj->init();
 
     registerObject(obj, parentId);
 
@@ -117,7 +120,7 @@ void Scene::registerObject(SceneObjectPtr object, unsigned int parentId)
     }
 
     // Set the scene pointer upon registering the object
-    object->setScene(this->weak_from_this());
+    object->setScene(this->shared_from_this());
 
     // Retrieve parent object metadata and transform
     SceneObjectMetadata parentMeta = it->second;
@@ -141,6 +144,7 @@ void Scene::registerObject(SceneObjectPtr object, unsigned int parentId)
     // Create metadata
     SceneObjectMetadata meta = {
         object->id,             // ID of the object this metadata refers to
+        parentId,               // ID of the object which is parent to the object this metadata refers to
         objectNodeId,           // ID of the graph node containing the object
         transformNodeId,        // ID of the graph node containing the world matrix of the object
         updateNodeId,           // ID of the graph node containing the update flag of the object
@@ -210,6 +214,34 @@ void Scene::moveObject(unsigned int id, unsigned int newParentId)
 
     // Mark object for update
     markForUpdate(id);
+}
+
+unsigned int Scene::getParentId(unsigned int id)
+{
+    auto it = _objectMetadata.find(id);
+    if (it == _objectMetadata.end())
+    {
+        std::string s = "Scene: no SceneObject with ID " + std::to_string(id) + ".";
+        throw std::runtime_error(s.c_str());
+    }
+
+    // Retrieve object metadata
+    SceneObjectMetadata meta = it->second;
+    return meta.parentId;
+}
+
+SceneObjectPtr Scene::getParent(unsigned int id)
+{
+    auto it = _objectMetadata.find(id);
+    if (it == _objectMetadata.end())
+    {
+        std::string s = "Scene: no SceneObject with ID " + std::to_string(id) + ".";
+        throw std::runtime_error(s.c_str());
+    }
+
+    // Retrieve object metadata
+    SceneObjectMetadata meta = it->second;
+    return _objects[meta.parentId]->value;
 }
 
 void Scene::updateAllTransforms()

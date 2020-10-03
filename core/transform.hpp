@@ -10,7 +10,42 @@
 
 #include "frame_of_reference.hpp"
 
-// An object that has 3D-space properties : position, orientation and scale
+/* ╔════════════╗
+ * ║   README   ║
+ * ╚════════════╝
+ * 
+ * The aim of the Transform class is to represent the 3D properties of an 
+ * object relative to a global frame of reference.
+ * The aim of the ObjectTransform class, which inherits from Transform, is to 
+ * represent the 3D properties of the SceneObject which it is attached to.
+ * However, the representation is in that case relative to the frame of
+ * reference of that SceneObject's parent (hereafter "the parent frame of 
+ * reference").
+ * 
+ * For convenience, when applying a transformation to a Transform through one
+ * of its methods, it is possible to specify, through a template parameter, 
+ * which frame of reference the provided arguments are relative to.
+ * 
+ * ▫ FrameOfReference::World
+ *   Indicates that the provided arguments are relative to the global frame
+ *   of reference.
+ * 
+ * ▫ FrameOfReference::Parent
+ *   - In the case of an ObjectTransform, which is attached to a SceneObject,
+ *     indicates that the provided arguments are relative to the parent frame
+ *     of reference.
+ *   - In the case of a pure Transform, which is attached to no SceneObject and
+ *     thus has no parent, the provided arguments are interpreted as being 
+ *     relative to the global frame of reference, making
+ *     FrameOfReference::Parent strictly equivalent to FrameOfReference::World
+ *     in that context.
+ * 
+ * ▫ FrameOfReference::Self
+ *   Indicates that the provided arguments are relative to the transform on
+ *   which the transformation is about to be applied.
+ */
+
+// An object which holds 3D-space properties : position, orientation and scale
 class Transform
 {
     protected:
@@ -51,28 +86,34 @@ class Transform
 
         // Get the position of the object
         glm::vec3 getPosition() const;
-        // Set the position of the object
-        void setPosition(glm::vec3 position);
-        // Translate the position of the object by a 3D vector
+        // Set the position of the object and return the new position in world coordinates
+        template<FrameOfReference Ref>
+        glm::vec3 setPosition(glm::vec3 position);
+        // Translate the position of the object by a 3D vector and return the new position in world coordinates
+        template<FrameOfReference Ref>
         glm::vec3 translateBy(glm::vec3 other);
         // Orbit the object around an axis and center
-        void orbit(float radAngle, glm::vec3 axis, glm::vec3 center, FrameOfReference source, bool selfRotate = false);
+        template<FrameOfReference Ref>
+        void orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate = false);
 
         // Get the orientation of the object
         glm::quat getRotation() const;
-        // Set the orientation of the object
-        void setRotation(glm::quat orientation);
-        // Rotate the object by a quaternion
+        // Set the orientation of the object and return the new orientation in world coordinates
+        template<FrameOfReference Ref>
+        glm::quat setRotation(glm::quat rotation);
+        // Rotate the object by a quaternion and return the new orientation in world coordinates
         glm::quat rotateBy(glm::quat other);
-        // Rotate the object around an axis
-        glm::quat rotateBy(float radAngle, glm::vec3 axis, FrameOfReference source);
-        // Rotate the object so that its own Z axis (front) is directed to the target position, with respect to a constraint on the upwards direction
-        // yConstraint vector should always be given in world coordinates; provide the null vector to remove the constraint
-        glm::quat lookAt(glm::vec3 target, glm::vec3 yConstraint, FrameOfReference source);
+        // Rotate the object around an axis and return the new orientation in world coordinates
+        template<FrameOfReference Ref>
+        glm::quat rotateBy(float radAngle, glm::vec3 axis);
+        // Rotate the object so that its own Z axis (front) is directed to the target position, with respect to a constraint on the new YZ plane, and return the new orientation in world coordinates
+        template<FrameOfReference Ref>
+        glm::quat lookAt(glm::vec3 target, glm::vec3 yConstraint);
 
         // Get the scale of the object
         glm::vec3 getScale() const;
         // Set the scale of the object
+        template<FrameOfReference Ref>
         void setScale(glm::vec3 scale);
         // Scale the object by an amount
         glm::vec3 scaleBy(glm::vec3 other);

@@ -84,6 +84,10 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         void removeObject(unsigned int id);
         // Move the object with provided ID (as well as all of its children) in the tree so that its new parent is the object of second provided ID
         void moveObject(unsigned int id, unsigned int newParentId);
+        // Get ID of object which is parent to the object with provided ID in the scene graph
+        unsigned int getParentId(unsigned int id);
+        // Get object which is parent to the object with provided ID in the scene graph
+        SceneObjectPtr getParent(unsigned int id);
         
         // Update all transforms marked for update in DFS order
         void updateAllTransforms();

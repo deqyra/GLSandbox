@@ -8,6 +8,15 @@
 
 #include "frame_of_reference.hpp"
 
+using Ref = FrameOfReference;
+
+/* ╔════════════════════════════════════╗
+ * ║               README               ║
+ * ║ Refer to the explicative paragraph ║
+ * ║  in transform.hpp if you haven't.  ║
+ * ╚════════════════════════════════════╝
+ */
+
 Transform::Transform() :
     _position(glm::vec3(0.f)),
     _rotation(glm::quat(1.f, glm::vec3(0.f))),
@@ -41,27 +50,59 @@ glm::vec3 Transform::getPosition() const
     return _position;
 }
 
-void Transform::setPosition(glm::vec3 position)
+template<>
+glm::vec3 Transform::setPosition<Ref::World>(glm::vec3 position)
 {
     _position = position;
 
     // Update flags
     _matrixOutdated = true;
+    return position;
 }
 
-glm::vec3 Transform::translateBy(glm::vec3 other)
+template<>
+glm::vec3 Transform::setPosition<Ref::Parent>(glm::vec3 position)
+{
+    return setPosition<Ref::World>(position);
+}
+
+template<>
+glm::vec3 Transform::setPosition<Ref::Self>(glm::vec3 position)
+{
+    return translateBy<Ref::Self>(position);
+}
+
+template<>
+glm::vec3 Transform::translateBy<Ref::World>(glm::vec3 other)
 {
     // Translate the current position
-    glm::vec4 position4 = glm::vec4(_position, 1.f);
-    glm::vec4 translated = glm::translate(glm::mat4(1.f), other) * position4;
-    _position = glm::vec3(translated);
+    _position += other;
 
     // Update flags
     _matrixOutdated = true;
     return _position;
 }
 
-void Transform::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, FrameOfReference source, bool selfRotate)
+template<>
+glm::vec3 Transform::translateBy<Ref::Parent>(glm::vec3 other)
+{
+    return translateBy<Ref::World>(other);
+}
+
+template<>
+glm::vec3 Transform::translateBy<Ref::Self>(glm::vec3 other)
+{
+    if (_localVectorsOutdated) updateLocalVectors();
+
+    // Recalculate provided translation relative to the world
+    glm::vec3 worldTranslation = other.x * _scale.x * _left   
+                               + other.y * _scale.y * _up     
+                               + other.z * _scale.z * _forward;
+    return translateBy<Ref::World>(worldTranslation);
+}
+
+template<>
+void Transform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
     // Orbit around the axis and center
     glm::vec4 tmpPos = glm::vec4(_position - center, 1.f);
@@ -72,11 +113,33 @@ void Transform::orbit(float radAngle, glm::vec3 axis, glm::vec3 center, FrameOfR
     // Update rotation if needed
     if (selfRotate)
     {
-        rotateBy(radAngle, axis);
+        rotateBy<Ref::World>(radAngle, axis);
     }
 
     // Update flags
     _matrixOutdated = true;
+}
+
+template<>
+void Transform::orbit<Ref::Parent>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+{
+    orbit<Ref::World>(radAngle, axis, center, selfRotate);
+}
+
+template<>
+void Transform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+{
+    if (_localVectorsOutdated) updateLocalVectors();
+
+    // Recalculate provided parameters relative to the world
+    glm::vec3 worldCenter = center.x * _scale.x * _left
+                          + center.y * _scale.y * _up
+                          + center.z * _scale.z * _forward;
+    worldCenter += _position;
+
+    // Inverse rotation applied to the axis gives the axis in world coordinates
+    glm::vec3 worldAxis = glm::conjugate(_rotation) * axis * _rotation;
+    orbit<Ref::World>(radAngle, worldAxis, worldCenter, selfRotate);
 }
 
 glm::quat Transform::getRotation() const
@@ -84,15 +147,33 @@ glm::quat Transform::getRotation() const
     return _rotation;
 }
 
-void Transform::setRotation(glm::quat orientation)
+template<>
+glm::quat Transform::setRotation<Ref::World>(glm::quat rotation)
 {
-    _rotation = glm::normalize(orientation);
+    _rotation = glm::normalize(rotation);
 
     // Update flags
     _matrixOutdated = true;
     _localVectorsOutdated = true;
+
+    return rotation;
 }
 
+template<>
+glm::quat Transform::setRotation<Ref::Parent>(glm::quat rotation)
+{
+    return setRotation<Ref::World>(rotation);
+}
+
+template<>
+glm::quat Transform::setRotation<Ref::Self>(glm::quat rotation)
+{
+    return rotateBy(rotation);
+}
+
+// This function does not need to be templated with a frame of reference for its arguments:
+// A rotation in one frame of reference will be encoded by the exact same quaternion in any other frame of reference.
+// Thus, rotating by a quaternion is independant of any and all frames of references.
 glm::quat Transform::rotateBy(glm::quat other)
 {
     // Rotate the object
@@ -104,51 +185,64 @@ glm::quat Transform::rotateBy(glm::quat other)
     return _rotation;
 }
 
-glm::quat Transform::rotateBy(float radAngle, glm::vec3 axis, bool localAxis)
+template<>
+glm::quat Transform::rotateBy<Ref::World>(float radAngle, glm::vec3 axis)
 {
-    if (!localAxis)
-    {
-        axis = _rotation * axis * glm::conjugate(_rotation);
-    }
-
-    // Rotate the object
+    // Compute quaternion associated with wanted rotation
     float cos = glm::cos(radAngle * 0.5f);
     float sin = glm::sin(radAngle * 0.5f);
 
     glm::vec3 tmp = glm::normalize(axis);
-    glm::quat newRotation = glm::quat(cos, sin*axis.x, sin*axis.y, sin*axis.z);
+    glm::quat newRotation = glm::quat(cos, sin*tmp.x, sin*tmp.y, sin*tmp.z);
 
+    // Rotate the object
     rotateBy(newRotation);
 
     return _rotation;
 }
 
-glm::quat Transform::lookAt(glm::vec3 target, glm::vec3 yConstraint, bool localTarget)
+template<>
+glm::quat Transform::rotateBy<Ref::Parent>(float radAngle, glm::vec3 axis)
+{
+    rotateBy<Ref::World>(radAngle, axis);
+}
+
+template<>
+glm::quat Transform::rotateBy<Ref::Self>(float radAngle, glm::vec3 axis)
+{
+    // Recalculate provided axis relative to the world
+    // Inverse rotation applied to the axis gives the axis in world coordinates
+    glm::vec3 worldAxis = glm::conjugate(_rotation) * axis * _rotation;
+    rotateBy<Ref::World>(radAngle, worldAxis);
+}
+
+template<>
+glm::quat Transform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConstraint)
 {
     // Local vectors are going to be needed so update them
     if (_localVectorsOutdated) updateLocalVectors();
 
     // Find new direction to look towards
     glm::vec3 direction = glm::normalize(target - _position);
-    // If the target coordinates are given local to the position, the target is also the direction to look towards
-    if (localTarget) direction = glm::normalize(target);
 
     // Find axis of rotation 
     glm::vec3 axis = glm::normalize(glm::cross(_forward, direction));
 
+
     // Find the angle by which to rotate around the found axis
     float dot = glm::dot(_forward, direction);
+    // Works because both vectors are unit, so the only significant term in the
+    // trig expression of their dot product is the cos of the angle they make
     float angle = glm::acos(dot);
 
-    rotateBy(angle, axis);
+    rotateBy<Ref::World>(angle, axis);
     updateLocalVectors();
 
     // Check whether the Y constraint is not null and solvable
     if ((yConstraint != glm::vec3(0.f)) && (glm::normalize(yConstraint) != -_forward))
     {
-        // The aim is to rotate around the new forward vector
-        // so that the new up vector is coplanar with both the 
-        // new forward vector and the Y constraint.
+        // The aim is to rotate around the new forward vector so that the up vector becomes 
+        // coplanar with both the new forward vector and the provided Y constraint.
         // This means the cross products between those must be equal.
 
         // Find the desired left direction 
@@ -163,7 +257,7 @@ glm::quat Transform::lookAt(glm::vec3 target, glm::vec3 yConstraint, bool localT
         axis = glm::normalize(glm::cross(_left, desiredLeft));
 
         // Rotate around the found axis 
-        rotateBy(angle, axis);
+        rotateBy<Ref::World>(angle, axis);
         _localVectorsOutdated = true;
     }
 
@@ -172,12 +266,33 @@ glm::quat Transform::lookAt(glm::vec3 target, glm::vec3 yConstraint, bool localT
     return _rotation;
 }
 
+template<>
+glm::quat Transform::lookAt<Ref::Parent>(glm::vec3 target, glm::vec3 yConstraint)
+{
+    lookAt<Ref::World>(target, yConstraint);
+}
+
+template<>
+glm::quat Transform::lookAt<Ref::Self>(glm::vec3 target, glm::vec3 yConstraint)
+{
+    // Recalculate provided parameters relative to the world
+    glm::vec3 worldTarget = target.x * left()
+                          + target.y * up()
+                          + target.z * forward();
+    worldTarget += _position;
+
+    // Inverse rotation applied to the axis gives the axis in world coordinates
+    glm::vec3 worldYConstraint = glm::conjugate(_rotation) * yConstraint * _rotation;
+    lookAt<Ref::World>(worldTarget, worldYConstraint);
+}
+
 glm::vec3 Transform::getScale() const
 {
     return _scale;
 }
 
-void Transform::setScale(glm::vec3 scale)
+template<>
+void Transform::setScale<Ref::World>(glm::vec3 scale)
 {
     _scale = scale;
 
@@ -185,12 +300,24 @@ void Transform::setScale(glm::vec3 scale)
     _matrixOutdated = true;
 }
 
-glm::vec3 Transform::scaleBy(glm::vec3 scaling)
+template<>
+void Transform::setScale<Ref::Parent>(glm::vec3 scale)
+{
+    setScale<Ref::World>(scale);
+}
+
+template<>
+void Transform::setScale<Ref::Self>(glm::vec3 scale)
+{
+    scaleBy(scale);
+}
+
+glm::vec3 Transform::scaleBy(glm::vec3 other)
 {
     // Scale the object
-    _scale[0] *= scaling[0];
-    _scale[1] *= scaling[1];
-    _scale[2] *= scaling[2];
+    _scale.x *= other.x;
+    _scale.y *= other.y;
+    _scale.z *= other.z;
 
     // Update flags
     _matrixOutdated = true;
@@ -265,10 +392,13 @@ Transform Transform::applyTo(const Transform& other) const
 
 void Transform::updateLocalVectors() const
 {
+    // _rotation is a unit quat, simply conjugating it actually inverts it 
+    glm::quat inv = glm::conjugate(_rotation);
+
     // Transform world basis vectors according to rotation
-    _forward = glm::normalize(_rotation * Z * glm::conjugate(_rotation));
-    _up      = glm::normalize(_rotation * Y * glm::conjugate(_rotation));
-    _left    = glm::normalize(_rotation * X * glm::conjugate(_rotation));
+    _forward = glm::normalize(_rotation * Z * inv);
+    _up      = glm::normalize(_rotation * Y * inv);
+    _left    = glm::normalize(_rotation * X * inv);
 
     _localVectorsOutdated = false;
 }
