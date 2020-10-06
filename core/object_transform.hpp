@@ -104,15 +104,15 @@ class ObjectTransform : public Transform
         // glm::quat getRotation();
         // Set the orientation of the object
         template<FrameOfReference Ref>
-        void setRotation(glm::quat orientation);
+        void setRotation(glm::quat rotation);
         // Rotate the object by a quaternion
         glm::quat rotateBy(glm::quat rotation);
         // Rotate the object around an axis
         template<FrameOfReference Ref>
-        glm::quat rotateBy(float radAngle, glm::vec3 axis, bool localAxis = false);
+        glm::quat rotateBy(float radAngle, glm::vec3 axis);
         // Rotate the object so that its front is directed to the target position
         template<FrameOfReference Ref>
-        glm::quat lookAt(glm::vec3 target, glm::vec3 yConstraint, bool localTarget = false);
+        glm::quat lookAt(glm::vec3 target, glm::vec3 yConstraint);
 
         // Get the scale of the object - no need to overload, here for convenience
         // glm::vec3 getScale();

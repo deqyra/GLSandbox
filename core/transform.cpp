@@ -105,10 +105,17 @@ template<>
 void Transform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
     // Orbit around the axis and center
-    glm::vec4 tmpPos = glm::vec4(_position - center, 1.f);
-    glm::mat4 orbit = glm::rotate(glm::mat4(1.f), radAngle, axis);
-    tmpPos = orbit * tmpPos;
-    _position = glm::vec3(tmpPos) + center;
+    glm::vec3 tmpPos = _position - center;
+
+    // Compute quaternion associated with wanted rotation
+    float cos = glm::cos(radAngle * 0.5f);
+    float sin = glm::sin(radAngle * 0.5f);
+
+    glm::vec3 tmp = glm::normalize(axis);
+    glm::quat rotation = glm::quat(cos, sin*tmp.x, sin*tmp.y, sin*tmp.z);
+
+    tmpPos = rotation * tmpPos * glm::conjugate(rotation);
+    _position = tmpPos + center;
 
     // Update rotation if needed
     if (selfRotate)
@@ -406,13 +413,15 @@ void Transform::updateLocalVectors() const
 void Transform::updateMatrix() const
 {
     // Generate 4x4 matrix from quaternion
-    //_modelMatrix = glm::toMat4(glm::inverse(_rotation));
-    _modelMatrix = glm::toMat4(_rotation);
+    glm::mat4 rotation = glm::toMat4(_rotation);
 
     // Scale things up
-    _modelMatrix[0][0] *= _scale[0];
-    _modelMatrix[1][1] *= _scale[1];
-    _modelMatrix[2][2] *= _scale[2];
+    glm::mat4 scale = glm::mat4(1.f);
+    scale[0][0] = _scale[0];
+    scale[1][1] = _scale[1];
+    scale[2][2] = _scale[2];
+
+    _modelMatrix = rotation * scale;
 
     // Include translation to current position
     _modelMatrix[3] = glm::vec4(_position, 1.f);

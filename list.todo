@@ -24,6 +24,7 @@ RenderBoi:
             ✔ Viable alternative to the ugly `transformModified` flag fix (observer pattern) @done(20-09-02 15:12)
             ☐ Implement transformations relative to different frames of reference
             ☐ Implement `Transform::compoundFrom(const Transform& other)`, which returns the transforms which needs to be applied to `other` in order to result in itself
+            ☐ Fix all scaling issues in `ObjectTransform`
         ☐ Dynamic meshes
         ☐ Unity-like prefab system?
         ☐ Shadows
@@ -41,7 +42,6 @@ RenderBoi:
         ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)
     FIXME:
         ☐ Transform::lookAt
-        ☐ Transform::rotate with localAxis==true
         ✔ Light attenuation @done(20-04-20 06:55)
     Crossplatform-ability:
         ✔ Provide OpenGL core context hint for GLFW except when EGL is used (i.e. on Wayland systems) @done(20-07-02 14:19)

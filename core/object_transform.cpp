@@ -41,8 +41,8 @@ using Ref = FrameOfReference;
  * in the base Transform instance.
  * Note: this will simply in turn call the World version of that base method,
  * but making a direct call to the World version of a method with Parent-
- * relative arguments would only add to the mess (plus it will be optimized 
- * out anyway).
+ * relative arguments would only add to the mess. It will be optimized out 
+ * anyway.
  * 
  * ▫ When arguments are provided relative to the parent frame of reference,
  * the Parent version of the base method can be called directly with these 
@@ -149,16 +149,16 @@ void ObjectTransform::setPosition<Ref::World>(glm::vec3 position)
     glm::vec3 positionRelativeToParent = position - parentTransform.getPosition();
     
     // The found coordinates do not take the parent rotation into account;
-    // rotate them by the inverse parent rotation to fix it
+    // rotate them by the inverse parent rotation to fix that
     positionRelativeToParent = glm::conjugate(parentRotation) * positionRelativeToParent * parentRotation;
     
     // The found coordinates do not take the parent scale into account; 
-    // divide them member-wise by the parent scale to fix it
+    // divide them member-wise by the parent scale to fix that
     positionRelativeToParent.x /= parentScale.x;
     positionRelativeToParent.y /= parentScale.y;
     positionRelativeToParent.z /= parentScale.z;
     
-    translateBy<Ref::Parent>(positionRelativeToParent);
+    setPosition<Ref::Parent>(positionRelativeToParent);
 }
 
 template<>
@@ -185,18 +185,23 @@ glm::vec3 ObjectTransform::translateBy<Ref::World>(glm::vec3 translation)
     ScenePtr scene = thisObject->getScene().lock();
     unsigned int parentId = scene->getParentId(_objectId);
     Transform parentTransform = scene->getWorldTransform(parentId);
-    // ...as well as the object's world transform
-    Transform worldTransform = scene->getWorldTransform(_objectId);
-    
-    glm::quat parentRotation = parentTransform.getRotation();
-    // Rotating the world translation vector by the inverse parent rotation gives what the translation vector should 
-    // be in the parent frame of reference in order to apply the same translation in the global frame of reference
-    glm::vec3 parentTranslation = glm::conjugate(parentRotation) * translation * parentRotation;
 
-    // Translate position by found vector:
-    // For an ObjectTransform, translating by some vector in the parent's frame of reference is 
-    // equivalent to translating by that vector in the world's frame of refence for a pure Transform
-    glm::vec3 newPosition = Transform::translateBy<Ref::World>(translation);
+    // Retrieve some stuff
+    glm::quat parentRotation = parentTransform.getRotation();
+    glm::vec3 parentScale = parentTransform.getScale();
+
+    // Rotate the translation vector by the inverse parent rotation
+    // to make it relative to the parent
+    glm::vec3 parentTranslation = glm::conjugate(parentRotation) * translation * parentRotation;
+    
+    // The found coordinates do not take the parent scale into account; 
+    // divide them member-wise by the parent scale to fix that
+    parentTranslation.x /= parentScale.x;
+    parentTranslation.y /= parentScale.y;
+    parentTranslation.z /= parentScale.z;
+
+    // Translate position by found vector
+    glm::vec3 newPosition = Transform::translateBy<Ref::Parent>(translation);
     // Notify transform change
     notifyChange();
     return newPosition;
@@ -205,9 +210,7 @@ glm::vec3 ObjectTransform::translateBy<Ref::World>(glm::vec3 translation)
 template<>
 glm::vec3 ObjectTransform::translateBy<Ref::Parent>(glm::vec3 translation)
 {
-    // For an ObjectTransform, translating by some vector in the parent's frame of reference is 
-    // equivalent to translating by that vector in the world's frame of refence for a pure Transform
-    glm::vec3 newPosition = Transform::translateBy<Ref::World>(translation);
+    glm::vec3 newPosition = Transform::translateBy<Ref::Parent>(translation);
     // Notify transform change
     notifyChange();
     return newPosition;
@@ -225,25 +228,34 @@ glm::vec3 ObjectTransform::translateBy<Ref::Self>(glm::vec3 translation)
 template<>
 void ObjectTransform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
-    // Get the object's world transform
+    // Get the parent's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
     ScenePtr scene = thisObject->getScene().lock();
-    Transform worldTransform = scene->getWorldTransform(_objectId);
-    // ...as well as the parent's
     unsigned int parentId = scene->getParentId(_objectId);
     Transform parentTransform = scene->getWorldTransform(parentId);
 
+    // Retrieve some stuff
     glm::quat parentRotation = parentTransform.getRotation();
-    // Rotating the world axis vector by the inverse parent rotation gives what the axis vector should 
-    // be in the parent frame of reference in order for a rotation around it to be the same as in the global frame of reference
+    glm::vec3 parentScale = parentTransform.getScale();
+
+    // Rotate the orbital axis by the inverse parent rotation
+    // to make it relative to the parent
     glm::vec3 parentAxis = glm::conjugate(parentRotation) * axis * parentRotation;
 
-    // Find the center of the orbital movement relative to the parent
+    // Find the center of the orbital movement relative to the parent, in world coordinates
     glm::vec3 parentCenter = center - parentTransform.getPosition();
 
-    // Apply the orbital movement in the parent's frame of reference,
-    // which is equivalent to the global frame of reference for a pure Transform
-    Transform::orbit<Ref::World>(radAngle, parentAxis, parentCenter, selfRotate);
+    // Rotate the center coordinates by the inverse parent rotation
+    // to make them relative to the parent
+    parentCenter = glm::conjugate(parentRotation) * parentCenter * parentRotation;
+    
+    // The found coordinates do not take the parent scale into account; 
+    // divide them member-wise by the parent scale to fix that
+    parentCenter.x /= parentScale.x;
+    parentCenter.y /= parentScale.y;
+    parentCenter.z /= parentScale.z;
+
+    Transform::orbit<Ref::Parent>(radAngle, parentAxis, parentCenter, selfRotate);
 
     // Notify transform change
     notifyChange();
@@ -252,7 +264,7 @@ void ObjectTransform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec
 template<>
 void ObjectTransform::orbit<Ref::Parent>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
-    Transform::orbit<Ref::World>(radAngle, axis, center, selfRotate);
+    Transform::orbit<Ref::Parent>(radAngle, axis, center, selfRotate);
     // Notify transform change
     notifyChange();
 }
@@ -261,22 +273,7 @@ void ObjectTransform::orbit<Ref::Parent>(float radAngle, glm::vec3 axis, glm::ve
 template<>
 void ObjectTransform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
-    // Get the object's world transform
-    SceneObjectPtr thisObject = _sceneObject.lock();
-    ScenePtr scene = thisObject->getScene().lock();
-    Transform worldTransform = scene->getWorldTransform(_objectId);
-
-    // Recompute provided parameters according to parent transform
-    glm::vec3 worldCenter = center.x * worldTransform.left()
-                          + center.y * worldTransform.up()
-                          + center.z * worldTransform.forward();
-    worldCenter += worldTransform.getPosition();
-
-    // Inverse rotation applied to the axis gives the axis in world coordinates
-    glm::quat rotation = worldTransform.getRotation();
-    glm::vec3 worldAxis = glm::conjugate(rotation) * axis * rotation;
-
-    orbit<Ref::World>(radAngle, worldAxis, worldCenter, selfRotate);
+    orbit<Ref::Self>(radAngle, axis, center, selfRotate);
     // Notify transform change
     notifyChange();
 }
@@ -285,14 +282,42 @@ void ObjectTransform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3
  * 
  * glm::quat ObjectTransform::getRotation()
  * {
- *     return _orientation;
+ *     return _rotation;
  * }
  * 
  */
 
-void ObjectTransform::setRotation(glm::quat orientation)
+template<>
+void ObjectTransform::setRotation<Ref::World>(glm::quat rotation)
 {
-    Transform::setRotation(orientation);
+    // Get the parent's world transform
+    SceneObjectPtr thisObject = _sceneObject.lock();
+    ScenePtr scene = thisObject->getScene().lock();
+    unsigned int parentId = scene->getParentId(_objectId);
+    Transform parentTransform = scene->getWorldTransform(parentId);
+
+    // Retrieve some stuff
+    glm::quat parentRotation = parentTransform.getRotation();
+
+    // Combine rotation with inverse parent rotation to make it relative to the parent
+    glm::quat rotationRelativeToParent = glm::conjugate(parentRotation) * rotation;
+    Transform::setRotation<Ref::Parent>(rotationRelativeToParent);
+    // Notify transform change
+    notifyChange();
+}
+
+template<>
+void ObjectTransform::setRotation<Ref::Parent>(glm::quat rotation)
+{
+    Transform::setRotation<Ref::Parent>(rotation);
+    // Notify transform change
+    notifyChange();
+}
+
+template<>
+void ObjectTransform::setRotation<Ref::Self>(glm::quat rotation)
+{
+    Transform::setRotation<Ref::Self>(rotation);
     // Notify transform change
     notifyChange();
 }
@@ -305,17 +330,90 @@ glm::quat ObjectTransform::rotateBy(glm::quat rotation)
     return newRotation;
 }
 
-glm::quat ObjectTransform::rotateBy(float radAngle, glm::vec3 axis, bool localAxis)
+template<>
+glm::quat ObjectTransform::rotateBy<Ref::World>(float radAngle, glm::vec3 axis)
 {
-    glm::quat newRotation = Transform::rotateBy(radAngle, axis, localAxis);
+    // Get the parent's world transform
+    SceneObjectPtr thisObject = _sceneObject.lock();
+    ScenePtr scene = thisObject->getScene().lock();
+    unsigned int parentId = scene->getParentId(_objectId);
+    Transform parentTransform = scene->getWorldTransform(parentId);
+
+    // Retrieve some stuff
+    glm::quat parentRotation = parentTransform.getRotation();
+
+    // Rotate axis by inverse parent rotation to make it relative to the parent
+    glm::vec3 parentAxis = glm::conjugate(parentRotation) * axis * parentRotation;
+
+    glm::quat newRotation = Transform::rotateBy<Ref::Parent>(radAngle, parentAxis);
     // Notify transform change
     notifyChange();
     return newRotation;
 }
 
-glm::quat ObjectTransform::lookAt(glm::vec3 target, glm::vec3 yConstraint, bool localTarget)
+template<>
+glm::quat ObjectTransform::rotateBy<Ref::Parent>(float radAngle, glm::vec3 axis)
 {
-    glm::quat newRotation = Transform::lookAt(target, yConstraint, localTarget);
+    glm::quat newRotation = Transform::rotateBy<Ref::Parent>(radAngle, axis);
+    // Notify transform change
+    notifyChange();
+    return newRotation;
+}
+
+template<>
+glm::quat ObjectTransform::rotateBy<Ref::Self>(float radAngle, glm::vec3 axis)
+{
+    glm::quat newRotation = Transform::rotateBy<Ref::Self>(radAngle, axis);
+    // Notify transform change
+    notifyChange();
+    return newRotation;
+}
+
+template<>
+glm::quat ObjectTransform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConstraint)
+{
+    // Get the parent's world transform
+    SceneObjectPtr thisObject = _sceneObject.lock();
+    ScenePtr scene = thisObject->getScene().lock();
+    unsigned int parentId = scene->getParentId(_objectId);
+    Transform parentTransform = scene->getWorldTransform(parentId);
+
+    // Retrieve some stuff
+    glm::quat parentRotation = parentTransform.getRotation();
+    glm::vec3 parentScale = parentTransform.getScale();
+
+    // Find the target position relative to the parent, in world coordinates
+    glm::vec3 parentTarget = target - parentTransform.getPosition();
+
+    // Rotate the target coordinates by the inverse parent rotation
+    // to make them relative to the parent
+    parentTarget = glm::conjugate(parentRotation) * parentTarget * parentRotation;
+    
+    // The found coordinates do not take the parent scale into account; 
+    // divide them member-wise by the parent scale to fix that
+    parentTarget.x /= parentScale.x;
+    parentTarget.y /= parentScale.y;
+    parentTarget.z /= parentScale.z;
+
+    glm::quat newRotation = Transform::lookAt<Ref::Parent>(target, yConstraint);
+    // Notify transform change
+    notifyChange();
+    return newRotation;
+}
+
+template<>
+glm::quat ObjectTransform::lookAt<Ref::Parent>(glm::vec3 target, glm::vec3 yConstraint)
+{
+    glm::quat newRotation = Transform::lookAt<Ref::Parent>(target, yConstraint);
+    // Notify transform change
+    notifyChange();
+    return newRotation;
+}
+
+template<>
+glm::quat ObjectTransform::lookAt<Ref::Self>(glm::vec3 target, glm::vec3 yConstraint)
+{
+    glm::quat newRotation = Transform::lookAt<Ref::Self>(target, yConstraint);
     // Notify transform change
     notifyChange();
     return newRotation;
@@ -330,9 +428,41 @@ glm::quat ObjectTransform::lookAt(glm::vec3 target, glm::vec3 yConstraint, bool 
  * 
  */
 
-void ObjectTransform::setScale(glm::vec3 scale)
+template<>
+void ObjectTransform::setScale<Ref::World>(glm::vec3 scale)
 {
-    Transform::setScale(scale);
+    // Get the parent's world transform
+    SceneObjectPtr thisObject = _sceneObject.lock();
+    ScenePtr scene = thisObject->getScene().lock();
+    unsigned int parentId = scene->getParentId(_objectId);
+    Transform parentTransform = scene->getWorldTransform(parentId);
+
+    // Retrieve some stuff
+    glm::vec3 parentScale = parentTransform.getScale();
+
+    glm::vec3 newScale = {
+        scale.x / parentScale.x,
+        scale.y / parentScale.y,
+        scale.z / parentScale.z
+    };
+
+    Transform::setScale<Ref::Parent>(newScale);
+    // Notify transform change
+    notifyChange();
+}
+
+template<>
+void ObjectTransform::setScale<Ref::Parent>(glm::vec3 scale)
+{
+    Transform::setScale<Ref::Parent>(scale);
+    // Notify transform change
+    notifyChange();
+}
+
+template<>
+void ObjectTransform::setScale<Ref::Self>(glm::vec3 scale)
+{
+    Transform::setScale<Ref::Self>(scale);
     // Notify transform change
     notifyChange();
 }
