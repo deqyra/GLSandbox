@@ -158,7 +158,9 @@ void ObjectTransform::setPosition<Ref::World>(glm::vec3 position)
     positionRelativeToParent.y /= parentScale.y;
     positionRelativeToParent.z /= parentScale.z;
     
-    setPosition<Ref::Parent>(positionRelativeToParent);
+    Transform::setPosition<Ref::Parent>(positionRelativeToParent);
+    // Notify transform change
+    notifyChange();
 }
 
 template<>

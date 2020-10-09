@@ -2,6 +2,9 @@
 
 #include "../scene/components/camera_component.hpp"
 
+#include "../frame_of_reference.hpp"
+using Ref = FrameOfReference;
+
 FPSCameraScript::FPSCameraScript(float speed, float sensitivity, float sprintMultiplier) :
     _moveSpeed(speed),
     _lookSensitivity(sensitivity),
@@ -121,7 +124,7 @@ void FPSCameraScript::update(float timeElapsed)
         position += _camera->right() * velocity;
 
     // Update camera position
-    sceneObject->transform.setPosition(position);
+    sceneObject->transform.setPosition<Ref::Parent>(position);
 }
 
 void FPSCameraScript::setSceneObject(SceneObjectWPtr sceneObject)

@@ -42,6 +42,8 @@ class LightingSandboxScript : public InputProcessingScript
         SceneObjectPtr _smallTorusObj;
         // Pointer to the tetrahedron of the LightingSandbox
         SceneObjectPtr _tetrahedronObj;
+        // Pointer to the camera of the LightingSandbox
+        SceneObjectPtr _cameraObj;
         // Pointer to the light whose range to vary
         std::shared_ptr<PointLight> _light;
         // Whether objects should move
@@ -62,7 +64,7 @@ class LightingSandboxScript : public InputProcessingScript
         static constexpr float LightVariationAmplitude = 50.f;
         static constexpr float LightVariationFrequency = 1.f;
 
-        LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj, std::shared_ptr<PointLight> light, float baseLightRange);
+        LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj, SceneObjectPtr cameraObj, std::shared_ptr<PointLight> light, float baseLightRange);
 
         // Update the transforms of the different scene objects
         virtual void update(float timeElapsed);
