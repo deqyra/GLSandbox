@@ -21,7 +21,7 @@ class LightingSandbox : public GLSandbox
         std::shared_ptr<SceneObject> generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat = Material(), Shader shader = Shader());
 
     public:
-        static constexpr glm::vec3 StartingCameraPosition = glm::vec3(5.f, 3.f, 5.f);
+        static constexpr glm::vec3 StartingCameraPosition = {5.f, 6.f, 5.f};
 
         LightingSandbox();
         virtual ~LightingSandbox();
@@ -56,11 +56,11 @@ class LightingSandboxScript : public InputProcessingScript
         float _baseRange;
 
     public:
-        static constexpr glm::vec3 CubeOrbitAxis = glm::vec3(0.f, 1.f, 0.f);
-        static constexpr glm::vec3 BigTorusRotationAxis = glm::vec3(1.f, 0.f, 0.f);
-        static constexpr glm::vec3 SmallTorusRotationAxis = glm::vec3(0.f, 1.f, 0.f);
-        static constexpr glm::vec3 TetrahedronRotationAxis = glm::vec3(0.f, 1.f, 0.f);
-        static constexpr glm::vec3 TetrahedronOrbitAxis = glm::vec3(0.f, 1.f, 0.f);
+        static constexpr glm::vec3 CubeOrbitAxis = {0.f, 1.f, 0.f};
+        static constexpr glm::vec3 BigTorusRotationAxis = {1.f, 0.f, 0.f};
+        static constexpr glm::vec3 SmallTorusRotationAxis = {0.f, 1.f, 0.f};
+        static constexpr glm::vec3 TetrahedronRotationAxis = {0.f, 1.f, 0.f};
+        static constexpr glm::vec3 TetrahedronOrbitAxis = {0.f, 1.f, 0.f};
         static constexpr float LightVariationAmplitude = 50.f;
         static constexpr float LightVariationFrequency = 1.f;
 

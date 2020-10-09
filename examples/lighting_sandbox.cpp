@@ -56,7 +56,7 @@ void LightingSandbox::run(GLWindowPtr window)
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), window->getAspectRatio(), 0.1f, 100.0f);
-    CameraPtr _camera = std::make_shared<Camera>(projection, -45.f, -70.f);
+    CameraPtr _camera = std::make_shared<Camera>(projection, -135.f, -35.f);
     
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
 
@@ -101,7 +101,6 @@ void LightingSandbox::run(GLWindowPtr window)
     scene->registerObject(cameraObj);
     cameraObj->addComponent<CameraComponent>(_camera);
     cameraObj->transform.setPosition<Ref::World>(StartingCameraPosition);
-    cameraObj->transform.setPosition<Ref::World>(glm::vec3(-3.f, 9.f, 3.f));
     std::shared_ptr<FPSCameraScript> fpsScript = std::make_shared<FPSCameraScript>();
     std::shared_ptr<InputProcessingScript> baseFpsScript = std::static_pointer_cast<InputProcessingScript>(fpsScript);
     cameraObj->addComponent<InputProcessingScriptComponent>(baseFpsScript);
@@ -163,7 +162,7 @@ LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObject
     _cameraObj(cameraObj),
     _light(light),
     _autoRotate(true),
-    _speedFactor(1.f),
+    _speedFactor(1.75f),
     _sine(LightVariationFrequency),
     _baseRange(baseLightRange)
 {
