@@ -275,7 +275,7 @@ void ObjectTransform::orbit<Ref::Parent>(float radAngle, glm::vec3 axis, glm::ve
 template<>
 void ObjectTransform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
-    orbit<Ref::Self>(radAngle, axis, center, selfRotate);
+    Transform::orbit<Ref::Self>(radAngle, axis, center, selfRotate);
     // Notify transform change
     notifyChange();
 }
