@@ -102,7 +102,9 @@
     # C++17 requires at least gcc 7 to be compiled
     set( CMAKE_CXX_STANDARD 17 )
 
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
+    if( UNIX )
+        set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
+    endif( )
 
 # Build project
     # Build tools lib
@@ -143,6 +145,7 @@
         add_library( ${CORE_LIB_NAME} ${STATIC_OR_SHARED}
                                                                                 core/gl_macros.hpp
                     core/camera.cpp                                             core/camera.hpp
+                    core/factory.cpp                                            core/factory.hpp
                     core/input_processor.cpp                                    core/input_processor.hpp
                     core/material.cpp                                           core/material.hpp
                                                                                 core/materials.hpp
@@ -163,6 +166,8 @@
                     core/mesh_generators/cube_generator.cpp                     core/mesh_generators/cube_generator.hpp
                     core/mesh_generators/tetrahedron_generator.cpp              core/mesh_generators/tetrahedron_generator.hpp
                     core/mesh_generators/torus_generator.cpp                    core/mesh_generators/torus_generator.hpp
+                                                                                core/mesh_generators/mesh_type.hpp
+                                                                                core/mesh_generators/type_to_gen_mapping.hpp
                     core/scene/component.cpp                                    core/scene/component.hpp 
                                                                                 core/scene/component_type.hpp 
                     core/scene/input_processing_script.cpp                      core/scene/input_processing_script.hpp 
@@ -201,9 +206,10 @@
         target_link_libraries( ${EXECUTABLE_NAME} PUBLIC
                                 ${TOOLS_LIB_NAME}
                                 ${CORE_LIB_NAME}
+                                ${WINDOW_LIB_NAME}
                                 ${EXAMPLE_LIB_NAME}
                                 ${GL_LOADER_LIB_NAME}
-                            )
+                            ) 
         add_dependencies( ${EXECUTABLE_NAME} ${COPY_ASSETS_TARGET_NAME} )
 
 # Build and run tests

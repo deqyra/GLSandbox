@@ -2,7 +2,6 @@
 #define CORE__MESH_GENERATORS__AXES_GENERATOR_HPP
 
 #include "../mesh_generator.hpp"
-#include "../mesh.hpp"
 
 class AxesGenerator : public MeshGenerator
 {

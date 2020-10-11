@@ -3,6 +3,7 @@ RenderBoi:
         ✔ Port to VSCode @done(20-04-17 03:59)
         ☐ Write test suite
         ☐ Set up continuous integration
+        ☐ Better documentation
     Core:
         VertexDataManager:
             ☐ A VertexDataManager holds actual vertex data and takes care of memory management
@@ -22,7 +23,7 @@ RenderBoi:
         Transform:
             ✔ Change SceneObject inheritance from PositionedObject into a compoud Transform object @done(20-07-02 17:00)
             ✔ Viable alternative to the ugly `transformModified` flag fix (observer pattern) @done(20-09-02 15:12)
-            ☐ Implement transformations relative to different frames of reference
+            ✔ Implement transformations relative to different frames of reference @done(20-10-10 12:50)
             ☐ Implement `Transform::compoundFrom(const Transform& other)`, which returns the transforms which needs to be applied to `other` in order to result in itself
             ☐ Fix all scaling issues in `ObjectTransform`
         ☐ Dynamic meshes

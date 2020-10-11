@@ -4,21 +4,29 @@
 #include <string>
 
 #include "gl_sandbox.hpp"
+
 #include "../window/gl_window.hpp"
 #include "../tools/sine_generator.hpp"
+
+#include "../core/input_processor.hpp"
 #include "../core/shader.hpp"
 #include "../core/texture_2d.hpp"
+
 #include "../core/mesh_generator.hpp"
+#include "../core/mesh_generators/mesh_type.hpp"
+#include "../core/mesh_generators/type_to_gen_mapping.hpp"
+
+#include "../core/scene/scene.hpp"
 #include "../core/scene/scene_object.hpp"
 #include "../core/scene/input_processing_script.hpp"
-#include "../core/input_processor.hpp"
 
 // Display lit moving objects
 class LightingSandbox : public GLSandbox
 {
     private:
         // Generate a mesh using the given generator and attach it to the given scene. The generated mesh will be rendered using the given material and shader.
-        std::shared_ptr<SceneObject> generateSceneMesh(std::shared_ptr<Scene> scene, std::shared_ptr<MeshGenerator> generator, Material mat = Material(), Shader shader = Shader());
+        template<MeshType T>
+        SceneObjectPtr generateSceneMesh(typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat = Material(), Shader shader = Shader());
 
     public:
         static constexpr glm::vec3 StartingCameraPosition = {5.f, 6.f, 5.f};
@@ -73,5 +81,14 @@ class LightingSandboxScript : public InputProcessingScript
 
         virtual LightingSandboxScript* clone();
 };
+
+template<MeshType T>
+SceneObjectPtr LightingSandbox::generateSceneMesh(typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat, Shader shader)
+{
+    MeshPtr mesh = Factory::makeMesh<T>(parameters);
+    SceneObjectPtr obj = Factory::makeSceneObject();
+    obj->addComponent<MeshComponent>(mesh, mat, shader);
+    return obj;
+}
 
 #endif//EXAMPLES__LIGHTING_EXAMPLE_HPP
