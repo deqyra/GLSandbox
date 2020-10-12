@@ -80,19 +80,21 @@ void LightingSandbox::run(GLWindowPtr window)
     // CAMERA
     SceneObjectPtr cameraObj = Factory::makeSceneObject();
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), window->getAspectRatio(), 0.1f, 100.0f);
-    CameraPtr camera = std::make_shared<Camera>(projection, -135.f, -35.f);
-    cameraObj->addComponent<CameraComponent>(camera);
-    std::shared_ptr<FPSCameraScript> fpsScript = std::make_shared<FPSCameraScript>();
-    std::shared_ptr<InputProcessingScript> baseFpsScript = std::static_pointer_cast<InputProcessingScript>(fpsScript);
-    cameraObj->addComponent<InputProcessingScriptComponent>(baseFpsScript);
 
-    // Register everything and create relationships
+    // Register everything in scene and create relationships
     scene->registerObject(axesObj);
     scene->registerObject(bigTorusObj);
     scene->registerObject(smallTorusObj, bigTorusObj->id);
     scene->registerObject(cubeObj);
     scene->registerObject(tetrahedronObj, smallTorusObj->id);
     scene->registerObject(cameraObj);
+
+    // Add camera scripts components to camera
+    CameraPtr camera = std::make_shared<Camera>(projection, -135.f, -35.f);
+    cameraObj->addComponent<CameraComponent>(camera);
+    std::shared_ptr<FPSCameraScript> fpsScript = std::make_shared<FPSCameraScript>();
+    std::shared_ptr<InputProcessingScript> baseFpsScript = std::static_pointer_cast<InputProcessingScript>(fpsScript);
+    cameraObj->addComponent<InputProcessingScriptComponent>(baseFpsScript);
 
     // Move stuff around
     bigTorusObj->transform.rotateBy<Ref::World>((float)glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));

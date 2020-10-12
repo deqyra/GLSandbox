@@ -30,7 +30,7 @@ class Factory
 template<MeshType T>
 MeshPtr Factory::makeMesh(typename TypeToGenMapping<T>::GenType::Parameters parameters)
 {
-    using GenType = TypeToGenMapping<T>::GenType;
+    using GenType = typename TypeToGenMapping<T>::GenType;
     std::shared_ptr<GenType> gen = std::make_shared<GenType>(parameters);
     return gen->generatePtr();
 }

@@ -8,6 +8,7 @@
 #include "../window/gl_window.hpp"
 #include "../tools/sine_generator.hpp"
 
+#include "../core/factory.hpp"
 #include "../core/input_processor.hpp"
 #include "../core/shader.hpp"
 #include "../core/texture_2d.hpp"
