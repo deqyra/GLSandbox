@@ -75,9 +75,9 @@ class Tree
         // Change the parent of a branch whose root is referenced by the provided root pointer
         void moveBranch(NodeWPtr wBranchRootNode, NodeWPtr wNewParentNode);
         // Count elements with provided value, starting from the node with provided ID, downwards
-        unsigned int countValue(T value, unsigned int branchRootId);
+        unsigned int countValue(const T& value, unsigned int branchRootId);
         // Count elements with provided value, starting from the provided node downwards
-        unsigned int countValue(T value, NodeWPtr wBranchRootNode);
+        unsigned int countValue(const T& value, NodeWPtr wBranchRootNode);
 };
 
 template<typename T>
@@ -367,7 +367,7 @@ void Tree<T>::moveBranch(NodeWPtr wBranchRootNode, NodeWPtr wNewParentNode)
 }
 
 template<typename T>
-unsigned int Tree<T>::countValue(T value, unsigned int branchRootId)
+unsigned int Tree<T>::countValue(const T& value, unsigned int branchRootId)
 {
     auto branchIt = _nodes.find(branchRootId);
     if (branchIt == _nodes.end())
@@ -376,11 +376,11 @@ unsigned int Tree<T>::countValue(T value, unsigned int branchRootId)
         throw std::runtime_error(s.c_str());
     }
 
-    return countValueRoutine(branchIt->second);
+    return countValueRoutine(value, branchIt->second);
 }
 
 template<typename T>
-unsigned int Tree<T>::countValue(T value, NodeWPtr wBranchRootNode)
+unsigned int Tree<T>::countValue(const T& value, NodeWPtr wBranchRootNode)
 {
     auto root = wBranchRootNode.lock();
     if (root == nullptr)
