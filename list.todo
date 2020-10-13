@@ -44,7 +44,7 @@ RenderBoi:
     Tools:
         ✔ Clean up the massive mess going on in Tree @done(20-10-13 15:46)
     FIXME:
-        ☐ Transform::lookAt
+        ✔ Transform::lookAt @done(20-10-13 17:04)
         ✔ Light attenuation @done(20-04-20 06:55)
     Crossplatform-ability:
         ✔ Provide OpenGL core context hint for GLFW except when EGL is used (i.e. on Wayland systems) @done(20-07-02 14:19)

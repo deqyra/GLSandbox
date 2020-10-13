@@ -239,8 +239,12 @@ glm::quat Transform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConstraint)
     rotateBy<Ref::World>(angle, axis);
     updateLocalVectors();
 
-    // Check whether the Y constraint is not null and solvable
-    if ((yConstraint != glm::vec3(0.f)) && (glm::normalize(yConstraint) != -_forward))
+    yConstraint = glm::normalize(yConstraint);
+
+    // Check that the Y constraint is not null, solvable and not already solved
+    if ((yConstraint != glm::vec3(0.f)) &&
+        (glm::abs(glm::dot(yConstraint, _forward) - 1.f) > 1e-6) &&
+        (glm::abs(glm::dot(yConstraint, _up) - 1.f) > 1e-6))
     {
         // The aim is to rotate around the new forward vector so that the up vector becomes 
         // coplanar with both the new forward vector and the provided Y constraint.
@@ -249,17 +253,20 @@ glm::quat Transform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConstraint)
         // Find the desired left direction 
         glm::vec3 desiredLeft = glm::normalize(glm::cross(yConstraint, _forward));
 
-        // Find the angle between the actual left and the desired left directions
-        dot = glm::dot(_left, desiredLeft);
-        angle = glm::acos(dot);
+        if (glm::abs(glm::dot(desiredLeft, _left) - 1.f) > 1e-6)
+        {
+            // Find the angle between the actual left and the desired left directions
+            dot = glm::dot(_left, desiredLeft);
+            angle = glm::acos(dot);
 
-        // The rotation axis is either _forward or -_forward,
-        // this is a safe way to find out which
-        axis = glm::normalize(glm::cross(_left, desiredLeft));
+            // The rotation axis is either _forward or -_forward,
+            // this is a safe way to find out which
+            axis = glm::normalize(glm::cross(_left, desiredLeft));
 
-        // Rotate around the found axis 
-        rotateBy<Ref::World>(angle, axis);
-        _localVectorsOutdated = true;
+            // Rotate around the found axis 
+            rotateBy<Ref::World>(angle, axis);
+            _localVectorsOutdated = true;
+        }
     }
 
     // Update flags
