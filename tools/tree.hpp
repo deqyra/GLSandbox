@@ -52,32 +52,20 @@ class Tree
         NodePtr operator[](unsigned int id);
         // Whether the tree has a node with provided ID
         bool hasNode(unsigned int id);
-        // Whether the tree has the node referenced by the provided weak pointer
-        bool hasNode(NodeWPtr wNode);
         // Add a node to the tree. It will have the provided value and will be a child of the node with provided ID.
         unsigned int addNode(T value, unsigned int parentId);
         // Add a whole branch to the tree. Its structure will be copied from the provided tree, and it will be a child of the node with provided ID.
         unsigned int addBranch(const Tree<T>& tree, unsigned int parentId);
         // Remove the whole branch whose root node has the provided ID
         void removeBranch(unsigned int branchRootId);
-        // Remove the whole branch whose root is referenced by the provided pointer
-        void removeBranch(NodeWPtr wBranchRootNode);
         // Remove the whole branch whose root node has the provided ID, and return it as a tree
         Tree<T> popBranch(unsigned int branchRootId);
-        // Remove the whole branch whose root is referenced by the provided pointer, and return it as a tree
-        Tree<T> popBranch(NodeWPtr wBranchRootNode);
         // Get (as a tree) the whole branch whose root node has the provided ID
         Tree<T> getBranch(unsigned int branchRootId);
-        // Get (as a tree) the whole branch whose root is referenced by the provided pointer
-        Tree<T> getBranch(NodeWPtr wBranchRootNode);
         // Change the parent of a branch whose root has the provided root ID
         void moveBranch(unsigned int branchRootId, unsigned int newParentId);
-        // Change the parent of a branch whose root is referenced by the provided root pointer
-        void moveBranch(NodeWPtr wBranchRootNode, NodeWPtr wNewParentNode);
         // Count elements with provided value, starting from the node with provided ID, downwards
         unsigned int countValue(const T& value, unsigned int branchRootId);
-        // Count elements with provided value, starting from the provided node downwards
-        unsigned int countValue(const T& value, NodeWPtr wBranchRootNode);
 };
 
 template<typename T>
@@ -170,19 +158,6 @@ bool Tree<T>::hasNode(unsigned int id)
 }
 
 template<typename T>
-bool Tree<T>::hasNode(NodeWPtr wNode)
-{
-    NodePtr node = wNode.lock();
-    if (node == nullptr)
-    {
-        std::string s = "Tree: provided node pointer is dangling, cannot remove branch.";
-        throw std::runtime_error(s.c_str());
-    }
-    // Defer the processing to the ID-version of that method
-    return hasNode(node->id);
-}
-
-template<typename T>
 unsigned int Tree<T>::addNode(T value, unsigned int parentId)
 {
     auto it = _nodes.find(parentId);
@@ -241,19 +216,6 @@ void Tree<T>::removeBranch(unsigned int branchRootId)
 }
 
 template<typename T>
-void Tree<T>::removeBranch(NodeWPtr wBranchRootNode)
-{
-    NodePtr node = wBranchRootNode.lock();
-    if (node == nullptr)
-    {
-        std::string s = "Tree: provided node pointer is dangling, cannot remove branch.";
-        throw std::runtime_error(s.c_str());
-    }
-    // Defer the processing to the ID-version of that method
-    removeBranch(node->id);
-}
-
-template<typename T>
 Tree<T> Tree<T>::popBranch(unsigned int branchRootId)
 {
     auto it = _nodes.find(branchRootId);
@@ -281,19 +243,6 @@ Tree<T> Tree<T>::popBranch(unsigned int branchRootId)
 }
 
 template<typename T>
-Tree<T> Tree<T>::popBranch(NodeWPtr wBranchRootNode)
-{
-    NodePtr node = wBranchRootNode.lock();
-    if (node == nullptr)
-    {
-        std::string s = "Tree: provided node pointer is dangling, cannot pop branch.";
-        throw std::runtime_error(s.c_str());
-    }
-    // Defer the processing to the ID-version of that method
-    return popBranch(node->id);
-}
-
-template<typename T>
 Tree<T> Tree<T>::getBranch(unsigned int branchRootId)
 {
     auto it = _nodes.find(branchRootId);
@@ -309,19 +258,6 @@ Tree<T> Tree<T>::getBranch(unsigned int branchRootId)
     copyNodeStructure(it->second, root);
     // Make a tree out of it
     return Tree<T>(root);
-}
-
-template<typename T>
-Tree<T> Tree<T>::getBranch(NodeWPtr wBranchRootNode)
-{
-    NodePtr node = wBranchRootNode.lock();
-    if (node == nullptr)
-    {
-        std::string s = "Tree: provided node pointer is dangling, cannot get branch.";
-        throw std::runtime_error(s.c_str());
-    }
-    // Defer the processing to the ID-version of that method
-    return getBranch(node->id);
 }
 
 template<typename T>
@@ -346,27 +282,6 @@ void Tree<T>::moveBranch(unsigned int branchRootId, unsigned int newParentId)
 }
 
 template<typename T>
-void Tree<T>::moveBranch(NodeWPtr wBranchRootNode, NodeWPtr wNewParentNode)
-{
-    auto root = wBranchRootNode.lock();
-    if (root == nullptr)
-    {
-        std::string s = "Tree: provided root node pointer is dangling, cannot move branch.";
-        throw std::runtime_error(s.c_str());
-    }
-
-    auto parent = wNewParentNode.lock();
-    if (parent == nullptr)
-    {
-        std::string s = "Tree: provided parent node pointer is dangling, cannot move branch.";
-        throw std::runtime_error(s.c_str());
-    }
-
-    // Defer the processing to the ID-version of that method
-    moveBranch(root->id, parent->id);
-}
-
-template<typename T>
 unsigned int Tree<T>::countValue(const T& value, unsigned int branchRootId)
 {
     auto branchIt = _nodes.find(branchRootId);
@@ -377,20 +292,6 @@ unsigned int Tree<T>::countValue(const T& value, unsigned int branchRootId)
     }
 
     return countValueRoutine(value, branchIt->second);
-}
-
-template<typename T>
-unsigned int Tree<T>::countValue(const T& value, NodeWPtr wBranchRootNode)
-{
-    auto root = wBranchRootNode.lock();
-    if (root == nullptr)
-    {
-        std::string s = "Tree: provided root node pointer is dangling, cannot count elements.";
-        throw std::runtime_error(s.c_str());
-    }
-
-    // Defer the processing to the ID-version of that method
-    countValue(value, root->id);
 }
 
 template<typename T>
