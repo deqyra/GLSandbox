@@ -36,7 +36,7 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         // Update graph: tree replicating the structure of the scene graph, telling whether the transforms of the corresponding scene objects were modified
         BoolTree _updateMarkers;
         // Tells whether all transforms in the scene are up to date
-        bool _transformsUpToDate;
+        unsigned int _outdatedTransformNodes;
 
         // Map scene object IDs to object metadata structs
         std::unordered_map<unsigned int, SceneObjectMetadata> _objectMetadata;

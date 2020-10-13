@@ -15,7 +15,7 @@ RenderBoi:
         Scene:
             ✔ In `moveObject`, add possibility to keep world position of moved object @done(20-10-13 14:49)
             ☐ Add something like `registerObjectTree(ScenePtr)` to import complex objects into a scene
-            ☐ In `getWorldTransform`, the `_transformsUpToDate` test is useless in most cases
+            ✔ In `getWorldTransform`, the `_transformsUpToDate` test is useless in most cases: FIXED @done(20-10-13 15:33)
             ✔ Clean up the bullshit with `Scene::init` and `SceneObject::setScene` and whatnot, implement a clean factory instead @done(20-10-12 10:22)
         SceneRenderer:
             ☐ Mesh rendering order based on the requested shader, then on their VertexDataManager handle
@@ -41,6 +41,8 @@ RenderBoi:
     Examples:
         ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
         ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)
+    Tools:
+        ☐ Clean up the massive mess going on in Tree
     FIXME:
         ☐ Transform::lookAt
         ✔ Light attenuation @done(20-04-20 06:55)
