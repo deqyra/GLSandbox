@@ -125,8 +125,10 @@ class Transform
         // Get the local Z vector of the object in world coordinates
         glm::vec3 forward() const;
 
-        // Apply this transform to another one
-        Transform applyTo(const Transform& other) const;
+        // Apply this transform in the frame of reference provided by another transform
+        Transform applyOver(const Transform& other) const;
+        // Compute the transform X such that X.applyOver(other) == *this
+        Transform compoundFrom(const Transform& other) const;
 
         // Get the model matrix of the object
         glm::mat4 getModelMatrix() const;

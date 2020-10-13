@@ -150,7 +150,7 @@ void ObjectTransform::setPosition<Ref::World>(glm::vec3 position)
     
     // The found coordinates do not take the parent rotation into account;
     // rotate them by the inverse parent rotation to fix that
-    positionRelativeToParent = glm::conjugate(parentRotation) * positionRelativeToParent * parentRotation;
+    positionRelativeToParent = glm::conjugate(parentRotation) * positionRelativeToParent;
     
     // The found coordinates do not take the parent scale into account; 
     // divide them member-wise by the parent scale to fix that
@@ -194,7 +194,7 @@ glm::vec3 ObjectTransform::translateBy<Ref::World>(glm::vec3 translation)
 
     // Rotate the translation vector by the inverse parent rotation
     // to make it relative to the parent
-    glm::vec3 parentTranslation = glm::conjugate(parentRotation) * translation * parentRotation;
+    glm::vec3 parentTranslation = glm::conjugate(parentRotation) * translation;
     
     // The found coordinates do not take the parent scale into account; 
     // divide them member-wise by the parent scale to fix that
@@ -242,14 +242,14 @@ void ObjectTransform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec
 
     // Rotate the orbital axis by the inverse parent rotation
     // to make it relative to the parent
-    glm::vec3 parentAxis = glm::conjugate(parentRotation) * axis * parentRotation;
+    glm::vec3 parentAxis = glm::conjugate(parentRotation) * axis;
 
     // Find the center of the orbital movement relative to the parent, in world coordinates
     glm::vec3 parentCenter = center - parentTransform.getPosition();
 
     // Rotate the center coordinates by the inverse parent rotation
     // to make them relative to the parent
-    parentCenter = glm::conjugate(parentRotation) * parentCenter * parentRotation;
+    parentCenter = glm::conjugate(parentRotation) * parentCenter;
     
     // The found coordinates do not take the parent scale into account; 
     // divide them member-wise by the parent scale to fix that
@@ -345,7 +345,7 @@ glm::quat ObjectTransform::rotateBy<Ref::World>(float radAngle, glm::vec3 axis)
     glm::quat parentRotation = parentTransform.getRotation();
 
     // Rotate axis by inverse parent rotation to make it relative to the parent
-    glm::vec3 parentAxis = glm::conjugate(parentRotation) * axis * parentRotation;
+    glm::vec3 parentAxis = glm::conjugate(parentRotation) * axis;
 
     glm::quat newRotation = Transform::rotateBy<Ref::Parent>(radAngle, parentAxis);
     // Notify transform change
@@ -389,7 +389,7 @@ glm::quat ObjectTransform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConst
 
     // Rotate the target coordinates by the inverse parent rotation
     // to make them relative to the parent
-    parentTarget = glm::conjugate(parentRotation) * parentTarget * parentRotation;
+    parentTarget = glm::conjugate(parentRotation) * parentTarget;
     
     // The found coordinates do not take the parent scale into account; 
     // divide them member-wise by the parent scale to fix that
@@ -477,9 +477,9 @@ glm::vec3 ObjectTransform::scaleBy(glm::vec3 scaling)
     return newScale;
 }
 
-void ObjectTransform::applyTo(ObjectTransform& other)
+void ObjectTransform::applyOver(ObjectTransform& other)
 {
-    other = this->Transform::applyTo((Transform) other);
+    other = this->Transform::applyOver((Transform) other);
 }
 
 ObjectTransform::TransformNotifier& ObjectTransform::getNotifier()

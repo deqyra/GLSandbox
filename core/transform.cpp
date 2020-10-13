@@ -124,7 +124,6 @@ glm::quat Transform::rotateBy<Ref::Self>(float radAngle, glm::vec3 axis)
 {
     if (_localVectorsOutdated) updateLocalVectors();
     // Recalculate provided axis relative to the world
-    // Inverse rotation applied to the axis gives the axis in world coordinates
     glm::vec3 worldAxis = axis.x * _left
                         + axis.y * _up
                         + axis.z * _forward;
@@ -368,27 +367,48 @@ glm::mat4 Transform::getModelMatrix() const
     return _modelMatrix;
 }
 
-Transform Transform::applyTo(const Transform& other) const
+Transform Transform::applyOver(const Transform& other) const
 {
     // Compute new transform position:
-    // other position scaled and rotated + this position
-    glm::vec3 newPosition = glm::vec3(
-        other._position[0] * _scale[0],
-        other._position[1] * _scale[1],
-        other._position[2] * _scale[2]
-    );
-    newPosition = _rotation * newPosition;
-    newPosition += _position;
+    // this position scaled and rotated by other + other position
+    glm::vec3 newPosition = {
+        _position[0] * other._scale[0],
+        _position[1] * other._scale[1],
+        _position[2] * other._scale[2]
+    };
+    newPosition = other._rotation * newPosition;
+    newPosition += other._position;
 
     // Combine rotations
-    glm::quat newRotation = glm::normalize(_rotation * other._rotation);
+    glm::quat newRotation = glm::normalize(other._rotation * _rotation);
 
     // Multiply scales
-    glm::vec3 newScale = glm::vec3(
+    glm::vec3 newScale = {
         _scale[0] * other._scale[0],
         _scale[1] * other._scale[1],
         _scale[2] * other._scale[2]
-    );
+    };
+
+    return Transform(newPosition, newRotation, newScale);
+}
+
+Transform Transform::compoundFrom(const Transform& other) const
+{
+    // Find differential rotation
+    glm::quat newRotation = glm::normalize(glm::conjugate(other._rotation) * _rotation);
+
+    // Find differential scaling factor
+    glm::vec3 newScale = {
+        _scale[0] / other._scale[0],
+        _scale[1] / other._scale[1],
+        _scale[2] / other._scale[2]
+    };
+
+    // Find differential position, inversely rotated and scale to fit other
+    glm::vec3 newPosition = glm::conjugate(other._rotation) * (_position - other._position);
+    newPosition[0] /= other._scale[0];
+    newPosition[1] /= other._scale[1];
+    newPosition[2] /= other._scale[2];
 
     return Transform(newPosition, newRotation, newScale);
 }

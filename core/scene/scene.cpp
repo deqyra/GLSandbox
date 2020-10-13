@@ -127,7 +127,7 @@ void Scene::registerObject(SceneObjectPtr object, unsigned int parentId)
     Transform parentTransform = _transforms[parentMeta.transformNodeId]->value;
     // Get transform of new object and apply parent transform to it
     Transform newTransform = (Transform)object->transform;
-    newTransform = parentTransform.applyTo(newTransform);
+    newTransform = newTransform.applyOver(parentTransform);
 
     // Create nodes in graphs, using parent node IDs from retrieved metadata
     unsigned int objectNodeId = _objects.addNode(object, parentMeta.objectNodeId);
@@ -490,7 +490,7 @@ void Scene::worldTransformCascadeUpdate(unsigned int id)
     if (parentTransformNode != nullptr)
     {
         // Apply the parent world transform to the object transform, and save it to the object world transform node
-        Transform newTransform = parentTransformNode->value.applyTo((Transform)objectNode->value->transform);
+        Transform newTransform = ((Transform)(objectNode->value->transform)).applyOver(parentTransformNode->value);
         transformNode->value = newTransform;
     }
     else
@@ -506,7 +506,7 @@ void Scene::worldTransformCascadeUpdate(unsigned int id)
     for (auto childIt = children.begin(); childIt != children.end(); childIt++)
     {
         ObjectTree::NodePtr child = childIt->lock();
-        worldTransformCascadeUpdate(child->id);
+        worldTransformCascadeUpdate(child->value->id);
     }
 }
 
