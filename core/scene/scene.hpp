@@ -56,10 +56,12 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         // Recursively update world transforms in DFS order, starting with that of the object with provided ID
         void worldTransformDFSUpdate(unsigned int startingId);
 
-        // For an object with given ID, find the topmost parent node whose update marker is set
-        unsigned int findFurthestOutdatedParent(unsigned int id);
-        // Update the world transform of the node corresponding to the provided scene object ID, as well as all of its children's
+        // For an object with given ID, find the topmost parent node whose update marker is set, and return the parent chain to it
+        std::vector<unsigned int> findLongestOutdatedParentChain(unsigned int id);
+        // Update the world transform of the scene object with provided ID, as well as all of its children's
         void worldTransformCascadeUpdate(unsigned int id);
+        // Update the world transform of the scene object with provided ID, alone
+        void worldTransformUpdateNoCascade(unsigned int id);
         // Whether the object with the provided ID has a disabled parent in the scene graph (and thus should be processed or not)
         bool hasDisabledParent(unsigned int id);
 
@@ -83,7 +85,7 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         // Remove the object with provided ID from the scene, as well as all of its children
         void removeObject(unsigned int id);
         // Move the object with provided ID (as well as all of its children) in the tree so that its new parent is the object of second provided ID
-        void moveObject(unsigned int id, unsigned int newParentId);
+        void moveObject(unsigned int id, unsigned int newParentId, bool worldPositionStays = true);
         // Get ID of object which is parent to the object with provided ID in the scene graph
         unsigned int getParentId(unsigned int id);
         // Get object which is parent to the object with provided ID in the scene graph
@@ -92,7 +94,7 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         // Update all transforms marked for update in DFS order
         void updateAllTransforms();
         // Get the world transform of the object with provided ID
-        Transform getWorldTransform(unsigned int id);
+        Transform getWorldTransform(unsigned int id, bool cascadeUpdate = true);
 
         // Get weak pointers to all enabled scene objects
         std::vector<SceneObjectPtr> getAllObjects(bool mustBeEnabled = true);

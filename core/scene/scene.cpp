@@ -187,7 +187,7 @@ void Scene::removeObject(unsigned int id)
     _objectMetadata.erase(meta.id);
 }
 
-void Scene::moveObject(unsigned int id, unsigned int newParentId)
+void Scene::moveObject(unsigned int id, unsigned int newParentId, bool worldPositionStays)
 {
     auto objectIt = _objectMetadata.find(id);
     if (objectIt == _objectMetadata.end())
@@ -207,10 +207,19 @@ void Scene::moveObject(unsigned int id, unsigned int newParentId)
     SceneObjectMetadata meta = objectIt->second;
     SceneObjectMetadata parentMeta = parentIt->second;
 
+    // Fetch the world transform of moved object, updating if necessary
+    Transform worldTransform = getWorldTransform(id);
+
     // Move nodes in all graphs
     _objects.moveBranch(meta.objectNodeId, parentMeta.objectNodeId);
     _transforms.moveBranch(meta.transformNodeId, parentMeta.transformNodeId);
     _updateMarkers.moveBranch(meta.updateNodeId, parentMeta.updateNodeId);
+
+    if (worldPositionStays)
+    {
+        Transform parentTransform = getWorldTransform(newParentId);
+        _objects[meta.objectNodeId]->value->transform = worldTransform.compoundFrom(parentTransform);
+    }
 
     // Mark object for update
     markForUpdate(id);
@@ -262,7 +271,7 @@ void Scene::updateAllTransforms()
     }
 }
 
-Transform Scene::getWorldTransform(unsigned int id)
+Transform Scene::getWorldTransform(unsigned int id, bool cascadeUpdate)
 {
     auto it = _objectMetadata.find(id);
     if (it == _objectMetadata.end())
@@ -271,27 +280,44 @@ Transform Scene::getWorldTransform(unsigned int id)
         throw std::runtime_error(s.c_str());
     }
 
+    SceneObjectMetadata meta = it->second;
+
     // Update transform if required
     if (!_transformsUpToDate)
     {
-        // Find the topmost outdated parent
-        unsigned int outdated = findFurthestOutdatedParent(id);
+        // Find the longest outdated parent
+        std::vector<unsigned int> outdatedIds = findLongestOutdatedParentChain(id);
 
-        // If no outdated parent was found, -1 was returned
-        if (outdated == MaxUInt)
+        // If no outdated parent was found, the vector is empty
+        if (outdatedIds.size() == 0)
         {
-            SceneObjectMetadata meta = it->second;
-            // If the update marker of the considered object is set, update its transform along with all of its children's
-            if (_updateMarkers[meta.updateNodeId]->value) worldTransformCascadeUpdate(id);
+            // If the update marker of the considered object is set, update its transform
+            if (_updateMarkers[meta.updateNodeId]->value)
+            {
+                // Update it along with all of its children's if appropriate
+                if (cascadeUpdate) worldTransformCascadeUpdate(id);
+                else worldTransformUpdateNoCascade(id);
+            }
 
-            // If it isn't set, the transform of that is up to date and no action is required
+            // If it isn't set, the transform of that object is up to date and no action is required
         }
-        // If an outdated parent was found, update its transform along with all of its children's
-        else worldTransformCascadeUpdate(outdated);
+        // If an outdated parent chain was found
+        else
+        {
+            // Update the furthest parent, cascading, if appropriate
+            if (cascadeUpdate) worldTransformCascadeUpdate(outdatedIds.back());
+            else
+            {
+                // Otherwise, update each element in the chain from the top, not cascading
+                for (auto it = outdatedIds.rbegin(); it != outdatedIds.rend(); it++)
+                {
+                    worldTransformUpdateNoCascade(*it);
+                }
+            }
+        }
     }
 
     // Retrieve matrix graph node ID and return matrix
-    SceneObjectMetadata meta = it->second;
     TransformTree::NodePtr node = _transforms[meta.transformNodeId];
     return node->value;
 }
@@ -451,7 +477,7 @@ void Scene::worldTransformDFSUpdate(unsigned int startingId)
     }
 }
 
-unsigned int Scene::findFurthestOutdatedParent(unsigned int id)
+std::vector<unsigned int> Scene::findLongestOutdatedParentChain(unsigned int id)
 {
     auto it = _objectMetadata.find(id);
     // Retrieve the object node ID, the node pointer as well as its parent chain
@@ -459,24 +485,62 @@ unsigned int Scene::findFurthestOutdatedParent(unsigned int id)
     ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
     std::vector<ObjectTree::NodeWPtr> parentChain = objectNode->getParentChain();
 
-    // Keep track of the furthest parent in the chain whose transform was outdated
-    unsigned int furthestOutdatedId = MaxUInt;
+    std::vector<unsigned int> parentIdChain;
+    parentIdChain.reserve(parentChain.size());
+
+    // Find the count of elements in the chain up until the last outdated element
+    unsigned int count = 0;
+    unsigned int outdatedCount = 0;
     for (auto parentIt = parentChain.begin(); parentIt != parentChain.end(); parentIt++)
     {
+        count++;
+
         unsigned int id = parentIt->lock()->value->id;
+        parentIdChain.push_back(id);
         SceneObjectMetadata meta = _objectMetadata[id];
 
         // Use the flag to check on the modified state of the object transform
         if (_updateMarkers[meta.updateNodeId]->value)
         {
-            furthestOutdatedId = id;
+            // Keep track of the element count up until the last outdated element
+            outdatedCount = count;
         }
     }
 
-    return furthestOutdatedId;
+    // If no outdated parents, return empty vector
+    if (outdatedCount == 0) return std::vector<unsigned int>();
+
+    // If last parent is outdated, return whole ID vector
+    if (outdatedCount == parentChain.size()) return parentIdChain;
+
+    // Otherwise, copy the outdated element IDs into a new vector and return it
+    std::vector<unsigned int> outdatedChain;
+    outdatedChain.reserve(outdatedCount);
+    std::copy(parentIdChain.begin(), parentIdChain.begin() + outdatedCount, std::back_inserter(outdatedChain));
+
+    return outdatedChain;
 }
 
 void Scene::worldTransformCascadeUpdate(unsigned int id)
+{
+    auto it = _objectMetadata.find(id);
+    // Retrieve node metadata
+    SceneObjectMetadata meta = it->second;
+
+    // Get object node pointer
+    ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
+    worldTransformUpdateNoCascade(id);
+    
+    // Reverberate changes to children transforms
+    std::vector<ObjectTree::NodeWPtr> children = objectNode->getChildren();
+    for (auto childIt = children.begin(); childIt != children.end(); childIt++)
+    {
+        ObjectTree::NodePtr child = childIt->lock();
+        worldTransformCascadeUpdate(child->value->id);
+    }
+}
+
+void Scene::worldTransformUpdateNoCascade(unsigned int id)
 {
     auto it = _objectMetadata.find(id);
     // Retrieve node metadata
@@ -500,14 +564,6 @@ void Scene::worldTransformCascadeUpdate(unsigned int id)
 
     // Reset the update marker
     _updateMarkers[meta.updateNodeId]->value = false;
-    
-    // Reverberate changes to children transforms
-    std::vector<ObjectTree::NodeWPtr> children = objectNode->getChildren();
-    for (auto childIt = children.begin(); childIt != children.end(); childIt++)
-    {
-        ObjectTree::NodePtr child = childIt->lock();
-        worldTransformCascadeUpdate(child->value->id);
-    }
 }
 
 bool Scene::hasDisabledParent(unsigned int id)

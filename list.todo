@@ -13,7 +13,7 @@ RenderBoi:
             ☐ Set the projection matrix in terms of parameters rather than a full matrix
             ☐ Clean up smart updates depending on parameter values
         Scene:
-            ☐ In `moveObject`, add possibility to keep world position of moved object
+            ✔ In `moveObject`, add possibility to keep world position of moved object @done(20-10-13 14:49)
             ☐ Add something like `registerObjectTree(ScenePtr)` to import complex objects into a scene
             ☐ In `getWorldTransform`, the `_transformsUpToDate` test is useless in most cases
             ✔ Clean up the bullshit with `Scene::init` and `SceneObject::setScene` and whatnot, implement a clean factory instead @done(20-10-12 10:22)
@@ -24,7 +24,7 @@ RenderBoi:
             ✔ Change SceneObject inheritance from PositionedObject into a compoud Transform object @done(20-07-02 17:00)
             ✔ Viable alternative to the ugly `transformModified` flag fix (observer pattern) @done(20-09-02 15:12)
             ✔ Implement transformations relative to different frames of reference @done(20-10-10 12:50)
-            ☐ Implement `Transform::compoundFrom(const Transform& other)`, which returns the transforms which needs to be applied to `other` in order to result in itself
+            ✔ Implement `Transform::compoundFrom(const Transform& other)` @done(20-10-13 13:49)
             ☐ Fix all scaling issues in `ObjectTransform`
         ☐ Dynamic meshes
         ☐ Unity-like prefab system?
