@@ -35,6 +35,8 @@ class Tree
         std::unordered_map<unsigned int, NodePtr> branchNodeMap(NodePtr branchRoot);
         // Given a source root node and a destination root node, recursively copy all source children nodes as children of the destination node
         void copyNodeStructure(NodePtr source, NodePtr destination);
+        // Count all elements with a certain value from a starting node downwards
+        unsigned int countValueRoutine(const T& value, NodePtr startingNode);
 
     public:
         // Construct a tree from a single root value
@@ -72,6 +74,10 @@ class Tree
         void moveBranch(unsigned int branchRootId, unsigned int newParentId);
         // Change the parent of a branch whose root is referenced by the provided root pointer
         void moveBranch(NodeWPtr wBranchRootNode, NodeWPtr wNewParentNode);
+        // Count elements with provided value, starting from the node with provided ID, downwards
+        unsigned int countValue(T value, unsigned int branchRootId);
+        // Count elements with provided value, starting from the provided node downwards
+        unsigned int countValue(T value, NodeWPtr wBranchRootNode);
 };
 
 template<typename T>
@@ -361,6 +367,33 @@ void Tree<T>::moveBranch(NodeWPtr wBranchRootNode, NodeWPtr wNewParentNode)
 }
 
 template<typename T>
+unsigned int Tree<T>::countValue(T value, unsigned int branchRootId)
+{
+    auto branchIt = _nodes.find(branchRootId);
+    if (branchIt == _nodes.end())
+    {
+        std::string s = "Tree: no node with ID " + std::to_string(branchRootId) + ", cannot move branch.";
+        throw std::runtime_error(s.c_str());
+    }
+
+    return countValueRoutine(branchIt->second);
+}
+
+template<typename T>
+unsigned int Tree<T>::countValue(T value, NodeWPtr wBranchRootNode)
+{
+    auto root = wBranchRootNode.lock();
+    if (root == nullptr)
+    {
+        std::string s = "Tree: provided root node pointer is dangling, cannot count elements.";
+        throw std::runtime_error(s.c_str());
+    }
+
+    // Defer the processing to the ID-version of that method
+    countValue(value, root->id);
+}
+
+template<typename T>
 void Tree<T>::destructBranch(NodePtr root)
 {
     // First destroy all children of root
@@ -409,6 +442,19 @@ void Tree<T>::copyNodeStructure(NodePtr source, NodePtr destination)
         // Copy the node structure from each child to the corresponding newly created node
         copyNodeStructure(child, newChild);
     }
+}
+
+template<typename T>
+unsigned int Tree<T>::countValueRoutine(const T& value, NodePtr startingNode)
+{
+    int count = startingNode->value == value ? 1 : 0;
+    auto children = startingNode->getChildren();
+    for (auto it = children.begin(); it != children.end(); it++)
+    {
+        count += countValueRoutine(value, it->lock());
+    }
+
+    return count;
 }
 
 #endif//TREE_HPP
