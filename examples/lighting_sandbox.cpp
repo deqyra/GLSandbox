@@ -61,30 +61,30 @@ void LightingSandbox::run(GLWindowPtr window)
     window->registerInputProcessor(scene);
 
     // BIG TORUS
-    SceneObjectPtr bigTorusObj = generateSceneMesh<MeshType::Torus>({2.f, 0.5f, 72, 48}, Materials::Emerald, lightingShader);
+    SceneObjectPtr bigTorusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>({2.f, 0.5f, 72, 48}, Materials::Emerald, lightingShader);
 
     // SMALL TORUS
-    SceneObjectPtr smallTorusObj = generateSceneMesh<MeshType::Torus>({0.75f, 0.25f, 64, 32}, Materials::Gold, lightingShader);
+    SceneObjectPtr smallTorusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>({0.75f, 0.25f, 64, 32}, Materials::Gold, lightingShader);
     
     // AXES
-    SceneObjectPtr axesObj = generateSceneMesh<MeshType::Axes>({3.f});
+    SceneObjectPtr axesObj = Factory::makeSceneObjectWithMesh<MeshType::Axes>({3.f});
     
     // CUBE
-    SceneObjectPtr cubeObj = generateSceneMesh<MeshType::Cube>({1.f, {0.f, 0.f, 0.f}, false}, Material(), lightingShader);
+    SceneObjectPtr cubeObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>({1.f, {0.f, 0.f, 0.f}, false}, Material(), lightingShader);
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>(lightBaseRange);
     cubeObj->addComponent<LightComponent>(light);
 
     // TETRAHEDRON
-    SceneObjectPtr tetrahedronObj = generateSceneMesh<MeshType::Tetrahedron>({0.5f});
+    SceneObjectPtr tetrahedronObj = Factory::makeSceneObjectWithMesh<MeshType::Tetrahedron>({0.5f});
 
     // CAMERA
     SceneObjectPtr cameraObj = Factory::makeSceneObject();
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), window->getAspectRatio(), 0.1f, 100.0f);
 
     // Register everything in scene and create relationships
-    scene->registerObject(axesObj);
     scene->registerObject(bigTorusObj);
     scene->registerObject(smallTorusObj, bigTorusObj->id);
+    scene->registerObject(axesObj);
     scene->registerObject(cubeObj);
     scene->registerObject(tetrahedronObj, smallTorusObj->id);
     scene->registerObject(cameraObj);
@@ -177,7 +177,7 @@ void LightingSandboxScript::update(float timeElapsed)
     }
     else
     {
-        _bigTorusObj->transform.lookAt<Ref::World>(_cameraObj->transform.getPosition(), {0.f, 1.f, 0.f});
+        //_bigTorusObj->transform.lookAt<Ref::World>(_cameraObj->transform.getPosition(), {0.f, 1.f, 0.f});
     }
 }
 
