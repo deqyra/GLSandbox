@@ -7,10 +7,10 @@
 
 Camera::Camera(const Camera& other) :
     _front(other._front),
-    _right(other._right),
+    _left(other._left),
     _up(other._up),
     _parentUp(other._parentUp),
-    _parentUpRotation(other._parentUpRotation),
+    _parentRotation(other._parentRotation),
     _zoom(other._zoom),
     _yaw(other._yaw),
     _pitch(other._pitch),
@@ -21,10 +21,10 @@ Camera::Camera(const Camera& other) :
 
 Camera::Camera(glm::mat4 projection, float yaw, float pitch, float zoom, glm::vec3 up) :
     _front(glm::vec3(0.f, 0.f, -1.f)),
-    _right(glm::vec3(1.f, 0.f, 0.f)),
+    _left(glm::vec3(1.f, 0.f, 0.f)),
     _up(glm::vec3(0.f, 1.f, 0.f)),
     _parentUp(glm::vec3(0.f, 1.f, 0.f)),
-    _parentUpRotation(),
+    _parentRotation(),
     _zoom(zoom),
     _yaw(yaw),
     _pitch(pitch),
@@ -49,12 +49,12 @@ void Camera::updateVectors()
     front.y = sin(glm::radians(_pitch));
     front.z = sin(glm::radians(_yaw)) * cos(glm::radians(_pitch));
     // Apply the rotation between the parent's current upwards direction and world Y
-    front = _parentUpRotation * front;
+    front = _parentRotation * front;
     _front = glm::normalize(front);
 
     // Compute new right and up from new front and parent up
-    _right = glm::normalize(glm::cross(_front, _parentUp));
-    _up = glm::normalize(glm::cross(_right, _front));
+    _left = glm::normalize(glm::cross(_parentUp, _front));
+    _up = glm::normalize(glm::cross(_front, _left));
 }
 
 void Camera::processRotation(float yawOffset, float pitchOffset)
@@ -87,9 +87,9 @@ glm::vec3 Camera::front()
     return _front;
 }
 
-glm::vec3 Camera::right()
+glm::vec3 Camera::left()
 {
-    return _right;
+    return _left;
 }
 
 glm::vec3 Camera::up()
@@ -105,7 +105,7 @@ glm::vec3 Camera::getParentUp()
 void Camera::setParentUp(glm::vec3 up)
 {
     _parentUp = glm::normalize(up);
-    _parentUpRotation = glm::quat(ObjectTransform::Y, _parentUp);
+    _parentRotation = glm::quat(ObjectTransform::Y, _parentUp);
 
     updateVectors();
 }
@@ -131,7 +131,7 @@ glm::mat4 Camera::getProjectionMatrix()
     return _projectionMatrix;
 }
 
-glm::mat4 Camera::getViewProjectionMatrix(glm::vec3 viewPos)
+glm::mat4 Camera::getViewProjectionMatrix(glm::vec3 viewPoint)
 {
-    return _projectionMatrix * getViewMatrix(viewPos);
+    return _projectionMatrix * getViewMatrix(viewPoint);
 }

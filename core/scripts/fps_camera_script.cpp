@@ -119,9 +119,9 @@ void FPSCameraScript::update(float timeElapsed)
     if (_movement[IndexBackward])
         position -= _camera->front() * velocity;
     if (_movement[IndexLeft])
-        position -= _camera->right() * velocity;
+        position += _camera->left() * velocity;
     if (_movement[IndexRight])
-        position += _camera->right() * velocity;
+        position -= _camera->left() * velocity;
 
     // Update camera position
     sceneObject->transform.setPosition<Ref::Parent>(position);
