@@ -10,7 +10,7 @@
 #include "../window/gl_window.hpp"
 #include "../window/tools.hpp"
 
-#include "../core/gl_macros.hpp"
+#include "../core/common_macros.hpp"
 #include "../core/mesh.hpp"
 #include "../core/materials.hpp"
 #include "../core/shader.hpp"

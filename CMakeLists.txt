@@ -143,7 +143,7 @@
 
     # Build core lib
         add_library( ${CORE_LIB_NAME} ${STATIC_OR_SHARED}
-                                                                                core/gl_macros.hpp
+                                                                                core/common_macros.hpp
                     core/camera.cpp                                             core/camera.hpp
                     core/factory.cpp                                            core/factory.hpp
                     core/input_processor.cpp                                    core/input_processor.hpp

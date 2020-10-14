@@ -8,6 +8,7 @@
 #include "scene/scene.hpp"
 #include "scene/scene_object.hpp"
 
+/// @brief Provides static methods to facilitate complex object instantiation.
 class Factory
 {
     public:

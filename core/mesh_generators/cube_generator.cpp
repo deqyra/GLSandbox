@@ -6,7 +6,7 @@
 
 #include "../vertex.hpp"
 
-#include "../gl_macros.hpp"
+#include "../common_macros.hpp"
 
 CubeGenerator::CubeGenerator() :
     CubeGenerator(DefaultSize)

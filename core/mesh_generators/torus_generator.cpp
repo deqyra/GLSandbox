@@ -8,7 +8,7 @@
 
 #include "../vertex.hpp"
 
-#include "../gl_macros.hpp"
+#include "../common_macros.hpp"
 
 constexpr double Pi = glm::pi<double>();
 

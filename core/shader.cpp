@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 #include "ubo/ubo_info.hpp"
-#include "gl_macros.hpp"
+#include "common_macros.hpp"
 
 #define INFO_BUFFER_SIZE 512
 
