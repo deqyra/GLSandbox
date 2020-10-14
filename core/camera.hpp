@@ -5,8 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "object_transform.hpp"
+#include "transform.hpp"
 
+/// @brief A camera managing its own orientation and providing view and projection matrices.
 class Camera
 {
     private:
@@ -17,9 +18,7 @@ class Camera
         /// @brief Upward direction of the camera.
         glm::vec3 _up;
         /// @brief Upwards direction of the object the camera is attached to.
-        glm::vec3 _parentUp;
-        /// @brief Rotation of the parent within the world.
-        glm::quat _parentRotation;
+        Transform _parentTransform;
         /// @brief Zoom factor of the camera.
         float _zoom;
 
@@ -40,7 +39,7 @@ class Camera
         static constexpr float DefaultZoomFactor = 1.f;
 
         Camera(const Camera& other);
-        Camera(glm::mat4 projection, float yaw = DefaultYaw, float pitch = DefaultPitch, float zoom = DefaultZoomFactor, glm::vec3 up = ObjectTransform::Y);
+        Camera(glm::mat4 projection, float yaw = DefaultYaw, float pitch = DefaultPitch, float zoom = DefaultZoomFactor, Transform parentTransform = Transform());
         ~Camera();
 
         /// @brief Update the rotation of the camera to fit recorded offsets in yaw and pitch.
@@ -69,15 +68,15 @@ class Camera
         /// @return The upwards direction of the camera.
         glm::vec3 up();
 
-        /// @brief Get the upwards direction of the parent of the camera.
+        /// @brief Get the world transform of the parent of the camera.
         ///
-        /// @return The upwards direction of the parent of the camera.
-        glm::vec3 getParentUp();
+        /// @return The world transform of the parent of the camera.
+        Transform getParentTransform();
 
-        /// @brief Update the registered upwards direction of the parent of the camera.
+        /// @brief Update the registered world transform of the parent of the camera.
         ///
-        /// @param[in] up New upwards direction of the parent of the camera.
-        void setParentUp(glm::vec3 up);
+        /// @param[in] transform New world transform of the parent of the camera.
+        void setParentTransform(Transform parentTransform);
 
         /// @brief Set the projection matrix of the camera.
         ///

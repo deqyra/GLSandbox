@@ -9,7 +9,10 @@ RenderBoi:
             ☐ A VertexDataManager holds actual vertex data and takes care of memory management
             ☐ Meshes now only keep handles to vertex content held in a VertexDataManager
             ☐ Investigate better buffering methods
+        Mesh:
+            ☐ Handle several types of draw methods per single mesh
         Camera:
+            ✔ Use a parent transform instead of a simple up vector @done(20-10-14 12:27)
             ☐ Set the projection matrix in terms of parameters rather than a full matrix
             ☐ Clean up smart updates depending on parameter values
         Scene:
@@ -26,6 +29,8 @@ RenderBoi:
             ✔ Implement transformations relative to different frames of reference @done(20-10-10 12:50)
             ✔ Implement `Transform::compoundFrom(const Transform& other)` @done(20-10-13 13:49)
             ☐ Fix all scaling issues in `ObjectTransform`
+        Component:
+            ☐ Change SceneObjectWPtr to SceneObjectPtr
         ☐ Dynamic meshes
         ☐ Unity-like prefab system?
         ☐ Shadows

@@ -38,12 +38,11 @@ void CameraComponent::setCamera(CameraPtr camera)
 glm::mat4 CameraComponent::getViewMatrix()
 {
     std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
-    glm::vec3 worldPosition = sceneObject->getWorldTransform().getPosition();
+    Transform worldTransform = sceneObject->getWorldTransform();
 
     // Update camera and compute view matrix
-    glm::vec3 newUp = getParentUp();
-    _camera->setParentUp(newUp);
-    return _camera->getViewMatrix(worldPosition);
+    _camera->setParentTransform(worldTransform);
+    return _camera->getViewMatrix(worldTransform.getPosition());
 }
 
 glm::vec3 CameraComponent::worldPositionToViewSpace(glm::vec3 worldPosition)

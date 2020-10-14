@@ -3,14 +3,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "object_transform.hpp"
+#include "transform.hpp"
 
 Camera::Camera(const Camera& other) :
     _front(other._front),
     _left(other._left),
     _up(other._up),
-    _parentUp(other._parentUp),
-    _parentRotation(other._parentRotation),
+    _parentTransform(other._parentTransform),
     _zoom(other._zoom),
     _yaw(other._yaw),
     _pitch(other._pitch),
@@ -19,19 +18,18 @@ Camera::Camera(const Camera& other) :
 
 }
 
-Camera::Camera(glm::mat4 projection, float yaw, float pitch, float zoom, glm::vec3 up) :
+Camera::Camera(glm::mat4 projection, float yaw, float pitch, float zoom, Transform parentTransform) :
     _front(glm::vec3(0.f, 0.f, -1.f)),
     _left(glm::vec3(1.f, 0.f, 0.f)),
     _up(glm::vec3(0.f, 1.f, 0.f)),
-    _parentUp(glm::vec3(0.f, 1.f, 0.f)),
-    _parentRotation(),
+    _parentTransform(parentTransform),
     _zoom(zoom),
     _yaw(yaw),
     _pitch(pitch),
     _projectionMatrix(projection)
 {
     // Update vectors according to parameters
-    setParentUp(up);
+    setParentTransform(parentTransform);
     
     // updateVectors();     // updateVectors is already called within setParentUp
 }
@@ -48,12 +46,12 @@ void Camera::updateVectors()
     front.x = cos(glm::radians(_yaw)) * cos(glm::radians(_pitch));
     front.y = sin(glm::radians(_pitch));
     front.z = sin(glm::radians(_yaw)) * cos(glm::radians(_pitch));
-    // Apply the rotation between the parent's current upwards direction and world Y
-    front = _parentRotation * front;
+    // Apply the world rotation of the parent
+    front = _parentTransform.getRotation() * front;
     _front = glm::normalize(front);
 
-    // Compute new right and up from new front and parent up
-    _left = glm::normalize(glm::cross(_parentUp, _front));
+    // Compute new left and up from new front and parent up
+    _left = glm::normalize(glm::cross(_parentTransform.up(), _front));
     _up = glm::normalize(glm::cross(_front, _left));
 }
 
@@ -97,15 +95,14 @@ glm::vec3 Camera::up()
     return _up;
 }
 
-glm::vec3 Camera::getParentUp()
+Transform Camera::getParentTransform()
 {
-    return _parentUp;
+    return _parentTransform;
 }
 
-void Camera::setParentUp(glm::vec3 up)
+void Camera::setParentTransform(Transform parentTransform)
 {
-    _parentUp = glm::normalize(up);
-    _parentRotation = glm::quat(ObjectTransform::Y, _parentUp);
+    _parentTransform = parentTransform;
 
     updateVectors();
 }
