@@ -26,7 +26,7 @@ class Factory
         ///
         /// @tparam T Litteral describing which mesh generator to use.
         ///
-        /// @param[in] parameters Parameters to pass to the mesh generator.
+        /// @param parameters Parameters to pass to the mesh generator.
         /// Look up generators in core/mesh_generators/ for details.
         ///
         /// @return Pointer to the generated mesh.
@@ -38,9 +38,9 @@ class Factory
         ///
         /// @tparam T Litteral describing which mesh generator to use.
         ///
-        /// @param[in] parameters Parameters of the mesh generation.
-        /// @param[in] mat Material to render the mesh in.
-        /// @param[in] shader Shader to render the mesh with.
+        /// @param parameters Parameters of the mesh generation.
+        /// @param mat Material to render the mesh in.
+        /// @param shader Shader to render the mesh with.
         ///
         /// @return Pointer to the instantiated scene object.
         template<MeshType T>

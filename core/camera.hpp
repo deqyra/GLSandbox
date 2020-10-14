@@ -44,13 +44,13 @@ class Camera
 
         /// @brief Update the rotation of the camera to fit recorded offsets in yaw and pitch.
         ///
-        /// @param[in] yawOffset How much the camera was rotated around Y in degrees.
-        /// @param[in] pitchOffset How much the camera was rotated around X in degrees.
+        /// @param yawOffset How much the camera was rotated around Y in degrees.
+        /// @param pitchOffset How much the camera was rotated around X in degrees.
         void processRotation(float yawOffset, float pitchOffset);
         
         /// @brief DO NOT USE - Update the projection matrix of the camera to zoom in or out.
         ///
-        /// @param[in] scrollOffset How much the camera was zoomed in or out.
+        /// @param scrollOffset How much the camera was zoomed in or out.
         void processZoom(float scrollOffset);
 
         /// @brief Get the facing direction of the camera.
@@ -75,25 +75,25 @@ class Camera
 
         /// @brief Update the registered world transform of the parent of the camera.
         ///
-        /// @param[in] transform New world transform of the parent of the camera.
+        /// @param transform New world transform of the parent of the camera.
         void setParentTransform(Transform parentTransform);
 
         /// @brief Set the projection matrix of the camera.
         ///
-        /// @param[in] projection New projection matrix of the camera.
+        /// @param projection New projection matrix of the camera.
         void setProjectionMatrix(glm::mat4 projection);
 
         /// @brief Get the view matrix of the camera from a certain view point.
         ///
-        /// @param[in] viewPoint Position of the camera in world coordinates.
+        /// @param viewPoint Position of the camera in world coordinates.
         ///
         /// @return The view matrix of the camera.
         glm::mat4 getViewMatrix(glm::vec3 viewPoint);
         
         /// @brief Transform vector coordinates from world space to view space from a certain view point.
         ///
-        /// @param[in] viewPoint Position of the camera in world coordinates.
-        /// @param[in] worldPosition Coordinates to transform into view space.
+        /// @param viewPoint Position of the camera in world coordinates.
+        /// @param worldPosition Coordinates to transform into view space.
         ///
         /// @return The transformed coordinates.
         glm::vec3 worldPositionToViewSpace(glm::vec3 viewPoint, glm::vec3 worldPosition);
@@ -105,7 +105,7 @@ class Camera
         
         /// @brief Get the view-projection matrix of the camera.
         ///
-        /// @param[in] viewPoint Position of the camera in world coordinates.
+        /// @param viewPoint Position of the camera in world coordinates.
         ///
         /// @return The view-projection matrix of the camera.
         glm::mat4 getViewProjectionMatrix(glm::vec3 viewPoint);

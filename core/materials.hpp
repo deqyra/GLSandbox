@@ -3,7 +3,7 @@
 
 #include "material.hpp"
 
-// A library of standard materials
+/// @brief A library of standard (and cheap-looking) materials.
 namespace Materials
 {
     const Material Default = Material();
