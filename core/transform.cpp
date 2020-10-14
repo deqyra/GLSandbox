@@ -226,12 +226,16 @@ glm::quat Transform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConstraint)
     // Find new direction to look towards
     glm::vec3 direction = glm::normalize(target - _position);
 
+    // If already looking at target, return
+    if ((glm::abs(glm::dot(_forward, direction)) - 1.f) > 1e-6) return _rotation;
+
     // Find axis of rotation 
     glm::vec3 axis = glm::normalize(glm::cross(_forward, direction));
 
-
     // Find the angle by which to rotate around the found axis
     float dot = glm::dot(_forward, direction);
+    if (dot >= 1.f) return _rotation;
+    
     // Works because both vectors are unit, so the only significant term in the
     // trig expression of their dot product is the cos of the angle they make
     float angle = glm::acos(dot);
