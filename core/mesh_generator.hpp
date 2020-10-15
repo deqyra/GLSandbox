@@ -3,10 +3,14 @@
 
 #include "mesh.hpp"
 
-// Any class which can generate a mesh and return a pointer to it
+/// @brief Interface for classes which can generate parameterized vertex data.
 class MeshGenerator
 {
     public:
+        /// @brief Generate the vertex data, put it in a new mesh object and 
+        /// return it.
+        ///
+        /// @return A pointer to the mesh containing the generated vertices.
         virtual MeshPtr generatePtr() = 0;
 };
 

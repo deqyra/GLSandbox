@@ -52,10 +52,8 @@ using Ref = FrameOfReference;
  * reference.
  */
 
-ObjectTransform::ObjectTransform() :
-    Transform(glm::vec3(0.f),
-              glm::quat(1.f, glm::vec3(0.f)),
-              glm::vec3(1.f)),
+ObjectTransform::ObjectTransform(Transform transform) :
+    Transform(transform),
     _transformNotifier(),
     _sceneObject(SceneObjectPtr(nullptr)),
     _objectId(0)
@@ -112,26 +110,17 @@ SceneObjectWPtr ObjectTransform::getSceneObject()
     return _sceneObject;
 }
 
-void ObjectTransform::setSceneObject(SceneObjectPtr wSceneObj)
+void ObjectTransform::setSceneObject(SceneObjectPtr sceneObj)
 {
-    _sceneObject = wSceneObj;
+    _sceneObject = sceneObj;
     SceneObjectPtr sceneObject = _sceneObject.lock();
 
     if (sceneObject) _objectId = sceneObject->id;
     else _objectId = -1;
 }
 
-/* 
- * 
- * glm::vec3 ObjectTransform::getPosition()
- * {
- *     return Transform::getPosition();
- * }
- * 
- */
-
 template<>
-void ObjectTransform::setPosition<Ref::World>(glm::vec3 position)
+glm::vec3 ObjectTransform::setPosition<Ref::World>(glm::vec3 position)
 {
     // Compute the new wanted position in parent's coordinates
     
@@ -161,22 +150,28 @@ void ObjectTransform::setPosition<Ref::World>(glm::vec3 position)
     Transform::setPosition<Ref::Parent>(positionRelativeToParent);
     // Notify transform change
     notifyChange();
+
+    return _position;
 }
 
 template<>
-void ObjectTransform::setPosition<Ref::Parent>(glm::vec3 position)
+glm::vec3 ObjectTransform::setPosition<Ref::Parent>(glm::vec3 position)
 {
     Transform::setPosition<Ref::Parent>(position);
     // Notify transform change
     notifyChange();
+
+    return _position;
 }
 
 template<>
-void ObjectTransform::setPosition<Ref::Self>(glm::vec3 position)
+glm::vec3 ObjectTransform::setPosition<Ref::Self>(glm::vec3 position)
 {
     Transform::setPosition<Ref::Self>(position);
     // Notify transform change
     notifyChange();
+
+    return _position;
 }
 
 template<>
@@ -228,7 +223,7 @@ glm::vec3 ObjectTransform::translateBy<Ref::Self>(glm::vec3 translation)
 }
 
 template<>
-void ObjectTransform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+glm::vec3 ObjectTransform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
     // Get the parent's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
@@ -261,36 +256,33 @@ void ObjectTransform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec
 
     // Notify transform change
     notifyChange();
+
+    return _position;
 }
 
 template<>
-void ObjectTransform::orbit<Ref::Parent>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+glm::vec3 ObjectTransform::orbit<Ref::Parent>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
     Transform::orbit<Ref::Parent>(radAngle, axis, center, selfRotate);
     // Notify transform change
     notifyChange();
+
+    return _position;
 }
 
 
 template<>
-void ObjectTransform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+glm::vec3 ObjectTransform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
     Transform::orbit<Ref::Self>(radAngle, axis, center, selfRotate);
     // Notify transform change
     notifyChange();
+
+    return _position;
 }
 
-/* 
- * 
- * glm::quat ObjectTransform::getRotation()
- * {
- *     return _rotation;
- * }
- * 
- */
-
 template<>
-void ObjectTransform::setRotation<Ref::World>(glm::quat rotation)
+glm::quat ObjectTransform::setRotation<Ref::World>(glm::quat rotation)
 {
     // Get the parent's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
@@ -306,22 +298,28 @@ void ObjectTransform::setRotation<Ref::World>(glm::quat rotation)
     Transform::setRotation<Ref::Parent>(rotationRelativeToParent);
     // Notify transform change
     notifyChange();
+
+    return _rotation;
 }
 
 template<>
-void ObjectTransform::setRotation<Ref::Parent>(glm::quat rotation)
+glm::quat ObjectTransform::setRotation<Ref::Parent>(glm::quat rotation)
 {
     Transform::setRotation<Ref::Parent>(rotation);
     // Notify transform change
     notifyChange();
+
+    return _rotation;
 }
 
 template<>
-void ObjectTransform::setRotation<Ref::Self>(glm::quat rotation)
+glm::quat ObjectTransform::setRotation<Ref::Self>(glm::quat rotation)
 {
     Transform::setRotation<Ref::Self>(rotation);
     // Notify transform change
     notifyChange();
+
+    return _rotation;
 }
 
 glm::quat ObjectTransform::rotateBy(glm::quat rotation)
@@ -421,17 +419,8 @@ glm::quat ObjectTransform::lookAt<Ref::Self>(glm::vec3 target, glm::vec3 yConstr
     return newRotation;
 }
 
-/* 
- * 
- * glm::vec3 ObjectTransform::getScale()
- * {
- *     return _scale;
- * }
- * 
- */
-
 template<>
-void ObjectTransform::setScale<Ref::World>(glm::vec3 scale)
+glm::vec3 ObjectTransform::setScale<Ref::World>(glm::vec3 scale)
 {
     // Get the parent's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
@@ -451,35 +440,42 @@ void ObjectTransform::setScale<Ref::World>(glm::vec3 scale)
     Transform::setScale<Ref::Parent>(newScale);
     // Notify transform change
     notifyChange();
+
+    return _scale;
 }
 
 template<>
-void ObjectTransform::setScale<Ref::Parent>(glm::vec3 scale)
+glm::vec3 ObjectTransform::setScale<Ref::Parent>(glm::vec3 scale)
 {
     Transform::setScale<Ref::Parent>(scale);
     // Notify transform change
     notifyChange();
+
+    return _scale;
 }
 
 template<>
-void ObjectTransform::setScale<Ref::Self>(glm::vec3 scale)
+glm::vec3 ObjectTransform::setScale<Ref::Self>(glm::vec3 scale)
 {
     Transform::setScale<Ref::Self>(scale);
     // Notify transform change
     notifyChange();
+
+    return _scale;
 }
 
 glm::vec3 ObjectTransform::scaleBy(glm::vec3 scaling)
 {
-    glm::vec3 newScale = Transform::scaleBy(scaling);
+    Transform::scaleBy(scaling);
     // Notify transform change
     notifyChange();
-    return newScale;
+    
+    return _scale;
 }
 
-void ObjectTransform::applyOver(ObjectTransform& other)
+Transform ObjectTransform::applyOver(const ObjectTransform& other)
 {
-    other = this->Transform::applyOver((Transform) other);
+    return this->Transform::applyOver((Transform) other);
 }
 
 ObjectTransform::TransformNotifier& ObjectTransform::getNotifier()

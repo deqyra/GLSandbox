@@ -58,74 +58,159 @@ class SceneObject;
 using SceneObjectPtr = std::shared_ptr<SceneObject>;
 using SceneObjectWPtr = std::weak_ptr<SceneObject>;
 
-// An object that has 3D-space properties : position, orientation and scale
+/// @brief Wraps a Transform and is attached to a SceneObject. Refer to the
+/// README section at the top of the .hpp file for more info.
 class ObjectTransform : public Transform
 {
     public:
-        // A TransformNotifier callback simply needs the ID of the object whose transform was updated.
         using TransformNotifier = Notifier<const unsigned int&>;
 
     protected:
-        // Will notify subscribers that the transform has been modified
+        /// @brief Will notify subscribers that the transform has been modified.
         TransformNotifier _transformNotifier;
-        // The SceneObject the transform is attached to
+        /// @brief The SceneObject the transform is attached to.
         SceneObjectWPtr _sceneObject;
-        // The ID of the SceneObject the transform is attached to
+        /// @brief The ID of the SceneObject the transform is attached to.
         unsigned int _objectId;
 
-        // Send notification to all subscribers that the transform was updated
+        /// @brief Notify all subscribers that the transform was updated.
         void notifyChange();
 
     public:
-        ObjectTransform();
-        ObjectTransform(glm::vec3 position, glm::quat orientation, glm::vec3 scale);
+        /// @param transform Base state of the object transform.
+        ObjectTransform(Transform transform);
+
+        /// @param position Base position of the transform.
+        /// @param rotation Base orientation of the transform.
+        /// @param scale Base scale of the transform.
+        ObjectTransform(glm::vec3 position = glm::vec3(0.f), glm::quat orientation = glm::quat(1.f, glm::vec3(0.f)), glm::vec3 scale = glm::vec3(1.f));
+
         ObjectTransform(const ObjectTransform& other) = delete;
+
         ObjectTransform& operator=(const ObjectTransform& other);
+
         ObjectTransform& operator=(const Transform& other);
 
-        // Get the object the transform is attached to
+        /// @brief Get the object the transform is attached to.
+        ///
+        /// @return Pointer to the scene object the transform is attached to.
         SceneObjectWPtr getSceneObject();
-        // Get the object the transform is attached to
-        void setSceneObject(SceneObjectPtr wSceneObj);
 
-        // Get the position of the object - no need to overload, here for convenience
-        // glm::vec3 getPosition();
-        // Set the position of the object
+        /// @brief Set which object the transform is attached to
+        ///
+        /// @param sceneObj A pointer to the scene object the transform should
+        /// be attached to.
+        void setSceneObject(SceneObjectPtr sceneObj);
+
+        /// @brief Set the position of the object.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param position The new position the object should have.
+        ///
+        /// @return The new position of the object relative to its parent.
         template<FrameOfReference Ref>
-        void setPosition(glm::vec3 position);
-        // Translate the position of the object by a 3D vector
+        glm::vec3 setPosition(glm::vec3 position);
+
+        /// @brief Translate the position of the object by a 3D vector.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param translation Vector by which the object should be translated.
+        ///
+        /// @return The new position of the object relative to its parent.
         template<FrameOfReference Ref>
         glm::vec3 translateBy(glm::vec3 translation);
-        // Orbit the object around an axis and center
-        template<FrameOfReference Ref>
-        void orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate = false);
 
-        // Get the orientation of the object - no need to overload, here for convenience
-        // glm::quat getRotation();
-        // Set the orientation of the object
+        /// @brief Orbit the object around an axis and center.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param radAngle Angle by which the object should orbit.
+        /// @param axis Axis about which the object should orbit.
+        ///
+        /// @return The new position of the object relative to its parent.
         template<FrameOfReference Ref>
-        void setRotation(glm::quat rotation);
-        // Rotate the object by a quaternion
+        glm::vec3 orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate = false);
+
+        /// @brief Set the rotation of the object.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param rotation The new rotation the object should have.
+        ///
+        /// @return The new rotation of the object relative to its parent.
+        template<FrameOfReference Ref>
+        glm::quat setRotation(glm::quat rotation);
+
+        /// @brief Rotate the object by a quaternion.
+        ///
+        /// @param rotation The quaternion by which to rotate the object.
+        ///
+        /// @return The new rotation of the object relative to its parent.
         glm::quat rotateBy(glm::quat rotation);
-        // Rotate the object around an axis
+
+        /// @brief Rotate the object around an axis.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param radAngle Angle by which the object should rotate.
+        /// @param axis Axis about which the object should rotate.
+        ///
+        /// @return The new rotation of the object relative to its parent.
         template<FrameOfReference Ref>
         glm::quat rotateBy(float radAngle, glm::vec3 axis);
-        // Rotate the object so that its front is directed to the target position
+
+        /// @brief Rotate the object so that its front (local Z axis) is 
+        /// directed towards the target position.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param target Position the object should be looking towards.
+        /// @param yConstraint Coplanarity constraint between the new local Z
+        /// and Y axes of the object after rotation. Provide the null vector
+        /// for no constraint.
+        ///
+        /// @return The new rotation of the object relative to its parent.
         template<FrameOfReference Ref>
         glm::quat lookAt(glm::vec3 target, glm::vec3 yConstraint);
 
-        // Get the scale of the object - no need to overload, here for convenience
-        // glm::vec3 getScale();
-        // Set the scale of the object
+        /// @brief Set the scale of the object.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param scale The new scale the object should have.
+        ///
+        /// @return The new scale of the object relative to its parent.
         template<FrameOfReference Ref>
-        void setScale(glm::vec3 scale);
-        // Scale the object
+        glm::vec3 setScale(glm::vec3 scale);
+
+        /// @brief Scale the object by an amount on all three axes.
+        ///
+        /// @param scale The amount the object should be scaled by on the X,
+        /// Y and Z axes.
+        ///
+        /// @return The new scale of the object relative to its parent.
         glm::vec3 scaleBy(glm::vec3 scaling);
 
-        // Apply this transform to another one
-        void applyOver(ObjectTransform& other);
+        /// @brief Apply this transform on top of another one.
+        ///
+        /// @param other The transform on top of which this one should be 
+        /// applied.
+        ///
+        /// @return The resulting transform.
+        Transform applyOver(const ObjectTransform& other);
 
-        // Retrieve the TransformNotifier attached to this
+        /// @brief Retrieve the notifier attached to this transform.
+        ///
+        /// @brief The notifier attached to this transform.
         TransformNotifier& getNotifier();
 
 };

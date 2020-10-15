@@ -94,7 +94,7 @@ class Transform
         glm::vec3 translateBy(glm::vec3 other);
         // Orbit the object around an axis and center
         template<FrameOfReference Ref>
-        void orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate = false);
+        glm::vec3 orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate = false);
 
         // Get the orientation of the object
         glm::quat getRotation() const;

@@ -38,9 +38,14 @@ class Camera
         static constexpr float DefaultPitch = 0.f;
         static constexpr float DefaultZoomFactor = 1.f;
 
-        Camera(const Camera& other);
+        /// @param projection Projection matrix to use for the camera.
+        /// @param yaw Rotation of the camera around Y in degrees.
+        /// @param pitch Rotation of the camera around X in degrees.
+        /// @param zoom Zoom factor of the camera.
+        /// @param parentTransform Transform of the object the camera is attached to.
         Camera(glm::mat4 projection, float yaw = DefaultYaw, float pitch = DefaultPitch, float zoom = DefaultZoomFactor, Transform parentTransform = Transform());
-        ~Camera();
+
+        Camera(const Camera& other);
 
         /// @brief Update the rotation of the camera to fit recorded offsets in yaw and pitch.
         ///

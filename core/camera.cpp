@@ -34,11 +34,6 @@ Camera::Camera(glm::mat4 projection, float yaw, float pitch, float zoom, Transfo
     // updateVectors();     // updateVectors is already called within setParentUp
 }
 
-Camera::~Camera()
-{
-
-}
-
 void Camera::updateVectors()
 {
     glm::vec3 front;

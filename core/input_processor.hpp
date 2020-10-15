@@ -16,7 +16,8 @@ namespace Window
 class InputProcessor
 {
     private:
-        /// @brief Keeps track of how many instances were created (used as a unique ID system).
+        /// @brief Keeps track of how many instances were created (used as a 
+        /// unique ID system).
         static unsigned int _count;
 
     public:

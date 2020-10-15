@@ -14,51 +14,59 @@ class Mesh;
 using MeshPtr = std::shared_ptr<Mesh>;
 using MeshWPtr = std::weak_ptr<Mesh>;
 
-// Any mesh composed of vertices to be rendered by indexed drawing
+/// @brief A mesh holding vertices to be rendered using indexed drawing.
 class Mesh
 {
     private:
-        // Keeps track of how many Mesh objects were created (used as an ID system)
+        /// @brief Keeps track of how many instances were created (used as a 
+        /// unique ID system).
         static unsigned int _count;
 
-        // Map storing how many mesh instances are referencing a VAO resource on the GPU:
-        // VAO ID -> reference count
+        /// @brief Map storing how many mesh instances are referencing a VAO 
+        /// resource on the GPU (VAO ID => reference count).
         static std::unordered_map<unsigned int, unsigned int> _arrayRefCount;
 
-        // Map storing how many mesh instances are referencing a buffer resource on the GPU:
-        // Buffer ID -> reference count
+        /// @brief Map storing how many mesh instances are referencing a VBO 
+        /// resource on the GPU (VBO ID => reference count).
         static std::unordered_map<unsigned int, unsigned int> _bufferRefCount;
 
-        // Update reference counts before destruction
+        /// @brief Free resources before instance destruction.
         void cleanup();
-        // Send mesh data to the GPU
+
+        /// @brief Send vertex data to the GPU.
         void setupBuffers();
 
     protected:
-        // Vertex data of the mesh
+        /// @brief Vertices the mesh is made of.
         std::vector<Vertex> _vertices;
-        // Index data of the mesh
+        /// @brief Vertex indices teling how to draw the mesh.
         std::vector<unsigned int> _indices;
-        // Draw mode
+        /// @brief Draw policy to use when drawing.
         unsigned int _drawMode;
 
-        // Handle to a VAO on the GPU
+        /// @brief Handle to the VAO on the GPU.
         unsigned int _vao;
-        // Handle to a VBO on the GPU
+        /// @brief Handle to the VBO on the GPU.
         unsigned int _vbo;
-        // Handle to an EBO on the GPU
+        /// @brief Handle to the EBO on the GPU.
         unsigned int _ebo;
 
     public:
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode);
         Mesh(const Mesh& other);
-        Mesh& operator=(const Mesh& other);
+
+        /// @param vertices Vertex data of the mesh.
+        /// @param indices Vertex indices telling how to draw the mesh.
+        /// @param drawMode Draw policy to use when drawing.
+        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode);
+
         ~Mesh();
 
-        // Issue GPU draw commands
+        Mesh& operator=(const Mesh& other);
+
+        /// @brief Issue GPU draw commands.
         void draw();
 
-        // ID of the Mesh object
+        /// @brief ID of the Mesh instance.
         const unsigned int id;
 };
 

@@ -131,7 +131,7 @@ glm::quat Transform::rotateBy<Ref::Self>(float radAngle, glm::vec3 axis)
 }
 
 template<>
-void Transform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+glm::vec3 Transform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
     // Orbit around the axis and center
     glm::vec3 tmpPos = _position - center;
@@ -150,16 +150,18 @@ void Transform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3 cent
 
     // Update flags
     _matrixOutdated = true;
+
+    return _position;
 }
 
 template<>
-void Transform::orbit<Ref::Parent>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+glm::vec3 Transform::orbit<Ref::Parent>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
-    orbit<Ref::World>(radAngle, axis, center, selfRotate);
+    return orbit<Ref::World>(radAngle, axis, center, selfRotate);
 }
 
 template<>
-void Transform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+glm::vec3 Transform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
 {
     if (_localVectorsOutdated) updateLocalVectors();
 
@@ -171,7 +173,7 @@ void Transform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3 cente
 
     // Inverse rotation applied to the axis gives the axis in world coordinates
     glm::vec3 worldAxis = glm::conjugate(_rotation) * axis;
-    orbit<Ref::World>(radAngle, worldAxis, worldCenter, selfRotate);
+    return orbit<Ref::World>(radAngle, worldAxis, worldCenter, selfRotate);
 }
 
 glm::quat Transform::getRotation() const

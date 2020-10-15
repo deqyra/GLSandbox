@@ -24,7 +24,13 @@ class Material
         static constexpr unsigned int SpecularMapMaxCount = 8;
 
         Material();
+
         Material(const Material& other);
+        
+        /// @param ambient Fixed ambient component of the reflection of the material.
+        /// @param diffuse Fixed diffuse component of the reflection of the material.
+        /// @param specular Fixed specular component of the reflection of the material.
+        /// @param shininess Shininess (specular strength) of the material.
         Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess);
 
         /// @brief Get a copy of the array of diffuse maps of the material.
@@ -126,7 +132,7 @@ class Material
         glm::vec3 diffuse;
         /// @brief The fixed specular reflection component of the material.
         glm::vec3 specular;
-        /// @brief The shininess of the material.
+        /// @brief The shininess (specular strength) of the material.
         float shininess;
 };
 

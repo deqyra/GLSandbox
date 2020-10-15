@@ -137,9 +137,6 @@ void Mesh::setupBuffers()
     // Vertex texture coords
     glEnableVertexAttribArray(3);	
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
-
-    // Unbind VAO
-    glBindVertexArray(0);
 }
 
 void Mesh::draw()
