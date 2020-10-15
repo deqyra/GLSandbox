@@ -206,7 +206,17 @@ class ObjectTransform : public Transform
         /// applied.
         ///
         /// @return The resulting transform.
-        Transform applyOver(const ObjectTransform& other);
+        Transform applyOver(const ObjectTransform& other) const;
+
+        /// @brief Compute and return the transform differential transform
+        /// between [*this] and [other]. If X is such a Transform, then 
+        /// [X.applyOver(other) == *this] is true.
+        ///
+        /// @param other The transform from which the differential transform
+        /// needs to be computed.
+        ///
+        /// @return The resulting transform.
+        Transform compoundFrom(const ObjectTransform& other) const;
 
         /// @brief Retrieve the notifier attached to this transform.
         ///

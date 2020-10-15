@@ -45,92 +45,210 @@
  *   which the transformation is about to be applied.
  */
 
-// An object which holds 3D-space properties : position, orientation and scale
+/// @brief Manages the 3D-space properties of an object: position, orientation
+/// and scale. Refer to the README section at the top of the .hpp file for more
+/// info.
 class Transform
 {
     protected:
-        // 3D position of the object
+        /// @brief 3D position of the object.
         glm::vec3 _position;
-        // Quaternion representing the rotation of the object
+        /// @brief Quaternion representing the rotation of the object.
         glm::quat _rotation;
-        // 3D scale of the object
+        /// @brief 3D scale of the object.
         glm::vec3 _scale;
 
-        // Local X of the object in world coordinates
+        /// @brief Local X axis of the object in world coordinates.
         mutable glm::vec3 _left;
-        // Local Y of the object in world coordinates
+        /// @brief Local Y axis of the object in world coordinates.
         mutable glm::vec3 _up;
-        // Local Z of the object in world coordinates
+        /// @brief Local Z axis of the object in world coordinates.
         mutable glm::vec3 _forward;
 
-        // Whether the local vectors no longer reflects the transform parameters
+        /// @brief Whether the local vectors no longer reflects the transform
+        /// parameters.
         mutable bool _localVectorsOutdated;
-        // Update the local vectors so that they reflect the transform parameters
+        /// @brief Update the local vectors so that they reflect the transform
+        /// parameters.
         void updateLocalVectors() const;
 
-        // Model matrix of the object
+        /// @brief Model matrix of the object.
         mutable glm::mat4 _modelMatrix;
-        // Whether the model matrix no longer reflects the transform parameters
+        /// @brief Whether the model matrix no longer reflects the transform parameters.
         mutable bool _matrixOutdated;
-        // Update the model matrix of the object so that it reflects the transform parameters
+        /// @brief Update the model matrix of the object so that it reflects the transform parameters.
         void updateMatrix() const;
 
     public:
+        /// @brief Coordinates of the null vector.
         static constexpr glm::vec3 Origin = glm::vec3(0.f, 0.f, 0.f);
+        
+        /// @brief Coordinates of the global X vector.
         static constexpr glm::vec3 X = glm::vec3(1.f, 0.f, 0.f);
+        
+        /// @brief Coordinates of the global Y vector.
         static constexpr glm::vec3 Y = glm::vec3(0.f, 1.f, 0.f);
+        
+        /// @brief Coordinates of the global Z vector.
         static constexpr glm::vec3 Z = glm::vec3(0.f, 0.f, 1.f);
 
         Transform();
+   
+        /// @param position Base position of the transform.
+        /// @param rotation Base orientation of the transform.
+        /// @param scale Base scale of the transform.
         Transform(glm::vec3 position, glm::quat rotation, glm::vec3 scale);
 
-        // Get the position of the object
+        /// @brief Get the position of the object.
+        ///
+        /// @return The position of the object.
         glm::vec3 getPosition() const;
-        // Set the position of the object and return the new position in world coordinates
+
+        /// @brief Set the position of the object.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param position The new position the object should have.
+        ///
+        /// @return The new position of the object relative to its parent.
         template<FrameOfReference Ref>
         glm::vec3 setPosition(glm::vec3 position);
-        // Translate the position of the object by a 3D vector and return the new position in world coordinates
+
+        /// @brief Translate the position of the object by a 3D vector.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param translation Vector by which the object should be translated.
+        ///
+        /// @return The new position of the object relative to its parent.
         template<FrameOfReference Ref>
         glm::vec3 translateBy(glm::vec3 other);
-        // Orbit the object around an axis and center
+
+        /// @brief Orbit the object around an axis and center.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param radAngle Angle by which the object should orbit.
+        /// @param axis Axis about which the object should orbit.
+        ///
+        /// @return The new position of the object relative to its parent.
         template<FrameOfReference Ref>
         glm::vec3 orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate = false);
 
-        // Get the orientation of the object
+        /// @brief Get the rotation of the object.
+        ///
+        /// @return The rotation of the object.
         glm::quat getRotation() const;
-        // Set the orientation of the object and return the new orientation in world coordinates
+
+        /// @brief Set the rotation of the object.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param rotation The new rotation the object should have.
+        ///
+        /// @return The new rotation of the object relative to its parent.
         template<FrameOfReference Ref>
         glm::quat setRotation(glm::quat rotation);
-        // Rotate the object by a quaternion and return the new orientation in world coordinates
+
+        /// @brief Rotate the object by a quaternion.
+        ///
+        /// @param rotation The quaternion by which to rotate the object.
+        ///
+        /// @return The new rotation of the object relative to its parent.
         glm::quat rotateBy(glm::quat other);
-        // Rotate the object around an axis and return the new orientation in world coordinates
+
+        /// @brief Rotate the object around an axis.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param radAngle Angle by which the object should rotate.
+        /// @param axis Axis about which the object should rotate.
+        ///
+        /// @return The new rotation of the object relative to its parent.
         template<FrameOfReference Ref>
         glm::quat rotateBy(float radAngle, glm::vec3 axis);
-        // Rotate the object so that its own Z axis (front) is directed to the target position, with respect to a constraint on the new YZ plane, and return the new orientation in world coordinates
+
+        /// @brief Rotate the object so that its front (local Z axis) is 
+        /// directed towards the target position.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param target Position the object should be looking towards.
+        /// @param yConstraint Coplanarity constraint between the new local Z
+        /// and Y axes of the object after rotation. Provide the null vector
+        /// for no constraint.
+        ///
+        /// @return The new rotation of the object relative to its parent.
         template<FrameOfReference Ref>
         glm::quat lookAt(glm::vec3 target, glm::vec3 yConstraint);
 
-        // Get the scale of the object
+        /// @brief Get the scale of the object.
+        ///
+        /// @return The scale of the object.
         glm::vec3 getScale() const;
-        // Set the scale of the object
+
+        /// @brief Set the scale of the object.
+        ///
+        /// @tparam Ref Litteral describing the frame of reference in which the
+        /// arguments are provided to the function.
+        ///
+        /// @param scale The new scale the object should have.
+        ///
+        /// @return The new scale of the object relative to its parent.
         template<FrameOfReference Ref>
         void setScale(glm::vec3 scale);
-        // Scale the object by an amount
+
+        /// @brief Scale the object by an amount on all three axes.
+        ///
+        /// @param scale The amount the object should be scaled by on the X,
+        /// Y and Z axes.
+        ///
+        /// @return The new scale of the object relative to its parent.
         glm::vec3 scaleBy(glm::vec3 other);
 
-        // Get the local X vector of the object in world coordinates
+        /// @brief Get the local X vector of the object in world coordinates.
+        ///
+        /// @return The local X vector of the object, in world coordinates.
         glm::vec3 left() const;
-        // Get the local Y vector of the object in world coordinates
+
+        /// @brief Get the local Y vector of the object in world coordinates.
+        ///
+        /// @return The local Y vector of the object, in world coordinates.
         glm::vec3 up() const;
-        // Get the local Z vector of the object in world coordinates
+
+        /// @brief Get the local Z vector of the object in world coordinates.
+        ///
+        /// @return The local Z vector of the object, in world coordinates.
         glm::vec3 forward() const;
 
-        // Apply this transform in the frame of reference provided by another transform
+        /// @brief Apply this transform on top of another one.
+        ///
+        /// @param other The transform on top of which this one should be 
+        /// applied.
+        ///
+        /// @return The resulting transform.
         Transform applyOver(const Transform& other) const;
-        // Compute the transform X such that X.applyOver(other) == *this
+
+        /// @brief Compute and return the transform differential transform
+        /// between [*this] and [other]. If X is such a Transform, then 
+        /// [X.applyOver(other) == *this] is true.
+        ///
+        /// @param other The transform from which the differential transform
+        /// needs to be computed.
+        ///
+        /// @return The resulting transform.
         Transform compoundFrom(const Transform& other) const;
 
-        // Get the model matrix of the object
+        /// @brief Get the matrix which applies the parameters of the transform
+        /// to any point which it multiplies.
+        ///
+        /// @return The model matrix corresponding to the transform.
         glm::mat4 getModelMatrix() const;
 };
 

@@ -473,9 +473,14 @@ glm::vec3 ObjectTransform::scaleBy(glm::vec3 scaling)
     return _scale;
 }
 
-Transform ObjectTransform::applyOver(const ObjectTransform& other)
+Transform ObjectTransform::applyOver(const ObjectTransform& other) const
 {
     return this->Transform::applyOver((Transform) other);
+}
+
+Transform ObjectTransform::compoundFrom(const ObjectTransform& other) const
+{
+    return this->Transform::compoundFrom((Transform) other);
 }
 
 ObjectTransform::TransformNotifier& ObjectTransform::getNotifier()
