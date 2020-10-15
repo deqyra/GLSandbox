@@ -10,10 +10,10 @@
 std::unordered_map<unsigned int, unsigned int> Texture2D::_refCount = std::unordered_map<unsigned int, unsigned int>();
 std::unordered_map<std::string , unsigned int> Texture2D::_pathsToIds  = std::unordered_map<std::string, unsigned int>();
 
-Texture2D::Texture2D(std::string path) :
-    _path(path)
+Texture2D::Texture2D(std::string filename) :
+    _path(filename)
 {
-    auto it = _pathsToIds.find(path);
+    auto it = _pathsToIds.find(filename);
     // If the image is already handled by a Texture2D instance...
     if (it != _pathsToIds.end())
     {
@@ -25,9 +25,9 @@ Texture2D::Texture2D(std::string path) :
     else
     {
         // Load the image
-        _location = loadTextureFromFile(path);
-        // Map the new texture location to image path and set a refcount
-        _pathsToIds[path] = _location;
+        _location = loadTextureFromFile(filename);
+        // Map the new texture location to image filename and set a refcount
+        _pathsToIds[filename] = _location;
         _refCount[_location] = 1;
     }
 }
@@ -45,7 +45,7 @@ Texture2D& Texture2D::operator=(const Texture2D& other)
     // Let go of the content currently in place
     cleanup();
 
-    // Copy the path, location, and increase the ref count
+    // Copy the filename, location, and increase the ref count
     _location = other._location;
     _path = other._path;
     _refCount[_location]++;
@@ -73,7 +73,7 @@ void Texture2D::cleanup()
     };
 }
 
-unsigned int Texture2D::loadTextureFromFile(const std::string path)
+unsigned int Texture2D::loadTextureFromFile(const std::string filename)
 {
     // Create a texture resource on the GPU
     unsigned int location;
@@ -81,7 +81,7 @@ unsigned int Texture2D::loadTextureFromFile(const std::string path)
 
     // Load the image from disk
     int width, height, nChannels;
-    unsigned char *data = stbi_load(path.c_str(), &width, &height, &nChannels, 0);
+    unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nChannels, 0);
 
     if (data)
     {
@@ -107,7 +107,7 @@ unsigned int Texture2D::loadTextureFromFile(const std::string path)
     else
     {
         stbi_image_free(data);
-        std::string s = "Texture2D: failed to load image located at \"" + path + "\".";
+        std::string s = "Texture2D: failed to load image located at \"" + filename + "\".";
         throw std::runtime_error(s.c_str());
     }
 

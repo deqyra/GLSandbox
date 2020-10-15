@@ -3,46 +3,72 @@
 
 #include <string>
 #include <unordered_map>
+
 #include <glad/gl.h>
 
-// Proxy class to a texture 2D resource on the GPU
+/// @brief Handler for a 2D texture resource on the GPU.
 class Texture2D
 {
     private:
-        // The location of the texture resource on the GPU
+        /// @brief The location of the texture resource on the GPU.
         unsigned int _location;
-        // The image path from which the texture was generated
+        /// @brief The path of the image from which the texture was generated.
         std::string _path;
 
-        // Structure storing GPU texture locations against the path of the image they were constructed from:
-        // disk image name -> texture location
+        /// @brief Structure mapping GPU texture locations against the path of 
+        /// the image they were constructed from.
         static std::unordered_map<std::string , unsigned int> _pathsToIds;
 
-        // Structure storing how many Texture2D instances are handling a texture resource on the GPU:
-        // texture ID -> reference count
+        /// @brief Structure mapping how many Texture2D instances are handling 
+        /// a texture resource on the GPU.
         static std::unordered_map<unsigned int, unsigned int> _refCount;
 
-        // Process an image on the hard drive and upload it to the GPU
-        static unsigned int loadTextureFromFile(const std::string path);
+        /// @brief Process an image file and make a texture out of its content
+        /// on the GPU.
+        ///
+        /// @param path Local path to the image file.
+        ///
+        /// @return The GPU location of the generated texture.
+        ///
+        /// @exception If the image could not be read, the function throws an
+        /// std::runtime_error.
+        static unsigned int loadTextureFromFile(const std::string filename);
 
-        // Free resources
+        /// @brief Free resources upon instance destruction.
         void cleanup();
 
     public:
+        /// @brief GPU location of the last texture unit available.
         static constexpr unsigned int MaxTextureUnit = GL_TEXTURE31;
-        static constexpr unsigned int MaxTextureUnitOffset = MaxTextureUnit - GL_TEXTURE0;
+        /// @brief Amount of texture units that can be handled by the GPU.
+        static constexpr unsigned int MaxTextureUnitCount = MaxTextureUnit - GL_TEXTURE0 + 1;
 
-        Texture2D(std::string path);
+        /// @param filename Local path to an image file out of which the texture
+        /// should be generated.
+        Texture2D(std::string filename);
+
         Texture2D(const Texture2D& other);
-        Texture2D& operator=(const Texture2D& other);
+
         ~Texture2D();
+
+        Texture2D& operator=(const Texture2D& other);
         
-        // Get texture location
+        /// @brief Get the location of the texture on the GPU.
+        ///
+        /// @return The location of the texture on the GPU.
         unsigned int location();
 
-        // Bind the texture
+        /// @brief Bind the texture to the current texture unit on the GPU.
         void bind();
-        // Bind the texture to a particular unit
+
+        /// @brief Bind the texture to a particular texture unit on the GPU.
+        ///
+        /// @param unit 0-based index of the unit to which the texture should
+        /// be bound.
+        ///
+        /// @exception If [unit] is too big and ends up targeting a unit past
+        /// Texture2D::MaxTextureUnit, the function will throw an 
+        /// IndexOutOfBoundsError.
         void bind(unsigned int unit);
 };
 

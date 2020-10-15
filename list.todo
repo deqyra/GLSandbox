@@ -30,6 +30,8 @@ RenderBoi:
             ✔ Implement `Transform::compoundFrom(const Transform& other)` @done(20-10-13 13:49)
             ☐ Fix all scaling issues in `ObjectTransform`
             ☐ Add frames of reference for `rotateBy(glm::quat)` and `scaleBy(glm::vec3)`
+        Texture:
+            ☐ Check texture generation success and display error info
         Component:
             ☐ Change SceneObjectWPtr to SceneObjectPtr
         ☐ Dynamic meshes

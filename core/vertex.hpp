@@ -3,16 +3,19 @@
 
 #include <glm/glm.hpp>
 
-// A vertex with basic attributes
+/// @brief A vertex with basic attributes.
 struct Vertex
 {
-    // The 3D position of the vertex
+    /// @brief The 3D position of the vertex.
     glm::vec3 position;
-    // The RGB color of the vertex
+
+    /// @brief The RGB color of the vertex.
     glm::vec3 color;
-    // The normal vector of the vertex
+
+    /// @brief The normal vector of the vertex.
     glm::vec3 normal;
-    // Texture coordinates associated with the vertex
+
+    /// @brief Texture coordinates associated with the vertex.
     glm::vec2 texCoord;
 };
 
