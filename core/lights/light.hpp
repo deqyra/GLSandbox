@@ -16,7 +16,7 @@ class Light
         static unsigned int _count;
 
     protected:
-        /// @param type Litteral describing which type the light will be.
+        /// @param type Literal describing which type the light will be.
         Light(LightType type);
 
     public:

@@ -1,7 +1,7 @@
 #ifndef LIGHT_TYPE_HPP
 #define LIGHT_TYPE_HPP
 
-/// @brief Collection of litterals describing the available types of light.
+/// @brief Collection of literals describing the available types of light.
 enum class LightType
 {
     /// @brief Emits light in all directions from its position.

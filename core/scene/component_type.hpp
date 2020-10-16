@@ -1,10 +1,11 @@
 #ifndef CORE__SCENE__COMPONENT_TYPE_HPP
 #define CORE__SCENE__COMPONENT_TYPE_HPP
 
-// Literals representing types of available components
+/// @brief Literals representing types of available components.
 enum class ComponentType
 {
     Unknown,
+    /// @brief Literals representing types of available components.
     Mesh,
     Light,
     Camera,
@@ -12,6 +13,6 @@ enum class ComponentType
     InputProcessingScript
 };
 
-// New litterals representing new classes derived from Component must be added here
+// New literals representing new classes derived from Component must be added here
 
 #endif//CORE__SCENE__COMPONENT_TYPE_HPP

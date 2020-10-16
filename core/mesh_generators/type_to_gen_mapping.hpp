@@ -11,7 +11,7 @@
 /// MeshGenerator concrete subclass. Use inner typedef GenType to get the 
 /// actual type.
 ///
-/// @tparam T Litteral describing the mesh type whose mesh generator to obtain.
+/// @tparam T Literal describing the mesh type whose mesh generator to obtain.
 template<MeshType T>
 struct TypeToGenMapping
 {

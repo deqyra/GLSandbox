@@ -57,68 +57,68 @@ namespace GLFW3Adapter
     Enum getEnum(int constant);
 
     template<>
-    Input::Mode::Target getEnum(int litteral);
+    Input::Mode::Target getEnum(int literal);
 
     template<>
-    Input::Mode::Value getEnum(int litteral);
+    Input::Mode::Value getEnum(int literal);
 
     template<>
-    Input::Action getEnum(int litteral);
+    Input::Action getEnum(int literal);
 
     template<>
-    Input::Key getEnum(int litteral);
+    Input::Key getEnum(int literal);
 
     template<>
-    Input::Modifier getEnum(int litteral);
+    Input::Modifier getEnum(int literal);
 
     template<>
-    Input::MouseButton getEnum(int litteral);
+    Input::MouseButton getEnum(int literal);
 
     template<>
-    Input::Joystick getEnum(int litteral);
+    Input::Joystick getEnum(int literal);
 
     template<>
-    Input::Gamepad::Button getEnum(int litteral);
+    Input::Gamepad::Button getEnum(int literal);
 
     template<>
-    Input::Gamepad::Axis getEnum(int litteral);
+    Input::Gamepad::Axis getEnum(int literal);
 
     template<>
-    OpenGLProfile getEnum(int litteral);
+    OpenGLProfile getEnum(int literal);
 
     // Get the GLFW3 macro corresponding to the given RenderBoi enum
     template<typename Enum>
-    int getValue(Enum litteral);
+    int getValue(Enum literal);
 
     template<>
-    int getValue(Input::Mode::Target litteral);
+    int getValue(Input::Mode::Target literal);
 
     template<>
-    int getValue(Input::Mode::Value litteral);
+    int getValue(Input::Mode::Value literal);
 
     template<>
-    int getValue(Input::Action litteral);
+    int getValue(Input::Action literal);
 
     template<>
-    int getValue(Input::Key litteral);
+    int getValue(Input::Key literal);
 
     template<>
-    int getValue(Input::Modifier litteral);
+    int getValue(Input::Modifier literal);
 
     template<>
-    int getValue(Input::MouseButton litteral);
+    int getValue(Input::MouseButton literal);
 
     template<>
-    int getValue(Input::Joystick litteral);
+    int getValue(Input::Joystick literal);
 
     template<>
-    int getValue(Input::Gamepad::Button litteral);
+    int getValue(Input::Gamepad::Button literal);
 
     template<>
-    int getValue(Input::Gamepad::Axis litteral);
+    int getValue(Input::Gamepad::Axis literal);
 
     template<>
-    int getValue(OpenGLProfile litteral);
+    int getValue(OpenGLProfile literal);
 }
 }//namespace Window
 

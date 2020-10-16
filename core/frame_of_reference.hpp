@@ -1,7 +1,7 @@
 #ifndef CORE__FRAME_OF_REFERENCE_HPP
 #define CORE__FRAME_OF_REFERENCE_HPP
 
-/// @brief Collection of litterals to be used as template parameters for 
+/// @brief Collection of literals to be used as template parameters for 
 /// functions, describing the frame of reference in which the arguments are 
 /// given to the function. 
 enum class FrameOfReference

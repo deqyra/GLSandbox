@@ -24,7 +24,7 @@ class Factory
 
         /// @brief Create a mesh with vertices arranged in a certain shape.
         ///
-        /// @tparam T Litteral describing which mesh generator to use.
+        /// @tparam T Literal describing which mesh generator to use.
         ///
         /// @param parameters Parameters to pass to the mesh generator.
         /// Look up generators in core/mesh_generators/ for details.
@@ -36,7 +36,7 @@ class Factory
         /// @brief Instantiate and initiliaze a scene object, generate a mesh,
         /// and attach it to the scene object within a mesh component.
         ///
-        /// @tparam T Litteral describing which mesh generator to use.
+        /// @tparam T Literal describing which mesh generator to use.
         ///
         /// @param parameters Parameters of the mesh generation.
         /// @param mat Material to render the mesh in.

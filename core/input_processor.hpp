@@ -35,10 +35,10 @@ class InputProcessor
         ///
         /// @param window Pointer to the GLWindow in which the event was
         /// triggered.
-        /// @param key Litteral describing which key triggered the event.
+        /// @param key Literal describing which key triggered the event.
         /// @param scancode Scancode of the key which triggered the event. 
         /// Platform-dependent, but consistent over time.
-        /// @param action Litteral describing what action was performed on
+        /// @param action Literal describing what action was performed on
         /// the key which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the key event (Ctrl, Shift, etc).
@@ -48,9 +48,9 @@ class InputProcessor
         ///
         /// @param window Pointer to the GLWindow in which the event was
         /// triggered.
-        /// @param button Litteral describing which button triggered the
+        /// @param button Literal describing which button triggered the
         /// event.
-        /// @param action Litteral describing what action was performed on
+        /// @param action Literal describing what action was performed on
         /// the button which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the button event (Ctrl, Shift, etc).

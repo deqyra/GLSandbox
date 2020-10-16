@@ -516,72 +516,72 @@ namespace GLFW3Adapter
     }
 
     template<>
-    int getValue(Input::Mode::Target litteral)
+    int getValue(Input::Mode::Target literal)
     {
-        return ValueMaps::_inputModeTargetValueMap[litteral];
+        return ValueMaps::_inputModeTargetValueMap[literal];
     }
 
 
     template<>
-    int getValue(Input::Mode::Value litteral)
+    int getValue(Input::Mode::Value literal)
     {
-        return ValueMaps::_inputModeValueValueMap[litteral];
+        return ValueMaps::_inputModeValueValueMap[literal];
     }
 
 
     template<>
-    int getValue(Input::Action litteral)
+    int getValue(Input::Action literal)
     {
-        return ValueMaps::_actionValueMap[litteral];
+        return ValueMaps::_actionValueMap[literal];
     }
 
 
     template<>
-    int getValue(Input::Key litteral)
+    int getValue(Input::Key literal)
     {
-        return ValueMaps::_keyValueMap[litteral];
+        return ValueMaps::_keyValueMap[literal];
     }
 
 
     template<>
-    int getValue(Input::Modifier litteral)
+    int getValue(Input::Modifier literal)
     {
-        return ValueMaps::_keyModifierValueMap[litteral];
+        return ValueMaps::_keyModifierValueMap[literal];
     }
 
 
     template<>
-    int getValue(Input::MouseButton litteral)
+    int getValue(Input::MouseButton literal)
     {
-        return ValueMaps::_mouseButtonValueMap[litteral];
+        return ValueMaps::_mouseButtonValueMap[literal];
     }
 
 
     template<>
-    int getValue(Input::Joystick litteral)
+    int getValue(Input::Joystick literal)
     {
-        return ValueMaps::_joystickValueMap[litteral];
+        return ValueMaps::_joystickValueMap[literal];
     }
 
 
     template<>
-    int getValue(Input::Gamepad::Button litteral)
+    int getValue(Input::Gamepad::Button literal)
     {
-        return ValueMaps::_gamepadButtonValueMap[litteral];
+        return ValueMaps::_gamepadButtonValueMap[literal];
     }
 
 
     template<>
-    int getValue(Input::Gamepad::Axis litteral)
+    int getValue(Input::Gamepad::Axis literal)
     {
-        return ValueMaps::_gamepadAxisValueMap[litteral];
+        return ValueMaps::_gamepadAxisValueMap[literal];
     }
 
 
     template<>
-    int getValue(OpenGLProfile litteral)
+    int getValue(OpenGLProfile literal)
     {
-        return ValueMaps::_glProfileValueMap[litteral];
+        return ValueMaps::_glProfileValueMap[literal];
     }
 }// namespace GLFW3Adapter
 }// namespace Window

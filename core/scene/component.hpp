@@ -37,10 +37,10 @@ class Component
         // Get a raw pointer to a new Component instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
         virtual Component* clone() = 0;
 
-        // Litteral representing the type of this component
+        // Literal representing the type of this component
         const ComponentType type;
 
-        // Get a litteral representing the type of a Component subclass (template parameter)
+        // Get a literal representing the type of a Component subclass (template parameter)
         template<class T>
         static ComponentType componentType();
 
@@ -54,7 +54,7 @@ using ComponentWPtr = std::weak_ptr<Component>;
 
 // For any passed type, componentType and componentTypeString return default values.
 // New specialized version of these functions should be written with any new Component subclass,
-// in order for a non-default, meaningful litteral to be returned for that new subclass.
+// in order for a non-default, meaningful literal to be returned for that new subclass.
 
 template<class T>
 ComponentType Component::componentType()
