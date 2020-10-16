@@ -7,37 +7,53 @@ class SceneObject;
 using SceneObjectPtr = std::shared_ptr<SceneObject>;
 using SceneObjectWPtr = std::weak_ptr<SceneObject>;
 
-// Abstract class for a script referencing objects from a scene and updating them on a per-frame basis
+/// @brief Abstract class to autonomously update scene object on a per-frame 
+/// basis.
 class Script
 {
     private:
-        // Disallow copy-constructor and copy-assignment operator as Scripts are meant to be used only through pointers
         Script(const Script& other) = delete;
         Script& operator=(const Script& other) = delete;
 
-        // Keeps track of how many Script objects were created (used as an ID system)
+        // Keeps track of how many script instances were created (used as a 
+        /// unique ID system).
         static unsigned int _count;
 
     protected:
-        // A SceneObject which the Script might be attached to
+        /// @brief Pointer to a scene object which the script might be attached
+        /// to.
         SceneObjectWPtr _sceneObject;
 
     public:
         Script();
+
         virtual ~Script();
 
-        // To be called once per frame
+        /// @brief Make the script run and do its things.
+        ///
+        /// @param timeElapsed How much time passed (in seconds) since the last
+        /// update.
         virtual void update(float timeElapsed) = 0;
 
-        // Get the parent scene object if any
+        /// @brief Get a pointer to the parent scene object, if any.
+        ///
+        /// @return A pointer to the parent scene object, if any.
         virtual SceneObjectWPtr getSceneObject();
-        // Set the parent scene object
+
+        /// @brief Set the parent scene object of the script.
+        ///
+        /// @param object A pointer to scene object which should be parent to 
+        /// the script.
         virtual void setSceneObject(SceneObjectWPtr object);
 
-        // Get a raw pointer to a new Script instance cloned from this. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        /// @brief Get a raw pointer to a new script instance cloned 
+        /// from this one. Ownership and responsibility for the allocated 
+        /// resources are fully transferred to the caller.
+        ///
+        /// @return A raw pointer to the script instance cloned from this one.
         virtual Script* clone() = 0;
 
-        // Unique ID of the script
+        /// @brief Unique ID of the script.
         const unsigned int id;
 };
 

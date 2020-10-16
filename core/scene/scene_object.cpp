@@ -32,9 +32,9 @@ SceneWPtr SceneObject::getScene()
     return _scene;
 }
 
-void SceneObject::setScene(ScenePtr wScene)
+void SceneObject::setScene(ScenePtr scene)
 {
-    _scene = wScene;
+    _scene = scene;
 }
 
 SceneObjectPtr SceneObject::clone()

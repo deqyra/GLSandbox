@@ -22,58 +22,97 @@ class Scene;
 using ScenePtr = std::shared_ptr<Scene>;
 using SceneWPtr = std::weak_ptr<Scene>;
 
-// An object meant to be part of a scene. Abstract entity made up of components that give it concrete aspects in the context of a scene.
+/// @brief An object meant to be part of a scene. Abstract entity made up of 
+/// components which give it concrete aspects in the context of a scene.
 class SceneObject : public std::enable_shared_from_this<SceneObject>
 {
     private:
-        // Copy constructor and copy-assignment operator disallowed because SceneObjects are meant to be used through pointers only. Use clone() instead.
-        // Also, calls to weak_from_this(), which are prohibited during construction, would have to be made from within the copy constructor.
         SceneObject(const SceneObject& other) = delete;
         SceneObject& operator=(const SceneObject& other) = delete;
 
-        // Keeps track of how many SceneObjects were created (used as an ID system)
+        /// @brief Keeps track of how many scene objects were instantiated (used
+        /// as a unique ID system).
         static unsigned int _count;
 
-        // Components making up this scene object
+        /// @brief Components making up this scene object.
         std::vector<ComponentPtr> _components;
-        // The parent scene of this object
+
+        /// @brief Pointer to the parent scene of this object.
         SceneWPtr _scene;
 
     public:
         SceneObject();
-        // To be called before any other operation is performed on the scene object
+
+        /// @brief Link the scene object to its transform (which cannot be done
+        /// during construction). To be called before any other operation is 
+        /// performed on the scene object.
         void init();
 
-        // Get the world position of the object in the scene (use transform.getPosition() for local position)
+        /// @brief Get the world transform of the object in the scene.
+        ///
+        /// @return The world transform of the object in the scene.
         Transform getWorldTransform();
-        // Get the parent scene of this object
-        SceneWPtr getScene();
-        // Set the parent scene of this object
-        void setScene(ScenePtr wScene);
 
-        // Get a pointer to a new SceneObject instance cloned from this. All components are cloned as well. The cloned SceneObject 
+        /// @brief Get the parent scene of this object.
+        ///
+        /// @return A pointer to the parent scene of this object.
+        SceneWPtr getScene();
+
+        /// @brief Set the parent scene of this object.
+        ///
+        /// @param scene A pointer to the new parent scene of this object.0
+        void setScene(ScenePtr scene);
+
+        /// @brief Get a raw pointer to a new scene object instance cloned from
+        /// this one. All components are cloned as well. Ownership and 
+        /// responsibility for the allocated resources are fully transferred to
+        /// the caller.
+        ///
+        /// @return A raw pointer to the cloned scene object instance.
         SceneObjectPtr clone();
 
-        // Add a component of type T to this object
+        /// @brief Construct a component and add it to this object.
+        ///
+        /// @tparam T Concrete type of the component to construct.
+        /// @tparam ArgTypes... Types of the arguments to pass to the concrete
+        /// component constructor. Will be automatically deduced.
+        ///
+        /// @param args Arguments to pass to the concrete component constructor.
+        ///
+        /// @return A pointer to the constructed component.
         template<class T, class... ArgTypes>
         std::shared_ptr<T> addComponent(ArgTypes&&... args);
 
-        // Whether this object has a component of type T
+        /// @brief Whether this object has a certain component.
+        ///
+        /// @tparam Type of the concrete component to test for.
+        /// 
+        /// @return Whether or not the object has a component of specified type.
         template<class T>
         bool hasComponent();
 
-        // Get a pointer to the component of type T on this object (if any)
+        /// @brief Get a pointer to a certain component on this object.
+        /// 
+        /// @tparam Type of the concrete component to test for.
+        /// 
+        /// @return A pointer to a certain component on this object, or 
+        /// nullptr if the requested component is not present.
         template<class T>
         std::shared_ptr<T> getComponent();
 
-        // Get pointers to all components this object is made of
+        /// @brief Get pointers to all the components this object is made of.
+        ///
+        /// @return An array of pointers to all the components this object is 
+        /// made of.
         std::vector<ComponentWPtr> getAllComponents();
 
-        // Unique ID of the object
+        /// @brief Unique ID of the object.
         const unsigned int id;
-        // Whether this object is enabled in the scene
+
+        /// @brief Whether this object is enabled in its parent scene.
         bool enabled;
-        // The 3D transform of this object
+
+        /// @brief The 3D transform of this object.
         ObjectTransform transform;
 };
 
