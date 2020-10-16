@@ -26,12 +26,6 @@ CubeGenerator::CubeGenerator(float size, glm::vec3 color) :
 
 }
 
-CubeGenerator::CubeGenerator(float size, float r, float g, float b) :
-    parameters{ size, glm::vec3(r, g, b), true }
-{
-    
-}
-
 CubeGenerator::CubeGenerator(Parameters parameters) :
     parameters(parameters)
 {
@@ -40,7 +34,7 @@ CubeGenerator::CubeGenerator(Parameters parameters) :
 
 MeshPtr CubeGenerator::generatePtr()
 {
-    float len = parameters.size / 2.f;
+    float len = glm::sqrt(2 * parameters.size * parameters.size);
 
     const unsigned int nVertices = 24;
 

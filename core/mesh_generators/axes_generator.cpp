@@ -14,8 +14,8 @@ AxesGenerator::AxesGenerator() :
 
 }
 
-AxesGenerator::AxesGenerator(float size) : 
-    parameters{ size }
+AxesGenerator::AxesGenerator(float length) : 
+    parameters{ length }
 {
 
 }

@@ -101,7 +101,7 @@ void LightingSandbox::run(GLWindowPtr window)
     // Move stuff around
     bigTorusObj->transform.rotateBy<Ref::World>((float)glm::radians(90.f), X);
     smallTorusObj->transform.rotateBy<Ref::Parent>(glm::radians(90.f), X);
-    smallTorusObj->transform.translateBy<Ref::Parent>(-2.f*X);
+    smallTorusObj->transform.translateBy<Ref::Parent>(-2.f * X);
     cubeObj->transform.setPosition<Ref::World>(StartingLightPosition);
     tetrahedronObj->transform.translateBy<Ref::Parent>(-1.2f * X);
     tetrahedronObj->transform.rotateBy<Ref::Parent>(glm::radians(90.f), Z);

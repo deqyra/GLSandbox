@@ -26,12 +26,6 @@ TetrahedronGenerator::TetrahedronGenerator(float size, glm::vec3 color) :
 
 }
 
-TetrahedronGenerator::TetrahedronGenerator(float size, float r, float g, float b) :
-    parameters{ size, glm::vec3(r, g, b), true }
-{
-    
-}
-
 TetrahedronGenerator::TetrahedronGenerator(Parameters parameters) :
     parameters(parameters)
 {

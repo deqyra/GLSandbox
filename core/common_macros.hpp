@@ -5,18 +5,18 @@
 #define SQRT3   1.7320508075688772935274463415059
 
 /// @brief Coordinates of the X vector.
-#define X       1.0f, 0.0f, 0.0f
+#define _X       1.0f, 0.0f, 0.0f
 /// @brief Coordinates of the Y vector.
-#define Y       0.0f, 1.0f, 0.0f
+#define _Y       0.0f, 1.0f, 0.0f
 /// @brief Coordinates of the Z vector.
-#define Z       0.0f, 0.0f, 1.0f
+#define _Z       0.0f, 0.0f, 1.0f
 
 /// @brief Coordinates of the I vector.
-#define I       1.0f, 0.0f, 0.0f
+#define _I       1.0f, 0.0f, 0.0f
 /// @brief Coordinates of the J vector.
-#define J       0.0f, 1.0f, 0.0f
+#define _J       0.0f, 1.0f, 0.0f
 /// @brief Coordinates of the K vector.
-#define K       0.0f, 0.0f, 1.0f
+#define _K       0.0f, 0.0f, 1.0f
 
 /// @brief RGB components of white.
 #define WHITE   1.0f, 1.0f, 1.0f

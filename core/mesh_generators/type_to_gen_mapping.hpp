@@ -7,34 +7,40 @@
 #include "tetrahedron_generator.hpp"
 #include "torus_generator.hpp"
 
+/// @brief Used for mapping, at compile-time, a MeshType to the corresponding 
+/// MeshGenerator concrete subclass. Use inner typedef GenType to get the 
+/// actual type.
+///
+/// @tparam T Litteral describing the mesh type whose mesh generator to obtain.
 template<MeshType T>
 struct TypeToGenMapping
 {
-    typedef nullptr_t GenType;
+    /// @brief Type of the concrete MeshGenerator subclass mapped to MeshType T.
+    using GenType = nullptr_t;
 };
 
 template<>
 struct TypeToGenMapping<MeshType::Axes>
 {
-    typedef AxesGenerator GenType;
+    using GenType = AxesGenerator;
 };
 
 template<>
 struct TypeToGenMapping<MeshType::Cube>
 {
-    typedef CubeGenerator GenType;
+    using GenType = CubeGenerator;
 };
 
 template<>
 struct TypeToGenMapping<MeshType::Tetrahedron>
 {
-    typedef TetrahedronGenerator GenType;
+    using GenType = TetrahedronGenerator;
 };
 
 template<>
 struct TypeToGenMapping<MeshType::Torus>
 {
-    typedef TorusGenerator GenType;
+    using GenType = TorusGenerator;
 };
 
 #endif//CORE__MESH_GENERATORS__TYPE_TO_GEN_MAPPING_HPP
