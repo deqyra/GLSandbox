@@ -72,19 +72,6 @@ CameraComponent* CameraComponent::clone()
     return new CameraComponent(cameraClone);
 }
 
-glm::vec3 CameraComponent::getParentUp()
-{
-    std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
-    std::shared_ptr<Scene> scene = sceneObject->getScene().lock();
-    glm::mat4 worldMat = scene->getWorldTransform(sceneObject->id).getModelMatrix();
-
-    // In order to get what "upwards" is (in world coordinates) for the parent scene object,
-    // have (0, 1, 0) go through the world model matrix of the object.
-    glm::vec4 up = glm::vec4(ObjectTransform::Y, 0.f);
-    up = worldMat * up;
-    return glm::vec3(up);
-}
-
 template<>
 ComponentType Component::componentType<CameraComponent>()
 {

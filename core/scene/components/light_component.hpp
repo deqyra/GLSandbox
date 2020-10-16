@@ -5,27 +5,38 @@
 #include "../component_type.hpp"
 #include "../../lights/light.hpp"
 
-// Component derived class representing any light fixed to a scene object
+/// @brief Component allowinf to attach any light to a scene object.
 class LightComponent : public Component
 {
     private:
-        // Disallow copy-constructor and copy-assignment operator as Components are meant to be used only through pointers
         LightComponent(LightComponent& other) = delete;
         LightComponent& operator=(const LightComponent& other) = delete;
 
-        // Pointer to the actual light represented by this component
+        /// @brief Pointer to the light used by this component.
         LightPtr _light;
 
     public:
+        /// @param light Pointer to the light which the component will use.
         LightComponent(LightPtr light);
+
         virtual ~LightComponent();
 
-        // Get a pointer to the light of the component
+        /// @brief Get a pointer to the light used by the component.
+        ///
+        /// @return A pointer to the light used by the component.
         LightPtr getLight();
-        // Set the light pointer of the component
+
+        /// @brief Set the light used by the component.
+        ///
+        /// @param light Pointer to the light which the component should use.
         void setLight(LightPtr light);
 
-        // Get a raw pointer to a new LightComponent instance cloned from this. The inner light is cloned as well. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        /// @brief Get a raw pointer to a new component instance cloned 
+        /// from this one. Ownership and responsibility for the allocated 
+        /// resources are fully transferred to the caller.
+        ///
+        /// @return A raw pointer to the component instance cloned from this 
+        /// one.
         virtual LightComponent* clone();
 };
 

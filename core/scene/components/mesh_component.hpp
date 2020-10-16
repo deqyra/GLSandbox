@@ -9,30 +9,47 @@
 
 #include <string>
 
-// Component derived class representing the mesh of a scene object
+/// @brief Component allowing to attach a mesh to a scene object.
 class MeshComponent : public Component
 {
     private:
-        // Disallow copy-constructor and copy-assignment operator as Components are meant to be used only through pointers
         MeshComponent(MeshComponent& other) = delete;
         MeshComponent& operator=(const MeshComponent& other) = delete;
 
     public:
+        /// @param mesh Pointer to the mesh which the component should use.
         MeshComponent(MeshPtr mesh);
+
+        /// @param mesh Pointer to the mesh which the component should use.
+        /// @param material Material which the mesh should be rendered with.
         MeshComponent(MeshPtr mesh, Material material);
+
+        /// @param mesh Pointer to the mesh which the component should use.
+        /// @param shader Shader which the mesh should be rendred by.
         MeshComponent(MeshPtr mesh, Shader shader);
+
+        /// @param mesh Pointer to the mesh which the component should use.
+        /// @param material Material which the mesh should be rendered with.
+        /// @param shader Shader which the mesh should be rendred by.
         MeshComponent(MeshPtr mesh, Material material, Shader shader);
 
         virtual ~MeshComponent();
 
-        // Get a raw pointer to a new MeshComponent instance cloned from this. The inner light is cloned as well. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        /// @brief Get a raw pointer to a new component instance cloned 
+        /// from this one. Ownership and responsibility for the allocated 
+        /// resources are fully transferred to the caller.
+        ///
+        /// @return A raw pointer to the component instance cloned from this 
+        /// one.
         virtual MeshComponent* clone();
 
-        // Pointer to the mesh data of the object
+        /// @brief Pointer to the mesh data of the object.
         MeshPtr mesh;
-        // Material to paint on the mesh
+
+        /// @brief Material to paint the mesh with.
         Material material;
-        // Shader to use to render the mesh
+        
+        /// @brief Shader to render the mesh with.
         Shader shader;
 };
 

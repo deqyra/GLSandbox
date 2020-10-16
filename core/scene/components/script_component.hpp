@@ -7,33 +7,52 @@
 
 #include <string>
 
+/// @brief Component allowing a scene object to self-update through time.
 class ScriptComponent : public Component
 {
     private:
-        // Disallow copy-constructor and copy-assignment operator as Components are meant to be used only through pointers
         ScriptComponent(ScriptComponent& other) = delete;
         ScriptComponent& operator=(const ScriptComponent& other) = delete;
 
-        // Pointer to the actual script resource
+        /// @brief Pointer to the actual script resource.
         ScriptPtr _script;
-        // Register script to the scene which the parent scene object is part of
+
+        /// @brief Register script to the scene which the parent scene object
+        /// belongs to.
         void registerScript();
-        // Detach script from the scene
+
+        /// @brief Detach script from the scene it is registered at.
         void detachScript();
 
     public:
+        /// @param script Pointer to the input processing script which the 
+        /// component will use.
         ScriptComponent(ScriptPtr script);
+
         virtual ~ScriptComponent();
 
-        // Get a pointer to the Script of the component
+        /// @brief Get a pointer to the script used by the component.
+        ///
+        /// @return Pointer to the script used by the component.
         ScriptPtr getScript();
-        // Set the Script pointer of the component
-        void setScript(ScriptPtr Script);
 
-        // Set reference to parent scene object
+        /// @brief Set the script used by the component.
+        ///
+        /// @param script Pointer to the script which the component will use.
+        void setScript(ScriptPtr script);
+
+        /// @brief Set the parent scene object to this component..
+        ///
+        /// @param sceneObject A pointer to the new parent scene object of this
+        /// component.
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 
-        // Get a raw pointer to a new ScriptComponent instance cloned from this. The inner script is cloned as well. Ownership and responsibility for the allocated resources are fully transferred to the caller.
+        /// @brief Get a raw pointer to a new component instance cloned 
+        /// from this one. Ownership and responsibility for the allocated 
+        /// resources are fully transferred to the caller.
+        ///
+        /// @return A raw pointer to the component instance cloned from this 
+        /// one.
         virtual ScriptComponent* clone();
 };
 
