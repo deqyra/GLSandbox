@@ -49,8 +49,8 @@
  * ============================================================================
  * 
  * For the ObjectTransform, all of this gives place to some convoluted logic 
- * regarding how the base Transform methods are be called in order to do what 
- * the overridden ObjectTransform methods should actually do.
+ * as to how the base methods are called, in order to do what the overridden 
+ * methods should actually do.
  * More details in object_transform.cpp.
  */
 
