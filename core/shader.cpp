@@ -140,12 +140,19 @@ unsigned int Shader::getUniformLocation(const std::string& name) const
         _uniformLocations[_location] = std::unordered_map<std::string, unsigned int>();
     }
 
-    // If the location could not be found, retrieve the location and store it away before returning it
+    // If the location was found, store it away before returning it
     int location = glGetUniformLocation(_location, name.c_str());
     if (location != -1)
     {
         _uniformLocations[_location][name] = location;
     }
+    // Otherwise, print a warning message
+    else
+    {
+        std::cerr << "Shader: attempt to get location of uniform \"" << name << "\","
+        " which does not exist in shader with program key \"" << _programKey << "\"" << std::endl;
+    }
+    
     return location;
 }
 

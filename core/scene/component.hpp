@@ -47,6 +47,9 @@ class Component
         /// @param type Literal describing the concrete type of this component.
         /// @param sceneObject Pointer to the SceneObject instance this 
         /// component belongs to.
+        ///
+        /// @exception If the passed script component type is Unknown, the 
+        /// function will throw a std::runtime_error.
         Component(ComponentType type, SceneObjectWPtr sceneObject = SceneObjectWPtr());
 
         /// @brief Pointer to the SceneObject this component belongs to.

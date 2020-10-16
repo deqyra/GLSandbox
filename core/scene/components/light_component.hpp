@@ -29,6 +29,9 @@ class LightComponent : public Component
         /// @brief Set the light used by the component.
         ///
         /// @param light Pointer to the light which the component should use.
+        ///
+        /// @exception If the passed light pointer is null, the function will
+        /// throw a std::runtime_error.
         void setLight(LightPtr light);
 
         /// @brief Get a raw pointer to a new component instance cloned 

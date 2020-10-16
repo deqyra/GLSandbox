@@ -58,6 +58,8 @@ void ScriptComponent::registerScript()
 
     // Subscribe script to updates
     ScenePtr scene = sceneObject->getScene().lock();
+    if (scene == nullptr) return;
+    
     scene->registerScript(_script);
 }
 

@@ -36,6 +36,9 @@ class InputProcessingScriptComponent : public Component
         /// @brief Set the script used by the component.
         ///
         /// @param script Pointer to the script which the component will use.
+        ///
+        /// @exception If the passed script pointer is null, the function will
+        /// throw a std::runtime_error.
         void setScript(InputProcessingScriptPtr script);
 
         /// @brief Set the parent scene object to this component..

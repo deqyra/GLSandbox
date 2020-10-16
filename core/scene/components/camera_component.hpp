@@ -31,6 +31,9 @@ class CameraComponent : public Component
         /// @brief Set the camera used by the component.
         ///
         /// @param camera Pointer to the camera the component should use.
+        ///
+        /// @exception If the passed camera pointer is null, the function will
+        /// throw a std::runtime_error.
         void setCamera(CameraPtr camera);
 
         /// @brief Get the view matrix corresponding to the position and facing

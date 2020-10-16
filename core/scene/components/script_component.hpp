@@ -39,6 +39,9 @@ class ScriptComponent : public Component
         /// @brief Set the script used by the component.
         ///
         /// @param script Pointer to the script which the component will use.
+        ///
+        /// @exception If the passed script pointer is null, the function will
+        /// throw a std::runtime_error.
         void setScript(ScriptPtr script);
 
         /// @brief Set the parent scene object to this component..

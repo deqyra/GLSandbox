@@ -59,7 +59,8 @@ void InputProcessingScriptComponent::registerScript()
 
     // Subscribe script to updates
     ScenePtr scene = sceneObject->getScene().lock();
-    if (scene == nullptr) throw std::runtime_error("InputProcessingScriptComponent: SceneObject is attached to no Scene.");
+    if (scene == nullptr) return;
+    
     scene->registerInputProcessingScript(_script);
 }
 
@@ -71,6 +72,8 @@ void InputProcessingScriptComponent::detachScript()
 
     // If applicable, detach script from scene updates
     ScenePtr scene = sceneObject->getScene().lock();
+    if (scene == nullptr) return;
+    
     scene->detachInputProcessingScript(_script);
 }
 

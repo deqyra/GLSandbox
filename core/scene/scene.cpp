@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 
 #include "../../tools/tree.hpp"
+#include "../factory.hpp"
 #include "../input_processor.hpp"
 
 #include "scene_object.hpp"
@@ -32,7 +33,7 @@ Scene::Scene() :
     
 }
 
-unsigned int Scene::init()
+void Scene::init()
 {
     ObjectTree::NodePtr objectRootNode = _objects.getRoot();
     TransformTree::NodePtr transformRootNode = _transforms.getRoot();
@@ -52,11 +53,9 @@ unsigned int Scene::init()
         MaxUInt                     // ID of the subscription to the transform notifier of the object
     };
     _objectMetadata[meta.id] = meta;
-    
-    return meta.id;
 }
 
-SceneObjectWPtr Scene::operator[](unsigned int id)
+SceneObjectPtr Scene::operator[](unsigned int id)
 {
     auto it = _objectMetadata.find(id);
     if (it == _objectMetadata.end())
@@ -72,18 +71,17 @@ SceneObjectWPtr Scene::operator[](unsigned int id)
     return node->value;
 }
 
-SceneObjectWPtr Scene::newObject()
+SceneObjectPtr Scene::newObject()
 {
     ObjectTree::NodePtr node = _objects.getRoot();
     // Create the new object as a child of the root node
     return newObject(node->value->id);
 }
 
-SceneObjectWPtr Scene::newObject(unsigned int parentId)
+SceneObjectPtr Scene::newObject(unsigned int parentId)
 {
     // Create the new object, initialized with a pointer to this Scene
-    SceneObjectPtr obj = std::make_shared<SceneObject>();
-    obj->init();
+    SceneObjectPtr obj = Factory::makeSceneObject();
 
     registerObject(obj, parentId);
 
@@ -342,12 +340,13 @@ std::vector<SceneObjectPtr> Scene::getAllObjects(bool mustBeEnabled)
 
 void Scene::registerScript(ScriptPtr script)
 {
-    _scripts[script->id] = script;
-}
+    if (script == nullptr)
+    {
+        std::string s = "Scene: provided nullptr for script registration.";
+        throw std::runtime_error(s.c_str());
+    }
 
-void Scene::detachScript(ScriptPtr script)
-{
-    _scripts.erase(script->id);
+    _scripts[script->id] = script;
 }
 
 void Scene::detachScript(unsigned int id)
@@ -371,12 +370,12 @@ void Scene::triggerUpdate()
 
 void Scene::registerInputProcessor(InputProcessorPtr inputProcessor)
 {
+    if (inputProcessor == nullptr)
+    {
+        std::string s = "Scene: provided nullptr for input processor registration.";
+        throw std::runtime_error(s.c_str());
+    }
     _inputProcessors[inputProcessor->id] = inputProcessor;
-}
-
-void Scene::detachInputProcessor(InputProcessorPtr inputProcessor)
-{
-    _inputProcessors.erase(inputProcessor->id);
 }
 
 void Scene::detachInputProcessor(unsigned int id)
@@ -386,6 +385,12 @@ void Scene::detachInputProcessor(unsigned int id)
 
 void Scene::registerInputProcessingScript(InputProcessingScriptPtr script)
 {
+    if (script == nullptr)
+    {
+        std::string s = "Scene: provided nullptr for input processing script registration.";
+        throw std::runtime_error(s.c_str());
+    }
+    
     // Register the input processing script both as a script and an input processor
     ScriptPtr baseScriptPtr = std::static_pointer_cast<Script>(script);
     InputProcessorPtr baseIpPtr = std::static_pointer_cast<InputProcessor>(script);
@@ -395,6 +400,12 @@ void Scene::registerInputProcessingScript(InputProcessingScriptPtr script)
 
 void Scene::detachInputProcessingScript(InputProcessingScriptPtr script)
 {
+    if (script == nullptr)
+    {
+        std::string s = "Scene: provided nullptr for input processing script deletion.";
+        throw std::runtime_error(s.c_str());
+    }
+
     _scripts.erase(script->Script::id);
     _inputProcessors.erase(script->InputProcessor::id);
 }

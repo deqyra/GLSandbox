@@ -5,7 +5,8 @@
 namespace
 {
     /**
-     * Light attenuation calculation factors according to desired range of a light
+     * Light attenuation calculation factors depending on the desired range of
+     * a light:
      * (http://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation)
      * 
      * Distance 	Constant 	Linear 	Quadratic
@@ -23,10 +24,11 @@ namespace
      * 600          1.0         0.007   0.0002
      * 3250         1.0         0.0014  0.000007
      * 
-     * Factors involved in calculating the attenuation of a given light depend on the range of said light.
+     * Factors involved in calculating the attenuation of a given light depend
+     * on the range of said light.
      * 
-     * The parameters defined hereafter are used to calculate the _actual_ attenuation factors,
-     * and were computed to best fit the previous data.
+     * The parameters defined hereafter are used to calculate the _actual_ 
+     * attenuation factors, and were computed to best fit the previous data.
      **/
 
     constexpr float QuadraticComponentInQuadraticFactor = (float)(0.0108699);
