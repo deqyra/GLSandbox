@@ -41,7 +41,9 @@ RenderBoi:
         Texture:
             ☐ Check texture generation success and display error info
         Component:
-            ☐ Change SceneObjectWPtr to SceneObjectPtr
+            ☐ Change SceneObjectWPtr to SceneObjectPtr (and do so in as many places as possible)
+        Scripts:
+            ☐ Separate FPSCameraScript into MouseCameraScript and KeyboardMovementScript
         ☐ Dynamic meshes
         ☐ Unity-like prefab system?
         ☐ Shadows

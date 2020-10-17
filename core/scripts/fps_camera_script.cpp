@@ -133,6 +133,12 @@ void FPSCameraScript::setSceneObject(SceneObjectWPtr sceneObject)
 
     // Retrieve camera component
     SceneObjectPtr realSceneObject = sceneObject.lock();
+    if (realSceneObject == nullptr)
+    {
+        std::string s = "FPSCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was a null scene object pointer.";
+        throw std::runtime_error(s.c_str());
+    }
+
     std::shared_ptr<CameraComponent> cameraComponent = realSceneObject->getComponent<CameraComponent>();
 
     if (!cameraComponent)
