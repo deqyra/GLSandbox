@@ -17,22 +17,41 @@
  * };						// Size: 240
  **/
 
-// Proxy class to a UBO resource on the GPU. Dedicated to vertex transformation matrices.9
+/// @brief Manager for a UBO resource on the GPU, meants for vertex 
+/// transformation matrices.
 class MatrixUBO : public UniformBufferObject
 {
     public:
         MatrixUBO();
 
+        /// @brief Get the binding point of the UBO on the GPU.
+        ///
+        /// @return The binding point of the UBO on the GPU.
         virtual unsigned int getBindingPoint();
+
+        /// @brief Get the size the UBO takes in GPU memory.
+        ///
+        /// @return The amount of GPU memory occupied by the UBO, in bytes.
         virtual unsigned int getSize();
 
-        // Set the model matrix in the UBO
+        /// @brief Set the model matrix in the UBO.
+        ///
+        /// @param model The model matrix to set in the UBO.
         void setModel(glm::mat4 model);
-        // Set the view matrix in the UBO
+
+        /// @brief Set the view matrix in the UBO.
+        ///
+        /// @param view The view matrix to set in the UBO.
         void setView(glm::mat4 view);
-        // Set the projection matrix in the UBO
+
+        /// @brief Set the projection matrix in the UBO.
+        ///
+        /// @param projection The projection matrix to set in the UBO.
         void setProjection(glm::mat4 projection);
-        // Set the normal matrix in the UBO
+
+        /// @brief Set the normal matrix in the UBO.
+        ///
+        /// @param normal The normal matrix to set in the UBO.
         void setNormal(glm::mat4 normal);
 };
 

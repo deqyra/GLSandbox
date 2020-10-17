@@ -57,8 +57,11 @@
  * };                               // Size: 652
  **/
 
+/// @brief The binding point of the matrix UBO on the GPU, according to shaders.
 #define MATRIX_UBO_BINDING_POINT   0
+/// @brief The binding point of the light UBO on the GPU, according to shaders.
 #define LIGHT_UBO_BINDING_POINT    1
+/// @brief The next available binding point on the GPU.
 #define NEXT_UBO_BINDING_POINT     2
 
 #endif//CORE__UBO__UBO_INFO_HPP
