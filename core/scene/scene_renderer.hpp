@@ -16,24 +16,47 @@
 #include "../material.hpp"
 #include "../shader.hpp"
 
-// Render a scene
+/// @brief Manages the render process of a scene.
 class SceneRenderer
 {
     private:
-        // Handle to a UBO for matrices on the GPU
+        /// @brief Handle to a UBO for matrices on the GPU.
         MatrixUBO _matrixUbo;
-        // Handle to a UBO for lights on the GPU
-        LightUBO _lightUbo;
 
-        // Send the scene lights to the GPU
-        void sendLightData(std::vector<LightPtr>& lights, std::vector<glm::mat4>& modelMats, glm::mat4 view);
-        // Issue draw commands for a single mesh
+        /// @brief Handle to a UBO for lights on the GPU.
+        LightUBO _lightUbo;
+        
+        /// @brief Send the scene lights to the GPU.
+        ///
+        /// @param lights An array filled with pointer to the lights in the 
+        /// scene.
+        /// @param worldTransforms An array filled with the world transforms of
+        /// the lights to send.
+        /// @param view The view matrix, provided by the scene camera.
+        ///
+        /// @exception If there are too many lights of any type and they end up
+        /// exceeding the per-type limit defined by the light UBO, the function
+        /// will throw a std::runtime_error.
+        void sendLightData(std::vector<LightPtr>& lights, std::vector<Transform>& worldTransforms, glm::mat4 view);
+
+        /// @brief Issue draw commands for a single mesh.
+        ///
+        /// @param mesh A pointer to the mesh to render.
+        /// @param model The model matrix od the mesh.
+        /// @param view The view matrix, provided by the scene camera.
+        /// @param mat The material to render the mesh in.
+        /// @param shader The shader to render the mesh with.
         void drawMesh(MeshPtr mesh, glm::mat4 model, glm::mat4 view, Material mat, Shader shader);
 
     public:
         SceneRenderer();
-        // Render the provided scene
-        void renderScene(SceneWPtr wScene);
+        /// @brief Render the provided scene.
+        ///
+        /// @param scene A pointer to the scene which should be rendered.
+        ///
+        /// @exception If the scene has too many lights of any type for the 
+        /// light UBO to handle, the function will throw a std::runtime_error.
+        void renderScene(ScenePtr scene);
 };
 
 #endif//CORE__SCENE__SCENE_RENDERER_HPP

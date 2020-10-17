@@ -28,6 +28,9 @@ RenderBoi:
             ☐ Implement a framerate limiter
             ☐ Mesh rendering order based on the requested shader, then on their VertexDataManager handle
             ☐ Eliminate buffer swaps between objects sharing the same vertex data
+            ☐ Transform direction of lights according to the world transform of their object
+            ☐ Skip the normal restoration where applicable
+            ☐ Render meshes using a transform, not a matrix
         Transform:
             ✔ Change SceneObject inheritance from PositionedObject into a compoud Transform object @done(20-07-02 17:00)
             ✔ Viable alternative to the ugly `transformModified` flag fix (observer pattern) @done(20-09-02 15:12)

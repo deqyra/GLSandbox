@@ -26,10 +26,9 @@ SceneRenderer::SceneRenderer() :
 
 }
 
-void SceneRenderer::renderScene(SceneWPtr wScene)
+void SceneRenderer::renderScene(ScenePtr scene)
 {
-    ScenePtr scene = wScene.lock();
-    //scene->updateAllTransforms();
+    scene->updateAllTransforms();
 
     // Get pointers to meshes, lights, and the scene camera
     std::vector<SceneObjectPtr> meshComponents = scene->getObjectsWithComponent<MeshComponent>();
@@ -58,7 +57,7 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
 
     // Preprocess lights
     std::vector<LightPtr> lights;
-    std::vector<glm::mat4> modelMats;
+    std::vector<Transform> worldTransforms;
     for (auto it = lightComponents.begin(); it != lightComponents.end(); it++)
     {
         // Get the light component
@@ -66,9 +65,9 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
         std::shared_ptr<LightComponent> lightComp = lightObj->getComponent<LightComponent>();
         // Get the actual light and its world model matrix (needed to compute its world position)
         lights.push_back(lightComp->getLight());
-        modelMats.push_back(scene->getWorldTransform(lightObj->id).getModelMatrix());
+        worldTransforms.push_back(scene->getWorldTransform(lightObj->id));
     }
-    sendLightData(lights, modelMats, view);
+    sendLightData(lights, worldTransforms, view);
 
     for (auto it = meshComponents.begin(); it != meshComponents.end(); it++)
     {
@@ -81,7 +80,7 @@ void SceneRenderer::renderScene(SceneWPtr wScene)
     }
 }
 
-void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<glm::mat4>& modelMats, glm::mat4 view)
+void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Transform>& worldTransforms, glm::mat4 view)
 {
     // Light counts need to be kept track of
     unsigned int pLightIndex = 0;
@@ -91,6 +90,8 @@ void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<glm
     for (unsigned int i = 0; i < lights.size(); i++)
     {
         LightPtr light = lights[i];
+        glm::vec3 position = glm::vec3(view * glm::vec4(worldTransforms[i].getPosition(), 1.f));
+
         switch (light->lightType)
         {
             case LightType::PointLight:
@@ -99,30 +100,41 @@ void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<glm
                     // Retrieve the light as a PointLight
                     std::shared_ptr<PointLight> pLight = std::static_pointer_cast<PointLight>(light);
                     // Send it to the UBO
-                    glm::vec4 position = glm::vec4(glm::vec3(0.f), 1.f);
-                    position = view * modelMats[i] * position;
-                    _lightUbo.setPoint(pLightIndex++, *pLight, glm::vec3(position));
+                    _lightUbo.setPoint(pLightIndex++, *pLight, position);
                 }
+                else
+                {
+                    throw std::runtime_error("SceneRenderer: PointLight max count exceeded, cannot send more lights to UBO.");
+                }
+                
                 break;
             case LightType::SpotLight:
                 if (sLightIndex < SPOT_LIGHT_MAX_COUNT)
                 {
-                    // Retrieve the light as a PointLight
+                    // Retrieve the light as a SpotLight
                     std::shared_ptr<SpotLight> sLight = std::static_pointer_cast<SpotLight>(light);
                     // Send it to the UBO
-                    glm::vec4 position = glm::vec4(glm::vec3(0.f), 1.f);
-                    position = view * modelMats[i] * position;
-                    _lightUbo.setSpot(sLightIndex++, *sLight, glm::vec3(position));
+                    _lightUbo.setSpot(sLightIndex++, *sLight, position);
                 }
+                else
+                {
+                    throw std::runtime_error("SceneRenderer: SpotLight max count exceeded, cannot send more lights to UBO.");
+                }
+                
                 break;
             case LightType::DirectionalLight:
                 if (dLightIndex < DIRECTIONAL_LIGHT_MAX_COUNT)
                 {
-                    // Retrieve the light as a PointLight
+                    // Retrieve the light as a DirectionalLight
                     std::shared_ptr<DirectionalLight> dLight = std::static_pointer_cast<DirectionalLight>(light);
                     // Send it to the UBO
                     _lightUbo.setDirectional(dLightIndex++, *dLight);
                 }
+                else
+                {
+                    throw std::runtime_error("SceneRenderer: DirectionalLight max count exceeded, cannot send more lights to UBO.");
+                }
+                
                 break;
         }
     }
