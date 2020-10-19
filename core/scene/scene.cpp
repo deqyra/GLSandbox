@@ -40,7 +40,7 @@ void Scene::init()
     BoolTree::NodePtr updateRootNode = _updateMarkers.getRoot();
 
     // Reset the object graph root node pointer to a scene object initialized with a pointer to this Scene.
-    objectRootNode->value.reset(new SceneObject());
+    objectRootNode->value.reset(new SceneObject("SCENE_ROOT"));
     objectRootNode->value->setScene(this->shared_from_this());
 
     // Set and map metadata
@@ -71,17 +71,27 @@ SceneObjectPtr Scene::operator[](unsigned int id)
     return node->value;
 }
 
-SceneObjectPtr Scene::newObject()
+SceneObjectPtr Scene::newObject(std::string name)
 {
     ObjectTree::NodePtr node = _objects.getRoot();
     // Create the new object as a child of the root node
-    return newObject(node->value->id);
+    return newObject(name, node->value->id);
 }
 
 SceneObjectPtr Scene::newObject(unsigned int parentId)
 {
     // Create the new object, initialized with a pointer to this Scene
     SceneObjectPtr obj = Factory::makeSceneObject();
+
+    registerObject(obj, parentId);
+
+    return obj;
+}
+
+SceneObjectPtr Scene::newObject(std::string name, unsigned int parentId)
+{
+    // Create the new object, initialized with a pointer to this Scene
+    SceneObjectPtr obj = Factory::makeSceneObject(name);
 
     registerObject(obj, parentId);
 

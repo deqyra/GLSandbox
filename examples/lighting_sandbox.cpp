@@ -59,24 +59,26 @@ void LightingSandbox::run(GLWindowPtr window)
     window->registerInputProcessor(scene);
 
     // BIG TORUS
-    SceneObjectPtr bigTorusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>({2.f, 0.5f, 72, 48}, Materials::Emerald, lightingShader);
+    SceneObjectPtr bigTorusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Big torus", {2.f, 0.5f, 72, 48}, Materials::Emerald, lightingShader);
 
     // SMALL TORUS
-    SceneObjectPtr smallTorusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>({0.75f, 0.25f, 64, 32}, Materials::Gold, lightingShader);
+    SceneObjectPtr smallTorusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Small torus", {0.75f, 0.25f, 64, 32}, Materials::Gold, lightingShader);
     
     // AXES
-    SceneObjectPtr axesObj = Factory::makeSceneObjectWithMesh<MeshType::Axes>({3.f});
+    SceneObjectPtr axesObj = Factory::makeSceneObjectWithMesh<MeshType::Axes>("Axes", {3.f});
+    axesObj->enabled = false;
     
     // CUBE
-    SceneObjectPtr cubeObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>({1.f, {0.f, 0.f, 0.f}, false}, Material(), lightingShader);
+    SceneObjectPtr cubeObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Material(), lightingShader);
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>(LightBaseRange);
     cubeObj->addComponent<LightComponent>(light);
 
     // TETRAHEDRON
-    SceneObjectPtr tetrahedronObj = Factory::makeSceneObjectWithMesh<MeshType::Tetrahedron>({0.5f});
+    SceneObjectPtr tetrahedronObj = Factory::makeSceneObjectWithMesh<MeshType::Tetrahedron>("Tetrahedron", {0.5f});
+    tetrahedronObj->enabled = false;
 
     // CAMERA
-    SceneObjectPtr cameraObj = Factory::makeSceneObject();
+    SceneObjectPtr cameraObj = Factory::makeSceneObject("Camera");
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), window->getAspectRatio(), 0.1f, 100.0f);
     CameraPtr camera = std::make_shared<Camera>(projection, CameraYaw, CameraPitch);
     cameraObj->addComponent<CameraComponent>(camera);

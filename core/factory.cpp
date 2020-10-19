@@ -12,9 +12,9 @@ ScenePtr Factory::makeScene()
     return scene;
 }
 
-SceneObjectPtr Factory::makeSceneObject()
+SceneObjectPtr Factory::makeSceneObject(std::string name)
 {
-    SceneObjectPtr sceneObject = std::make_shared<SceneObject>();
+    SceneObjectPtr sceneObject = std::make_shared<SceneObject>(name);
     sceneObject->init();
     return sceneObject;
 }

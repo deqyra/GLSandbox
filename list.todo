@@ -24,6 +24,8 @@ RenderBoi:
             ✔ Clean up the bullshit with `Scene::init` and `SceneObject::setScene` and whatnot, implement a clean factory instead @done(20-10-12 10:22)
             ☐ Refactor methods taking in pointers to taking in IDs where applicable
             ☐ Refactor methods (e.g. object creation and registration) to skip sanity checks where unnecessary
+        SceneObject:
+            ✔ Add name for debugging purposes @done(20-10-19 12:04)
         SceneRenderer:
             ☐ Implement a framerate limiter
             ☐ Mesh rendering order based on the requested shader, then on their VertexDataManager handle

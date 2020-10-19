@@ -19,8 +19,10 @@ class Factory
 
         /// @brief Instantiate and initialize a new scene object.
         ///
+        /// @param name Name to give to the scene object.
+        ///
         /// @return Pointer to the instantiated scene object.
-        static SceneObjectPtr makeSceneObject();
+        static SceneObjectPtr makeSceneObject(std::string name = "");
 
         /// @brief Create a mesh with vertices arranged in a certain shape.
         ///
@@ -45,6 +47,20 @@ class Factory
         /// @return Pointer to the instantiated scene object.
         template<MeshType T>
         static SceneObjectPtr makeSceneObjectWithMesh(typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat = Material(), Shader shader = Shader());
+
+        /// @brief Instantiate and initiliaze a scene object, generate a mesh,
+        /// and attach it to the scene object within a mesh component.
+        ///
+        /// @tparam T Literal describing which mesh generator to use.
+        ///
+        /// @param name Name to give to the scene object.
+        /// @param parameters Parameters of the mesh generation.
+        /// @param mat Material to render the mesh in.
+        /// @param shader Shader to render the mesh with.
+        ///
+        /// @return Pointer to the instantiated scene object.
+        template<MeshType T>
+        static SceneObjectPtr makeSceneObjectWithMesh(std::string name, typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat = Material(), Shader shader = Shader());
 };
 
 template<MeshType T>
@@ -58,8 +74,14 @@ MeshPtr Factory::makeMesh(typename TypeToGenMapping<T>::GenType::Parameters para
 template<MeshType T>
 SceneObjectPtr Factory::makeSceneObjectWithMesh(typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat, Shader shader)
 {
+    return makeSceneObjectWithMesh("", parameters, mat, shader);
+}
+
+template<MeshType T>
+SceneObjectPtr Factory::makeSceneObjectWithMesh(std::string name, typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat, Shader shader)
+{
     MeshPtr mesh = Factory::makeMesh<T>(parameters);
-    SceneObjectPtr obj = Factory::makeSceneObject();
+    SceneObjectPtr obj = Factory::makeSceneObject(name);
     obj->addComponent<MeshComponent>(mesh, mat, shader);
     return obj;
 }

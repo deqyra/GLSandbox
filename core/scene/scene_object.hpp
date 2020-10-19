@@ -34,6 +34,9 @@ class SceneObject : public std::enable_shared_from_this<SceneObject>
         /// as a unique ID system).
         static unsigned int _count;
 
+        /// @brief Name of the object in the scene.
+        std::string _name;
+
         /// @brief Components making up this scene object.
         std::vector<ComponentPtr> _components;
 
@@ -41,7 +44,8 @@ class SceneObject : public std::enable_shared_from_this<SceneObject>
         SceneWPtr _scene;
 
     public:
-        SceneObject();
+        /// @param name Name to give to the scene object.
+        SceneObject(std::string name = "");
 
         /// @brief Link the scene object to its transform (which cannot be done
         /// during construction). To be called before any other operation is 

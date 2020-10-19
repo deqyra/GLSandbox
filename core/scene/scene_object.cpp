@@ -6,11 +6,12 @@
 
 unsigned int SceneObject::_count = 0;
 
-SceneObject::SceneObject() :
+SceneObject::SceneObject(std::string name) :
     id(_count++),
     enabled(true),
-    _scene(std::shared_ptr<Scene>(nullptr)),
+    _name(name),
     _components(),
+    _scene(std::shared_ptr<Scene>(nullptr)),
     transform()
 {
 

@@ -134,8 +134,10 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         /// @brief Create a new object and attach it to the graph as a root 
         /// child.
         ///
+        /// @param name Name to give to the scene object.
+        ///
         /// @return A pointer to the newly created object.
-        SceneObjectPtr newObject();
+        SceneObjectPtr newObject(std::string name = "");
 
         /// @brief Create a new object and attach it to the graph as a child of
         /// the object with provided ID.
@@ -148,6 +150,19 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         /// @exception If the provided ID does not match that of an object 
         /// present in the scene, the function will throw a std::runtime_error.
         SceneObjectPtr newObject(unsigned int parentId);
+
+        /// @brief Create a new object and attach it to the graph as a child of
+        /// the object with provided ID.
+        ///
+        /// @param name Name to give to the scene object.
+        /// @param parentId ID of the object which should be parent to the newly
+        /// created object.
+        ///
+        /// @return A pointer to the newly created object.
+        ///
+        /// @exception If the provided ID does not match that of an object 
+        /// present in the scene, the function will throw a std::runtime_error.
+        SceneObjectPtr newObject(std::string name, unsigned int parentId);
 
         /// @brief Register an object in the scene as a root child.
         ///
