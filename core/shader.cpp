@@ -212,7 +212,6 @@ void Shader::setVec3f(const std::string& name, glm::vec3 value)
 
 void Shader::setMaterial(const std::string& name, Material value)
 {
-    unsigned int uniformLocation = getUniformLocation(name);
     setVec3f(name + ".ambient", value.ambient);
     setVec3f(name + ".diffuse", value.diffuse);
     setVec3f(name + ".specular", value.specular);
@@ -239,7 +238,6 @@ void Shader::setMaterial(const std::string& name, Material value)
 
 void Shader::setPointLight(const std::string& name, PointLight value, glm::vec3 position)
 {
-    unsigned int uniformLocation = getUniformLocation(name);
     setVec3f(name + ".position", position);
     setVec3f(name + ".ambient", value.ambient);
     setVec3f(name + ".diffuse", value.diffuse);
