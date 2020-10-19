@@ -95,7 +95,7 @@ void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Tra
         switch (light->lightType)
         {
             case LightType::PointLight:
-                if (pLightIndex < POINT_LIGHT_MAX_COUNT)
+                if (pLightIndex < LightUBO::PointLightMaxCount)
                 {
                     // Retrieve the light as a PointLight
                     std::shared_ptr<PointLight> pLight = std::static_pointer_cast<PointLight>(light);
@@ -109,7 +109,7 @@ void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Tra
                 
                 break;
             case LightType::SpotLight:
-                if (sLightIndex < SPOT_LIGHT_MAX_COUNT)
+                if (sLightIndex < LightUBO::SpotLightMaxCount)
                 {
                     // Retrieve the light as a SpotLight
                     std::shared_ptr<SpotLight> sLight = std::static_pointer_cast<SpotLight>(light);
@@ -123,7 +123,7 @@ void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Tra
                 
                 break;
             case LightType::DirectionalLight:
-                if (dLightIndex < DIRECTIONAL_LIGHT_MAX_COUNT)
+                if (dLightIndex < LightUBO::DirectionalLightMaxCount)
                 {
                     // Retrieve the light as a DirectionalLight
                     std::shared_ptr<DirectionalLight> dLight = std::static_pointer_cast<DirectionalLight>(light);

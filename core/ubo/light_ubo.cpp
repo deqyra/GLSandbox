@@ -23,12 +23,12 @@ unsigned int LightUBO::getBindingPoint()
 
 unsigned int LightUBO::getSize()
 {
-    return LIGHT_UBO_SIZE;
+    return LightUboSize;
 }
 
 void LightUBO::setPoint(unsigned int index, PointLight point, glm::vec3 position)
 {
-    unsigned int offset = POINT_LIGHT_UBO_OFFSET + (index * POINT_LIGHT_UBO_SIZE);
+    unsigned int offset = PointLightUboOffset + (index * PointLightUboSize);
 
     // Send the point light data to the appropriate memory location on the GPU
     glBindBuffer(GL_UNIFORM_BUFFER, _location);
@@ -43,7 +43,7 @@ void LightUBO::setPoint(unsigned int index, PointLight point, glm::vec3 position
 
 void LightUBO::setPointCount(unsigned int count)
 {
-    unsigned int offset = LIGHT_UBO_COUNTS_OFFSET;
+    unsigned int offset = LightUboCountsOffset;
 
     glBindBuffer(GL_UNIFORM_BUFFER, _location);
     glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(unsigned int), &count);
@@ -51,7 +51,7 @@ void LightUBO::setPointCount(unsigned int count)
 
 void LightUBO::setSpot(unsigned int index, SpotLight spot, glm::vec3 position)
 {
-    unsigned int offset = SPOT_LIGHT_UBO_OFFSET + (index * SPOT_LIGHT_UBO_SIZE);
+    unsigned int offset = SpotLightUboOffset + (index * SpotLightUboSize);
 
     // Send the spot light data to the appropriate memory location on the GPU
     glBindBuffer(GL_UNIFORM_BUFFER, _location);
@@ -69,7 +69,7 @@ void LightUBO::setSpot(unsigned int index, SpotLight spot, glm::vec3 position)
 
 void LightUBO::setSpotCount(unsigned int count)
 {
-    unsigned int offset = LIGHT_UBO_COUNTS_OFFSET + 4;
+    unsigned int offset = LightUboCountsOffset + 4;
 
     glBindBuffer(GL_UNIFORM_BUFFER, _location);
     glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(unsigned int), &count);
@@ -77,7 +77,7 @@ void LightUBO::setSpotCount(unsigned int count)
 
 void LightUBO::setDirectional(unsigned int index, DirectionalLight direct)
 {
-    unsigned int offset = DIRECTIONAL_LIGHT_UBO_OFFSET + (index * DIRECTIONAL_LIGHT_UBO_SIZE);
+    unsigned int offset = DirectionalLightUboOffset + (index * DirectionalLightUboSize);
 
     // Send the directional light data to the appropriate memory location on the GPU
     glBindBuffer(GL_UNIFORM_BUFFER, _location);
@@ -89,7 +89,7 @@ void LightUBO::setDirectional(unsigned int index, DirectionalLight direct)
 
 void LightUBO::setDirectionalCount(unsigned int count)
 {
-    unsigned int offset = LIGHT_UBO_COUNTS_OFFSET + 8;
+    unsigned int offset = LightUboCountsOffset + 8;
 
     glBindBuffer(GL_UNIFORM_BUFFER, _location);
     glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(unsigned int), &count);
