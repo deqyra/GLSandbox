@@ -1,7 +1,9 @@
 #include "scene_renderer.hpp"
 
+#include <chrono>
 #include <iostream>
 #include <memory>
+#include <thread>
 #include <vector>
 
 #include "scene.hpp"
@@ -19,9 +21,11 @@
 #include "../material.hpp"
 #include "../shader.hpp"
 
-SceneRenderer::SceneRenderer() :
+SceneRenderer::SceneRenderer(unsigned int framerateLimit) :
     _matrixUbo(),
-    _lightUbo()
+    _lightUbo(),
+    _intervalUs(1000000.f/framerateLimit),
+    _lastTimestamp(std::chrono::system_clock::now())
 {
 
 }
@@ -69,6 +73,12 @@ void SceneRenderer::renderScene(ScenePtr scene)
     }
     sendLightData(lights, worldTransforms, view);
 
+    std::chrono::time_point<std::chrono::system_clock> newTimestamp = std::chrono::system_clock::now();
+    std::chrono::duration<double> duration = newTimestamp - _lastTimestamp;
+    _lastTimestamp = newTimestamp;
+    int64_t gap = _intervalUs - std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+    std::this_thread::sleep_for(std::chrono::microseconds(gap));
+
     for (auto it = meshComponents.begin(); it != meshComponents.end(); it++)
     {
         // Get the mesh component
@@ -78,6 +88,11 @@ void SceneRenderer::renderScene(ScenePtr scene)
         glm::mat4 modelMatrix = scene->getWorldTransform(meshObj->id).getModelMatrix();
         drawMesh(meshComp->mesh, modelMatrix, cameraComp->getViewMatrix(), meshComp->material, meshComp->shader);
     }
+}
+
+void SceneRenderer::setFramerateLimit(unsigned int framerateLimit)
+{
+    _intervalUs = 1000.f / framerateLimit;
 }
 
 void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Transform>& worldTransforms, glm::mat4 view)

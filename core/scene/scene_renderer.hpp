@@ -1,6 +1,8 @@
 #ifndef CORE__SCENE__SCENE_RENDERER_HPP
 #define CORE__SCENE__SCENE_RENDERER_HPP
 
+#include <cstdint>
+#include <chrono>
 #include <memory>
 #include <vector>
 
@@ -25,6 +27,12 @@ class SceneRenderer
 
         /// @brief Handle to a UBO for lights on the GPU.
         LightUBO _lightUbo;
+
+        /// @brief Minimum time interval to keep between rendered frames.
+        int64_t _intervalUs;
+
+        /// @brief Last recorded render timestamp. Used to limit the framerate.
+        std::chrono::time_point<std::chrono::system_clock> _lastTimestamp;
         
         /// @brief Send the scene lights to the GPU.
         ///
@@ -49,7 +57,10 @@ class SceneRenderer
         void drawMesh(MeshPtr mesh, glm::mat4 model, glm::mat4 view, Material mat, Shader shader);
 
     public:
-        SceneRenderer();
+        /// @param framerateLimit How many frames per second the SceneRenderer
+        /// should seek to render.
+        SceneRenderer(unsigned int framerateLimit = 60);
+
         /// @brief Render the provided scene.
         ///
         /// @param scene A pointer to the scene which should be rendered.
@@ -57,6 +68,13 @@ class SceneRenderer
         /// @exception If the scene has too many lights of any type for the 
         /// light UBO to handle, the function will throw a std::runtime_error.
         void renderScene(ScenePtr scene);
+
+        /// @brief Set the framerate limit (in frames per second) of the 
+        /// renderer.
+        ///
+        /// @param framerateLimit How many frames per second the SceneRenderer
+        /// should seek to render.
+        void setFramerateLimit(unsigned int framerateLimit);
 };
 
 #endif//CORE__SCENE__SCENE_RENDERER_HPP

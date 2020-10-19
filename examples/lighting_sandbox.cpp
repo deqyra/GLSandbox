@@ -66,7 +66,6 @@ void LightingSandbox::run(GLWindowPtr window)
     
     // AXES
     SceneObjectPtr axesObj = Factory::makeSceneObjectWithMesh<MeshType::Axes>("Axes", {3.f});
-    axesObj->enabled = false;
     
     // CUBE
     SceneObjectPtr cubeObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Material(), lightingShader);
