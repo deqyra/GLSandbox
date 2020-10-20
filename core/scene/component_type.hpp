@@ -5,15 +5,15 @@
 enum class ComponentType
 {
     Unknown,
-    /// @brief Literals representing a MeshComponent.
+    /// @brief Literal representing a MeshComponent.
     Mesh,
-    /// @brief Literals representing a LightComponent.
+    /// @brief Literal representing a LightComponent.
     Light,
-    /// @brief Literals representing a CameraComponent.
+    /// @brief Literal representing a CameraComponent.
     Camera,
-    /// @brief Literals representing a ScriptComponent.
+    /// @brief Literal representing a ScriptComponent.
     Script,
-    /// @brief Literals representing a InputProcessingScriptComponent.
+    /// @brief Literal representing a InputProcessingScriptComponent.
     InputProcessingScript
 };
 

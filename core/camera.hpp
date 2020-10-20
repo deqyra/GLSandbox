@@ -5,14 +5,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "interfaces/basis_provider.hpp"
+
 #include "transform.hpp"
 
 /// @brief A camera managing its own orientation and providing view and projection matrices.
-class Camera
+class Camera : public BasisProvider
 {
     private:
         /// @brief Direction the camera is facing.
-        glm::vec3 _front;
+        glm::vec3 _forward;
         /// @brief Direction to the left of the camera.
         glm::vec3 _left;
         /// @brief Upward direction of the camera.
@@ -27,7 +29,8 @@ class Camera
         /// @brief Pitch (rotation around X) of the camera in degrees.
         float _pitch;
 
-        /// @brief Projection matrix of the camera. Provides perspective and lens effect.
+        /// @brief Projection matrix of the camera. Provides perspective and 
+        /// lens effect.
         glm::mat4 _projectionMatrix;
 
         /// @brief Recalculate vectors based on yaw, pitch and parent rotation.
@@ -42,18 +45,21 @@ class Camera
         /// @param yaw Rotation of the camera around Y in degrees.
         /// @param pitch Rotation of the camera around X in degrees.
         /// @param zoom Zoom factor of the camera.
-        /// @param parentTransform Transform of the object the camera is attached to.
+        /// @param parentTransform Transform of the object the camera is 
+        /// attached to.
         Camera(glm::mat4 projection, float yaw = DefaultYaw, float pitch = DefaultPitch, float zoom = DefaultZoomFactor, Transform parentTransform = Transform());
 
         Camera(const Camera& other);
 
-        /// @brief Update the rotation of the camera to fit recorded offsets in yaw and pitch.
+        /// @brief Update the rotation of the camera to fit recorded offsets in 
+        /// yaw and pitch.
         ///
         /// @param yawOffset How much the camera was rotated around Y in degrees.
         /// @param pitchOffset How much the camera was rotated around X in degrees.
         void processRotation(float yawOffset, float pitchOffset);
         
-        /// @brief DO NOT USE - Update the projection matrix of the camera to zoom in or out.
+        /// @brief DO NOT USE - Update the projection matrix of the camera to 
+        /// zoom in or out.
         ///
         /// @param scrollOffset How much the camera was zoomed in or out.
         void processZoom(float scrollOffset);
@@ -61,7 +67,7 @@ class Camera
         /// @brief Get the facing direction of the camera.
         ///
         /// @return The direction the camera is facing.
-        glm::vec3 front();
+        glm::vec3 forward();
 
         /// @brief Get the direction to the left of the camera.
         ///
@@ -88,20 +94,18 @@ class Camera
         /// @param projection New projection matrix of the camera.
         void setProjectionMatrix(glm::mat4 projection);
 
-        /// @brief Get the view matrix of the camera from a certain view point.
-        ///
-        /// @param viewPoint Position of the camera in world coordinates.
+        /// @brief Get the view matrix of the camera from its view point.
         ///
         /// @return The view matrix of the camera.
-        glm::mat4 getViewMatrix(glm::vec3 viewPoint);
+        glm::mat4 getViewMatrix();
         
-        /// @brief Transform vector coordinates from world space to view space from a certain view point.
+        /// @brief Transform vector coordinates from world space to view space 
+        /// from the camera view point.
         ///
-        /// @param viewPoint Position of the camera in world coordinates.
         /// @param worldPosition Coordinates to transform into view space.
         ///
         /// @return The transformed coordinates.
-        glm::vec3 worldPositionToViewSpace(glm::vec3 viewPoint, glm::vec3 worldPosition);
+        glm::vec3 worldPositionToViewSpace(glm::vec3 worldPosition);
         
         /// @brief Get the projection matrix of the camera.
         ///

@@ -28,9 +28,9 @@ Transform SceneObject::getWorldTransform()
     return scene->getWorldTransform(id);
 }
 
-SceneWPtr SceneObject::getScene()
+ScenePtr SceneObject::getScene()
 {
-    return _scene;
+    return _scene.lock();
 }
 
 void SceneObject::setScene(ScenePtr scene)
@@ -53,9 +53,9 @@ SceneObjectPtr SceneObject::clone()
     return clonedObject;
 }
 
-std::vector<ComponentWPtr> SceneObject::getAllComponents()
+std::vector<ComponentPtr> SceneObject::getAllComponents()
 {
-    std::vector<ComponentWPtr> components;
+    std::vector<ComponentPtr> components;
     components.reserve(_components.size());
 
     // During this copy, all ComponentPtrs are copied as ComponentsWPtrs)

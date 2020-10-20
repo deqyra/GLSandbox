@@ -28,7 +28,8 @@ using Ref = FrameOfReference;
 #include "../core/scene/component_type.hpp"
 #include "../core/scene/components/all_components.hpp"
 
-#include "../core/scripts/fps_camera_script.hpp"
+#include "../core/scripts/mouse_camera_script.hpp"
+#include "../core/scripts/keyboard_movement_script.hpp"
 #include "../core/scripts/basic_input_manager.hpp"
 
 LightingSandbox::LightingSandbox()
@@ -90,10 +91,16 @@ void LightingSandbox::run(GLWindowPtr window)
     scene->registerObject(tetrahedronObj, smallTorusObj->id);
     scene->registerObject(cameraObj);
 
-    // Add scripts components to camera
-    std::shared_ptr<FPSCameraScript> fpsScript = std::make_shared<FPSCameraScript>();
-    std::shared_ptr<InputProcessingScript> baseFpsScript = std::static_pointer_cast<InputProcessingScript>(fpsScript);
-    cameraObj->addComponent<InputProcessingScriptComponent>(baseFpsScript);
+    // Add scripts components to camera : MouseCameraScript
+    std::shared_ptr<MouseCameraScript> mouseScript = std::make_shared<MouseCameraScript>();
+    std::shared_ptr<InputProcessingScript> baseMouseScript = std::static_pointer_cast<InputProcessingScript>(mouseScript);
+    cameraObj->addComponent<InputProcessingScriptComponent>(baseMouseScript);
+
+    // Add scripts components to camera : KeyboardMovementScript
+    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
+    std::shared_ptr<KeyboardMovementScript> kbScript = std::make_shared<KeyboardMovementScript>(cameraAsBasisProvider);
+    std::shared_ptr<InputProcessingScript> baseKbScript = std::static_pointer_cast<InputProcessingScript>(kbScript);
+    cameraObj->addComponent<InputProcessingScriptComponent>(std::static_pointer_cast<InputProcessingScript>(baseKbScript));
 
     const glm::vec3 X = Transform::X;
     const glm::vec3 Y = Transform::Y;
@@ -107,6 +114,7 @@ void LightingSandbox::run(GLWindowPtr window)
     tetrahedronObj->transform.translateBy<Ref::Parent>(-1.2f * X);
     tetrahedronObj->transform.rotateBy<Ref::Parent>(glm::radians(90.f), Z);
     cameraObj->transform.setPosition<Ref::World>(StartingCameraPosition);
+    cameraObj->transform.rotateBy<Ref::Parent>(glm::radians(180.f), Y);
     
     // ROTATION SCRIPT
     std::shared_ptr<LightingSandboxScript> rotationScript = std::make_shared<LightingSandboxScript>(cubeObj, bigTorusObj, smallTorusObj, tetrahedronObj, cameraObj, light, LightBaseRange);

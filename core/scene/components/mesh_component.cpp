@@ -51,3 +51,9 @@ std::string Component::componentTypeString<MeshComponent>()
 {
     return "Mesh";
 }
+
+template<>
+bool Component::multipleInstancesAllowed<MeshComponent>()
+{
+    return false;
+}

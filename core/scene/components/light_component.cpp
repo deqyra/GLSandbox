@@ -54,3 +54,9 @@ std::string Component::componentTypeString<LightComponent>()
 {
     return "Light";
 }
+
+template<>
+bool Component::multipleInstancesAllowed<LightComponent>()
+{
+    return false;
+}

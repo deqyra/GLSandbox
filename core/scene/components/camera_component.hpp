@@ -75,4 +75,7 @@ ComponentType Component::componentType<CameraComponent>();
 template<>
 std::string Component::componentTypeString<CameraComponent>();
 
+template<>
+bool Component::multipleInstancesAllowed<CameraComponent>();
+
 #endif//CORE__SCENE__COMPONENTS__CAMERA_COMPONENT_HPP

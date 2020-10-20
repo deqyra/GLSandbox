@@ -49,4 +49,7 @@ ComponentType Component::componentType<LightComponent>();
 template<>
 std::string Component::componentTypeString<LightComponent>();
 
+template<>
+bool Component::multipleInstancesAllowed<LightComponent>();
+
 #endif//CORE__SCENE__COMPONENTS__LIGHT_COMPONENT

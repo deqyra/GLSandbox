@@ -19,7 +19,7 @@ using SceneObjectWPtr = std::weak_ptr<SceneObject>;
  *
  * - Write new component
  * - Add enum value to ComponentType
- * - Override the following methods like so:
+ * - Specialize the following static methods from Component like so:
  *     template<>
  *     ComponentType Component::componentType<MyNewComponent>()
  *     {
@@ -30,6 +30,12 @@ using SceneObjectWPtr = std::weak_ptr<SceneObject>;
  *     std::string Component::componentTypeString<MyNewComponent>()
  *     {
  *         return "MyNewComponent";
+ *     }
+ * 
+ *     template<>
+ *     bool Component::multipleInstancesAllowed<MyNewComponent>()
+ *     {
+ *         return (true or false);
  *     }
  */
 
@@ -97,10 +103,20 @@ class Component
         /// @tparam T Concrete component subclass whose describing string is
         /// to be returned.
         ///
-        /// @return A descriptive string of the concrete component class provided
-        /// as the template parameter.
+        /// @return A descriptive string of the concrete component class 
+        /// provided as the template parameter.
         template<class T>
         static std::string componentTypeString();
+
+        /// @brief Returns whether more than one instance of this component can
+        /// be present on a same scene object.
+        ///
+        /// @tparam T Concrete component subclass to test.
+        ///
+        /// @return Whether or not more than one instance of this component can
+        /// be present on a same scene object.
+        template<class T>
+        static bool multipleInstancesAllowed();
 };
 
 using ComponentPtr = std::shared_ptr<Component>;
@@ -116,6 +132,12 @@ template<class T>
 std::string Component::componentTypeString()
 {
     return "Unknown";
+}
+
+template<class T>
+bool Component::multipleInstancesAllowed()
+{
+    return false;
 }
 
 #endif//CORE__SCENE__COMPONENT_HPP

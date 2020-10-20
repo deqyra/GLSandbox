@@ -126,7 +126,7 @@ glm::vec3 ObjectTransform::setPosition<Ref::World>(glm::vec3 position)
     
     // Get the parent object's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
-    ScenePtr scene = thisObject->getScene().lock();
+    ScenePtr scene = thisObject->getScene();
     unsigned int parentId = scene->getParentId(_objectId);
     Transform parentTransform = scene->getWorldTransform(parentId);
 
@@ -179,7 +179,7 @@ glm::vec3 ObjectTransform::translateBy<Ref::World>(glm::vec3 translation)
 {
     // Get the parent object's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
-    ScenePtr scene = thisObject->getScene().lock();
+    ScenePtr scene = thisObject->getScene();
     unsigned int parentId = scene->getParentId(_objectId);
     Transform parentTransform = scene->getWorldTransform(parentId);
 
@@ -227,7 +227,7 @@ glm::vec3 ObjectTransform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm
 {
     // Get the parent's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
-    ScenePtr scene = thisObject->getScene().lock();
+    ScenePtr scene = thisObject->getScene();
     unsigned int parentId = scene->getParentId(_objectId);
     Transform parentTransform = scene->getWorldTransform(parentId);
 
@@ -286,7 +286,7 @@ glm::quat ObjectTransform::setRotation<Ref::World>(glm::quat rotation)
 {
     // Get the parent's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
-    ScenePtr scene = thisObject->getScene().lock();
+    ScenePtr scene = thisObject->getScene();
     unsigned int parentId = scene->getParentId(_objectId);
     Transform parentTransform = scene->getWorldTransform(parentId);
 
@@ -335,7 +335,7 @@ glm::quat ObjectTransform::rotateBy<Ref::World>(float radAngle, glm::vec3 axis)
 {
     // Get the parent's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
-    ScenePtr scene = thisObject->getScene().lock();
+    ScenePtr scene = thisObject->getScene();
     unsigned int parentId = scene->getParentId(_objectId);
     Transform parentTransform = scene->getWorldTransform(parentId);
 
@@ -374,7 +374,7 @@ glm::quat ObjectTransform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConst
 {
     // Get the parent's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
-    ScenePtr scene = thisObject->getScene().lock();
+    ScenePtr scene = thisObject->getScene();
     unsigned int parentId = scene->getParentId(_objectId);
     Transform parentTransform = scene->getWorldTransform(parentId);
 
@@ -424,7 +424,7 @@ glm::vec3 ObjectTransform::setScale<Ref::World>(glm::vec3 scale)
 {
     // Get the parent's world transform
     SceneObjectPtr thisObject = _sceneObject.lock();
-    ScenePtr scene = thisObject->getScene().lock();
+    ScenePtr scene = thisObject->getScene();
     unsigned int parentId = scene->getParentId(_objectId);
     Transform parentTransform = scene->getWorldTransform(parentId);
 

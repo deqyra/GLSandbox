@@ -114,7 +114,7 @@ void Scene::registerObject(SceneObjectPtr object, unsigned int parentId)
         throw std::runtime_error(s.c_str());
     }
 
-    ScenePtr objectScene = object->getScene().lock();
+    ScenePtr objectScene = object->getScene();
     if (objectScene == this->shared_from_this())
     {
         std::string s = "Scene: SceneObject with ID " + std::to_string(object->id) + " cannot be registered to the same scene twice. Use Scene::move instead.";

@@ -183,7 +183,8 @@
                     core/scene/components/mesh_component.cpp                    core/scene/components/mesh_component.hpp 
                     core/scene/components/script_component.cpp                  core/scene/components/script_component.hpp 
                     core/scripts/basic_input_manager.cpp                        core/scripts/basic_input_manager.hpp 
-                    core/scripts/fps_camera_script.cpp                          core/scripts/fps_camera_script.hpp 
+                    core/scripts/mouse_camera_script.cpp                        core/scripts/mouse_camera_script.hpp 
+                    core/scripts/keyboard_movement_script.cpp                   core/scripts/keyboard_movement_script.hpp 
                     core/scripts/lambda_script.cpp                              core/scripts/lambda_script.hpp 
                                                                                 core/ubo/ubo_info.hpp 
                     core/ubo/uniform_buffer_object.cpp                          core/ubo/uniform_buffer_object.hpp 

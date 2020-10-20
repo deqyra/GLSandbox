@@ -3,11 +3,12 @@
 
 #include "../transform.hpp"
 
+#include <exception>
+#include <functional>
 #include <vector>
 #include <memory>
 #include <type_traits>
 #include <string>
-#include <exception>
 
 #include "../object_transform.hpp"
 
@@ -60,7 +61,7 @@ class SceneObject : public std::enable_shared_from_this<SceneObject>
         /// @brief Get the parent scene of this object.
         ///
         /// @return A pointer to the parent scene of this object.
-        SceneWPtr getScene();
+        ScenePtr getScene();
 
         /// @brief Set the parent scene of this object.
         ///
@@ -95,20 +96,31 @@ class SceneObject : public std::enable_shared_from_this<SceneObject>
         template<class T>
         bool hasComponent();
 
-        /// @brief Get a pointer to a certain component on this object.
+        /// @brief Get pointer to the first component of a certain type on this 
+        /// object.
         /// 
         /// @tparam Type of the concrete component to test for.
         /// 
-        /// @return A pointer to a certain component on this object, or 
-        /// nullptr if the requested component is not present.
+        /// @return A pointer to the first component of this object which fits 
+        /// the criteria, or nullptr if the requested component is not present.
         template<class T>
         std::shared_ptr<T> getComponent();
+
+        /// @brief Get an array of pointers to components of a certain type on
+        /// this object.
+        /// 
+        /// @tparam Type of the concrete component to test for.
+        /// 
+        /// @return An array of pointers to components of a certain type on this
+        /// object.
+        template<class T>
+        std::vector<std::shared_ptr<T>> getComponents();
 
         /// @brief Get pointers to all the components this object is made of.
         ///
         /// @return An array of pointers to all the components this object is 
         /// made of.
-        std::vector<ComponentWPtr> getAllComponents();
+        std::vector<ComponentPtr> getAllComponents();
 
         /// @brief Unique ID of the object.
         const unsigned int id;
@@ -123,8 +135,9 @@ class SceneObject : public std::enable_shared_from_this<SceneObject>
 template<class T, class... ArgTypes>
 std::shared_ptr<T> SceneObject::addComponent(ArgTypes&& ... args)
 {
-    // Disallow more than one component of the same type per object
-    if (hasComponent<T>())
+    // Disallow more than one component of the same type per object,
+    // unless specifically allowed by component type
+    if (!Component::multipleInstancesAllowed<T>() && hasComponent<T>())
     {
         std::string s = "SceneObject: object with ID " + std::to_string(id) + " already has a component of type " + Component::componentTypeString<T>() + " and cannot have another one.";
         throw std::runtime_error(s.c_str());
@@ -165,13 +178,26 @@ std::shared_ptr<T> SceneObject::getComponent()
     {
         if ((*it)->type == expectedType)
         {
-            // Given that there's at most one component of each type in a single SceneObject,
-            // return the first matching component as soon as it is found.
             return std::static_pointer_cast<T>(*it);
         }
     }
 
-    return std::shared_ptr<T>(nullptr);
+    return nullptr;
+}
+
+template<class T>
+std::vector<std::shared_ptr<T>> SceneObject::getComponents()
+{
+    ComponentType expectedType = Component::componentType<T>();
+    std::vector<std::shared_ptr<T>> components;
+
+    std::function<bool(std::shared_ptr<T>)> checkType = [expectedType](std::shared_ptr<T> val) {
+        return val->type == expectedType;
+    };
+
+    std::copy_if(_components.begin(), _components.end(), std::back_inserter(components), checkType);
+
+    return components;
 }
 
 #endif//CORE__SCENE__SCENE_OBJECT_HPP

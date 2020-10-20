@@ -6,7 +6,7 @@
 #include "transform.hpp"
 
 Camera::Camera(const Camera& other) :
-    _front(other._front),
+    _forward(other._forward),
     _left(other._left),
     _up(other._up),
     _parentTransform(other._parentTransform),
@@ -19,42 +19,42 @@ Camera::Camera(const Camera& other) :
 }
 
 Camera::Camera(glm::mat4 projection, float yaw, float pitch, float zoom, Transform parentTransform) :
-    _front(glm::vec3(0.f, 0.f, -1.f)),
+    _forward(glm::vec3(0.f, 0.f, -1.f)),
     _left(glm::vec3(1.f, 0.f, 0.f)),
     _up(glm::vec3(0.f, 1.f, 0.f)),
     _parentTransform(parentTransform),
     _zoom(zoom),
-    _yaw(yaw),
+    _yaw(yaw + 90.f),
     _pitch(pitch),
     _projectionMatrix(projection)
 {
     // Update vectors according to parameters
     setParentTransform(parentTransform);
-    
-    // updateVectors();     // updateVectors is already called within setParentUp
 }
 
 void Camera::updateVectors()
 {
-    glm::vec3 front;
+    glm::vec3 forward;
     // Compute new front based on yaw and pitch
-    front.x = cos(glm::radians(_yaw)) * cos(glm::radians(_pitch));
-    front.y = sin(glm::radians(_pitch));
-    front.z = sin(glm::radians(_yaw)) * cos(glm::radians(_pitch));
+    forward.x = glm::cos(glm::radians(_yaw)) * glm::cos(glm::radians(_pitch));
+    forward.y = glm::sin(glm::radians(_pitch));
+    forward.z = glm::sin(glm::radians(_yaw)) * glm::cos(glm::radians(_pitch));
     // Apply the world rotation of the parent
-    front = _parentTransform.getRotation() * front;
-    _front = glm::normalize(front);
+    forward = _parentTransform.getRotation() * forward;
+    _forward = glm::normalize(forward);
 
-    // Compute new left and up from new front and parent up
-    _left = glm::normalize(glm::cross(_parentTransform.up(), _front));
-    _up = glm::normalize(glm::cross(_front, _left));
+    // Compute new left and up from new forward and parent up
+    _left = glm::normalize(glm::cross(_parentTransform.up(), _forward));
+    _up = glm::normalize(glm::cross(_forward, _left));
 }
 
 void Camera::processRotation(float yawOffset, float pitchOffset)
 {
     _yaw += yawOffset;
-    _pitch += pitchOffset;
+    if (_yaw > 180.f)  _yaw -= 360.f;
+    if (_yaw < -180.f) _yaw += 360.f;
 
+    _pitch += pitchOffset;
     // Constrain pitch
     if (_pitch > 89.0f)
         _pitch = 89.0f;
@@ -75,9 +75,9 @@ void Camera::processZoom(float scrollOffset)
         _zoom = 45.0f;
 }
 
-glm::vec3 Camera::front()
+glm::vec3 Camera::forward()
 {
-    return _front;
+    return _forward;
 }
 
 glm::vec3 Camera::left()
@@ -107,14 +107,14 @@ void Camera::setProjectionMatrix(glm::mat4 projection)
     _projectionMatrix = projection;
 }
 
-glm::mat4 Camera::getViewMatrix(glm::vec3 viewPoint)
+glm::mat4 Camera::getViewMatrix()
 {
-    return glm::lookAt(viewPoint, viewPoint + _front, _up);
+    return glm::lookAt(_parentTransform.getPosition(), _parentTransform.getPosition() + _forward, _up);
 }
 
-glm::vec3 Camera::worldPositionToViewSpace(glm::vec3 viewPoint, glm::vec3 worldPosition)
+glm::vec3 Camera::worldPositionToViewSpace(glm::vec3 worldPosition)
 {
-    glm::vec4 transformedPosition = getViewMatrix(viewPoint) * glm::vec4(worldPosition, 1.f);
+    glm::vec4 transformedPosition = getViewMatrix() * glm::vec4(worldPosition, 1.f);
     return glm::vec3(transformedPosition);
 }
 
@@ -125,5 +125,5 @@ glm::mat4 Camera::getProjectionMatrix()
 
 glm::mat4 Camera::getViewProjectionMatrix(glm::vec3 viewPoint)
 {
-    return _projectionMatrix * getViewMatrix(viewPoint);
+    return _projectionMatrix * getViewMatrix();
 }

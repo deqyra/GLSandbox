@@ -58,7 +58,7 @@ void InputProcessingScriptComponent::registerScript()
     if (sceneObject == nullptr) return;
 
     // Subscribe script to updates
-    ScenePtr scene = sceneObject->getScene().lock();
+    ScenePtr scene = sceneObject->getScene();
     if (scene == nullptr) return;
     
     scene->registerInputProcessingScript(_script);
@@ -71,7 +71,7 @@ void InputProcessingScriptComponent::detachScript()
     if (sceneObject == nullptr) return;
 
     // If applicable, detach script from scene updates
-    ScenePtr scene = sceneObject->getScene().lock();
+    ScenePtr scene = sceneObject->getScene();
     if (scene == nullptr) return;
     
     scene->detachInputProcessingScript(_script);
@@ -87,4 +87,10 @@ template<>
 std::string Component::componentTypeString<InputProcessingScriptComponent>()
 {
     return "InputProcessingScript";
+}
+
+template<>
+bool Component::multipleInstancesAllowed<InputProcessingScriptComponent>()
+{
+    return true;
 }

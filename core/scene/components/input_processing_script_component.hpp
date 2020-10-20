@@ -62,4 +62,7 @@ ComponentType Component::componentType<InputProcessingScriptComponent>();
 template<>
 std::string Component::componentTypeString<InputProcessingScriptComponent>();
 
+template<>
+bool Component::multipleInstancesAllowed<InputProcessingScriptComponent>();
+
 #endif//CORE__SCENE__COMPONENTS__INPUT_PROCESSING_SCRIPT_COMPONENT_HPP

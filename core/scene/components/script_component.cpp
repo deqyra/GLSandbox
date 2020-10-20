@@ -57,7 +57,7 @@ void ScriptComponent::registerScript()
     if (sceneObject == nullptr) return;
 
     // Subscribe script to updates
-    ScenePtr scene = sceneObject->getScene().lock();
+    ScenePtr scene = sceneObject->getScene();
     if (scene == nullptr) return;
     
     scene->registerScript(_script);
@@ -70,7 +70,7 @@ void ScriptComponent::detachScript()
     if (sceneObject == nullptr) return;
 
     // If applicable, detach script from scene updates
-    ScenePtr scene = sceneObject->getScene().lock();
+    ScenePtr scene = sceneObject->getScene();
     scene->detachScript(_script->id);
 }
 
@@ -84,4 +84,10 @@ template<>
 std::string Component::componentTypeString<ScriptComponent>()
 {
     return "Script";
+}
+
+template<>
+bool Component::multipleInstancesAllowed<ScriptComponent>()
+{
+    return true;
 }

@@ -26,7 +26,7 @@ class LightingSandbox : public GLSandbox
 {
     public:
         static constexpr float LightBaseRange = 30.f;
-        static constexpr float CameraYaw = -90.f;
+        static constexpr float CameraYaw = 0.f;
         static constexpr float CameraPitch = 0.f;
         
         //static constexpr glm::vec3 StartingCameraPosition = {5.f, 6.f, 5.f};

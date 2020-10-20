@@ -1,11 +1,11 @@
-#ifndef CORE__SCRIPTS__FPS_CAMERA_SCRIPT_HPP
-#define CORE__SCRIPTS__FPS_CAMERA_SCRIPT_HPP
+#ifndef CORE__SCRIPTS__KEYBOARD_MOVEMENT_SCRIPT_HPP
+#define CORE__SCRIPTS__KEYBOARD_MOVEMENT_SCRIPT_HPP
 
-#include "../camera.hpp"
 #include "../scene/input_processing_script.hpp"
+#include "../interfaces/basis_provider.hpp"
 
 /// @brief Provides event callbacks to manage a camera as in a FPS game.
-class FPSCameraScript : public InputProcessingScript
+class KeyboardMovementScript : public InputProcessingScript
 {
     private:
         /// @brief Index of a bool array which flags a forward keypress.
@@ -20,49 +20,39 @@ class FPSCameraScript : public InputProcessingScript
         /// @brief Index of a bool array which flags a right keypress.
         static constexpr unsigned int IndexRight = 3;
 
-        FPSCameraScript(const FPSCameraScript& other) = delete;
-        FPSCameraScript& operator=(const FPSCameraScript& other) = delete;
+        KeyboardMovementScript(const KeyboardMovementScript& other) = delete;
+        KeyboardMovementScript& operator=(const KeyboardMovementScript& other) = delete;
 
-        /// @brief Pointer to the camera controlled by the script.
-        CameraPtr _camera;
+        /// @brief Pointer to the entity which will provide directional vectors,
+        /// used to move in the correct directions.
+        BasisProviderPtr _basisProvider;
 
-        /// @brief Camera move speed (WASD).
+        /// @brief Speed of the movement induced by keypresses.
         float _moveSpeed;
-
-        /// @brief Camera sensitivity (mouse).
-        float _lookSensitivity;
 
         /// @brief Speed multiplier when sprinting.
         float _sprintMultiplier;
         
         /// @brief Directional movement flags.
         bool _movement[4];
+
         /// @brief Sprint flag.
         bool _sprint;
-
-        /// @brief Last X position the mouse was recorded at.
-        float _lastMouseX;
-
-        /// @brief Last Y position the mouse was recorded at.
-        float _lastMouseY;
-
-        /// @brief Whether the mouse was updated once.
-        bool _mouseWasUpdatedOnce;
         
     public:
         /// @brief The default move speed (movement with WASD keys).
         static constexpr float DefaultMoveSpeed = 4.f;
         
-        /// @brief The default mouse sensitivity.
-        static constexpr float DefaultLookSensitivity = 0.1f;
-
         /// @brief The default sprint multiplier.
         static constexpr float DefaultSprintMultiplier = 1.5f;
 
-        /// @param speed The speed of movement induced by WASD keys.
-        /// @param sensitivity The amplitude of the rotation induced by mouse movement.
+        /// @param basisProvider Entity which will provide directional vectors.
+        /// @param speed The speed of movement induced by keypresses.
         /// @param sprintMultiplier The multiplier to be used when sprinting.
-        FPSCameraScript(float speed = DefaultMoveSpeed, float sensitivity = DefaultLookSensitivity, float sprintMultiplier = DefaultSprintMultiplier);
+        ///
+        /// @exception If the provided BasisProvider pointer is null, the 
+        /// function will throw a std::runtime_error.
+        KeyboardMovementScript(BasisProviderPtr basisProvider, float speed = DefaultMoveSpeed, float sprintMultiplier = DefaultSprintMultiplier);
 
         /// @brief Callback for a keyboard event.
         ///
@@ -77,14 +67,6 @@ class FPSCameraScript : public InputProcessingScript
         /// during the key event (Ctrl, Shift, etc).
         virtual void processKeyboard(Window::GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
 
-        /// @brief Callback for a mouse cursor event.
-        ///
-        /// @param window Pointer to the GLWindow in which the event was
-        /// triggered.
-        /// @param xpos X coordinate of the new position of the mouse.
-        /// @param ypos Y coordinate of the new position of the mouse.
-        virtual void processMouseCursor(Window::GLWindowPtr window, double xpos, double ypos);
-
         /// @brief Make the script run and do its things.
         ///
         /// @param timeElapsed How much time passed (in seconds) since the last
@@ -97,17 +79,17 @@ class FPSCameraScript : public InputProcessingScript
         /// @param sceneObject Weak pointer to the scene object the script 
         /// should be attached to.
         ///
-        /// @exception If the provided pointer is null, or if the scene object
-        /// pointed at has no camera, this function will throw a 
-        /// std::runtime_error.
+        /// @exception If the provided pointer is null, this function will throw
+        /// a std::runtime_error.
         virtual void setSceneObject(SceneObjectWPtr sceneObject);
 
-        /// @brief Get a raw pointer to a new camera script instance cloned 
+        /// @brief Get a raw pointer to a new keyboard script instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
         /// @return A raw pointer to the script instance cloned from this one.
-        virtual FPSCameraScript* clone();
+        virtual KeyboardMovementScript* clone();
 };
 
-#endif//CORE__SCRIPTS__FPS_CAMERA_SCRIPT_HPP
+
+#endif//CORE__SCRIPTS__KEYBOARD_MOVEMENT_SCRIPT_HPP

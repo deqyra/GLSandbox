@@ -42,7 +42,7 @@ glm::mat4 CameraComponent::getViewMatrix()
 
     // Update camera and compute view matrix
     _camera->setParentTransform(worldTransform);
-    return _camera->getViewMatrix(worldTransform.getPosition());
+    return _camera->getViewMatrix();
 }
 
 glm::vec3 CameraComponent::worldPositionToViewSpace(glm::vec3 worldPosition)
@@ -82,4 +82,10 @@ template<>
 std::string Component::componentTypeString<CameraComponent>()
 {
     return "Camera";
+}
+
+template<>
+bool Component::multipleInstancesAllowed<CameraComponent>()
+{
+    return false;
 }

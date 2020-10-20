@@ -1,24 +1,21 @@
-#include "fps_camera_script.hpp"
+#include "keyboard_movement_script.hpp"
 
-#include "../scene/components/camera_component.hpp"
+#include <exception>
 
 #include "../frame_of_reference.hpp"
 using Ref = FrameOfReference;
 
-FPSCameraScript::FPSCameraScript(float speed, float sensitivity, float sprintMultiplier) :
+KeyboardMovementScript::KeyboardMovementScript(BasisProviderPtr basisProvider, float speed, float sprintMultiplier) :
+    _basisProvider(basisProvider),
     _moveSpeed(speed),
-    _lookSensitivity(sensitivity),
     _sprintMultiplier(sprintMultiplier),
     _movement{ false },
-    _sprint(false),
-    _lastMouseX(0),
-    _lastMouseY(0),
-    _mouseWasUpdatedOnce(false)
+    _sprint(false)
 {
-
+    if (!basisProvider) throw std::runtime_error("KeyboardMovementScript: cannot construct from a null FrontProviderPtr.");
 }
 
-void FPSCameraScript::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
+void KeyboardMovementScript::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
 {
     using Key = Window::Input::Key;
     using Action = Window::Input::Action;
@@ -78,79 +75,44 @@ void FPSCameraScript::processKeyboard(GLWindowPtr window, Window::Input::Key key
     }
 }
 
-void FPSCameraScript::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
-{
-    // If the mouse was never updated before, record its position and skip this update
-    if (!_mouseWasUpdatedOnce)
-    {
-        _lastMouseX = (float)xpos;
-        _lastMouseY = (float)ypos;
-        _mouseWasUpdatedOnce = true;
-        return;
-    }
-    // This is to avoid a huge mouse jump upon entering the window with the mouse
-
-    // Compute offsets
-    float yawOffset = (float)(xpos - _lastMouseX) * _lookSensitivity;
-    // Y offset reversed since y-coordinates range from bottom to top
-    float pitchOffset = (float)(_lastMouseY - ypos) * _lookSensitivity;
-
-    // Translate to Euler angles
-    _camera->processRotation(yawOffset, pitchOffset);
-    // Record mouse position
-    _lastMouseX = (float)xpos;
-    _lastMouseY = (float)ypos;
-}
-
-void FPSCameraScript::update(float timeElapsed)
+void KeyboardMovementScript::update(float timeElapsed)
 {
     // Compute distance to cover in this frame
     float velocity = timeElapsed * _moveSpeed;
     if (_sprint)
         velocity *= _sprintMultiplier;
 
-    // Retrieve the linked scene object (i.e the camera)
+    // Retrieve the linked scene object.
     SceneObjectPtr sceneObject = _sceneObject.lock();
     glm::vec3 position = sceneObject->transform.getPosition();
 
     // Depending on which directional flags were raised, compute new position
     if (_movement[IndexForward])
-        position += _camera->front() * velocity;
+        position += _basisProvider->forward() * velocity;
     if (_movement[IndexBackward])
-        position -= _camera->front() * velocity;
+        position -= _basisProvider->forward() * velocity;
     if (_movement[IndexLeft])
-        position += _camera->left() * velocity;
+        position += _basisProvider->left() * velocity;
     if (_movement[IndexRight])
-        position -= _camera->left() * velocity;
+        position -= _basisProvider->left() * velocity;
 
-    // Update camera position
+    // Update parent position
     sceneObject->transform.setPosition<Ref::Parent>(position);
 }
 
-void FPSCameraScript::setSceneObject(SceneObjectWPtr sceneObject)
+void KeyboardMovementScript::setSceneObject(SceneObjectWPtr sceneObject)
 {
-    _sceneObject = sceneObject;
-
-    // Retrieve camera component
     SceneObjectPtr realSceneObject = sceneObject.lock();
     if (realSceneObject == nullptr)
     {
-        std::string s = "FPSCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was a null scene object pointer.";
+        std::string s = "KeyboardMovementScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was a null scene object pointer.";
         throw std::runtime_error(s.c_str());
     }
 
-    std::shared_ptr<CameraComponent> cameraComponent = realSceneObject->getComponent<CameraComponent>();
-
-    if (!cameraComponent)
-    {
-        std::string s = "FPSCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was attached to a scene object with no camera component.";
-        throw std::runtime_error(s.c_str());
-    }
-
-    _camera = cameraComponent->getCamera();
+    _sceneObject = sceneObject;
 }
 
-FPSCameraScript* FPSCameraScript::clone()
+KeyboardMovementScript* KeyboardMovementScript::clone()
 {
-    return new FPSCameraScript(_moveSpeed, _lookSensitivity, _sprintMultiplier);
+    return new KeyboardMovementScript(_basisProvider, _moveSpeed, _sprintMultiplier);
 }

@@ -59,4 +59,7 @@ ComponentType Component::componentType<MeshComponent>();
 template<>
 std::string Component::componentTypeString<MeshComponent>();
 
+template<>
+bool Component::multipleInstancesAllowed<MeshComponent>();
+
 #endif//CORE__SCENE__COMPONENTS__MESH_COMPONENT_HPP

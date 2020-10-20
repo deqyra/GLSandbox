@@ -65,4 +65,7 @@ ComponentType Component::componentType<ScriptComponent>();
 template<>
 std::string Component::componentTypeString<ScriptComponent>();
 
+template<>
+bool Component::multipleInstancesAllowed<ScriptComponent>();
+
 #endif//CORE__SCENE__COMPONENTS__SCRIPT_COMPONENT_HPP
