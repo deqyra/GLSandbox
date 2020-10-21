@@ -42,7 +42,14 @@ class SceneObject : public std::enable_shared_from_this<SceneObject>
         std::vector<ComponentPtr> _components;
 
         /// @brief Pointer to the parent scene of this object.
-        SceneWPtr _scene;
+        ScenePtr _scene;
+
+        friend Scene;
+
+        /// @brief Set the parent scene of this object.
+        ///
+        /// @param scene A pointer to the new parent scene of this object.0
+        void setScene(ScenePtr scene);
 
     public:
         /// @param name Name to give to the scene object.
@@ -64,11 +71,6 @@ class SceneObject : public std::enable_shared_from_this<SceneObject>
         ///
         /// @return A pointer to the parent scene of this object.
         ScenePtr getScene();
-
-        /// @brief Set the parent scene of this object.
-        ///
-        /// @param scene A pointer to the new parent scene of this object.0
-        void setScene(ScenePtr scene);
 
         /// @brief Get a raw pointer to a new scene object instance cloned from
         /// this one. All components are cloned as well. Ownership and 

@@ -32,13 +32,12 @@ void SceneObject::init()
 
 Transform SceneObject::getWorldTransform()
 {
-    std::shared_ptr<Scene> scene = _scene.lock();
-    return scene->getWorldTransform(id);
+    return _scene->getWorldTransform(id);
 }
 
 ScenePtr SceneObject::getScene()
 {
-    return _scene.lock();
+    return _scene;
 }
 
 void SceneObject::setScene(ScenePtr scene)
