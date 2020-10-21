@@ -86,7 +86,7 @@ void SceneRenderer::renderScene(ScenePtr scene)
         std::shared_ptr<MeshComponent> meshComp = meshObj->getComponent<MeshComponent>();
         // Draw the mesh
         glm::mat4 modelMatrix = scene->getWorldTransform(meshObj->id).getModelMatrix();
-        drawMesh(meshComp->mesh, modelMatrix, cameraComp->getViewMatrix(), meshComp->material, meshComp->shader);
+        drawMesh(meshComp->getMesh(), modelMatrix, cameraComp->getViewMatrix(), meshComp->getMaterial(), meshComp->getShader());
     }
 }
 
