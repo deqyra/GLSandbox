@@ -33,28 +33,6 @@ Scene::Scene() :
     
 }
 
-void Scene::init()
-{
-    ObjectTree::NodePtr objectRootNode = _objects.getRoot();
-    TransformTree::NodePtr transformRootNode = _transforms.getRoot();
-    BoolTree::NodePtr updateRootNode = _updateMarkers.getRoot();
-
-    // Reset the object graph root node pointer to a scene object initialized with a pointer to this Scene.
-    objectRootNode->value.reset(new SceneObject("SCENE_ROOT"));
-    objectRootNode->value->setScene(this->shared_from_this());
-
-    // Set and map metadata
-    SceneObjectMetadata meta = {
-        objectRootNode->value->id,  // ID of the object this metadata refers to
-        MaxUInt,                    // ID of the object which is parent to the object this metadata refers to
-        objectRootNode->id,         // ID of the graph node containing the object
-        transformRootNode->id,      // ID of the graph node containing the world matrix of the object
-        updateRootNode->id,         // ID of the graph node containing the update flag of the object
-        MaxUInt                     // ID of the subscription to the transform notifier of the object
-    };
-    _objectMetadata[meta.id] = meta;
-}
-
 SceneObjectPtr Scene::operator[](unsigned int id)
 {
     // Retrieve object metadata
@@ -71,7 +49,7 @@ SceneObjectPtr Scene::newObject(std::string name)
 
     SceneObjectPtr object = Factory::makeSceneObject(name);
 
-    performObjectRegistration(object, rootId, _objectMetadata[rootId]);
+    performObjectRegistration(object, _objectMetadata[rootId]);
 
     return object;
 }
@@ -81,7 +59,7 @@ SceneObjectPtr Scene::newObject(unsigned int parentId)
     SceneObjectPtr object = Factory::makeSceneObject();
     SceneObjectMetadata meta = findObjectMetaOrThrow(parentId);
  
-    performObjectRegistration(object, parentId, meta);
+    performObjectRegistration(object, meta);
 
     return object;
 }
@@ -91,7 +69,7 @@ SceneObjectPtr Scene::newObject(std::string name, unsigned int parentId)
     SceneObjectPtr object = Factory::makeSceneObject(name);
     SceneObjectMetadata meta = findObjectMetaOrThrow(parentId);
  
-    performObjectRegistration(object, parentId, meta);
+    performObjectRegistration(object, meta);
 
     return object;
 }
@@ -104,7 +82,7 @@ void Scene::registerObject(SceneObjectPtr object)
     ObjectTree::NodePtr node = _objects.getRoot();
     unsigned int rootId = node->value->id;
     // Register object as a root child
-    performObjectRegistration(object, rootId, _objectMetadata[rootId]);
+    performObjectRegistration(object, _objectMetadata[rootId]);
 }
 
 void Scene::registerObject(SceneObjectPtr object, unsigned int parentId)
@@ -113,7 +91,7 @@ void Scene::registerObject(SceneObjectPtr object, unsigned int parentId)
     verifyNoParentSceneOrThrow(object);
     SceneObjectMetadata meta = findObjectMetaOrThrow(parentId);
  
-    performObjectRegistration(object, parentId, meta);
+    performObjectRegistration(object, meta);
 }
 
 void Scene::removeObject(unsigned int id)
@@ -369,6 +347,75 @@ void Scene::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
     }
 }
 
+void Scene::init()
+{
+    ObjectTree::NodePtr objectRootNode = _objects.getRoot();
+    TransformTree::NodePtr transformRootNode = _transforms.getRoot();
+    BoolTree::NodePtr updateRootNode = _updateMarkers.getRoot();
+
+    // Reset the object graph root node pointer to a scene object initialized with a pointer to this Scene.
+    objectRootNode->value.reset(new SceneObject("SCENE_ROOT"));
+    objectRootNode->value->setScene(this->shared_from_this());
+
+    // Set and map metadata
+    SceneObjectMetadata meta = {
+        objectRootNode->value->id,  // ID of the object this metadata refers to
+        MaxUInt,                    // ID of the object which is parent to the object this metadata refers to
+        objectRootNode->id,         // ID of the graph node containing the object
+        transformRootNode->id,      // ID of the graph node containing the world matrix of the object
+        updateRootNode->id,         // ID of the graph node containing the update flag of the object
+        MaxUInt                     // ID of the subscription to the transform notifier of the object
+    };
+    _objectMetadata[meta.id] = meta;
+}
+
+void Scene::terminate()
+{
+    // Remove scene references in all scene objects
+    for (auto it = _objectMetadata.begin(); it != _objectMetadata.end(); it++)
+    {
+        SceneObjectMetadata meta = it->second;
+        _objects[meta.id]->value->setScene(nullptr);
+        _objects[meta.id]->value->transform.getNotifier().deleteSubscriber(meta.transformSubscriberId);
+    }
+
+    // Clear all trees
+    _objects.removeBranch(_objects.getRoot()->id);
+    _transforms.removeBranch(_transforms.getRoot()->id);
+    _updateMarkers.removeBranch(_updateMarkers.getRoot()->id);
+
+    // Clear metadata, scripts, inputProcessors
+    _objectMetadata.clear();
+    _scripts.clear();
+    _inputProcessors.clear();
+}
+
+void Scene::objectTransformModified(const unsigned int& id)
+{
+    auto it = _objectMetadata.find(id);
+    if (it == _objectMetadata.end())
+    {
+        std::string s = "Scene: the object transform callback was called with non-existing ID " + std::to_string(id) + "!";
+        throw std::runtime_error(s.c_str());
+    }
+
+    markForUpdate(id);
+}
+
+void Scene::markForUpdate(unsigned int id)
+{
+    auto it = _objectMetadata.find(id);
+    // Retrieve object metadata
+    SceneObjectMetadata meta = it->second;
+    BoolTree::NodePtr updateNode = _updateMarkers[meta.updateNodeId];
+    // Set the marker to true
+    if (!updateNode->value)
+    {
+        _outdatedTransformNodes++;
+        updateNode->value = true;
+    }
+}
+
 void Scene::checkNotNullOrThrow(SceneObjectPtr object)
 {
     if (!object)
@@ -406,7 +453,7 @@ SceneObjectMetadata Scene::findObjectMetaOrThrow(unsigned int id)
     return it->second;
 }
 
-void Scene::performObjectRegistration(SceneObjectPtr object, unsigned int parentId, SceneObjectMetadata& parentMeta)
+void Scene::performObjectRegistration(SceneObjectPtr object, SceneObjectMetadata& parentMeta)
 {
     // Set the scene pointer upon registering the object
     object->setScene(this->shared_from_this());
@@ -431,39 +478,13 @@ void Scene::performObjectRegistration(SceneObjectPtr object, unsigned int parent
     // Create metadata
     SceneObjectMetadata meta = {
         object->id,             // ID of the object this metadata refers to
-        parentId,               // ID of the object which is parent to the object this metadata refers to
+        parentMeta.id,          // ID of the object which is parent to the object this metadata refers to
         objectNodeId,           // ID of the graph node containing the object
         transformNodeId,        // ID of the graph node containing the world matrix of the object
         updateNodeId,           // ID of the graph node containing the update flag of the object
         transformSubscriberId   // ID of the subscription to the transform notifier of the object
     };
     _objectMetadata[meta.id] = meta;
-}
-
-void Scene::objectTransformModified(const unsigned int& id)
-{
-    auto it = _objectMetadata.find(id);
-    if (it == _objectMetadata.end())
-    {
-        std::string s = "Scene: the object transform callback was called with non-existing ID " + std::to_string(id) + "!";
-        throw std::runtime_error(s.c_str());
-    }
-
-    markForUpdate(id);
-}
-
-void Scene::markForUpdate(unsigned int id)
-{
-    auto it = _objectMetadata.find(id);
-    // Retrieve object metadata
-    SceneObjectMetadata meta = it->second;
-    BoolTree::NodePtr updateNode = _updateMarkers[meta.updateNodeId];
-    // Set the marker to true
-    if (!updateNode->value)
-    {
-        _outdatedTransformNodes++;
-        updateNode->value = true;
-    }
 }
 
 void Scene::worldTransformDFSUpdate(unsigned int startingId)

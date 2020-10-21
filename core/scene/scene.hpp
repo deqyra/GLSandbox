@@ -20,6 +20,8 @@
 #include "script.hpp"
 #include "input_processing_script.hpp"
 
+class Factory;
+
 /// @brief A scene containing 3D objects organised in a tree structure. Handles
 /// self-updating scripts and processes input from the application.
 class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
@@ -57,6 +59,17 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         /// @brief Last time a scene update was triggered.
         std::chrono::time_point<std::chrono::system_clock> _lastTime;
 
+        friend Factory;
+
+        /// @brief Initialize the root of object tree in the scene, as well as
+        /// the first scene object metadata entry.
+        void init();
+
+        /// @brief Prepares the scene for destruction, by releasing strong 
+        /// references in its scene objects, and delting the contents of all
+        /// trees.
+        void terminate();
+
         /// @brief Callback linked to the transform notifier of every object in 
         /// the scene.
         ///
@@ -67,20 +80,50 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         /// present in the scene, the function will throw a std::runtime_error.
         void objectTransformModified(const unsigned int& id);
 
-        SceneObjectMetadata findObjectMetaOrThrow(unsigned int id);
-
-        void checkNotNullOrThrow(SceneObjectPtr object);
-
-        void verifyNoParentSceneOrThrow(SceneObjectPtr object);
-
-        void performObjectRegistration(SceneObjectPtr object, unsigned int parentId, SceneObjectMetadata& parentMeta);
-
         /// @brief Mark the world transform of an object for update in the
         /// update tree.
         ///
         /// @param id ID of the scene object whose world transform needs 
         /// updating.
         void markForUpdate(unsigned int id);
+
+        /// @brief Get the metadata entry for the object of provided ID, or 
+        /// throw an exception.
+        ///
+        /// @param id ID of the object whose metadata to find.
+        ///
+        /// @return The metadata entry of the object of provided ID, if found.
+        ///
+        /// @exception If the provided ID does not match that of an object 
+        /// registered in the scene, the function will throw a 
+        /// std::runtime_error.
+        SceneObjectMetadata findObjectMetaOrThrow(unsigned int id);
+
+        /// @brief Check that the provided pointer to a scene object is not 
+        /// null, or throw.
+        ///
+        /// @param object Pointer to check.
+        ///
+        /// @exception If the provided pointer is null, the function will throw
+        /// a std::runtime_error.
+        void checkNotNullOrThrow(SceneObjectPtr object);
+
+        /// @brief Check that the provided scene object has no parent scene, or
+        /// throw an exception.
+        ///
+        /// @param object Pointer to the object to check.
+        ///
+        /// @exception If the provided scene object already has a parent scene, 
+        /// the function will throw a std::runtime_error.
+        void verifyNoParentSceneOrThrow(SceneObjectPtr object);
+
+        /// @brief Perform the actual scene object registration. Call after all
+        /// sanity checks have passed.
+        ///
+        /// @param object Pointer to the object to register in the scene.
+        /// @param parentMeta Metadata entry for the scene object which should 
+        /// be parent the newly registered scene object.
+        void performObjectRegistration(SceneObjectPtr object, SceneObjectMetadata& parentMeta);
 
         /// @brief Recursively update world transforms in a DFS traversal of the
         /// transform tree.
@@ -124,10 +167,6 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
 
     public:
         Scene();
-
-        /// @brief Initialize the root of object tree in the scene, as well as
-        /// the first scene object metadata entry.
-        void init();
 
         /// @brief Get a pointer to the object of provided ID.
         ///
