@@ -29,18 +29,27 @@ class MeshComponent : public Component
         /// @param sceneObject Pointer to the scene object which will be parent
         /// to this component.
         /// @param mesh Pointer to the mesh which the component should use.
+        ///
+        /// @exception If the provided mesh pointer is null, the constructor
+        /// will throw a std::runtime_error.
         MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh);
 
         /// @param sceneObject Pointer to the scene object which will be parent
         /// to this component.
         /// @param mesh Pointer to the mesh which the component should use.
         /// @param material Material which the mesh should be rendered with.
+        ///
+        /// @exception If the provided mesh pointer is null, the constructor
+        /// will throw a std::runtime_error.
         MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material);
 
         /// @param sceneObject Pointer to the scene object which will be parent
         /// to this component.
         /// @param mesh Pointer to the mesh which the component should use.
         /// @param shader Shader which the mesh should be rendred by.
+        ///
+        /// @exception If the provided mesh pointer is null, the constructor
+        /// will throw a std::runtime_error.
         MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Shader shader);
 
         /// @param sceneObject Pointer to the scene object which will be parent
@@ -48,6 +57,9 @@ class MeshComponent : public Component
         /// @param mesh Pointer to the mesh which the component should use.
         /// @param material Material which the mesh should be rendered with.
         /// @param shader Shader which the mesh should be rendred by.
+        ///
+        /// @exception If the provided mesh pointer is null, the constructor
+        /// will throw a std::runtime_error.
         MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material, Shader shader);
 
         virtual ~MeshComponent();
@@ -60,6 +72,9 @@ class MeshComponent : public Component
         /// @brief Set the mesh used by the component.
         ///
         /// @param mesh The new mesh to be used by the component.
+        ///
+        /// @exception If the provided mesh pointer is null, the function will
+        /// throw a std::runtime_error.
         void setMesh(MeshPtr mesh);
 
         /// @brief Get the material used by the component.

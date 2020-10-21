@@ -67,6 +67,14 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         /// present in the scene, the function will throw a std::runtime_error.
         void objectTransformModified(const unsigned int& id);
 
+        SceneObjectMetadata findObjectMetaOrThrow(unsigned int id);
+
+        void checkNotNullOrThrow(SceneObjectPtr object);
+
+        void verifyNoParentSceneOrThrow(SceneObjectPtr object);
+
+        void performObjectRegistration(SceneObjectPtr object, unsigned int parentId, SceneObjectMetadata& parentMeta);
+
         /// @brief Mark the world transform of an object for update in the
         /// update tree.
         ///
