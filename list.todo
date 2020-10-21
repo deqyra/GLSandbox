@@ -11,7 +11,7 @@ RenderBoi:
             ☐ Set the projection matrix in terms of parameters rather than a full matrix
             ☐ Clean up smart updates depending on parameter values
         Components:
-            ☐ In MeshComponent, make the mesh pointer private, add getter and setter to it
+            ✔ In MeshComponent, make the mesh pointer private, add getter and setter to it @done(20-10-21 16:35)
             ✔ Keep a shared pointer to the SceneObject @done(20-10-21 13:02)
             ✔ Provide info as to whether a certain component type is allowed more than once per object @done(20-10-20 16:02)
         Factory:

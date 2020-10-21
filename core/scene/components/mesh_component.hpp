@@ -16,6 +16,15 @@ class MeshComponent : public Component
         MeshComponent(MeshComponent& other) = delete;
         MeshComponent& operator=(const MeshComponent& other) = delete;
 
+        /// @brief Pointer to the mesh data of the object.
+        MeshPtr _mesh;
+
+        /// @brief Material to paint the mesh with.
+        Material _material;
+        
+        /// @brief Shader to render the mesh with.
+        Shader _shader;
+
     public:
         /// @param sceneObject Pointer to the scene object which will be parent
         /// to this component.
@@ -43,6 +52,36 @@ class MeshComponent : public Component
 
         virtual ~MeshComponent();
 
+        /// @brief Get a pointer to the mesh used by the component.
+        ///
+        /// @return A pointer to the mesh used by the component.
+        MeshPtr getMesh();
+
+        /// @brief Set the mesh used by the component.
+        ///
+        /// @param mesh The new mesh to be used by the component.
+        void setMesh(MeshPtr mesh);
+
+        /// @brief Get the material used by the component.
+        ///
+        /// @return The material used by the component.
+        Material getMaterial();
+
+        /// @brief Set the material used by the component.
+        ///
+        /// @param material The new material to be used by the component.
+        void setMaterial(Material material);
+
+        /// @brief Get the shader used by the component.
+        ///
+        /// @return The shader used by the component.
+        Shader getShader();
+
+        /// @brief Set the shader used by the component.
+        ///
+        /// @param shader The new shader to be used by the component.
+        void setShader(Shader shader);
+
         /// @brief Get a raw pointer to a new component instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
@@ -53,15 +92,6 @@ class MeshComponent : public Component
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
         virtual MeshComponent* clone(SceneObjectPtr newParent);
-
-        /// @brief Pointer to the mesh data of the object.
-        MeshPtr mesh;
-
-        /// @brief Material to paint the mesh with.
-        Material material;
-        
-        /// @brief Shader to render the mesh with.
-        Shader shader;
 };
 
 template<>
