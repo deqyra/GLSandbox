@@ -76,12 +76,12 @@ class KeyboardMovementScript : public InputProcessingScript
         /// @brief Set the scene object which the camera script is attached to.
         /// Will also attempt to retrieve a camera from the scene object.
         ///
-        /// @param sceneObject Weak pointer to the scene object the script 
-        /// should be attached to.
+        /// @param sceneObject Pointer to the scene object the script should be
+        /// attached to.
         ///
         /// @exception If the provided pointer is null, this function will throw
         /// a std::runtime_error.
-        virtual void setSceneObject(SceneObjectWPtr sceneObject);
+        virtual void setSceneObject(SceneObjectPtr sceneObject);
 
         /// @brief Get a raw pointer to a new keyboard script instance cloned 
         /// from this one. Ownership and responsibility for the allocated 

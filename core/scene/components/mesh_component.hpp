@@ -17,21 +17,29 @@ class MeshComponent : public Component
         MeshComponent& operator=(const MeshComponent& other) = delete;
 
     public:
+        /// @param sceneObject Pointer to the scene object which will be parent
+        /// to this component.
         /// @param mesh Pointer to the mesh which the component should use.
-        MeshComponent(MeshPtr mesh);
+        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh);
 
+        /// @param sceneObject Pointer to the scene object which will be parent
+        /// to this component.
         /// @param mesh Pointer to the mesh which the component should use.
         /// @param material Material which the mesh should be rendered with.
-        MeshComponent(MeshPtr mesh, Material material);
+        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material);
 
+        /// @param sceneObject Pointer to the scene object which will be parent
+        /// to this component.
         /// @param mesh Pointer to the mesh which the component should use.
         /// @param shader Shader which the mesh should be rendred by.
-        MeshComponent(MeshPtr mesh, Shader shader);
+        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Shader shader);
 
+        /// @param sceneObject Pointer to the scene object which will be parent
+        /// to this component.
         /// @param mesh Pointer to the mesh which the component should use.
         /// @param material Material which the mesh should be rendered with.
         /// @param shader Shader which the mesh should be rendred by.
-        MeshComponent(MeshPtr mesh, Material material, Shader shader);
+        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material, Shader shader);
 
         virtual ~MeshComponent();
 
@@ -39,9 +47,12 @@ class MeshComponent : public Component
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
+        /// @param newParent Pointer the scene object which will be parent to
+        /// the cloned component instance.
+        ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        virtual MeshComponent* clone();
+        virtual MeshComponent* clone(SceneObjectPtr newParent);
 
         /// @brief Pointer to the mesh data of the object.
         MeshPtr mesh;

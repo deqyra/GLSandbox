@@ -24,10 +24,19 @@ class ScriptComponent : public Component
         /// @brief Detach script from the scene it is registered at.
         void detachScript();
 
+        /// @brief Release the parent scene object pointer.
+        virtual void releaseSceneObject();
+
     public:
+        /// @param sceneObject Pointer to the scene object which will be parent
+        /// to this component.
         /// @param script Pointer to the input processing script which the 
         /// component will use.
-        ScriptComponent(ScriptPtr script);
+        ///
+        /// @exception If the passed scene object pointer is null, or if the 
+        /// passed script pointer is null, the function will throw a 
+        /// std::runtime_error.
+        ScriptComponent(SceneObjectPtr sceneObject, ScriptPtr script);
 
         virtual ~ScriptComponent();
 
@@ -44,19 +53,16 @@ class ScriptComponent : public Component
         /// throw a std::runtime_error.
         void setScript(ScriptPtr script);
 
-        /// @brief Set the parent scene object to this component..
-        ///
-        /// @param sceneObject A pointer to the new parent scene object of this
-        /// component.
-        virtual void setSceneObject(SceneObjectWPtr sceneObject);
-
         /// @brief Get a raw pointer to a new component instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
+        /// @param newParent Pointer the scene object which will be parent to
+        /// the cloned component instance.
+        ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        virtual ScriptComponent* clone();
+        virtual ScriptComponent* clone(SceneObjectPtr newParent);
 };
 
 template<>

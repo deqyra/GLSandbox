@@ -13,12 +13,12 @@ Script::~Script()
 
 }
 
-SceneObjectWPtr Script::getSceneObject()
+SceneObjectPtr Script::getSceneObject()
 {
     return _sceneObject;
 }
 
-void Script::setSceneObject(SceneObjectWPtr sceneObject)
+void Script::setSceneObject(SceneObjectPtr sceneObject)
 {
     _sceneObject = sceneObject;
 }

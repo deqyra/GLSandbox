@@ -4,8 +4,8 @@
 
 #include "../../object_transform.hpp"
 
-CameraComponent::CameraComponent(CameraPtr camera) :
-    Component(ComponentType::Camera)
+CameraComponent::CameraComponent(SceneObjectPtr sceneObject, CameraPtr camera) :
+    Component(ComponentType::Camera, sceneObject)
 {
     setCamera(camera);
 }
@@ -24,12 +24,7 @@ void CameraComponent::setCamera(CameraPtr camera)
 {
     if (!camera)
     {
-        std::string s = "NONE";
-        std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
-        if (sceneObject) s = std::to_string(sceneObject->id);
-
-        s = "CameraComponent (on scene object with ID " + s + ") was passed a null camera pointer.";
-        throw std::runtime_error(s.c_str());
+        throw std::runtime_error("CameraComponent: cannot set camera from a null pointer.");
     }
 
     _camera = camera;
@@ -37,7 +32,7 @@ void CameraComponent::setCamera(CameraPtr camera)
 
 glm::mat4 CameraComponent::getViewMatrix()
 {
-    std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
+    std::shared_ptr<SceneObject> sceneObject = _sceneObject;
     Transform worldTransform = sceneObject->getWorldTransform();
 
     // Update camera and compute view matrix
@@ -58,18 +53,17 @@ glm::mat4 CameraComponent::getProjectionMatrix()
 
 glm::mat4 CameraComponent::getViewProjectionMatrix()
 {
-    std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
-    glm::vec3 worldPosition = sceneObject->getWorldTransform().getPosition();
+    glm::vec3 worldPosition = _sceneObject->getWorldTransform().getPosition();
     return _camera->getViewProjectionMatrix(worldPosition);
 }
 
-CameraComponent* CameraComponent::clone()
+CameraComponent* CameraComponent::clone(SceneObjectPtr newParent)
 {
     // This shared pointer will be destroyed at the end of this scope, but responsibilty for the 
     // resources will already have been shared with the cloned CameraComponent by this point.
     CameraPtr cameraClone = std::make_shared<Camera>(*_camera);
 
-    return new CameraComponent(cameraClone);
+    return new CameraComponent(newParent, cameraClone);
 }
 
 template<>

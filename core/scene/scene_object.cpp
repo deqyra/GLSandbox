@@ -17,6 +17,14 @@ SceneObject::SceneObject(std::string name) :
 
 }
 
+SceneObject::~SceneObject()
+{
+    for (auto it = _components.begin(); it != _components.end(); it++)
+    {
+        (*it)->releaseSceneObject();
+    }
+}
+
 void SceneObject::init()
 {
     transform.setSceneObject(shared_from_this());
@@ -45,8 +53,7 @@ SceneObjectPtr SceneObject::clone()
     clonedObject->transform = transform;
     for (auto it = _components.begin(); it != _components.end(); it++)
     {
-        ComponentPtr newComponent = ComponentPtr((*it)->clone());
-        newComponent->setSceneObject(clonedObject);
+        ComponentPtr newComponent = ComponentPtr((*it)->clone(clonedObject));
         clonedObject->_components.push_back(newComponent);
     }
 

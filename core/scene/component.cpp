@@ -6,7 +6,7 @@
 #include "scene_object.hpp"
 #include "component_type.hpp"
 
-Component::Component(ComponentType type, SceneObjectWPtr sceneObject) :
+Component::Component(ComponentType type, SceneObjectPtr sceneObject) :
     type(type),
     _sceneObject(sceneObject)
 {
@@ -14,19 +14,24 @@ Component::Component(ComponentType type, SceneObjectWPtr sceneObject) :
     {
         throw std::runtime_error("Component: cannot create a component with type Unknown.");
     }
+
+    if (!sceneObject)
+    {
+        throw std::runtime_error("Component: cannot create a component from a null scene object pointer.");
+    }
 }
 
 Component::~Component()
 {
-
+    releaseSceneObject();
 }
 
-SceneObjectWPtr Component::getSceneObject()
+SceneObjectPtr Component::getSceneObject()
 {
     return _sceneObject;
 }
 
-void Component::setSceneObject(SceneObjectWPtr sceneObject)
+void Component::releaseSceneObject()
 {
-    _sceneObject = sceneObject;
+    _sceneObject.reset();
 }

@@ -45,21 +45,27 @@ using SceneObjectWPtr = std::weak_ptr<SceneObject>;
 class Component
 {
     private:
+        friend SceneObject;
+
         Component() = delete;
         Component(const Component& other) = delete;
         Component& operator=(const Component& other) = delete;
+
+        /// @brief Release the parent scene object pointer.
+        virtual void releaseSceneObject();
 
     protected:
         /// @param type Literal describing the concrete type of this component.
         /// @param sceneObject Pointer to the SceneObject instance this 
         /// component belongs to.
         ///
-        /// @exception If the passed script component type is Unknown, the 
-        /// function will throw a std::runtime_error.
-        Component(ComponentType type, SceneObjectWPtr sceneObject = SceneObjectWPtr());
+        /// @exception If the passed component type is Unknown, or if the 
+        /// provided scene object pointer is null, the constructor will throw a
+        /// std::runtime_error.
+        Component(ComponentType type, SceneObjectPtr sceneObject);
 
         /// @brief Pointer to the SceneObject this component belongs to.
-        SceneObjectWPtr _sceneObject;
+        SceneObjectPtr _sceneObject;
 
     public:
         virtual ~Component();
@@ -67,21 +73,18 @@ class Component
         /// @brief Get a pointer to the parent scene object of this component.
         ///
         /// @return A pointer to the parent scene object of this component.
-        virtual SceneObjectWPtr getSceneObject();
-
-        /// @brief Set the parent scene object to this component..
-        ///
-        /// @param sceneObject A pointer to the new parent scene object of this
-        /// component.
-        virtual void setSceneObject(SceneObjectWPtr sceneObject);
+        virtual SceneObjectPtr getSceneObject();
 
         /// @brief Get a raw pointer to a new component instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
+        /// @param newParent Pointer the scene object which will be parent to
+        /// the cloned component instance.
+        ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        virtual Component* clone() = 0;
+        virtual Component* clone(SceneObjectPtr newParent) = 0;
 
         /// @brief Literal describing the concrete type of this component.
         const ComponentType type;

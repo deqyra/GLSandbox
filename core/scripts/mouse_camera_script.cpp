@@ -37,17 +37,16 @@ void MouseCameraScript::processMouseCursor(GLWindowPtr window, double xpos, doub
     _lastMouseY = (float)ypos;
 }
 
-void MouseCameraScript::setSceneObject(SceneObjectWPtr sceneObject)
+void MouseCameraScript::setSceneObject(SceneObjectPtr sceneObject)
 {
-    SceneObjectPtr realSceneObject = sceneObject.lock();
-    if (realSceneObject == nullptr)
+    if (!sceneObject)
     {
         std::string s = "MouseCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was a null scene object pointer.";
         throw std::runtime_error(s.c_str());
     }
 
     // Retrieve camera component
-    std::shared_ptr<CameraComponent> cameraComponent = realSceneObject->getComponent<CameraComponent>();
+    std::shared_ptr<CameraComponent> cameraComponent = sceneObject->getComponent<CameraComponent>();
     if (!cameraComponent)
     {
         std::string s = "MouseCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was attached to a scene object with no camera component.";

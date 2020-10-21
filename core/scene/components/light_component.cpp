@@ -4,10 +4,14 @@
 
 #include "../scene_object.hpp"
 
-LightComponent::LightComponent(LightPtr light) :
-    Component(ComponentType::Light)
+LightComponent::LightComponent(SceneObjectPtr sceneObject, LightPtr light) :
+    Component(ComponentType::Light, sceneObject),
+    _light(light)
 {
-    setLight(light);
+    if (!light)
+    {
+        throw std::runtime_error("LightComponent: cannot construct from null light pointer.");
+    }
 }
 
 LightComponent::~LightComponent()
@@ -24,23 +28,16 @@ void LightComponent::setLight(LightPtr light)
 {
     if (!light)
     {
-        std::string s = "NONE";
-        std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
-        if (sceneObject) s = std::to_string(sceneObject->id);
-
-        s = "LightComponent (on scene object with ID " + s + ") was passed a null light pointer.";
-        throw std::runtime_error(s.c_str());
+        throw std::runtime_error("LightComponent: cannot set light to null pointer.");
     }
 
     _light = light;
 }
 
-LightComponent* LightComponent::clone()
+LightComponent* LightComponent::clone(SceneObjectPtr newParent)
 {
-    // This shared pointer will be destroyed at the end of this scope, but responsibilty for the 
-    // resources will already have been shared with the cloned CameraComponent by this point.
     LightPtr clonedLight = LightPtr(_light->clone());
-    return new LightComponent(clonedLight);
+    return new LightComponent(newParent, clonedLight);
 }
 
 template<>

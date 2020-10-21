@@ -18,8 +18,13 @@ class CameraComponent : public Component
         CameraPtr _camera;
 
     public:
+        /// @param sceneObject Pointer to the scene object which will be parent
+        /// to this component.
         /// @param camera Camera for the component to use.
-        CameraComponent(CameraPtr camera);
+        ///
+        /// @exception If the provided scene object pointer is null, the 
+        /// constructor will throw a std::runtime_error.
+        CameraComponent(SceneObjectPtr sceneObject, CameraPtr camera);
 
         virtual ~CameraComponent();
 
@@ -64,9 +69,12 @@ class CameraComponent : public Component
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
+        /// @param newParent Pointer the scene object which will be parent to
+        /// the cloned component instance.
+        ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        virtual CameraComponent* clone();
+        virtual CameraComponent* clone(SceneObjectPtr newParent);
 };
 
 template<>

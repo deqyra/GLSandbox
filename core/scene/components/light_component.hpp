@@ -16,8 +16,14 @@ class LightComponent : public Component
         LightPtr _light;
 
     public:
+        /// @param sceneObject Pointer to the scene object which will be parent
+        /// to this component.
         /// @param light Pointer to the light which the component will use.
-        LightComponent(LightPtr light);
+        ///
+        /// @exception If the passed scene object pointer is null, or if the 
+        /// passed light pointer is null, the function will throw a 
+        /// std::runtime_error.
+        LightComponent(SceneObjectPtr sceneObject, LightPtr light);
 
         virtual ~LightComponent();
 
@@ -38,9 +44,12 @@ class LightComponent : public Component
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
+        /// @param newParent Pointer the scene object which will be parent to
+        /// the cloned component instance.
+        ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        virtual LightComponent* clone();
+        virtual LightComponent* clone(SceneObjectPtr newParent);
 };
 
 template<>

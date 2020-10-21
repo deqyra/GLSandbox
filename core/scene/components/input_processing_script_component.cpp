@@ -2,16 +2,22 @@
 
 #include "../../scene/scene.hpp"
 
-InputProcessingScriptComponent::InputProcessingScriptComponent(InputProcessingScriptPtr script) :
-    Component(ComponentType::InputProcessingScript),
+InputProcessingScriptComponent::InputProcessingScriptComponent(SceneObjectPtr sceneObject, InputProcessingScriptPtr script) :
+    Component(ComponentType::InputProcessingScript, sceneObject),
     _script(script)
 {
+    if (!script)
+    {
+        throw std::runtime_error("InputProcessingScriptComponent: cannot construct from null script pointer.");
+    }
 
+    _script->setSceneObject(sceneObject);
+    registerScript();
 }
 
 InputProcessingScriptComponent::~InputProcessingScriptComponent()
 {
-
+    releaseSceneObject();
 }
 
 InputProcessingScriptPtr InputProcessingScriptComponent::getScript()
@@ -23,58 +29,49 @@ void InputProcessingScriptComponent::setScript(InputProcessingScriptPtr script)
 {
     if (!script)
     {
-        std::string s = "NONE";
-        std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
-        if (sceneObject) s = std::to_string(sceneObject->id);
-
-        s = "InputScriptComponent (on scene object with ID " + s + ") was passed a null script pointer.";
-        throw std::runtime_error(s.c_str());
+        throw std::runtime_error("InputProcessingScriptComponent: cannot set script to null pointer.");
     }
 
     _script = script;
 }
 
-void InputProcessingScriptComponent::setSceneObject(SceneObjectWPtr sceneObject)
-{
-    detachScript();
-    _sceneObject = sceneObject;
-    _script->setSceneObject(sceneObject);
-    registerScript();
-}
-
-InputProcessingScriptComponent* InputProcessingScriptComponent::clone()
+InputProcessingScriptComponent* InputProcessingScriptComponent::clone(SceneObjectPtr newParent)
 {
     InputProcessingScriptPtr clonedScript = InputProcessingScriptPtr(_script->clone());
-    InputProcessingScriptComponent* clonedComponent = new InputProcessingScriptComponent(clonedScript);
-    // The parent scene object needs to be registered in the cloned component, which is to be done by the caller.
-    // In doing so, the parent scene object will also be registered in the inner script.
+    InputProcessingScriptComponent* clonedComponent = new InputProcessingScriptComponent(newParent, clonedScript);
+
     return clonedComponent;
 }
 
 void InputProcessingScriptComponent::registerScript()
 {
     // Get a pointer to the scene hosting the parent object
-    SceneObjectPtr sceneObject = _sceneObject.lock();
-    if (sceneObject == nullptr) return;
+    if (!_sceneObject) return;
 
-    // Subscribe script to updates
-    ScenePtr scene = sceneObject->getScene();
-    if (scene == nullptr) return;
+    ScenePtr scene = _sceneObject->getScene();
+    if (!scene) return;
     
+    // Subscribe script to updates
     scene->registerInputProcessingScript(_script);
 }
 
 void InputProcessingScriptComponent::detachScript()
 {
     // Get a pointer to the scene hosting the parent object
-    SceneObjectPtr sceneObject = _sceneObject.lock();
-    if (sceneObject == nullptr) return;
+    if (!_sceneObject) return;
 
     // If applicable, detach script from scene updates
-    ScenePtr scene = sceneObject->getScene();
-    if (scene == nullptr) return;
+    ScenePtr scene = _sceneObject->getScene();
+    if (!scene) return;
     
     scene->detachInputProcessingScript(_script);
+}
+
+void InputProcessingScriptComponent::releaseSceneObject()
+{
+    detachScript();
+    _sceneObject.reset();
+    _script->setSceneObject(nullptr);
 }
 
 template<>

@@ -100,7 +100,7 @@ void LightingSandbox::run(GLWindowPtr window)
     std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
     std::shared_ptr<KeyboardMovementScript> kbScript = std::make_shared<KeyboardMovementScript>(cameraAsBasisProvider);
     std::shared_ptr<InputProcessingScript> baseKbScript = std::static_pointer_cast<InputProcessingScript>(kbScript);
-    cameraObj->addComponent<InputProcessingScriptComponent>(std::static_pointer_cast<InputProcessingScript>(baseKbScript));
+    cameraObj->addComponent<InputProcessingScriptComponent>(baseKbScript);
 
     const glm::vec3 X = Transform::X;
     const glm::vec3 Y = Transform::Y;

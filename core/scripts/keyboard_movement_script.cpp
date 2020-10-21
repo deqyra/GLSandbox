@@ -83,8 +83,7 @@ void KeyboardMovementScript::update(float timeElapsed)
         velocity *= _sprintMultiplier;
 
     // Retrieve the linked scene object.
-    SceneObjectPtr sceneObject = _sceneObject.lock();
-    glm::vec3 position = sceneObject->transform.getPosition();
+    glm::vec3 position = _sceneObject->transform.getPosition();
 
     // Depending on which directional flags were raised, compute new position
     if (_movement[IndexForward])
@@ -97,13 +96,12 @@ void KeyboardMovementScript::update(float timeElapsed)
         position -= _basisProvider->left() * velocity;
 
     // Update parent position
-    sceneObject->transform.setPosition<Ref::Parent>(position);
+    _sceneObject->transform.setPosition<Ref::Parent>(position);
 }
 
-void KeyboardMovementScript::setSceneObject(SceneObjectWPtr sceneObject)
+void KeyboardMovementScript::setSceneObject(SceneObjectPtr sceneObject)
 {
-    SceneObjectPtr realSceneObject = sceneObject.lock();
-    if (realSceneObject == nullptr)
+    if (!sceneObject)
     {
         std::string s = "KeyboardMovementScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was a null scene object pointer.";
         throw std::runtime_error(s.c_str());

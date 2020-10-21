@@ -2,16 +2,22 @@
 
 #include "../../scene/scene.hpp"
 
-ScriptComponent::ScriptComponent(ScriptPtr script) :
-    Component(ComponentType::Script),
+ScriptComponent::ScriptComponent(SceneObjectPtr sceneObject, ScriptPtr script) :
+    Component(ComponentType::Script, sceneObject),
     _script(script)
 {
+    if (!script)
+    {
+        throw std::runtime_error("ScriptComponent: cannot construct from null script pointer.");
+    }
 
+    _script->setSceneObject(sceneObject);
+    registerScript();
 }
 
 ScriptComponent::~ScriptComponent()
 {
-
+    releaseSceneObject();
 }
 
 ScriptPtr ScriptComponent::getScript()
@@ -23,29 +29,16 @@ void ScriptComponent::setScript(ScriptPtr script)
 {
     if (!script)
     {
-        std::string s = "NONE";
-        std::shared_ptr<SceneObject> sceneObject = _sceneObject.lock();
-        if (sceneObject) s = std::to_string(sceneObject->id);
-
-        s = "ScriptComponent (on scene object with ID " + s + ") was passed a null script pointer.";
-        throw std::runtime_error(s.c_str());
+        throw std::runtime_error("ScriptComponent: cannot set script pointer to null.");
     }
 
     _script = script;
 }
 
-void ScriptComponent::setSceneObject(SceneObjectWPtr sceneObject)
-{
-    detachScript();
-    _sceneObject = sceneObject;
-    _script->setSceneObject(sceneObject);
-    registerScript();
-}
-
-ScriptComponent* ScriptComponent::clone()
+ScriptComponent* ScriptComponent::clone(SceneObjectPtr newParent)
 {
     ScriptPtr clonedScript = ScriptPtr(_script->clone());
-    ScriptComponent* clonedComponent = new ScriptComponent(clonedScript);
+    ScriptComponent* clonedComponent = new ScriptComponent(newParent, clonedScript);
     // The parent scene object needs to be registered in the component, which is to be done by the caller
     return clonedComponent;
 }
@@ -53,12 +46,12 @@ ScriptComponent* ScriptComponent::clone()
 void ScriptComponent::registerScript()
 {
     // Get a pointer to the scene hosting the parent object
-    SceneObjectPtr sceneObject = _sceneObject.lock();
-    if (sceneObject == nullptr) return;
+    SceneObjectPtr sceneObject = _sceneObject;
+    if (!sceneObject) return;
 
     // Subscribe script to updates
     ScenePtr scene = sceneObject->getScene();
-    if (scene == nullptr) return;
+    if (!scene) return;
     
     scene->registerScript(_script);
 }
@@ -66,12 +59,20 @@ void ScriptComponent::registerScript()
 void ScriptComponent::detachScript()
 {
     // Get a pointer to the scene hosting the parent object
-    SceneObjectPtr sceneObject = _sceneObject.lock();
-    if (sceneObject == nullptr) return;
+    if (!_sceneObject) return;
 
     // If applicable, detach script from scene updates
-    ScenePtr scene = sceneObject->getScene();
+    ScenePtr scene = _sceneObject->getScene();
+    if (!scene) return;
+
     scene->detachScript(_script->id);
+}
+
+void ScriptComponent::releaseSceneObject()
+{
+    detachScript();
+    _sceneObject.reset();
+    _script->setSceneObject(nullptr);
 }
 
 template<>

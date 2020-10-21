@@ -22,7 +22,7 @@ class Script
     protected:
         /// @brief Pointer to a scene object which the script might be attached
         /// to.
-        SceneObjectWPtr _sceneObject;
+        SceneObjectPtr _sceneObject;
 
     public:
         Script();
@@ -37,14 +37,14 @@ class Script
 
         /// @brief Get a pointer to the parent scene object, if any.
         ///
-        /// @return A pointer to the parent scene object, if any.
-        virtual SceneObjectWPtr getSceneObject();
+        /// @return A pointer to the parent scene object, or nullptr.
+        virtual SceneObjectPtr getSceneObject();
 
         /// @brief Set the parent scene object of the script.
         ///
         /// @param object A pointer to scene object which should be parent to 
-        /// the script.
-        virtual void setSceneObject(SceneObjectWPtr object);
+        /// the script (can be nullptr).
+        virtual void setSceneObject(SceneObjectPtr object);
 
         /// @brief Get a raw pointer to a new script instance cloned 
         /// from this one. Ownership and responsibility for the allocated 

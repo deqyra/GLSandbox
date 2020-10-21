@@ -48,6 +48,8 @@ class SceneObject : public std::enable_shared_from_this<SceneObject>
         /// @param name Name to give to the scene object.
         SceneObject(std::string name = "");
 
+        ~SceneObject();
+
         /// @brief Link the scene object to its transform (which cannot be done
         /// during construction). To be called before any other operation is 
         /// performed on the scene object.
@@ -144,8 +146,7 @@ std::shared_ptr<T> SceneObject::addComponent(ArgTypes&& ... args)
     }
 
     // Construct component from passed arguments
-    std::shared_ptr<T> realComponent = std::make_shared<T>(std::forward<ArgTypes>(args)...);
-    realComponent->setSceneObject(this->weak_from_this());
+    std::shared_ptr<T> realComponent = std::make_shared<T>(shared_from_this(), std::forward<ArgTypes>(args)...);
 
     // std::shared_ptr<Component> and std::shared_ptr<MyComponent> are not covariant types, even if Component and MyComponent are.
     // Cast to base Component in order to add to collection.
