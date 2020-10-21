@@ -17,6 +17,12 @@ class Factory
         /// @return Pointer to the instantiated scene.
         static ScenePtr makeScene();
 
+        /// @brief Terminate a scene. Also releases the provided pointer.
+        ///
+        /// @param scene Pointer to the scene to terminate, which will be 
+        /// released once done.
+        static void destroyScene(ScenePtr& scene);
+
         /// @brief Instantiate and initialize a new scene object.
         ///
         /// @param name Name to give to the scene object.

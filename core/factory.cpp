@@ -12,6 +12,12 @@ ScenePtr Factory::makeScene()
     return scene;
 }
 
+void Factory::destroyScene(ScenePtr& scene)
+{
+    scene->terminate();
+    scene.reset();
+}
+
 SceneObjectPtr Factory::makeSceneObject(std::string name)
 {
     SceneObjectPtr sceneObject = std::make_shared<SceneObject>(name);

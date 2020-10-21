@@ -27,10 +27,11 @@ RenderBoi:
             ✔ Return shared pointers instead of weak pointers where possible @done(20-10-20 16:19)
             ✔ Refactor getComponent & co to fit new several-per-type components @done(20-10-20 16:14)
             ✔ Refactor methods (e.g. object creation and registration) to skip sanity checks where unnecessary @done(20-10-21 18:02)
+            ✔ Make init() and terminate() private with Factory as a friend @done(20-10-21 19:59)
         SceneObject:
             ✔ Add name for debugging purposes @done(20-10-19 12:04)
             ✔ Return shared pointers instead of weak pointers where possible @done(20-10-20 16:17)
-            ☐ Keep a shared pointer to the scene
+            ✔ Keep a shared pointer to the scene @done(20-10-21 19:59)
         SceneRenderer:
             ✔ Implement a framerate limiter @done(20-10-19 21:49)
             ☐ Mesh rendering order based on the requested shader, then on their VertexDataManager handle
@@ -51,6 +52,9 @@ RenderBoi:
             ✔ Implement `Transform::compoundFrom(const Transform& other)` @done(20-10-13 13:49)
             ☐ Fix all scaling issues in `ObjectTransform`
             ☐ Add frames of reference for `rotateBy(glm::quat)` and `scaleBy(glm::vec3)`
+        Tree:
+            ☐ Iterator semantics
+            ☐ `clear()` method
         VertexDataManager:
             ☐ A VertexDataManager holds actual vertex data and takes care of memory management
             ☐ Meshes now only keep handles to vertex content held in a VertexDataManager

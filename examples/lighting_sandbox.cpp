@@ -148,7 +148,8 @@ void LightingSandbox::run(GLWindowPtr window)
         window->pollEvents();
     }
     window->setShouldClose(false);
-    scene->detachInputProcessingScript(ipRotationScript);
+
+    Factory::destroyScene(scene);
 
     // Reset everything back to how it was
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::NormalCursor);
