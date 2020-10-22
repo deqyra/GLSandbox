@@ -54,7 +54,9 @@ RenderBoi:
             ☐ Add frames of reference for `rotateBy(glm::quat)` and `scaleBy(glm::vec3)`
         Tree:
             ☐ Iterator semantics
-            ☐ `clear()` method
+            ✔ `clear()` method @done(20-10-22 10:11)
+            ✔ Change weak pointers to shared pointers where possible, refactor @done(20-10-22 10:11)
+            ☐ Documentation
         VertexDataManager:
             ☐ A VertexDataManager holds actual vertex data and takes care of memory management
             ☐ Meshes now only keep handles to vertex content held in a VertexDataManager

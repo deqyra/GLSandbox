@@ -40,30 +40,26 @@ class TreeNode : public std::enable_shared_from_this<TreeNode<T>>
         // Construct new node with value attached
         TreeNode(T value);
 
-        // Get a weak pointer to the parent of this node
-        TreeNodeWPtr getParent();
-        // Set the parent of this node from a weak pointer
-        void setParent(TreeNodeWPtr wParent);
-        // Get a list of weak pointers to all parents of this node, from closest to furthest
-        std::vector<TreeNodeWPtr> getParentChain();
+        // Get a pointer to the parent of this node
+        TreeNodePtr getParent();
+        // Set the parent of this node from a pointer
+        void setParent(TreeNodePtr parent);
+        // Get a list of pointers to all parents of this node, from closest to furthest
+        std::vector<TreeNodePtr> getParentChain();
         // Get list of IDs of all parents of this node, from closest to furthest
         std::vector<unsigned int> getParentIdChain();
-        // Get list of weak pointers to all children of this node
-        std::vector<TreeNodeWPtr> getChildren();
-        // Add new child to this node from a weak pointer
-        void addChild(TreeNodeWPtr wChild);
-        // Remove child from this node from a weak pointer
-        void removeChild(TreeNodeWPtr wChild);
+        // Get list of pointers to all children of this node
+        std::vector<TreeNodePtr> getChildren();
+        // Add new child to this node from a pointer
+        void addChild(TreeNodePtr child);
         // Remove child from this node using its ID
         void removeChild(unsigned int id);
-        // Whether the provided weak pointer is a child of this node
-        bool hasChild(TreeNodeWPtr wChild);
+        // Remove all childre from this node
+        void removeAllChildren();
         // Whether the node with provided ID is a child of this node
         bool hasChild(unsigned int id);
-        // Whether this node is a parent (to any degree) of the provided node weak pointer
-        bool isParentOf(TreeNodeWPtr wNode);
-        // Whether this node is a child (to any degree) of the provided node weak pointer
-        bool isChildOf(TreeNodeWPtr wNode);
+        // Whether this node is a parent (to any degree) of the provided node pointer
+        bool isAParentOf(TreeNodePtr node);
         // Whether this node is a child (to any degree) of the node with provided ID
         bool isChildOf(unsigned int id);
         
@@ -89,15 +85,14 @@ TreeNode<T>::TreeNode(T value) :
 }
 
 template<typename T>
-typename TreeNode<T>::TreeNodeWPtr TreeNode<T>::getParent()
+typename TreeNode<T>::TreeNodePtr TreeNode<T>::getParent()
 {
-    return _wParent;
+    return _wParent.lock();
 }
 
 template<typename T>
-void TreeNode<T>::setParent(TreeNodeWPtr wNewParent)
+void TreeNode<T>::setParent(TreeNodePtr newParent)
 {
-    TreeNodePtr newParent = wNewParent.lock();
     TreeNodePtr parent = _wParent.lock();
 
     // If the new parent is already this node's parent, do nothing
@@ -110,7 +105,7 @@ void TreeNode<T>::setParent(TreeNodeWPtr wNewParent)
     }
 
     // If this node is a parent of the new parent, abort
-    if (isParentOf(wNewParent))
+    if (isAParentOf(newParent))
     {
         std::stringstream sstr;
         sstr << "TreeNode: node " << static_cast<void*>(this) << " is a parent of node " << static_cast<void*>(newParent.get()) << " and cannot set it as its own parent.";
@@ -129,16 +124,24 @@ void TreeNode<T>::setParent(TreeNodeWPtr wNewParent)
         newParent->_wChildren.push_back(this->weak_from_this());
     }
     // Update this node's parent weak pointer
-    _wParent = wNewParent;
+    _wParent = newParent;
 
     // Update parent chains
     generateParentChains();
 }
 
 template<typename T>
-std::vector<typename TreeNode<T>::TreeNodeWPtr> TreeNode<T>::getParentChain()
+std::vector<typename TreeNode<T>::TreeNodePtr> TreeNode<T>::getParentChain()
 {
-    return _wParentChain;
+    std::vector<TreeNodePtr> parentChain;
+    parentChain.reserve(_wParentChain.size());
+
+    for (auto it = _wParentChain.begin(); it != _wParentChain.end(); it++)
+    {
+        parentChain.push_back(it->lock());
+    }
+
+    return parentChain;
 }
 
 template<typename T>
@@ -148,25 +151,32 @@ std::vector<unsigned int> TreeNode<T>::getParentIdChain()
 }
 
 template<typename T>
-std::vector<typename TreeNode<T>::TreeNodeWPtr> TreeNode<T>::getChildren()
+std::vector<typename TreeNode<T>::TreeNodePtr> TreeNode<T>::getChildren()
 {
-    return _wChildren;
+    std::vector<TreeNodePtr> children;
+    children.reserve(_wChildren.size());
+
+    for (auto it = _wChildren.begin(); it != _wChildren.end(); it++)
+    {
+        children.push_back(it->lock());
+    }
+
+    return children;
 }
 
 template<typename T>
-void TreeNode<T>::addChild(TreeNodeWPtr wChild)
+void TreeNode<T>::addChild(TreeNodePtr child)
 {
-    TreeNodePtr child = wChild.lock();
-    if (child == nullptr)
+    if (!child)
     {
-        std::string s = "TreeNode: provided node pointer is dangling, cannot add as child.";
+        std::string s = "TreeNode: provided node pointer is null, cannot add as child.";
         throw std::runtime_error(s.c_str());
     }
 
-    auto childParent = child->_wParent.lock();
+    TreeNodePtr childParent = child->_wParent.lock();
 
     // If this node is already the new child's parent node, do nothing
-    if (childParent == this->shared_from_this()) return;
+    if (childParent.get() == this) return;
 
     // If the new child already has a parent node, abort
     if (childParent != nullptr)
@@ -177,7 +187,7 @@ void TreeNode<T>::addChild(TreeNodeWPtr wChild)
     }
 
     // If this node is a child of the new child node, abort
-    if (isChildOf(wChild))
+    if (isChildOf(child))
     {
         std::stringstream sstr;
         sstr << "TreeNode: node " << static_cast<void*>(this) << " is a child of node " << static_cast<void*>(child.get()) << " and cannot set it as one of its own children.";
@@ -189,20 +199,7 @@ void TreeNode<T>::addChild(TreeNodeWPtr wChild)
     // Update parent chains in the new child
     child->generateParentChains();
     // Register child
-    _wChildren.push_back(wChild);
-}
-
-template<typename T>
-bool TreeNode<T>::hasChild(TreeNodeWPtr wChild)
-{
-    TreeNodePtr child = wChild.lock();
-    if (child == nullptr)
-    {
-        std::string s = "TreeNode: provided node pointer is dangling, cannot check as a potential child.";
-        throw std::runtime_error(s.c_str());
-    }
-    // Defer the check to the ID-version of the method
-    return hasChild(child->id);
+    _wChildren.push_back(child);
 }
 
 template<typename T>
@@ -220,19 +217,6 @@ bool TreeNode<T>::hasChild(unsigned int id)
     auto it = std::find_if(_wChildren.begin(), _wChildren.end(), checkId);
 
     return it != _wChildren.end();
-}
-
-template<typename T>
-void TreeNode<T>::removeChild(TreeNodeWPtr wChild)
-{
-    TreeNodePtr child = wChild.lock();
-    if (child == nullptr)
-    {
-        std::string s = "TreeNode: provided node pointer is dangling, cannot remove child.";
-        throw std::runtime_error(s.c_str());
-    }
-    // Defer the processing to the ID-version of the method
-    removeChild(child->id);
 }
 
 template<typename T>
@@ -254,7 +238,7 @@ void TreeNode<T>::removeChild(unsigned int id)
     {
         auto child = it->lock();
         // Reset the child node's parent pointer
-        child->_wParent.reset();
+        child->_wParent = TreeNodePtr(nullptr);
         child->generateParentChains();
         // Effectively remove the pointer to the child node
         _wChildren.erase(it);
@@ -262,21 +246,23 @@ void TreeNode<T>::removeChild(unsigned int id)
 }
 
 template<typename T>
-bool TreeNode<T>::isParentOf(TreeNodeWPtr wNode)
+void TreeNode<T>::removeAllChildren()
 {
-    auto node = wNode.lock();
-    if (node.get() == nullptr) return false;
-    // This node is a parent of the provided node if the provided node is a child of this node
-    return node->isChildOf(id);
+    for (auto it = _wChildren.begin(); it != _wChildren.end(); it++)
+    {
+        TreeNodePtr child = it->lock();
+        child->setParent(nullptr);
+    }
+
+    _wChildren.clear();
 }
 
 template<typename T>
-bool TreeNode<T>::isChildOf(TreeNodeWPtr wNode)
+bool TreeNode<T>::isAParentOf(TreeNodePtr node)
 {
-    auto node = wNode.lock();
-    if (node.get() == nullptr) return false;
-    // Defer the check to the ID-version of the method
-    return isChildOf(node->id);
+    if (!node) return false;
+    // This node is a parent of the provided node if the provided node is a child of this node
+    return node->isChildOf(id);
 }
 
 template<typename T>

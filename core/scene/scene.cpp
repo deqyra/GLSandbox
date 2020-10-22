@@ -100,13 +100,12 @@ void Scene::removeObject(unsigned int id)
     SceneObjectMetadata meta = findObjectMetaOrThrow(id);
 
     ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
-    std::vector<ObjectTree::NodeWPtr> children = objectNode->getChildren();
+    std::vector<ObjectTree::NodePtr> children = objectNode->getChildren();
 
     // Recursively remove all children before carrying on with the object at hand
     for (auto it = children.begin(); it != children.end(); it++)
     {
-        ObjectTree::NodePtr child = it->lock();
-        removeObject(child->value->id);
+        removeObject((*it)->value->id);
     }
 
     // Within the markers about to be removed, subtract the count of those set to true from the outdated transform count
@@ -168,12 +167,12 @@ void Scene::updateAllTransforms()
     if (_outdatedTransformNodes)
     {
         ObjectTree::NodePtr objectRootNode = _objects.getRoot();
-        std::vector<ObjectTree::NodeWPtr> childNodes = objectRootNode->getChildren();
+        std::vector<ObjectTree::NodePtr> childNodes = objectRootNode->getChildren();
 
         // Start the DFS routine on each of the root children
         for(auto it = childNodes.begin(); it != childNodes.end(); it++)
         {
-            SceneObjectPtr object = it->lock()->value;
+            SceneObjectPtr object = (*it)->value;
             worldTransformDFSUpdate(object->id);
         }
 
@@ -380,9 +379,9 @@ void Scene::terminate()
     }
 
     // Clear all trees
-    _objects.removeBranch(_objects.getRoot()->id);
-    _transforms.removeBranch(_transforms.getRoot()->id);
-    _updateMarkers.removeBranch(_updateMarkers.getRoot()->id);
+    _objects.clear();
+    _transforms.clear();
+    _updateMarkers.clear();
 
     // Clear metadata, scripts, inputProcessors
     _objectMetadata.clear();
@@ -500,11 +499,11 @@ void Scene::worldTransformDFSUpdate(unsigned int startingId)
     {
         // Otherwise, run the DFS routine on each of its children
         ObjectTree::NodePtr object = _objects[meta.objectNodeId];
-        std::vector<ObjectTree::NodeWPtr> children = object->getChildren();
+        std::vector<ObjectTree::NodePtr> children = object->getChildren();
 
         for (auto it = children.begin(); it != children.end(); it++)
         {
-            SceneObjectPtr child = it->lock()->value;
+            SceneObjectPtr child = (*it)->value;
             worldTransformDFSUpdate(child->id);
         }
     }
@@ -516,7 +515,7 @@ std::vector<unsigned int> Scene::findLongestOutdatedParentChain(unsigned int id)
     // Retrieve the object node ID, the node pointer as well as its parent chain
     SceneObjectMetadata meta = it->second;
     ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
-    std::vector<ObjectTree::NodeWPtr> parentChain = objectNode->getParentChain();
+    std::vector<ObjectTree::NodePtr> parentChain = objectNode->getParentChain();
 
     std::vector<unsigned int> parentIdChain;
     parentIdChain.reserve(parentChain.size());
@@ -528,7 +527,7 @@ std::vector<unsigned int> Scene::findLongestOutdatedParentChain(unsigned int id)
     {
         count++;
 
-        unsigned int id = parentIt->lock()->value->id;
+        unsigned int id = (*parentIt)->value->id;
         parentIdChain.push_back(id);
         SceneObjectMetadata meta = _objectMetadata[id];
 
@@ -565,11 +564,10 @@ void Scene::worldTransformCascadeUpdate(unsigned int id)
     worldTransformUpdateNoCascade(id);
     
     // Reverberate changes to children transforms
-    std::vector<ObjectTree::NodeWPtr> children = objectNode->getChildren();
+    std::vector<ObjectTree::NodePtr> children = objectNode->getChildren();
     for (auto childIt = children.begin(); childIt != children.end(); childIt++)
     {
-        ObjectTree::NodePtr child = childIt->lock();
-        worldTransformCascadeUpdate(child->value->id);
+        worldTransformCascadeUpdate((*childIt)->value->id);
     }
 }
 
@@ -582,7 +580,7 @@ void Scene::worldTransformUpdateNoCascade(unsigned int id)
     // Get object node pointer as well as the parent transform node pointer
     ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
     TransformTree::NodePtr transformNode = _transforms[meta.transformNodeId];
-    TransformTree::NodePtr parentTransformNode = transformNode->getParent().lock();
+    TransformTree::NodePtr parentTransformNode = transformNode->getParent();
 
     if (parentTransformNode != nullptr)
     {
@@ -609,13 +607,12 @@ bool Scene::hasDisabledParent(unsigned int id)
     // Retrieve graph node IDs, object node pointer and node parent chain
     SceneObjectMetadata meta = it->second;
     ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
-    std::vector<ObjectTree::NodeWPtr> parents = objectNode->getParentChain();
+    std::vector<ObjectTree::NodePtr> parents = objectNode->getParentChain();
 
     for (auto it = parents.begin(); it != parents.end(); it++)
     {
         // Return whether any parent in the chain is disabled
-        auto parent = it->lock();
-        if (!parent->value->enabled) return true;
+        if (!(*it)->value->enabled) return true;
     }
     return false;
 }

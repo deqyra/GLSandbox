@@ -32,7 +32,7 @@ class Tree
         // Recursively destruct the provided node and all of its children
         void destructBranch(NodePtr root);
         // Get a map containing the provided node and all of its children (mapped to node ID)
-        std::unordered_map<unsigned int, NodePtr> branchNodeMap(NodePtr branchRoot);
+        std::unordered_map<unsigned int, NodePtr> nodeMapFromBranch(NodePtr branchRoot);
         // Given a source root node and a destination root node, recursively copy all source children nodes as children of the destination node
         void copyNodeStructure(NodePtr source, NodePtr destination);
         // Count all elements with a certain value from a starting node downwards
@@ -40,7 +40,7 @@ class Tree
 
     public:
         // Construct a tree from a single root value
-        Tree(T rootValue);
+        Tree(T rootValue = T());
 
         Tree(const Tree<T>& other);
         Tree<T>& operator=(const Tree<T>& other);
@@ -64,6 +64,8 @@ class Tree
         Tree<T> getBranch(unsigned int branchRootId);
         // Change the parent of a branch whose root has the provided root ID
         void moveBranch(unsigned int branchRootId, unsigned int newParentId);
+        // Remove all nodes in the tree, keeping the root and resetting it with a default-constructed value
+        void clear();
         // Count elements with provided value, starting from the node with provided ID, downwards
         unsigned int countValue(const T& value, unsigned int branchRootId);
 };
@@ -88,7 +90,7 @@ Tree<T>::Tree(const Tree<T>& other) :
     // Copy the node structure from the other tree's root to this tree's root
     copyNodeStructure(other._root, _root);
     // Compute the node map
-    _nodes = branchNodeMap(_root);
+    _nodes = nodeMapFromBranch(_root);
 }
 
 template<typename T>
@@ -103,7 +105,7 @@ Tree<T>& Tree<T>::operator=(const Tree<T>& other)
     // Copy the node structure from the other tree's root to this tree's root
     copyNodeStructure(other._root, _root);
     // Compute the new node map
-    _nodes = branchNodeMap(_root);
+    _nodes = nodeMapFromBranch(_root);
 }
 
 template<typename T>
@@ -119,7 +121,7 @@ Tree<T>::Tree(NodePtr root) :
     _root(root),
     _nodes()
 {
-    _nodes = branchNodeMap(_root);
+    _nodes = nodeMapFromBranch(_root);
 }
 
 template<typename T>
@@ -191,7 +193,7 @@ unsigned int Tree<T>::addBranch(const Tree<T>& tree, unsigned int parentId)
     // Copy everything from the provided tree into the new node
     copyNodeStructure(tree._root, newBranchRoot);
     // Compute new node map starting from new node and merge it with the current node map
-    std::unordered_map<unsigned int, NodePtr> newNodes = branchNodeMap(newBranchRoot);
+    std::unordered_map<unsigned int, NodePtr> newNodes = nodeMapFromBranch(newBranchRoot);
     _nodes.insert(newNodes.begin(), newNodes.end());
 
     return newBranchRootId;
@@ -200,6 +202,11 @@ unsigned int Tree<T>::addBranch(const Tree<T>& tree, unsigned int parentId)
 template<typename T>
 void Tree<T>::removeBranch(unsigned int branchRootId)
 {
+    if (branchRootId == _root->id)
+    {
+        throw std::runtime_error("Tree: cannot remove root.");
+    }
+
     auto it = _nodes.find(branchRootId);
     if (it == _nodes.end())
     {
@@ -208,7 +215,7 @@ void Tree<T>::removeBranch(unsigned int branchRootId)
     }
 
     NodePtr node = _nodes[branchRootId];
-    NodePtr parent = it->second->getParent().lock();
+    NodePtr parent = it->second->getParent();
     // Detach the node with provided ID from its parent
     parent->removeChild(branchRootId);
     // Destruct all content starting from that node
@@ -226,7 +233,7 @@ Tree<T> Tree<T>::popBranch(unsigned int branchRootId)
     }
 
     NodePtr node = _nodes[branchRootId];
-    NodePtr parent = node->getParent().lock();
+    NodePtr parent = node->getParent();
     // Detach the node with provided ID from its parent
     parent->removeChild(branchRootId);
 
@@ -282,6 +289,14 @@ void Tree<T>::moveBranch(unsigned int branchRootId, unsigned int newParentId)
 }
 
 template<typename T>
+void Tree<T>::clear()
+{
+    _root->removeAllChildren();
+    _nodes.clear();
+    _root->value = T();
+}
+
+template<typename T>
 unsigned int Tree<T>::countValue(const T& value, unsigned int branchRootId)
 {
     auto branchIt = _nodes.find(branchRootId);
@@ -298,29 +313,27 @@ template<typename T>
 void Tree<T>::destructBranch(NodePtr root)
 {
     // First destroy all children of root
-    std::vector<NodeWPtr> children = root->getChildren();
+    std::vector<NodePtr> children = root->getChildren();
     for (auto it = children.begin(); it != children.end(); it++)
     {
-        auto child = it->lock();
-        destructBranch(child);
+        destructBranch(*it);
     }
     // Reset root parent
-    root->setParent(NodeWPtr());
+    root->setParent(nullptr);
     // Delete pointer to root
     _nodes.erase(root->id);
 }
 
 template<typename T>
-std::unordered_map<unsigned int, typename Tree<T>::NodePtr> Tree<T>::branchNodeMap(NodePtr branchRoot)
+std::unordered_map<unsigned int, typename Tree<T>::NodePtr> Tree<T>::nodeMapFromBranch(NodePtr branchRoot)
 {
     std::unordered_map<unsigned int, NodePtr> registeredNodes;
 
-    std::vector<NodeWPtr> children = branchRoot->getChildren();
+    std::vector<NodePtr> children = branchRoot->getChildren();
     for (auto it = children.begin(); it != children.end(); it++)
     {
-        NodePtr child = it->lock();
         // Compute the node map of each child
-        std::unordered_map<unsigned int, NodePtr> childNodes = branchNodeMap(child);
+        std::unordered_map<unsigned int, NodePtr> childNodes = nodeMapFromBranch(*it);
         // Merge it with the current node map
         registeredNodes.insert(childNodes.begin(), childNodes.end());
     }
@@ -333,15 +346,14 @@ std::unordered_map<unsigned int, typename Tree<T>::NodePtr> Tree<T>::branchNodeM
 template<typename T>
 void Tree<T>::copyNodeStructure(NodePtr source, NodePtr destination)
 {
-    std::vector<NodeWPtr> sourceChildren = source->getChildren();
+    std::vector<NodePtr> sourceChildren = source->getChildren();
     for (auto it = sourceChildren.begin(); it != sourceChildren.end(); it++)
     {
-        NodePtr child = it->lock();
         // Make new nodes by copying each child node's value
-        NodePtr newChild = std::make_shared<Node>(child->value);
+        NodePtr newChild = std::make_shared<Node>((*it)->value);
         newChild->setParent(destination);
         // Copy the node structure from each child to the corresponding newly created node
-        copyNodeStructure(child, newChild);
+        copyNodeStructure(*it, newChild);
     }
 }
 
@@ -349,10 +361,10 @@ template<typename T>
 unsigned int Tree<T>::countValueRoutine(const T& value, NodePtr startingNode)
 {
     int count = startingNode->value == value ? 1 : 0;
-    auto children = startingNode->getChildren();
+    std::vector<NodePtr> children = startingNode->getChildren();
     for (auto it = children.begin(); it != children.end(); it++)
     {
-        count += countValueRoutine(value, it->lock());
+        count += countValueRoutine(value, *it);
     }
 
     return count;
