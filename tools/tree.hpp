@@ -9,8 +9,11 @@
 
 #include "tree_node.hpp"
 
+/// @brief A tree managing nodes organized in a hierarchical structure, in which
+/// one node may only have one parent.
+///
+/// @tparam T The type of elements which the tree will store.
 template<typename T>
-// A tree composed from nodes, manages and stores pointers to all of its nodes
 class Tree
 {
     public:
@@ -19,54 +22,159 @@ class Tree
         using NodeWPtr = std::weak_ptr<Node>;
 
     private:
-        // Pointer to the root node of the tree
+        /// @brief Pointer to the root node of the tree.
         NodePtr _root;
-        // Map containing pointers to all of the nodes in the tree (mapped to node ID)
+        
+        /// @brief Structure mapping node pointers to their node IDs.
         std::unordered_map<unsigned int, NodePtr> _nodes;
 
-        // Construct tree from a single root node
+        /// @param root Pointer to the root node.
         Tree(NodePtr root);
-        // Construct tree from a single root node and copy all nodes from the provided map
+
+        /// @param root Pointer to the root node.
+        /// @param nodeMap Pre-filled map containing pointers to all tree nodes.
         Tree(NodePtr root, std::unordered_map<unsigned int, NodePtr> nodeMap);
 
-        // Recursively destruct the provided node and all of its children
-        void destructBranch(NodePtr root);
-        // Get a map containing the provided node and all of its children (mapped to node ID)
+        /// @brief Recursively destruct a node as well as all of its children.
+        ///
+        /// @param branchRoot Pointer to the node which is root of the branch.
+        void destructBranch(NodePtr branchRoot);
+
+        /// @brief Get a structure mapping node pointers to their node IDs, for 
+        /// the branch whose root is the provided node pointer, as well as all 
+        /// of its children.
+        ///
+        /// @param branchRoot Pointer to the node which is root of the branch.
+        ///
+        /// @return The node map of the branch.
         std::unordered_map<unsigned int, NodePtr> nodeMapFromBranch(NodePtr branchRoot);
-        // Given a source root node and a destination root node, recursively copy all source children nodes as children of the destination node
+
+        /// @brief Given a source root node and a destination root node, 
+        /// recursively copy all source children nodes as children of the 
+        /// destination node.
+        ///
+        /// @param source Pointer to the node from which to start copying.
+        /// @param destination Pointer to the node to which to append the copied
+        /// nodes.
         void copyNodeStructure(NodePtr source, NodePtr destination);
-        // Count all elements with a certain value from a starting node downwards
+
+        /// @brief Count all elements with a certain value from a starting node,
+        /// going downwards.
+        ///
+        /// @param value Value the elements must have in order to be counted.
+        /// @param startingNode Pointer to the node from which to start 
+        /// counting.
+        ///
+        /// @return The count of matched elements.
         unsigned int countValueRoutine(const T& value, NodePtr startingNode);
 
     public:
-        // Construct a tree from a single root value
+        /// @param rootValue Value which the root node of the tree should hold
         Tree(T rootValue = T());
 
         Tree(const Tree<T>& other);
         Tree<T>& operator=(const Tree<T>& other);
         ~Tree();
 
-        // Get a weak pointer to the tree root
+        /// @brief Get a pointer to the root node of the tree.
+        ///
+        /// @return A pointer to the root node.
         NodePtr getRoot();
-        // Get a weak pointer to the node whose ID is provided, if it's part of the tree
+
+        /// @brief Get a pointer to the node with provided ID.
+        ///
+        /// @param id ID of the node to retrieve.
+        ///
+        /// @return A pointer to the node if found, or nullptr otherwise.
         NodePtr operator[](unsigned int id);
-        // Whether the tree has a node with provided ID
+
+        /// @brief Returns whether the contains has a node with provided ID.
+        ///
+        /// @param id ID of the node to check.
+        ///
+        /// @return Whether the tree contains a node with provided ID.
         bool hasNode(unsigned int id);
-        // Add a node to the tree. It will have the provided value and will be a child of the node with provided ID.
+
+        /// @brief Add a node to the tree.
+        ///
+        /// @param value Value which the new node should hold.
+        /// @param parentId ID of the node which should be parent of the newly
+        /// created node.
+        ///
+        /// @return ID of the newly created node.
+        ///
+        /// @exception If the provided parent ID does not match that of a node 
+        /// contained within the tree, the function will throw a 
+        /// std::runtim_error.
         unsigned int addNode(T value, unsigned int parentId);
-        // Add a whole branch to the tree. Its structure will be copied from the provided tree, and it will be a child of the node with provided ID.
+
+        /// @brief Add a whole to the tree, as a new branch.
+        ///
+        /// @param tree Tree whose structure will be copied to form the new 
+        /// @param parentId ID of the node which should be parent of the newly
+        /// created branch.
+        ///
+        /// @return ID of the root of the newly created branch.
+        ///
+        /// @exception If the provided parent ID does not match that of a node 
+        /// contained within the tree, the function will throw a 
+        /// std::runtim_error.
         unsigned int addBranch(const Tree<T>& tree, unsigned int parentId);
-        // Remove the whole branch whose root node has the provided ID
+
+        /// @brief Remove a branch from the tree.
+        ///
+        /// @param branchRootId ID of the node which is root of the branch to
+        /// remove.
+        ///
+        /// @exception If the provided ID is the ID of the root of the tree, or
+        /// if it otherwise does not match that of node contained within the 
+        /// tree, the function will throw a std::runtime_error.
         void removeBranch(unsigned int branchRootId);
-        // Remove the whole branch whose root node has the provided ID, and return it as a tree
+
+        /// @brief Remove a branch from the tree, and return it.
+        ///
+        /// @param branchRootId ID of the node which is root of the branch to
+        /// remove.
+        ///
+        /// @return The removed branch, as a new tree.
+        /// 
+        /// @exception If the provided ID is the ID of the root of the tree, or
+        /// if it otherwise does not match that of node contained within the 
+        /// tree, the function will throw a std::runtime_error.
         Tree<T> popBranch(unsigned int branchRootId);
-        // Get (as a tree) the whole branch whose root node has the provided ID
+
+        /// @brief Get a branch from the tree.
+        ///
+        /// @param branchRootId ID of the node which is root of the branch to
+        /// retrieve.
+        ///
+        /// @return The branch copied in a new tree.
         Tree<T> getBranch(unsigned int branchRootId);
-        // Change the parent of a branch whose root has the provided root ID
+
+        /// @brief Move a branch in the tree (change its parent).
+        ///
+        /// @param branchRootId ID of the node which is root of the branch to
+        /// move.
+        /// @param newParentId ID of the node which should be the new parent of
+        /// the moved branch.
+        ///
+        /// @exception If the branch root ID is the ID of the root of the tree, 
+        /// or if any of the provided IDs do not match that of nodes contained 
+        /// within the tree, the function will throw a std::runtime_error.
         void moveBranch(unsigned int branchRootId, unsigned int newParentId);
-        // Remove all nodes in the tree, keeping the root and resetting it with a default-constructed value
+
+        /// @brief Remove all nodes in the tree, keeping the root and resetting
+        /// it with a default-constructed value.
         void clear();
-        // Count elements with provided value, starting from the node with provided ID, downwards
+
+        /// @brief Count all elements with a certain value from a starting node,
+        /// going downwards.
+        ///
+        /// @param value Value the elements must have in order to be counted.
+        /// @param branchRootId Pointer to the node from which to start 
+        /// counting.
+        ///
+        /// @return The count of matched elements.
         unsigned int countValue(const T& value, unsigned int branchRootId);
 };
 
@@ -144,11 +252,9 @@ typename Tree<T>::NodePtr Tree<T>::operator[](unsigned int id)
     auto it = _nodes.find(id);
     if (it == _nodes.end())
     {
-        std::string s = "Tree: no node with ID " + std::to_string(id) + ".";
-        throw std::runtime_error(s.c_str());
+        return nullptr;
     }
 
-    // Return a weak pointer constructed from the actual pointer
     return it->second;
 }
 
@@ -225,6 +331,11 @@ void Tree<T>::removeBranch(unsigned int branchRootId)
 template<typename T>
 Tree<T> Tree<T>::popBranch(unsigned int branchRootId)
 {
+    if (branchRootId == _root->id)
+    {
+        throw std::runtime_error("Tree: cannot remove root.");
+    }
+
     auto it = _nodes.find(branchRootId);
     if (it == _nodes.end())
     {

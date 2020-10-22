@@ -23,7 +23,8 @@
 class Factory;
 
 /// @brief A scene containing 3D objects organised in a tree structure. Handles
-/// self-updating scripts and processes input from the application.
+/// self-updating scripts and processes input from the application. Use Factory
+/// to instantiate and terminate.
 class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
 {
     public:
