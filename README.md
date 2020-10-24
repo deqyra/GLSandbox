@@ -17,9 +17,10 @@ shader, which does not take into account light.
 
 ## Info
 
-* Requirements:
-  * an OpenGL 4.2-capable environment,
-  * which supports GL_ARB_debug_output.
+* Simply requires an OpenGL 4.2-capable environment.
+* Extensions used:
+  * GL_ARB_debug_output;
+  * GL_ARB_shading_language_include.
 * I am still figuring out cross-platformability. If the project does not work
 on your setup, please file an issue with details so I can have a look at it.
 * See this [sort of a diagram][diag1] as well as this [class diagram][diag2] to get a basic understanding of how everything works.

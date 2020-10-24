@@ -170,16 +170,16 @@ void SceneRenderer::drawMesh(SceneObjectPtr meshObject, glm::mat4 viewMatrix)
     float dot = glm::dot(scaling, glm::normalize(glm::vec3(1.f, 1.f, 1.f)));
 
     // Compute normal matrix
-    glm::mat4 normalRestorationMatrix = viewMatrix * modelMatrix;
+    glm::mat4 normalMatrix = viewMatrix * modelMatrix;
     if (1.f - glm::abs(dot) > 1.e-6)
     {
         // Restore normals if a non-uniform scaling was detected
-        normalRestorationMatrix = glm::transpose(glm::inverse(normalRestorationMatrix));
+        normalMatrix = glm::transpose(glm::inverse(normalMatrix));
     }
 
     // Set up matrices in UBO
     _matrixUbo.setModel(modelMatrix);
-    _matrixUbo.setNormal(normalRestorationMatrix);
+    _matrixUbo.setNormal(normalMatrix);
 
     std::shared_ptr<MeshComponent> meshComponent = meshObject->getComponent<MeshComponent>();
     

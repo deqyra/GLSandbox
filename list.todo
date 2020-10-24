@@ -39,12 +39,13 @@ RenderBoi:
             ☐ Transform direction of lights according to the world transform of their object
             ☐ Skip the normal restoration where applicable
             ☐ Render meshes using a transform, not a matrix
-            ☐ Do not try and set stuff if the requested shader does not handle it
-        Shader:
-            ☐ Find a way to tell whether a shader instance provides certain uniforms
+        UBO:
+            ☐ Material UBO
         Scripts:
             ✔ Separate FPSCameraScript into MouseCameraScript and KeyboardMovementScript @done(20-10-20 14:06)
             ✔ Give a camera reference to the KeyboardMovementScript for it to use a proper front vector @done(20-10-20 18:30)
+        Shaders:
+            ☐ Use GL_ARB_shader_language_include
         Texture:
             ☐ Check texture generation success and display error info
         Transform:

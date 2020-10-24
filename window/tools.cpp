@@ -64,7 +64,7 @@ GLWindowPtr makeGLFWWindow(std::string title, int width, int height, int glVersi
 	glfwMakeContextCurrent(window);
 
 	// Load GL pointers
-	if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress))
+	if (!gladLoadGL())
 	{
 		glfwDestroyWindow(window);
         throw std::runtime_error("Failed to load GL function pointers.");
