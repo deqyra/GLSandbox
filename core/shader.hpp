@@ -12,6 +12,7 @@
 
 #include "material.hpp"
 #include "lights/point_light.hpp"
+#include "shader_info.hpp"
 
 /// @brief Handler for a shader resource on the GPU.
 class Shader
@@ -24,6 +25,11 @@ class Shader
 
         /// @brief The location of the shader resource on the GPU.
         unsigned int _location;
+
+        using ShaderToRenderFeatureMap = std::unordered_map<unsigned int, std::unordered_map<typename ShaderInfo::RenderFeature, bool>>;
+        /// @brief Structure mapping supported render features to the file names
+        /// of the shaders which support them.
+        static ShaderToRenderFeatureMap _supportedFeatures;
 
         using ProgramToUniformLocationMap = std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>>;
         /// @brief Structure mapping uniform locations against their name, and
@@ -75,6 +81,12 @@ class Shader
         /// @exception If the source file cannot be found, the function will 
         /// throw a std::runtime_error.
         static void makeNamedString(std::string name, std::string sourceFilename);
+
+        /// @brief Append to an array the render features supported by a shader.
+        ///
+        /// @param destination Array to which the features should be appended.
+        /// @param filename Path to the shader source file.
+        static void appendSupportedFeaturesOfShader(std::vector<ShaderInfo::RenderFeature>& destination, std::string filename);
 
         /// @brief Combine shaders and link them into a program.
         ///
@@ -189,6 +201,13 @@ class Shader
         /// @param value The value to set the array cell at.
         /// @param position The world position of the point light.
         void setPointLightArray(const std::string& name, unsigned int index, PointLight value, glm::vec3 position);
+
+        /// @brief Tells whether this shader supports a certain render feature.
+        ///
+        /// @param feature Literal describing the feature to check on.
+        ///
+        /// @return Whether or not the feature is supported.
+        bool isSupported(ShaderInfo::RenderFeature feature);
 };
 
 #endif//CORE__SHADER_HPP

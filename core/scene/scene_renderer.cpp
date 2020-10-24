@@ -189,7 +189,10 @@ void SceneRenderer::drawMesh(SceneObjectPtr meshObject, glm::mat4 viewMatrix)
     shader.use();
     material.bindTextures();
 
-    shader.setMaterial("material", material);
+    if (shader.isSupported(ShaderInfo::RenderFeature::Material))
+    {
+        shader.setMaterial("material", material);
+    }
 
     meshComponent->getMesh()->draw();
 }

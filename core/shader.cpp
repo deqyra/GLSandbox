@@ -21,6 +21,7 @@ Shader::ProgramToUniformLocationMap Shader::_uniformLocations = Shader::ProgramT
 Shader::ProgramKeyToLocationMap Shader::_programLocations = Shader::ProgramKeyToLocationMap();
 Shader::LocationToRefCountMap Shader::_locationRefCounts = Shader::LocationToRefCountMap();
 Shader::NamedStringToLoadStatusMap Shader::_namedStringLoadStatus = Shader::NamedStringToLoadStatusMap();
+Shader::ShaderToRenderFeatureMap Shader::_supportedFeatures = Shader::ShaderToRenderFeatureMap();
 
 Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
 {
@@ -31,8 +32,9 @@ Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
     // If the program key is not being used by a shader resource...
     if (it == _programLocations.end())
     {
+        std::vector<ShaderInfo::RenderFeature> supportedFeatures;
         // Compile provided shaders
-        unsigned int vertexShader = loadShader(GL_VERTEX_SHADER, (const GLchar*) vertexPath.c_str());
+        unsigned int vertexShader = loadShader(GL_VERTEX_SHADER, vertexPath);
         if (!vertexShader)
         {
             std::stringstream errorText;
@@ -40,7 +42,7 @@ Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
             throw std::runtime_error(errorText.str().c_str());
         }
 
-        unsigned int fragmentShader = loadShader(GL_FRAGMENT_SHADER, (const GLchar*) fragmentPath.c_str());
+        unsigned int fragmentShader = loadShader(GL_FRAGMENT_SHADER, fragmentPath);
         if (!fragmentShader)
         {
             std::stringstream errorText;
@@ -60,10 +62,22 @@ Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
             throw std::runtime_error("Shader error: provided shaders could not be assembled into a program.");
         }
 
+        appendSupportedFeaturesOfShader(supportedFeatures, vertexPath);
+        appendSupportedFeaturesOfShader(supportedFeatures, fragmentPath);
+
         // Map the resource GPU location to the program key
         _programLocations[_programKey] = _location;
         // Set the refcount
         _locationRefCounts[_location] = 1;
+        // Map the supported features to the GPU location of the program
+        if (supportedFeatures.size() > 0)
+        {
+            _supportedFeatures[_location] = std::unordered_map<ShaderInfo::RenderFeature, bool>();
+            for (auto it = supportedFeatures.begin(); it != supportedFeatures.end(); it++)
+            {
+                _supportedFeatures[_location][*it] = true;
+            }
+        }
     }
     // If the program key is already being used by a shader resource...
     else
@@ -109,6 +123,8 @@ void Shader::cleanup()
     if (!count)
     {
         _programLocations.erase(_programKey);
+        _supportedFeatures.erase(_location);
+        _uniformLocations.erase(_location);
         glDeleteProgram(_location);
     };
 }
@@ -252,6 +268,13 @@ void Shader::setPointLightArray(const std::string& name, unsigned int index, Poi
     setPointLight(indexedName, value, position);
 }
 
+bool Shader::isSupported(ShaderInfo::RenderFeature feature)
+{
+    auto it = _supportedFeatures[_location].find(feature);
+
+    return (it != _supportedFeatures[_location].end()) && (it->second == true);
+}
+
 unsigned int Shader::loadShader(unsigned int shaderType, std::string filename)
 {
 	// Open input file 
@@ -349,6 +372,17 @@ void Shader::makeNamedString(std::string name, std::string sourceFilename)
 
     // Update load status
     _namedStringLoadStatus[name] = true;
+}
+
+void Shader::appendSupportedFeaturesOfShader(std::vector<ShaderInfo::RenderFeature>& destination, std::string filename)
+{
+    // Find the entry for the provided filename
+    auto it = ShaderInfo::SupportedFeatures.find(filename);
+    // If non existent, return
+    if (it == ShaderInfo::SupportedFeatures.end()) return;
+    
+    // Append the found features to the input vector
+    std::copy(ShaderInfo::SupportedFeatures.at(filename).begin(), ShaderInfo::SupportedFeatures.at(filename).end(), std::back_inserter(destination));
 }
 
 // There must be `count` arguments after `count`, all of type `unsigned int`.

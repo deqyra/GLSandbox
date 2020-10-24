@@ -46,7 +46,7 @@ RenderBoi:
             ✔ Use GL_ARB_shader_language_include @done(20-10-24 17:30)
             ✔ Declare uniform blocks in their own file @done(20-10-24 17:30)
             ✔ Interface blocks too @done(20-10-24 17:31)
-            ☐ Find a way to tell whether a shader has a certain uniform target
+            ✔ Find a way to tell whether a shader provides has certain render features @done(20-10-24 17:59)
         Texture:
             ☐ Check texture generation success and display error info
         Transform:
