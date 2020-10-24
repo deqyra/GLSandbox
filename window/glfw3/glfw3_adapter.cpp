@@ -28,7 +28,7 @@ std::unordered_map<Window::Input::Gamepad::Axis, unsigned int>      Window::GLFW
 
 bool Window::GLFW3Adapter::EnumMaps::_mapsPopulated = false;
 bool Window::GLFW3Adapter::ValueMaps::_mapsPopulated = false;
-bool Window::GLFW3Adapter::_initialized = Window::GLFW3Adapter::initialize();
+bool Window::GLFW3Adapter::_initialized = Window::GLFW3Adapter::_initialize();
 
 namespace Window
 {
@@ -448,7 +448,7 @@ namespace GLFW3Adapter
         }
     }// namespace ValueMaps
 
-    bool initialize()
+    bool _initialize()
     {
         if (!EnumMaps::_mapsPopulated)
         {
