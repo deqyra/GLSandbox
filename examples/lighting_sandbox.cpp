@@ -75,7 +75,6 @@ void LightingSandbox::run(GLWindowPtr window)
 
     // TETRAHEDRON
     SceneObjectPtr tetrahedronObj = Factory::makeSceneObjectWithMesh<MeshType::Tetrahedron>("Tetrahedron", {0.5f});
-    tetrahedronObj->enabled = false;
 
     // CAMERA
     SceneObjectPtr cameraObj = Factory::makeSceneObject("Camera");
@@ -178,7 +177,6 @@ void LightingSandboxScript::update(float timeElapsed)
 
     if (_autoRotate)
     {
-        /*
         // Update object transforms
         float delta = _speedFactor * timeElapsed;
 
@@ -187,7 +185,6 @@ void LightingSandboxScript::update(float timeElapsed)
         _smallTorusObj->transform.orbit<Ref::Parent>((float)glm::radians(45.f * delta), SmallTorusRotationAxis, glm::vec3(0.f, 0.f, 0.f), true);
         _tetrahedronObj->transform.rotateBy<Ref::Self>((float)glm::radians(45.f * delta), TetrahedronRotationAxis);
         _tetrahedronObj->transform.orbit<Ref::Parent>((float)glm::radians(45.f * delta), TetrahedronOrbitAxis, glm::vec3(0.f), true);
-        */
     }
     else
     {

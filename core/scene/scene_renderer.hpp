@@ -29,7 +29,7 @@ class SceneRenderer
         LightUBO _lightUbo;
 
         /// @brief Minimum time interval to keep between rendered frames.
-        int64_t _intervalUs;
+        int64_t _frameIntervalUs;
 
         /// @brief Last recorded render timestamp. Used to limit the framerate.
         std::chrono::time_point<std::chrono::system_clock> _lastTimestamp;
@@ -48,13 +48,10 @@ class SceneRenderer
         void sendLightData(std::vector<LightPtr>& lights, std::vector<Transform>& worldTransforms, glm::mat4 view);
 
         /// @brief Issue draw commands for a single mesh.
-        ///
-        /// @param mesh A pointer to the mesh to render.
-        /// @param model The model matrix od the mesh.
-        /// @param view The view matrix, provided by the scene camera.
-        /// @param mat The material to render the mesh in.
-        /// @param shader The shader to render the mesh with.
-        void drawMesh(MeshPtr mesh, glm::mat4 model, glm::mat4 view, Material mat, Shader shader);
+        /// 
+        /// @param meshComponent A pointer to the object whose mesh is to render.
+        /// @param viewMatrix The view matrix, provided by the scene camera.
+        void drawMesh(SceneObjectPtr meshComponent, glm::mat4 viewMatrix);
 
     public:
         /// @param framerateLimit How many frames per second the SceneRenderer

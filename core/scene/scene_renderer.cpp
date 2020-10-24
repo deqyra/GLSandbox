@@ -24,7 +24,7 @@
 SceneRenderer::SceneRenderer(unsigned int framerateLimit) :
     _matrixUbo(),
     _lightUbo(),
-    _intervalUs(1000000.f/framerateLimit),
+    _frameIntervalUs(1000000.f/framerateLimit),
     _lastTimestamp(std::chrono::system_clock::now())
 {
 
@@ -35,22 +35,22 @@ void SceneRenderer::renderScene(ScenePtr scene)
     scene->updateAllTransforms();
 
     // Get pointers to meshes, lights, and the scene camera
-    std::vector<SceneObjectPtr> meshComponents = scene->getObjectsWithComponent<MeshComponent>();
-    std::vector<SceneObjectPtr> lightComponents = scene->getObjectsWithComponent<LightComponent>();
-    std::vector<SceneObjectPtr> cameraComponents = scene->getObjectsWithComponent<CameraComponent>();
+    std::vector<SceneObjectPtr> meshObjects = scene->getObjectsWithComponent<MeshComponent>();
+    std::vector<SceneObjectPtr> lightObjects = scene->getObjectsWithComponent<LightComponent>();
+    std::vector<SceneObjectPtr> cameraObjects = scene->getObjectsWithComponent<CameraComponent>();
 
-    if (cameraComponents.size() == 0)
+    if (cameraObjects.size() == 0)
     {
         std::cout << "SceneRenderer: No camera in provided scene, cannot render scene." << std::endl;
         return;
     }
-    if (cameraComponents.size() > 1)
+    if (cameraObjects.size() > 1)
     {
         std::cout << "SceneRenderer: More than one camera in provided scene, the first one will be used for rendering." << std::endl;
     }
 
     // Get the actual camera
-    SceneObjectPtr cameraObj = cameraComponents[0];
+    SceneObjectPtr cameraObj = cameraObjects[0];
     std::shared_ptr<CameraComponent> cameraComp = cameraObj->getComponent<CameraComponent>();
 
     // Set up matrices in their UBO
@@ -62,7 +62,7 @@ void SceneRenderer::renderScene(ScenePtr scene)
     // Preprocess lights
     std::vector<LightPtr> lights;
     std::vector<Transform> worldTransforms;
-    for (auto it = lightComponents.begin(); it != lightComponents.end(); it++)
+    for (auto it = lightObjects.begin(); it != lightObjects.end(); it++)
     {
         // Get the light component
         SceneObjectPtr lightObj = *it;
@@ -73,26 +73,25 @@ void SceneRenderer::renderScene(ScenePtr scene)
     }
     sendLightData(lights, worldTransforms, view);
 
+    // Compute time elapsed between frames and limit framerate if necessary
     std::chrono::time_point<std::chrono::system_clock> newTimestamp = std::chrono::system_clock::now();
     std::chrono::duration<double> duration = newTimestamp - _lastTimestamp;
     _lastTimestamp = newTimestamp;
-    int64_t gap = _intervalUs - std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+    int64_t gap = _frameIntervalUs - std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
     std::this_thread::sleep_for(std::chrono::microseconds(gap));
 
-    for (auto it = meshComponents.begin(); it != meshComponents.end(); it++)
+    for (auto it = meshObjects.begin(); it != meshObjects.end(); it++)
     {
         // Get the mesh component
         SceneObjectPtr meshObj = *it;
-        std::shared_ptr<MeshComponent> meshComp = meshObj->getComponent<MeshComponent>();
         // Draw the mesh
-        glm::mat4 modelMatrix = scene->getWorldTransform(meshObj->id).getModelMatrix();
-        drawMesh(meshComp->getMesh(), modelMatrix, cameraComp->getViewMatrix(), meshComp->getMaterial(), meshComp->getShader());
+        drawMesh(meshObj, cameraComp->getViewMatrix());
     }
 }
 
 void SceneRenderer::setFramerateLimit(unsigned int framerateLimit)
 {
-    _intervalUs = 1000.f / framerateLimit;
+    _frameIntervalUs = 1000000.f / framerateLimit;
 }
 
 void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Transform>& worldTransforms, glm::mat4 view)
@@ -159,18 +158,38 @@ void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Tra
     _lightUbo.setDirectionalCount(dLightIndex);
 }
 
-void SceneRenderer::drawMesh(MeshPtr mesh, glm::mat4 model, glm::mat4 view, Material material, Shader shader)
+void SceneRenderer::drawMesh(SceneObjectPtr meshObject, glm::mat4 viewMatrix)
 {
-    // Compute normal matrix (restore normals after non-uniform transforms)
-    glm::mat4 normal = glm::transpose(glm::inverse(view * model));
-    // Set up matrices in UBO
-    _matrixUbo.setModel(model);
-    _matrixUbo.setNormal(normal);
+    Transform objectTransform = meshObject->getWorldTransform();
+    glm::mat4 modelMatrix = objectTransform.getModelMatrix();
 
+    // Detect non uniform scaling: compute the dot product of the world scale
+    // of the object and a uniform scale along all three axes. If the dot 
+    // product is not 1, then the object has non-uniform scaling.
+    glm::vec3 scaling = glm::normalize(objectTransform.getScale());
+    float dot = glm::dot(scaling, glm::normalize(glm::vec3(1.f, 1.f, 1.f)));
+
+    // Compute normal matrix
+    glm::mat4 normalRestorationMatrix = viewMatrix * modelMatrix;
+    if (1.f - glm::abs(dot) > 1.e-6)
+    {
+        // Restore normals if a non-uniform scaling was detected
+        normalRestorationMatrix = glm::transpose(glm::inverse(normalRestorationMatrix));
+    }
+
+    // Set up matrices in UBO
+    _matrixUbo.setModel(modelMatrix);
+    _matrixUbo.setNormal(normalRestorationMatrix);
+
+    std::shared_ptr<MeshComponent> meshComponent = meshObject->getComponent<MeshComponent>();
+    
     // Set up shader and material
+    Shader shader = meshComponent->getShader();
+    Material material = meshComponent->getMaterial();
     shader.use();
     material.bindTextures();
+
     shader.setMaterial("material", material);
 
-    mesh->draw();
+    meshComponent->getMesh()->draw();
 }

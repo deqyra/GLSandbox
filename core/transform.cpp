@@ -237,9 +237,7 @@ glm::quat Transform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConstraint)
     // Find the angle by which to rotate around the found axis
     float dot = glm::dot(_forward, direction);
     if (dot >= 1.f) return _rotation;
-    
-    // Works because both vectors are unit, so the only significant term in the
-    // trig expression of their dot product is the cos of the angle they make
+
     float angle = glm::acos(dot);
 
     rotateBy<Ref::World>(angle, axis);
