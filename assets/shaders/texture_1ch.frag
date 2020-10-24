@@ -1,12 +1,13 @@
 #version 420 core
-layout (location = 0) in vec3 inVertexColor;
-layout (location = 2) in vec2 inTexCoord;
+#extension GL_ARB_shading_language_include : require
 
+#include </interface_blocks/vertex_out>
+in VertexOut vertOut;
 out vec4 fragColor;
 
 uniform sampler2D texData;
 
 void main()
 {
-	fragColor = texture(texData, inTexCoord) * vec4(inVertexColor, 1.0f); 
+	fragColor = texture(texData, vertOut.texCoord) * vec4(vertOut.color, 1.0f); 
 }

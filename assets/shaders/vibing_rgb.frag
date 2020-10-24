@@ -1,6 +1,8 @@
 #version 420 core
-layout (location = 0) in vec3 inVertexColor;
+#extension GL_ARB_shading_language_include : require
 
+#include </interface_blocks/vertex_out>
+in VertexOut vertOut;
 out vec4 fragColor;
 
 uniform float time;
@@ -14,8 +16,8 @@ float sine_offset(float x, float t)
 
 void main()
 {
-    fragColor  = vec4(sine_offset(inVertexColor.x, time),
-					  sine_offset(inVertexColor.y, time + 0.333333333),
-					  sine_offset(inVertexColor.z, time + 0.666666666),
+    fragColor  = vec4(sine_offset(vertOut.color.x, time),
+					  sine_offset(vertOut.color.y, time + 0.333333333),
+					  sine_offset(vertOut.color.z, time + 0.666666666),
 					  1.0f);
 }
