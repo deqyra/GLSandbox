@@ -6,13 +6,8 @@ layout (location = 1) in vec3 inColor;
 layout (location = 2) in vec3 inNormal;
 layout (location = 3) in vec2 inTexCoord;
 
-out VertexOut 
-{
-	vec3 fragPos;
-	vec3 color;
-	vec3 normal;
-	vec2 texCoord;
-} vertOut;
+#include </interface_blocks/vertex_out>
+out VertexOut vertOut;
 
 #include </uniform_blocks/matrices>
 
