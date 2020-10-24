@@ -1,16 +1,19 @@
 #include "shader_info.hpp"
 
 const ShaderInfo::ShaderToIncludeDirectiveMap ShaderInfo::IncludeDirectives = ShaderInfo::getIncludeRequirements();
-bool ShaderInfo::_includeDirectivessPopulated = false;
+bool ShaderInfo::_includeDirectivesPopulated = false;
 
 const ShaderInfo::IncludeToFilenameMap ShaderInfo::IncludeFilenames = ShaderInfo::getIncludeFilenames();
 bool ShaderInfo::_includeFilenamesPopulated = false;
+
+const ShaderInfo::ShaderToSupportedFeatureMap ShaderInfo::SupportedFeatures = ShaderInfo::getSupportedFeatures();
+bool ShaderInfo::_supportedFeaturesPopulated = false;
 
 namespace ShaderInfo
 {
     ShaderToIncludeDirectiveMap getIncludeRequirements()
     {
-        if (_includeDirectivessPopulated) return IncludeDirectives;
+        if (_includeDirectivesPopulated) return IncludeDirectives;
 
         ShaderToIncludeDirectiveMap map;
 
@@ -37,6 +40,17 @@ namespace ShaderInfo
         map["/uniform_blocks/lights"]       = "assets/shaders/uniform_blocks/lights.glsl";
         map["/uniform_blocks/material"]     = "assets/shaders/uniform_blocks/material.glsl";
         map["/interface_blocks/vertex_out"] = "assets/shaders/interface_blocks/vertex_out.glsl";
+
+        return map;
+    }
+
+    ShaderToSupportedFeatureMap getSupportedFeatures()
+    {
+        if (_supportedFeaturesPopulated) return SupportedFeatures;
+
+        ShaderToSupportedFeatureMap map;
+
+        map["assets/shaders/phong.frag"]    = {RenderFeature::Material};
 
         return map;
     }

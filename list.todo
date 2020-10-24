@@ -37,8 +37,8 @@ RenderBoi:
             ☐ Mesh rendering order based on the requested shader, then on their VertexDataManager handle
             ☐ Eliminate buffer swaps between objects sharing the same vertex data
             ☐ Transform direction of lights according to the world transform of their object
-            ☐ Skip the normal restoration where applicable
-            ☐ Render meshes using a transform, not a matrix
+            ✔ Skip the normal restoration where applicable @done(20-10-24 17:47)
+            ✔ Render meshes using a transform, not a matrix @done(20-10-24 17:47)
         Scripts:
             ✔ Separate FPSCameraScript into MouseCameraScript and KeyboardMovementScript @done(20-10-20 14:06)
             ✔ Give a camera reference to the KeyboardMovementScript for it to use a proper front vector @done(20-10-20 18:30)
@@ -46,6 +46,7 @@ RenderBoi:
             ✔ Use GL_ARB_shader_language_include @done(20-10-24 17:30)
             ✔ Declare uniform blocks in their own file @done(20-10-24 17:30)
             ✔ Interface blocks too @done(20-10-24 17:31)
+            ☐ Find a way to tell whether a shader has a certain uniform target
         Texture:
             ☐ Check texture generation success and display error info
         Transform:
