@@ -9,6 +9,7 @@
 #include <cstdarg>
 #include <unordered_map>
 
+#include "shader_info.hpp"
 #include "ubo/ubo_info.hpp"
 #include "common_macros.hpp"
 
@@ -16,18 +17,19 @@
 
 namespace fs = std::filesystem;
 
-std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>> Shader::_uniformLocations = std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>>();
-std::unordered_map<std::string, unsigned int> Shader::_programMaps = std::unordered_map<std::string, unsigned int>();
-std::unordered_map<unsigned int, unsigned int> Shader::_refCount = std::unordered_map<unsigned int, unsigned int>();
+Shader::ProgramToUniformLocationMap Shader::_uniformLocations = Shader::ProgramToUniformLocationMap();
+Shader::ProgramKeyToLocationMap Shader::_programLocations = Shader::ProgramKeyToLocationMap();
+Shader::LocationToRefCountMap Shader::_locationRefCounts = Shader::LocationToRefCountMap();
+Shader::NamedStringToLoadStatusMap Shader::_namedStringLoadStatus = Shader::NamedStringToLoadStatusMap();
 
 Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
 {
     // Concatenate string paths to get the program key
     _programKey = fs::absolute(vertexPath).string() + fs::absolute(fragmentPath).string();
 
-    auto it = _programMaps.find(_programKey);
+    auto it = _programLocations.find(_programKey);
     // If the program key is not being used by a shader resource...
-    if (it == _programMaps.end())
+    if (it == _programLocations.end())
     {
         // Compile provided shaders
         unsigned int vertexShader = loadShader(GL_VERTEX_SHADER, (const GLchar*) vertexPath.c_str());
@@ -59,16 +61,16 @@ Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
         }
 
         // Map the resource GPU location to the program key
-        _programMaps[_programKey] = _location;
+        _programLocations[_programKey] = _location;
         // Set the refcount
-        _refCount[_location] = 1;
+        _locationRefCounts[_location] = 1;
     }
     // If the program key is already being used by a shader resource...
     else
     {
         // Just copy the GPU location and increase the refcount
-        _location = _programMaps[_programKey];
-        _refCount[_location]++;
+        _location = _programLocations[_programKey];
+        _locationRefCounts[_location]++;
     }
 }
 
@@ -77,7 +79,7 @@ Shader::Shader(const Shader& other)
     // Copy the location, program key, increase refcount
     _location = other._location;
     _programKey = other._programKey;
-    _refCount[_location]++;
+    _locationRefCounts[_location]++;
 }
 
 Shader& Shader::operator=(const Shader& other)
@@ -88,7 +90,7 @@ Shader& Shader::operator=(const Shader& other)
     // Copy the location, program key, increase refcount
     _location = other._location;
     _programKey = other._programKey;
-    _refCount[_location]++;
+    _locationRefCounts[_location]++;
 
     return *this;
 }
@@ -102,11 +104,11 @@ Shader::~Shader()
 void Shader::cleanup()
 {
     // Decrease the ref count
-    unsigned int count = --_refCount[_location];
+    unsigned int count = --_locationRefCounts[_location];
     // If refcount is zero, destroy resource on the GPU
     if (!count)
     {
-        _programMaps.erase(_programKey);
+        _programLocations.erase(_programKey);
         glDeleteProgram(_location);
     };
 }
@@ -252,12 +254,19 @@ void Shader::setPointLightArray(const std::string& name, unsigned int index, Poi
 
 unsigned int Shader::loadShader(unsigned int shaderType, std::string filename)
 {
-	// Open input file and read all of its contents.
+	// Open input file 
 	std::ifstream file(filename);
 
 	if (!file.is_open())
-		std::cerr << "Shader \"" << filename << "\" could not be found." << std::endl;
+    {
+		std::string s = "Shader \"" + filename + "\" could not be found.";
+        throw std::runtime_error(s.c_str());
+    }
 
+    // In case the shader makes use of #include directives, process them
+    processIncludeDirectives(filename);
+
+    // Read all of its contents
 	std::string all("");
 	std::string line;
 	while (std::getline(file, line))
@@ -269,7 +278,7 @@ unsigned int Shader::loadShader(unsigned int shaderType, std::string filename)
 	unsigned int shader;
 	shader = glCreateShader(shaderType);
 	glShaderSource(shader, 1, &source, nullptr);
-	glCompileShader(shader);
+	glCompileShaderIncludeARB(shader, 0, nullptr, nullptr);
 
 	// Print errors if any
 	int success;
@@ -283,6 +292,63 @@ unsigned int Shader::loadShader(unsigned int shaderType, std::string filename)
 	}
 
 	return shader;
+}
+
+void Shader::processIncludeDirectives(std::string filename)
+{
+    using ShaderInfo::IncludeDirectives;
+    using ShaderInfo::IncludeFilenames;
+
+    // Find the include requirements for the shader source file
+    auto it = IncludeDirectives.find(filename);
+    // If info about the shader source file cannot be found, return
+    if (it == IncludeDirectives.end()) return;
+
+    for (auto it = IncludeDirectives.at(filename).begin(); it != IncludeDirectives.at(filename).end(); it++)
+    {
+        // Find whether the named string for the requested include directive is loaded
+        auto jt = _namedStringLoadStatus.find(*it);
+        // If loaded already, skip
+        if (jt != _namedStringLoadStatus.end() && jt->second == true) continue;
+
+        // Find the source file needed to create the requested named string
+        auto kt = IncludeFilenames.find(*it);
+        // If info about the requested include cannot be found, throw
+        if (kt == IncludeFilenames.end())
+        {
+            std::string s = "Shader: Info about include directive <" + *it + "> cannot be found.";
+            throw std::runtime_error(s.c_str());
+        }
+
+        // Otherwise, create the named string
+        makeNamedString(kt->first, kt->second);
+    }
+}
+
+void Shader::makeNamedString(std::string name, std::string sourceFilename)
+{
+	// Open input file
+	std::ifstream file(sourceFilename);
+
+	if (!file.is_open())
+    {
+		std::string s = "Shader \"" + sourceFilename + "\" could not be found.";
+        throw std::runtime_error(s.c_str());
+    }
+
+    // Read all of its contents
+	std::string all("");
+	std::string line;
+	while (std::getline(file, line))
+		all += line + "\n";
+
+	const char* source = all.c_str();
+
+    // Create the named string
+    glNamedStringARB(GL_SHADER_INCLUDE_ARB, -1, name.c_str(), -1, source);
+
+    // Update load status
+    _namedStringLoadStatus[name] = true;
 }
 
 // There must be `count` arguments after `count`, all of type `unsigned int`.

@@ -154,6 +154,7 @@
                     core/object_transform.cpp                                   core/object_transform.hpp
                     core/transform.cpp                                          core/transform.hpp
                     core/shader.cpp                                             core/shader.hpp
+                    core/shader_info.cpp                                        core/shader_info.hpp
                     core/texture_2d.cpp                                         core/texture_2d.hpp
                                                                                 core/vertex.hpp
                     core/lights/directional_light.cpp                           core/lights/directional_light.hpp

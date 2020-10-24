@@ -49,8 +49,11 @@ namespace GLFW3Adapter
         void populateMaps();
     }
 
+    // Whether the adapter has been initialized
+    extern bool _initialized;
+
     // Populate all maps if not done already
-    void initialize();
+    bool initialize();
 
     // Get the RenderBoi enum corresponding to the given GLFW3 macro
     template<typename Enum>

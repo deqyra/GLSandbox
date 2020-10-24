@@ -1,4 +1,6 @@
 #version 420 core
+#extension GL_ARB_shading_language_include : require
+
 in VertexOut 
 {
 	vec3 fragPos;
@@ -9,77 +11,8 @@ in VertexOut
 
 out vec4 fragColor;
 
-// Types and constants
-// ===================
-
-#define POINT_LIGHT_MAX_COUNT 64
-#define SPOT_LIGHT_MAX_COUNT 64
-#define DIRECTIONAL_LIGHT_MAX_COUNT 4
-#define DIFFUSE_MAP_MAX_COUNT   8
-#define SPECULAR_MAP_MAX_COUNT  8
-
-struct PointLight
-{											// Base alignment	// Base offset
-    vec3 position;							// 16				//  0
-    vec3 ambient;							// 16				// 16
-    vec3 diffuse;							// 16				// 32
-    vec3 specular;							// 12				// 48
-    float constant;							//  4				// 60
-    float linear;							//  4				// 64
-    float quadratic;  						//  4				// 68
-};											// Size: 80 = 72 + vec4 padding
-
-struct SpotLight
-{											// Base alignment	// Base offset
-	vec3 position;							// 16				//  0
-	vec3 direction;							// 16				// 16
-    vec3 ambient;							// 16				// 32
-    vec3 diffuse;							// 16				// 48
-    vec3 specular;							// 12				// 64
-    float constant;							//  4				// 76
-    float linear;							//  4				// 80
-    float quadratic;  						//  4				// 84
-	float innerCutoff;						//  4				// 88
-	float outerCutoff;						//  4				// 92
-};											// Size: 96
-
-struct DirectionalLight
-{											// Base alignment	// Base offset
-    vec3 direction;							// 16				//  0
-    vec3 ambient;							// 16				// 16
-    vec3 diffuse;							// 16				// 32
-    vec3 specular;							// 16				// 48
-};											// Size: 64
-
-struct Material
-{
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    float shininess;
-
-	sampler2D diffuseMaps[DIFFUSE_MAP_MAX_COUNT];
-	sampler2D specularMaps[SPECULAR_MAP_MAX_COUNT];
-
-	uint diffuseMapCount;
-	uint specularMapCount;
-};
-
-// Uniforms
-// ========
-
-layout (std140, binding = 1) uniform lights
-{															// Base alignment	// Base offset
-	SpotLight spot[SPOT_LIGHT_MAX_COUNT];					// 64 * 96			//     0
-	PointLight point[POINT_LIGHT_MAX_COUNT];				// 64 * 80			//  6144
-	DirectionalLight direct[DIRECTIONAL_LIGHT_MAX_COUNT];	//  4 * 64			// 11264
-
-	uint pointCount;										// 4				// 11520
-	uint spotCount;											// 4				// 11524
-	uint directionalCount;									// 4				// 11528
-};															// Size: 11532
-
-uniform Material material;
+#include </uniform_blocks/material>
+#include </uniform_blocks/lights>
 
 // Functions
 // =========
@@ -93,15 +26,15 @@ void main()
 {
 	// Process all point lights
 	vec4 lightTotal = vec4(0.f);
-	for (int i = 0; i < pointCount; i++)
+	for (int i = 0; i < lights.pointCount; i++)
 	{
 		lightTotal += processPointLight(i);
 	}
-	for (int i = 0; i < spotCount; i++)
+	for (int i = 0; i < lights.spotCount; i++)
 	{
 		lightTotal += processSpotLight(i);
 	}
-	for (int i = 0; i < directionalCount; i++)
+	for (int i = 0; i < lights.directionalCount; i++)
 	{
 		lightTotal += processDirectionalLight(i);
 	}	
@@ -112,35 +45,50 @@ void main()
 
 vec4 processPointLight(int i)
 {
-	vec3 positionDiff = vertOut.fragPos - point[i].position;
+	vec3 positionDiff = vertOut.fragPos - lights.point[i].position;
 	vec3 lightDirection = normalize(positionDiff);
 	float dist = length(positionDiff);
 	// float attenuation = 1.f;
-	float attenuation = 1.f / (point[i].constant + (point[i].linear * dist) + (point[i].quadratic * dist * dist));
+	float attenuation = 1.f / (	 lights.point[i].constant +
+								(lights.point[i].linear * dist) +
+								(lights.point[i].quadratic * dist * dist)
+							  );
 
-	return attenuation * calculatePhong(lightDirection, point[i].ambient, point[i].diffuse, point[i].specular);
+	return attenuation * calculatePhong(lightDirection,
+										lights.point[i].ambient,
+										lights.point[i].diffuse,
+										lights.point[i].specular);
 }
 
 vec4 processSpotLight(int i)
 {
-	vec3 positionDiff = vertOut.fragPos - spot[i].position;
+	vec3 positionDiff = vertOut.fragPos - lights.spot[i].position;
 	vec3 lightDirection = normalize(positionDiff);
 
-	float theta = dot(lightDirection, normalize(spot[i].direction));
-	float outerCos = cos(spot[i].outerCutoff);
-	float innerCos = cos(spot[i].innerCutoff);
+	float theta = dot(lightDirection, normalize(lights.spot[i].direction));
+	float outerCos = cos(lights.spot[i].outerCutoff);
+	float innerCos = cos(lights.spot[i].innerCutoff);
 	float epsilon = innerCos - outerCos;
 	float intensity = clamp((theta - outerCos) / epsilon, 0.0, 1.0);
 
 	float dist = length(positionDiff);
-	float attenuation = 1.0 / (spot[i].constant + (spot[i].linear * dist) + (spot[i].quadratic * dist * dist));
+	float attenuation = 1.0 / (	 lights.spot[i].constant + 
+								(lights.spot[i].linear * dist) + 
+								(lights.spot[i].quadratic * dist * dist)
+							  );
 
-	return attenuation * intensity * calculatePhong(lightDirection, spot[i].ambient, spot[i].diffuse, spot[i].specular);
+	return attenuation * intensity * calculatePhong(lightDirection,
+													lights.spot[i].ambient,
+													lights.spot[i].diffuse,
+													lights.spot[i].specular);
 }
 
 vec4 processDirectionalLight(int i)
 {
-	return calculatePhong(direct[i].direction, direct[i].ambient, direct[i].diffuse, direct[i].specular);
+	return calculatePhong(lights.direct[i].direction,
+						  lights.direct[i].ambient,
+						  lights.direct[i].diffuse,
+						  lights.direct[i].specular);
 }
 
 vec4 calculatePhong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specularLight)

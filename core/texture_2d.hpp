@@ -21,7 +21,7 @@ class Texture2D
 
         /// @brief Structure mapping how many Texture2D instances are handling 
         /// a texture resource on the GPU.
-        static std::unordered_map<unsigned int, unsigned int> _refCount;
+        static std::unordered_map<unsigned int, unsigned int> _locationRefCounts;
 
         /// @brief Process an image file and make a texture out of its content
         /// on the GPU.

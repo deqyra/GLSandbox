@@ -25,17 +25,26 @@ class Shader
         /// @brief The location of the shader resource on the GPU.
         unsigned int _location;
 
+        using ProgramToUniformLocationMap = std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>>;
         /// @brief Structure mapping uniform locations against their name, and
         /// then against the location of the program they belong to.
-        static std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>> _uniformLocations;
+        static ProgramToUniformLocationMap _uniformLocations;
 
+        using ProgramKeyToLocationMap = std::unordered_map<std::string, unsigned int>;
         /// @brief Structure mapping program locations against the path of the
         /// shader source files they were constructed from.
-        static std::unordered_map<std::string, unsigned int> _programMaps;
+        static ProgramKeyToLocationMap _programLocations;
 
+        using LocationToRefCountMap = std::unordered_map<unsigned int, unsigned int>;
         /// @brief Structure mapping how many shader instances are referencing a
         /// shader resource on the GPU.
-        static std::unordered_map<unsigned int, unsigned int> _refCount;
+        static LocationToRefCountMap _locationRefCounts;
+
+        using NamedStringToLoadStatusMap = std::unordered_map<std::string, bool>;  
+        /// @brief Structure telling whether a named string was loaded on the 
+        /// GPU. Used for shader include directives.
+        /// Assume not present == not loaded.
+        static NamedStringToLoadStatusMap _namedStringLoadStatus;
 
         /// @brief Free resources upon destroying an instance.
         void cleanup();
@@ -49,6 +58,23 @@ class Shader
         /// @return The location of the shader on the GPU, or 0 if the 
         /// compilation failed (error displayed in std::cerr).
         static unsigned int loadShader(unsigned int shaderType, std::string filename);
+
+        /// @brief Process #include directives in a shader source file.
+        ///
+        /// @param filename Path to the file whose #include directives to 
+        /// process.
+        static void processIncludeDirectives(std::string filename);
+
+        /// @brief Load the contents of a file into a named string which will be
+        /// uploaded to the GPU.
+        ///
+        /// @param name Name to be assigned to the named string.
+        /// @param sourceFilename Path to the source file whose contents to fill
+        /// the named string with.
+        ///
+        /// @exception If the source file cannot be found, the function will 
+        /// throw a std::runtime_error.
+        static void makeNamedString(std::string name, std::string sourceFilename);
 
         /// @brief Combine shaders and link them into a program.
         ///

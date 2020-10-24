@@ -1,4 +1,6 @@
 #version 420 core
+#extension GL_ARB_shading_language_include : require
+
 layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec3 inColor;
 layout (location = 2) in vec3 inNormal;
@@ -12,19 +14,13 @@ out VertexOut
 	vec2 texCoord;
 } vertOut;
 
-layout (std140, binding = 0) uniform matrices
-{						// Base alignment	// Base offset
-	mat4 model;			// 64				//   0
-	mat4 view;			// 64				//  64
-	mat4 projection;	// 64				// 128
-	mat3 normal;		// 48				// 192
-};						// Size: 240
+#include </uniform_blocks/matrices>
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(inPosition, 1.0f);
+    gl_Position = matrices.projection * matrices.view * matrices.model * vec4(inPosition, 1.0f);
 	vertOut.color = inColor;
-	vertOut.normal = normal * inNormal;
+	vertOut.normal = matrices.normal * inNormal;
 	vertOut.texCoord = inTexCoord;
-	vertOut.fragPos = vec3(view * model * vec4(inPosition, 1.0f));
+	vertOut.fragPos = vec3(matrices.view * matrices.model * vec4(inPosition, 1.0f));
 }

@@ -28,6 +28,7 @@ std::unordered_map<Window::Input::Gamepad::Axis, unsigned int>      Window::GLFW
 
 bool Window::GLFW3Adapter::EnumMaps::_mapsPopulated = false;
 bool Window::GLFW3Adapter::ValueMaps::_mapsPopulated = false;
+bool Window::GLFW3Adapter::_initialized = Window::GLFW3Adapter::initialize();
 
 namespace Window
 {
@@ -37,6 +38,8 @@ namespace GLFW3Adapter
     {
         void populateMaps()
         {
+            if (_mapsPopulated) return;
+
             _glProfileEnumMap[GLFW_OPENGL_ANY_PROFILE] = Window::OpenGLProfile::Any;
             _glProfileEnumMap[GLFW_OPENGL_COMPAT_PROFILE] = Window::OpenGLProfile::Core;
             _glProfileEnumMap[GLFW_OPENGL_CORE_PROFILE] = Window::OpenGLProfile::Compatibility;
@@ -242,6 +245,8 @@ namespace GLFW3Adapter
     {
         void populateMaps()
         {
+            if (_mapsPopulated) return;
+
             _glProfileValueMap[Window::OpenGLProfile::Any] = GLFW_OPENGL_ANY_PROFILE;
             _glProfileValueMap[Window::OpenGLProfile::Core] = GLFW_OPENGL_COMPAT_PROFILE;
             _glProfileValueMap[Window::OpenGLProfile::Compatibility] = GLFW_OPENGL_CORE_PROFILE;
@@ -443,7 +448,7 @@ namespace GLFW3Adapter
         }
     }// namespace ValueMaps
 
-    void initialize()
+    bool initialize()
     {
         if (!EnumMaps::_mapsPopulated)
         {
@@ -453,6 +458,8 @@ namespace GLFW3Adapter
         {
             ValueMaps::populateMaps();
         }
+
+        return EnumMaps::_mapsPopulated && ValueMaps::_mapsPopulated;
     }
 
     template<>

@@ -7,7 +7,7 @@
 
 #include "../tools/exceptions/index_out_of_bounds_error.hpp"
 
-std::unordered_map<unsigned int, unsigned int> Texture2D::_refCount = std::unordered_map<unsigned int, unsigned int>();
+std::unordered_map<unsigned int, unsigned int> Texture2D::_locationRefCounts = std::unordered_map<unsigned int, unsigned int>();
 std::unordered_map<std::string , unsigned int> Texture2D::_pathsToIds  = std::unordered_map<std::string, unsigned int>();
 
 Texture2D::Texture2D(std::string filename) :
@@ -19,7 +19,7 @@ Texture2D::Texture2D(std::string filename) :
     {
         // Just copy the location and increase the refcount
         _location = it->second;
-        _refCount[_location]++;
+        _locationRefCounts[_location]++;
     }
     // If the image is not being handled by a Texture2D instance...
     else
@@ -28,7 +28,7 @@ Texture2D::Texture2D(std::string filename) :
         _location = loadTextureFromFile(filename);
         // Map the new texture location to image filename and set a refcount
         _pathsToIds[filename] = _location;
-        _refCount[_location] = 1;
+        _locationRefCounts[_location] = 1;
     }
 }
 
@@ -37,7 +37,7 @@ Texture2D::Texture2D(const Texture2D& other) :
     _path(other._path)
 {
     // The same texture is being handled by one more resource: increase the refcount
-    _refCount[_location]++;
+    _locationRefCounts[_location]++;
 }
 
 Texture2D& Texture2D::operator=(const Texture2D& other)
@@ -48,7 +48,7 @@ Texture2D& Texture2D::operator=(const Texture2D& other)
     // Copy the filename, location, and increase the ref count
     _location = other._location;
     _path = other._path;
-    _refCount[_location]++;
+    _locationRefCounts[_location]++;
 
     return *this;
 }
@@ -62,7 +62,7 @@ Texture2D::~Texture2D()
 void Texture2D::cleanup()
 {
     // Decrease the ref count
-    unsigned int count = --_refCount[_location];
+    unsigned int count = --_locationRefCounts[_location];
     // If the resource is not used anymore...
     if (!count)
     {
