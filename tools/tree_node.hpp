@@ -248,9 +248,9 @@ void TreeNode<T>::removeChild(unsigned int id)
 template<typename T>
 void TreeNode<T>::removeAllChildren()
 {
-    for (auto it = _wChildren.begin(); it != _wChildren.end(); it++)
+    for (unsigned int i = _wChildren.size(); i > 0; i--)
     {
-        TreeNodePtr child = it->lock();
+        TreeNodePtr child = _wChildren[i-1].lock();
         child->setParent(nullptr);
     }
 

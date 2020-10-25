@@ -9,6 +9,21 @@
 
 # Toggles
     option( BUILD_STATIC_LIBS "Build libraries as static libraries" OFF )
+    option( BUILD_64BIT "Whether to build for a x64 target (x86 is used otherwise)" OFF)
+    option( BUILD_RELEASE "Whether to build for a debug or release profile" OFF)
+
+    if ( ${BUILD_RELEASE} )
+        set( CMAKE_BUILD_TYPE "Release" )
+    else(  )
+        set( CMAKE_BUILD_TYPE "Debug" )
+    endif(  )
+
+    if ( ${BUILD_64BIT} )
+        set( BUILD_TARGET "x64" )
+    else(  )
+        set( BUILD_TARGET "x86" )
+    endif(  )
+
     set( GLFW_PROFILE_HINT_COMMENT "" )
 
     if( WIN32 )
@@ -42,14 +57,14 @@
     set( EXECUTABLE_NAME ${PROJECT_TARGET_NAME} )
     set( TEST_TARGET_NAME "tests" )
     set( COPY_ASSETS_TARGET_NAME "copy_assets" )
+    set( COPY_LIBS_TARGET_NAME "copy_libs" )
     set( COPY_DLLS_TARGET_NAME "copy_dlls" )
 
 # Project library dependency names
     set( GLFW3_LIB "glfw" )
     set( ASSIMP_LIB "assimp" )
-    if( WIN32 )
-        set( GLFW3_LIB "glfw3.lib" )
-        set( ASSIMP_LIB "${ASSIMP_LIB}.lib" )
+    if ( WIN32 )
+        set( GLFW3_LIB "glfw/${BUILD_TARGET}/glfw3dll")
     endif(  )
 
 # GL loader information
@@ -65,11 +80,21 @@
                         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets ./assets )
 
 # Copy lib folder
-    add_custom_target( ${COPY_DLLS_TARGET_NAME} )
-    add_custom_command( TARGET ${COPY_DLLS_TARGET_NAME}
-                        COMMENT "Copying DLLs"
-                        PRE_BUILD
+    add_custom_target( ${COPY_LIBS_TARGET_NAME} )
+    add_custom_command( TARGET ${COPY_LIBS_TARGET_NAME}
+                        COMMENT "Copying libs"
+                        POST_BUILD
                         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/lib ./lib )
+
+# Copy DLL in exe folder
+    add_custom_target( ${COPY_DLLS_TARGET_NAME} )
+    if( WIN32 )
+        add_custom_command( TARGET ${COPY_DLLS_TARGET_NAME}
+                            COMMENT "Copying DLLs"
+                            POST_BUILD
+                            COMMAND ${CMAKE_COMMAND} -E copy lib/glfw/${BUILD_TARGET}/glfw3.dll ./${CMAKE_BUILD_TYPE}/glfw3.dll )
+    endif(  )
+    add_dependencies( ${COPY_DLLS_TARGET_NAME} ${COPY_LIBS_TARGET_NAME} )
 
 # Header configuration variables
     set( PROJECT_VERSION "1.0" )
@@ -211,8 +236,12 @@
                                 ${WINDOW_LIB_NAME}
                                 ${EXAMPLE_LIB_NAME}
                                 ${GL_LOADER_LIB_NAME}
+                                ${GLFW3_LIB}
                             ) 
-        add_dependencies( ${EXECUTABLE_NAME} ${COPY_ASSETS_TARGET_NAME} )
+        add_dependencies( ${EXECUTABLE_NAME} ${COPY_ASSETS_TARGET_NAME} ${COPY_LIBS_TARGET_NAME} )
+        if( WIN32 )
+            add_dependencies( ${EXECUTABLE_NAME} ${COPY_DLLS_TARGET_NAME} )
+        endif(  )
 
 # Build and run tests
     # enable_testing( )

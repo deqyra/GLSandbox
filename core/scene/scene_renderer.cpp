@@ -24,7 +24,7 @@
 SceneRenderer::SceneRenderer(unsigned int framerateLimit) :
     _matrixUbo(),
     _lightUbo(),
-    _frameIntervalUs(1000000.f/framerateLimit),
+    _frameIntervalUs((int64_t)(1000000.f/framerateLimit)),
     _lastTimestamp(std::chrono::system_clock::now())
 {
 
@@ -91,7 +91,7 @@ void SceneRenderer::renderScene(ScenePtr scene)
 
 void SceneRenderer::setFramerateLimit(unsigned int framerateLimit)
 {
-    _frameIntervalUs = 1000000.f / framerateLimit;
+    _frameIntervalUs = (int64_t)(1000000.f / framerateLimit);
 }
 
 void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Transform>& worldTransforms, glm::mat4 view)
