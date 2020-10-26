@@ -5,8 +5,14 @@
 #include "mesh_generator.hpp"
 #include "mesh_generators/mesh_type.hpp"
 #include "mesh_generators/type_to_gen_mapping.hpp"
+
 #include "scene/scene.hpp"
 #include "scene/scene_object.hpp"
+#include "scene/script.hpp"
+#include "scene/input_processing_script.hpp"
+
+#include "scene/components/script_component.hpp"
+#include "scene/components/input_processing_script_component.hpp"
 
 /// @brief Provides static methods to facilitate complex object instantiation.
 class Factory
@@ -68,18 +74,43 @@ class Factory
         template<MeshType T>
         static SceneObjectPtr makeSceneObjectWithMesh(std::string name, typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat = Material(), Shader shader = Shader());
 
-        /// @brief Attach a MouseCameraScript and a KeyboardMovementScript to
-        /// the provided object. The object must have a camera component and 
-        /// must be registered in a scene prior to calling this function, 
-        /// otherwise mouse and keyboard input will not be forwarded to the 
-        /// scripts.
+        /// @brief Create a script of any type and attach it to a scene object.
         ///
-        /// @param object Pointer to the object which the new scripts should be
-        /// attached to. 
+        /// @tparam T The class of the script to instantiate.
+        /// @tparam ArgTypes Types of the arguments which will be used to create
+        /// the script.
         ///
-        /// @exception If the provided object has no camera component, the 
-        /// function will throw a std::runtime_error.
-        static void addMouseKBScriptsToCameraObject(SceneObjectPtr object);
+        /// @param object Pointer to the scene object to which the newly 
+        /// instantiated script should be attached.
+        /// @param args Arguments to use to construct the script.
+        ///
+        /// @return A pointer to the newly instantiated script.
+        ///
+        /// @exception If the provided scene object does not meet criteria 
+        /// required by the script about to be attached to it, exceptions may be
+        /// thrown and behavior may be off.
+        template<class T, typename... ArgTypes>
+        static std::shared_ptr<T> createScriptAndAttachToObject(SceneObjectPtr object, ArgTypes&&... args);
+
+        /// @brief Create an input processing script of any type and attach it
+        /// to a scene object.
+        ///
+        /// @tparam T The class of the input processing script to instantiate.
+        /// @tparam ArgTypes Types of the arguments which will be used to create
+        /// the input processing script.
+        ///
+        /// @param object Pointer to the scene object to which the newly 
+        /// instantiated script should be attached.
+        /// @param args Arguments to use to construct the input processing 
+        /// script.
+        ///
+        /// @return A pointer to the newly instantiated input processing script.
+        ///
+        /// @exception If the provided scene object does not meet criteria 
+        /// required by the input processing script about to be attached to it,
+        /// exceptions may be thrown and behavior may be off.
+        template<class T, typename... ArgTypes>
+        static std::shared_ptr<T> createInputProcessingScriptAndAttachToObject(SceneObjectPtr object, ArgTypes&&... args);
 };
 
 template<MeshType T>
@@ -103,6 +134,26 @@ SceneObjectPtr Factory::makeSceneObjectWithMesh(std::string name, typename TypeT
     SceneObjectPtr obj = Factory::makeSceneObject(name);
     obj->addComponent<MeshComponent>(mesh, mat, shader);
     return obj;
+}
+
+template<typename T, typename... ArgTypes>
+std::shared_ptr<T> Factory::createScriptAndAttachToObject(SceneObjectPtr object, ArgTypes&&... args)
+{
+    std::shared_ptr<T> script = std::make_shared<T>(std::forward<ArgTypes>(args)...);
+    ScriptPtr baseScript = std::static_pointer_cast<Script>(script);
+    object->addComponent<ScriptComponent>(baseScript);
+
+    return script;
+}
+
+template<typename T, typename... ArgTypes>
+std::shared_ptr<T> Factory::createInputProcessingScriptAndAttachToObject(SceneObjectPtr object, ArgTypes&&... args)
+{
+    std::shared_ptr<T> ipScript = std::make_shared<T>(std::forward<ArgTypes>(args)...);
+    InputProcessingScriptPtr baseIpScript = std::static_pointer_cast<InputProcessingScript>(ipScript);
+    object->addComponent<InputProcessingScriptComponent>(baseIpScript);
+
+    return ipScript;
 }
 
 #endif//CORE__FACTORY_HPP
