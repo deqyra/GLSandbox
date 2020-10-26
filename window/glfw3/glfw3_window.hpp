@@ -7,57 +7,64 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
-namespace Window
-{
 // To be attached to a GLFWwindow object, providing event callback functionality through a custom InputProcessor
 class GLFW3Window : public GLWindow
 {
     public:
+        /// @param window Raw pointer to the GLFW window struct.
+        /// @param title Title to give the window.
         GLFW3Window(GLFWwindow* window, std::string title);
         ~GLFW3Window();
 
-        // Get a pointer to the managed window
+        /// @brief Get a raw pointer to the managed window.
+        ///
+        /// @return A raw pointer to the managed window.
         GLFWwindow* getWindow();
 
-        // Whether the window was flagged for closing
-        bool shouldClose();
-        // Set the window closing flaf
-        void setShouldClose(bool value);
+        /// @brief Whether the window was flagged for closing.
+        ///
+        /// @return Whether or not the window was flagged for closing.
+        virtual bool shouldClose();
 
-        // Swap GLFW buffers
-        void swapBuffers();
-        // Poll GLFW events
-        void pollEvents();
+        /// @brief Set the window closing flag.
+        ///
+        /// @param value Whether or not the window should be flagged for closing.
+        virtual void setShouldClose(bool value);
 
-        // Set GLFW input mode
-        void setInputMode(Window::Input::Mode::Target target, Window::Input::Mode::Value value);
+        /// @brief Swap the front and back buffers of the window.
+        virtual void swapBuffers();
 
-        // Set title of GLFW window
-        void setTitle(std::string title);
+        /// @brief Poll events recorded by the window.
+        virtual void pollEvents();
 
-        // Get cursor position in GLFW window
-        void getCursorPos(double* x, double* y);
+        /// @brief Set the input mode of a certain target in the window.
+        ///
+        /// @param target Literal describing which aspect of the window whose
+        /// input mode should be set.
+        /// @param value Literal describing which input to set the target to.
+        virtual void setInputMode(Window::Input::Mode::Target target, Window::Input::Mode::Value value) ;
 
-        // Get aspect ratio of GLFW window
+        /// @brief Set the title of the window.
+        ///
+        /// @return The title of the window.
+        virtual void setTitle(std::string title);
+        
+        /// @brief Get the aspect ratio of the framebuffer used by the window.
+        ///
+        /// @return The aspect ratio of the framebuffer used by the window.
         virtual float getAspectRatio();
 
+        /// @brief Get position of the mouse cursor in the window.
+        ///
+        /// @param x [Output parameter] The X coordinate of the cursor.
+        /// @param y [Output parameter] The Y coordinate of the cursor.
+        virtual void getCursorPos(double* x, double* y);
+
     private:
-        // The GLFW window being managed
+        /// @brief Pointer to the managed GLFW window.
         GLFWwindow* _w;
-        // Width of the GLFW window
-        int _width;
-        // Height of the GLFW window
-        int _height;
-        // Custom input processor to be registered at any time, providing custom callbacks
-        InputProcessorPtr _inputProcessor;
-        // Window title
-        std::string _title;
 };
 
-
-}//namespace Window
-
-using GLFW3Window = Window::GLFW3Window;
 using GLFW3WindowPtr = std::shared_ptr<GLFW3Window>;
 
 #endif//WINDOW__GLFW3__GLFW3_WINDOW_HPP

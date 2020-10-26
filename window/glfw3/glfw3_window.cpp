@@ -6,8 +6,6 @@
 #include "glfw3_adapter.hpp"
 #include "../../core/input_processor.hpp"
 
-namespace Window
-{
 GLFW3Window::GLFW3Window(GLFWwindow* window, std::string title) :
     GLWindow(title),
     _w(window)
@@ -56,7 +54,6 @@ void GLFW3Window::setTitle(std::string title)
 void GLFW3Window::getCursorPos(double* x, double* y)
 {
     glfwGetCursorPos(_w, x, y);
-}
 }
 
 float GLFW3Window::getAspectRatio()

@@ -1,38 +1,36 @@
 #include "shader_info.hpp"
 
 const ShaderInfo::ShaderToIncludeDirectiveMap ShaderInfo::IncludeDirectives = ShaderInfo::getIncludeRequirements();
-bool ShaderInfo::_includeDirectivesPopulated = false;
-
 const ShaderInfo::IncludeToFilenameMap ShaderInfo::IncludeFilenames = ShaderInfo::getIncludeFilenames();
-bool ShaderInfo::_includeFilenamesPopulated = false;
-
 const ShaderInfo::ShaderToSupportedFeatureMap ShaderInfo::SupportedFeatures = ShaderInfo::getSupportedFeatures();
-bool ShaderInfo::_supportedFeaturesPopulated = false;
 
 namespace ShaderInfo
 {
     ShaderToIncludeDirectiveMap getIncludeRequirements()
     {
-        if (_includeDirectivesPopulated) return IncludeDirectives;
+        static bool runOnce = false;
+        if (runOnce) return IncludeDirectives;
 
         ShaderToIncludeDirectiveMap map;
 
-        map["assets/shaders/mvp.vert"]      = {"/uniform_blocks/matrices",
-                                               "/interface_blocks/vertex_out"};
-        map["assets/shaders/phong.frag"]    = {"/uniform_blocks/lights",
-                                               "/uniform_blocks/material",
-                                               "/interface_blocks/vertex_out"};
-        map["assets/shaders/default.frag"]  = {"/interface_blocks/vertex_out"};
+        map["assets/shaders/mvp.vert"]          = {"/uniform_blocks/matrices",
+                                                   "/interface_blocks/vertex_out"};
+        map["assets/shaders/phong.frag"]        = {"/uniform_blocks/lights",
+                                                   "/uniform_blocks/material",
+                                                   "/interface_blocks/vertex_out"};
+        map["assets/shaders/default.frag"]      = {"/interface_blocks/vertex_out"};
         map["assets/shaders/texture_1ch.frag"]  = {"/interface_blocks/vertex_out"};
         map["assets/shaders/texture_2ch.frag"]  = {"/interface_blocks/vertex_out"};
-        map["assets/shaders/vibing_rgb.frag"]  = {"/interface_blocks/vertex_out"};
+        map["assets/shaders/vibing_rgb.frag"]   = {"/interface_blocks/vertex_out"};
 
+        runOnce = true;
         return map;
     }
 
     IncludeToFilenameMap getIncludeFilenames()
     {
-        if (_includeFilenamesPopulated) return IncludeFilenames;
+        static bool runOnce = false;
+        if (runOnce) return IncludeFilenames;
 
         IncludeToFilenameMap map;
 
@@ -41,17 +39,20 @@ namespace ShaderInfo
         map["/uniform_blocks/material"]     = "assets/shaders/uniform_blocks/material.glsl";
         map["/interface_blocks/vertex_out"] = "assets/shaders/interface_blocks/vertex_out.glsl";
 
+        runOnce = true;
         return map;
     }
 
     ShaderToSupportedFeatureMap getSupportedFeatures()
     {
-        if (_supportedFeaturesPopulated) return SupportedFeatures;
+        static bool runOnce = false;
+        if (runOnce) return SupportedFeatures;
 
         ShaderToSupportedFeatureMap map;
 
         map["assets/shaders/phong.frag"]    = {RenderFeature::Material};
 
+        runOnce = true;
         return map;
     }
 }

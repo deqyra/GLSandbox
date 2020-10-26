@@ -46,7 +46,7 @@ class MouseCameraScript : public InputProcessingScript
         /// triggered.
         /// @param xpos X coordinate of the new position of the mouse.
         /// @param ypos Y coordinate of the new position of the mouse.
-        virtual void processMouseCursor(Window::GLWindowPtr window, double xpos, double ypos);
+        virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
 
         /// @brief Set the scene object which the camera script is attached to.
         /// Will also attempt to retrieve a camera from the scene object.

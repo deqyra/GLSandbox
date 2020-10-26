@@ -60,11 +60,14 @@ RenderBoi:
             ☐ Iterator semantics
             ✔ `clear()` method @done(20-10-22 10:11)
             ✔ Change weak pointers to shared pointers where possible, refactor @done(20-10-22 10:11)
-            ☐ Documentation
+            ✔ Documentation @done(20-10-25 02:50)
         VertexDataManager:
             ☐ A VertexDataManager holds actual vertex data and takes care of memory management
             ☐ Meshes now only keep handles to vertex content held in a VertexDataManager
             ☐ Investigate better buffering methods
+        Window:
+            ✔ Fill adapter maps the same way as shader maps @done(20-10-26 01:49)
+            ✔ Doc @done(20-10-26 01:49)
         ☐ Dynamic meshes
         ☐ Unity-like prefab system?
         ☐ Shadows

@@ -48,7 +48,7 @@ class LambdaScript : public InputProcessingScript
         /// triggered.
         /// @param width New width (in pixels) of the framebuffer.
         /// @param height New height (in pixels) of the framebuffer.
-        virtual void processFramebufferResize(Window::GLWindowPtr window, int width, int height);
+        virtual void processFramebufferResize(GLWindowPtr window, int width, int height);
 
         /// @brief Callback for a keyboard event.
         ///
@@ -61,7 +61,7 @@ class LambdaScript : public InputProcessingScript
         /// the key which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the key event (Ctrl, Shift, etc).
-        virtual void processKeyboard(Window::GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
+        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
 
         /// @brief Callback for a mouse button event.
         ///
@@ -73,7 +73,7 @@ class LambdaScript : public InputProcessingScript
         /// the button which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the button event (Ctrl, Shift, etc).
-        virtual void processMouseButton(Window::GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods);
+        virtual void processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods);
 
         /// @brief Callback for a mouse cursor event.
         ///
@@ -81,7 +81,7 @@ class LambdaScript : public InputProcessingScript
         /// triggered.
         /// @param xpos X coordinate of the new position of the mouse.
         /// @param ypos Y coordinate of the new position of the mouse.
-        virtual void processMouseCursor(Window::GLWindowPtr window, double xpos, double ypos);
+        virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
 
         /// @brief Get a raw pointer to a new lambda script instance cloned 
         /// from this one. Ownership and responsibility for the allocated 

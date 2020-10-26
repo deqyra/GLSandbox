@@ -17,7 +17,7 @@
 	#include <windows.h>
 #endif
 
-// Shortcut-function to halt the execution of the program with a clean exit
+// Halt the execution with a clean exit
 int abortWithError(std::string message, bool terminateGLFW = true);
 
 static void glfwErrorCallback(int error, const char* description);

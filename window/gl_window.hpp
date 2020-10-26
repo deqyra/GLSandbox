@@ -12,68 +12,123 @@
 #include "enums.hpp"
 #include "../core/input_processor.hpp"
 
-namespace Window
-{
-// To be attached to a concrete window object (provided by a backend), providing event callback functionality through a custom InputProcessor
+/// @brief Abstract window, supporting event callbacks through a custom 
+/// InputProcessor.
 class GLWindow : public std::enable_shared_from_this<GLWindow>
 {
     public:
+        /// @param title Title of the window.
         GLWindow(std::string title);
         ~GLWindow();
 
-        // To be called upon a framebuffer resize event; forwards the call to the custom input processor
+        /// @brief Callback for a framebuffer resize event.
+        ///
+        /// @param width New width (in pixels) of the framebuffer.
+        /// @param height New height (in pixels) of the framebuffer.
         virtual void processFramebufferResize(int width, int height);
-        // To be called upon a keyboard event; forwards the call to the custom input processor
+
+        /// @brief Callback for a keyboard event.
+        ///
+        /// @param key Literal describing which key triggered the event.
+        /// @param scancode Scancode of the key which triggered the event. 
+        /// Platform-dependent, but consistent over time.
+        /// @param action Literal describing what action was performed on
+        /// the key which triggered the event.
+        /// @param mods Bit field describing which modifiers were enabled 
+        /// during the key event (Ctrl, Shift, etc).
         virtual void processKeyboard(Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
-        // To be called upon a mouse button event; forwards the call to the custom input processor
+
+        /// @brief Callback for a mouse button event.
+        ///
+        /// @param button Literal describing which button triggered the
+        /// event.
+        /// @param action Literal describing what action was performed on
+        /// the button which triggered the event.
+        /// @param mods Bit field describing which modifiers were enabled 
+        /// during the button event (Ctrl, Shift, etc).
         virtual void processMouseButton(Window::Input::MouseButton button, Window::Input::Action action, int mods);
-        // To be called upon a mouse cursor event; forwards the call to the custom input processor
+
+        /// @brief Callback for a mouse cursor event.
+        ///
+        /// @param xpos X coordinate of the new position of the mouse.
+        /// @param ypos Y coordinate of the new position of the mouse.
         virtual void processMouseCursor(double xpos, double ypos);
 
-        // Register new input processor
+        /// @brief Register an input processor to the window. Input events 
+        /// will be forwarded to it.
+        ///
+        /// @param inputProcessor Pointer to the input processor to register
+        /// to the window.
+        ///
+        /// @exception If the provided pointer is null, the function will 
+        /// throw a std::runtime_error.
         virtual void registerInputProcessor(InputProcessorPtr inputProcessor);
-        // Discard custom input processor
+
+        /// @brief Discard any registered custom input processor.
         virtual void detachInputProcessor();
 
-        // Whether the window was flagged for closing
+        /// @brief Whether the window was flagged for closing.
+        ///
+        /// @return Whether or not the window was flagged for closing.
         virtual bool shouldClose() = 0;
-        // Set the window closing flag
+
+        /// @brief Set the window closing flag.
+        ///
+        /// @param value Whether or not the window should be flagged for closing.
         virtual void setShouldClose(bool value) = 0;
 
-        // Swap buffers
+        /// @brief Swap the front and back buffers of the window.
         virtual void swapBuffers() = 0;
-        // Poll events
+
+        /// @brief Poll events recorded by the window.
         virtual void pollEvents() = 0;
 
-        // Set input mode
+        /// @brief Set the input mode of a certain target in the window.
+        ///
+        /// @param target Literal describing which aspect of the window whose
+        /// input mode should be set.
+        /// @param value Literal describing which input to set the target to.
         virtual void setInputMode(Window::Input::Mode::Target target, Window::Input::Mode::Value value) = 0;
 
-        // Get title of managed window
+        /// @brief Get the title of the window.
+        ///
+        /// @return The title of the window.
         virtual std::string getTitle();
-        // Set title of managed window
+
+        /// @brief Set the title of the window.
+        ///
+        /// @return The title of the window.
         virtual void setTitle(std::string title) = 0;
-        // Get aspect ratio of framebuffer displayed in managed window
+        
+        /// @brief Get the aspect ratio of the framebuffer used by the window.
+        ///
+        /// @return The aspect ratio of the framebuffer used by the window.
         virtual float getAspectRatio() = 0;
 
-        // Get cursor position in managed window
+        /// @brief Get position of the mouse cursor in the window.
+        ///
+        /// @param x [Output parameter] The X coordinate of the cursor.
+        /// @param y [Output parameter] The Y coordinate of the cursor.
         virtual void getCursorPos(double* x, double* y) = 0;
 
-    private:
-        // Custom input processor to be registered at any time, providing custom callbacks
+    protected:
+        /// @brief Default input processor of all windows.
+        static InputProcessorPtr _defaultInputProcessor;
+
+        /// @brief Custom input processor to be registered at any point, 
+        /// providing custom callbacks.
         InputProcessorPtr _inputProcessor;
 
-        // Window title
+        /// @brief Title of the window.
         std::string _title;
-        // Window width
+
+        /// @brief Width of the window.
         int _width;
-        // Window height
+
+        /// @brief Height of the window.
         int _height;
 };
 
-
-}//namespace Window
-
-using GLWindow = Window::GLWindow;
 using GLWindowPtr = std::shared_ptr<GLWindow>;
 
 #endif//WINDOW__GL_WINDOW_HPP

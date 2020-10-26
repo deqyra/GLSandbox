@@ -65,7 +65,7 @@ class KeyboardMovementScript : public InputProcessingScript
         /// the key which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the key event (Ctrl, Shift, etc).
-        virtual void processKeyboard(Window::GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
+        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
 
         /// @brief Make the script run and do its things.
         ///

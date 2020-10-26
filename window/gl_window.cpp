@@ -6,10 +6,10 @@
 #include "glfw3/glfw3_adapter.hpp"
 #include "../core/input_processor.hpp"
 
-namespace Window
-{
+InputProcessorPtr GLWindow::_defaultInputProcessor = std::make_shared<InputProcessor>();
+
 GLWindow::GLWindow(std::string title) :
-    _inputProcessor(std::make_shared<InputProcessor>()),
+    _inputProcessor(_defaultInputProcessor),
     _title(title)
 {
 
@@ -44,16 +44,20 @@ void GLWindow::processMouseCursor(double xpos, double ypos)
 
 void GLWindow::registerInputProcessor(InputProcessorPtr inputProcessor)
 {
+    if (!_inputProcessor)
+    {
+        throw std::runtime_error("GLWindow: cannot register null input processor.");
+    }
+    
     _inputProcessor = inputProcessor;
 }
 
 void GLWindow::detachInputProcessor()
 {
-    _inputProcessor = std::make_shared<InputProcessor>();
+    _inputProcessor = _defaultInputProcessor;
 }
 
 std::string GLWindow::getTitle()
 {
     return _title;
-}
 }

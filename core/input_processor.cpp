@@ -11,22 +11,22 @@ InputProcessor::InputProcessor() :
 
 // Default callbacks do nothing
 
-void InputProcessor::processFramebufferResize(Window::GLWindowPtr window, int width, int height)
+void InputProcessor::processFramebufferResize(GLWindowPtr window, int width, int height)
 {
 
 }
 
-void InputProcessor::processKeyboard(Window::GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
+void InputProcessor::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
 {
 
 }
 
-void InputProcessor::processMouseButton(Window::GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods)
+void InputProcessor::processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods)
 {
 
 }
 
-void InputProcessor::processMouseCursor(Window::GLWindowPtr window, double xpos, double ypos)
+void InputProcessor::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
 {
 
 }

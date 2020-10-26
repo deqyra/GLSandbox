@@ -7,6 +7,8 @@
 
 namespace ShaderInfo
 {
+    /// @brief Collection of literals to be used to describe whether a shader
+    /// supports rendering a particular aspect of a scene or of its elements.
     enum class RenderFeature
     {
         Material
@@ -17,10 +19,6 @@ namespace ShaderInfo
     /// @brief Structure mapping shader source filenames to the include 
     /// directives which they require.
     extern const ShaderToIncludeDirectiveMap IncludeDirectives;
-
-    /// @brief Whether ShaderInfo::IncludeDirectives was populated. Should 
-    /// always be true after program start-up.
-    extern bool _includeDirectivesPopulated;
     
     /// @brief Get the map describing which include directives are required
     /// by a certain shader source file.
@@ -35,10 +33,6 @@ namespace ShaderInfo
     /// which satisfy them.
     extern const IncludeToFilenameMap IncludeFilenames;
 
-    /// @brief Whether ShaderInfo::IncludeFilenames was populated. Should 
-    /// always be true after program start-up.
-    extern bool _includeFilenamesPopulated;
-
     /// @brief Get the map describing which source files satisfy a certain 
     /// include directive.
     ///
@@ -51,10 +45,6 @@ namespace ShaderInfo
     /// @brief Structure mapping shader source filenames to the include 
     /// render features which they support.
     extern const ShaderToSupportedFeatureMap SupportedFeatures;
-
-    /// @brief Whether ShaderInfo::SupportedFeatures was populated. Should 
-    /// always be true after program start-up.
-    extern bool _supportedFeaturesPopulated;
     
     /// @brief Get the map describing which render features are supported by a 
     /// certain shader source file.
