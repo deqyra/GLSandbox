@@ -8,9 +8,12 @@
 #undef GLFW_INCLUDE_NONE
 
 #include "gl_window.hpp"
+#include "window_backends.hpp"
 
-/// @brief Create an OpenGL context within a GLFW window, bind callbacks and 
+/// @brief Create an OpenGL context within a window, bind callbacks and 
 /// initialize OpenGL function pointers.
+///
+/// @tparam W Literal describing the window backend to use to create the window.
 ///
 /// @param title Title of the window.
 /// @param width Width of the window.
@@ -26,7 +29,11 @@
 /// pointers could not be loaded, the function will throw a std::runtime_error.
 /// If a debug capable context was requested but the environment does not 
 /// support GL_ARB_debug_output, the function will throw a std::runtime_error.
-GLWindowPtr makeGLFWWindow(std::string title, int width = 640, int height = 480, int glVersionMajor = 1, int glVersionMinor = 0, Window::OpenGLProfile glProfile = Window::OpenGLProfile::Core, bool debug = false);
+template<WindowBackends W>
+GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug) = delete;
+
+template<>
+GLWindowPtr makeWindow<WindowBackends::GLFW3>(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug);
 
 /// @brief Callback given to OpenGL, which will print out error messages from
 /// debug capable contexts.
