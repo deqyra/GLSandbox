@@ -79,7 +79,7 @@ void LightingSandbox::run(GLWindowPtr window)
 
     // CAMERA
     SceneObjectPtr cameraObj = Factory::makeSceneObject("Camera");
-    CameraPtr camera = std::make_shared<Camera>();
+    CameraPtr camera = std::make_shared<Camera>(CameraParams);
     cameraObj->addComponent<CameraComponent>(camera);
 
     // Register everything in scene and create relationships
