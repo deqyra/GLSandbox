@@ -4,6 +4,7 @@
 #include "mesh_type.hpp"
 #include "axes_generator.hpp"
 #include "cube_generator.hpp"
+#include "plane_generator.hpp"
 #include "tetrahedron_generator.hpp"
 #include "torus_generator.hpp"
 
@@ -29,6 +30,12 @@ template<>
 struct TypeToGenMapping<MeshType::Cube>
 {
     using GenType = CubeGenerator;
+};
+
+template<>
+struct TypeToGenMapping<MeshType::Plane>
+{
+    using GenType = PlaneGenerator;
 };
 
 template<>

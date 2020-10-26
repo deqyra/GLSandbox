@@ -191,6 +191,7 @@
                     core/lights/tools.cpp                                       core/lights/tools.hpp 
                     core/mesh_generators/axes_generator.cpp                     core/mesh_generators/axes_generator.hpp
                     core/mesh_generators/cube_generator.cpp                     core/mesh_generators/cube_generator.hpp
+                    core/mesh_generators/plane_generator.cpp                    core/mesh_generators/plane_generator.hpp
                     core/mesh_generators/tetrahedron_generator.cpp              core/mesh_generators/tetrahedron_generator.hpp
                     core/mesh_generators/torus_generator.cpp                    core/mesh_generators/torus_generator.hpp
                                                                                 core/mesh_generators/mesh_type.hpp

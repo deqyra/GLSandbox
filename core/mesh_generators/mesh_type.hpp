@@ -7,6 +7,7 @@ enum class MeshType
 {
     Axes,
     Cube,
+    Plane,
     Tetrahedron,
     Torus
 };
