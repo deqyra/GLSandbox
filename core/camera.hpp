@@ -15,39 +15,81 @@ class Camera : public BasisProvider
     private:
         /// @brief Direction the camera is facing.
         glm::vec3 _forward;
+
         /// @brief Direction to the left of the camera.
         glm::vec3 _left;
+
         /// @brief Upward direction of the camera.
         glm::vec3 _up;
+
         /// @brief Upwards direction of the object the camera is attached to.
         Transform _parentTransform;
-        /// @brief Zoom factor of the camera.
-        float _zoom;
 
         /// @brief Yaw (rotation around Y) of the camera in degrees.
         float _yaw;
+
         /// @brief Pitch (rotation around X) of the camera in degrees.
         float _pitch;
+
+        /// @brief Zoom factor of the camera.
+        float _zoomFactor;
+
+        /// @brief Angle (in radians) of the vertical field of view of the 
+        /// camera.
+        float _verticalFov;
+
+        /// @brief Aspect ratio of the image produced by the camera.
+        float _aspectRatio;
+
+        /// @brief Distance to the near plane of the camera, before which 
+        /// elements will not be rendered.
+        float _nearDistance;
+
+        /// @brief Distance to the far plane of the camera, beyond which 
+        /// elements will not be rendered.
+        float _farDistance;
 
         /// @brief Projection matrix of the camera. Provides perspective and 
         /// lens effect.
         glm::mat4 _projectionMatrix;
 
+        /// @brief Whether or not the projection matrix needs recalculating in 
+        /// order to reflect new parameters.
+        bool _projectionMatrixOutdated;
+
         /// @brief Recalculate vectors based on yaw, pitch and parent rotation.
         void updateVectors();
 
-    public:
-        static constexpr float DefaultYaw = -90.f;
-        static constexpr float DefaultPitch = 0.f;
-        static constexpr float DefaultZoomFactor = 1.f;
+        /// @brief Recalculate the projection matrix based on the registered 
+        /// parameters.
+        void updateProjectionMatrix();
 
-        /// @param projection Projection matrix to use for the camera.
-        /// @param yaw Rotation of the camera around Y in degrees.
-        /// @param pitch Rotation of the camera around X in degrees.
-        /// @param zoom Zoom factor of the camera.
+    public:
+        struct CameraParameters
+        {
+            float yaw;
+            float pitch;
+            float zoomFactor;
+        };
+
+        static constexpr CameraParameters DefaultCameraParameters = {0.f, 0.f, 1.f};
+
+        struct ProjectionParameters
+        {
+            float verticalFov;
+            float aspectRatio;
+            float nearDistance;
+            float farDistance;
+        };
+
+        static constexpr ProjectionParameters DefaultProjectionParameters = {glm::radians(45.f), 16.f / 9.f, 0.1f, 100.f};
+
+        /// @param cameraParameters Parameters of the camera: yaw, pitch, zoom.
+        /// @param projectionParameters Parameters of the projection used by the
+        /// camera: vertical FOV, aspect ratio, near and far plane distances.
         /// @param parentTransform Transform of the object the camera is 
         /// attached to.
-        Camera(glm::mat4 projection, float yaw = DefaultYaw, float pitch = DefaultPitch, float zoom = DefaultZoomFactor, Transform parentTransform = Transform());
+        Camera(CameraParameters cameraParameters = DefaultCameraParameters, ProjectionParameters projectionParameters = DefaultProjectionParameters, Transform parentTransform = Transform());
 
         Camera(const Camera& other);
 
@@ -106,6 +148,47 @@ class Camera : public BasisProvider
         ///
         /// @return The transformed coordinates.
         glm::vec3 worldPositionToViewSpace(glm::vec3 worldPosition);
+
+        /// @brief Get the vertical field of view of the camera.
+        ///
+        /// @return The angle of the vertical field of view of the camera.
+        float getVerticalFov();
+
+        /// @brief Set the vertical field of view of the camera.
+        ///
+        /// @param verticalFov The new angle of the vertical field of view of 
+        /// the camera.
+        void setVerticalFov(float verticalFov);
+
+        /// @brief Get the aspect ratio of the image produced by the camera.
+        ///
+        /// @return The aspect ratio of the image produced by the camera.
+        float getAspectRatio();
+
+        /// @brief Set the aspect ratio of the image produced by the camera.
+        ///
+        /// @param aspectRatio The new aspect ratio of the camera.
+        void setAspectRatio(float aspectRatio);
+
+        /// @brief Get the distance to the near plane of the camera.
+        ///
+        /// @return The distance to the near plane of the camera.
+        float getNearDistance();
+
+        /// @brief Set the distance to the near plane of the camera.
+        ///
+        /// @param nearDistance The new distance to the near plane of the camera.
+        void setNearDistance(float nearDistance);
+
+        /// @brief Get the distance to the far plane of the camera.
+        ///
+        /// @return The distance to the far plane of the camera.
+        float getFarDistance();
+
+        /// @brief Set the distance to the far plane of the camera.
+        ///
+        /// @param farDistance The new distance to the far plane of the camera.
+        void setFarDistance(float farDistance);
         
         /// @brief Get the projection matrix of the camera.
         ///
