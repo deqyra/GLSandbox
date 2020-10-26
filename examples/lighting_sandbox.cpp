@@ -90,16 +90,8 @@ void LightingSandbox::run(GLWindowPtr window)
     scene->registerObject(tetrahedronObj, smallTorusObj->id);
     scene->registerObject(cameraObj);
 
-    // Add scripts components to camera : MouseCameraScript
-    std::shared_ptr<MouseCameraScript> mouseScript = std::make_shared<MouseCameraScript>();
-    std::shared_ptr<InputProcessingScript> baseMouseScript = std::static_pointer_cast<InputProcessingScript>(mouseScript);
-    cameraObj->addComponent<InputProcessingScriptComponent>(baseMouseScript);
-
-    // Add scripts components to camera : KeyboardMovementScript
-    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
-    std::shared_ptr<KeyboardMovementScript> kbScript = std::make_shared<KeyboardMovementScript>(cameraAsBasisProvider);
-    std::shared_ptr<InputProcessingScript> baseKbScript = std::static_pointer_cast<InputProcessingScript>(kbScript);
-    cameraObj->addComponent<InputProcessingScriptComponent>(baseKbScript);
+    // Add script components to camera
+    Factory::addMouseKBScriptsToCameraObject(cameraObj);
 
     const glm::vec3 X = Transform::X;
     const glm::vec3 Y = Transform::Y;

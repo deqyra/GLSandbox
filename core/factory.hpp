@@ -67,6 +67,19 @@ class Factory
         /// @return Pointer to the instantiated scene object.
         template<MeshType T>
         static SceneObjectPtr makeSceneObjectWithMesh(std::string name, typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat = Material(), Shader shader = Shader());
+
+        /// @brief Attach a MouseCameraScript and a KeyboardMovementScript to
+        /// the provided object. The object must have a camera component and 
+        /// must be registered in a scene prior to calling this function, 
+        /// otherwise mouse and keyboard input will not be forwarded to the 
+        /// scripts.
+        ///
+        /// @param object Pointer to the object which the new scripts should be
+        /// attached to. 
+        ///
+        /// @exception If the provided object has no camera component, the 
+        /// function will throw a std::runtime_error.
+        static void addMouseKBScriptsToCameraObject(SceneObjectPtr object);
 };
 
 template<MeshType T>

@@ -26,14 +26,14 @@
 
 #include "enums.hpp"
 #include "gl_window.hpp"
-#include "window_backends.hpp"
+#include "window_backend.hpp"
 
 #include "glfw3/glfw3_window.hpp"
 #include "glfw3/glfw3_adapter.hpp"
 #include "glfw3/glfw3_window_callbacks.hpp"
 
 template<>
-GLWindowPtr makeWindow<WindowBackends::GLFW3>(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
+GLWindowPtr makeWindow<WindowBackend::GLFW3>(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
 {
 	// GL metadata
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);

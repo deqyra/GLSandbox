@@ -41,7 +41,7 @@ void MouseCameraScript::setSceneObject(SceneObjectPtr sceneObject)
 {
     if (!sceneObject)
     {
-        std::string s = "MouseCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was a null scene object pointer.";
+        std::string s = "MouseCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was provided a null scene object pointer.";
         throw std::runtime_error(s.c_str());
     }
 

@@ -162,6 +162,7 @@
                     window/gl_window.cpp                                window/gl_window.hpp
                     window/tools.cpp                                    window/tools.hpp
                     window/enums.cpp                                    window/enums.hpp
+                                                                        window/window_backend.hpp
                     )
         target_link_libraries( ${WINDOW_LIB_NAME} PUBLIC ${GLFW3_LIB} )
         target_link_libraries( ${WINDOW_LIB_NAME} PUBLIC ${GL_LOADER_LIB_NAME} "${CMAKE_DL_LIBS}" )

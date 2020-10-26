@@ -10,7 +10,7 @@
 
 #include "window/enums.hpp"
 #include "window/tools.hpp"
-#include "window/window_backends.hpp"
+#include "window/window_backend.hpp"
 #include "examples/gl_sandbox.hpp"
 #include "examples/lighting_sandbox.hpp"
 
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 	GLWindowPtr window;
 	try
 	{
-		window = makeWindow<WindowBackends::GLFW3>("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
+		window = makeWindow<WindowBackend::GLFW3>("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
 	}
 	catch(const std::exception& e)
 	{

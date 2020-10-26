@@ -15,7 +15,7 @@ RenderBoi:
             ✔ Keep a shared pointer to the SceneObject @done(20-10-21 13:02)
             ✔ Provide info as to whether a certain component type is allowed more than once per object @done(20-10-20 16:02)
         Factory:
-            ☐ Method to attach camera and scripts to scene object, and to make new object with those
+            ✔ Method to attach camera and scripts to scene object@done(20-10-26 02:40)
         Mesh:
             ☐ Handle several types of draw methods per single mesh
         Scene:
@@ -66,10 +66,6 @@ RenderBoi:
             ☐ A VertexDataManager holds actual vertex data and takes care of memory management
             ☐ Meshes now only keep handles to vertex content held in a VertexDataManager
             ☐ Investigate better buffering methods
-        Window:
-            ✔ Fill adapter maps the same way as shader maps @done(20-10-26 01:49)
-            ✔ Doc @done(20-10-26 01:49)
-            ✔ Allow selection of window backend with an enum and templated methods @done(20-10-26 02:12)
         ☐ Dynamic meshes
         ☐ Unity-like prefab system?
         ☐ Shadows
@@ -81,6 +77,9 @@ RenderBoi:
         ☐ Load models with Assimp
     Window:
         ✔ Isolate calls to GLFW in a windowing tool module @done(20-07-02 15:04)
+        ✔ Fill adapter maps the same way as shader maps @done(20-10-26 01:49)
+        ✔ Doc @done(20-10-26 01:49)
+        ✔ Allow selection of window backend with an enum and templated methods @done(20-10-26 02:12)
         ☐ Move functionality to get input action/button names (used in BasicInputManager)
     Examples:
         ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
