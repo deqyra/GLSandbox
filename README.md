@@ -13,7 +13,7 @@ All meshes are entirely parametrically generated. The tetrahedron is a child
 of the golden torus, itself being a child of the emerald, larger torus. It is 
 apparent that children objects are affected by their parent. The cube shows the
 position of a point light. The tetrahedron is being rendered with a different 
-shader, which does not take into account light.
+shader, which does not take lightinto account.
 
 ## Info
 
