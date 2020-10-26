@@ -31,6 +31,7 @@ using Ref = FrameOfReference;
 #include "../core/scripts/mouse_camera_script.hpp"
 #include "../core/scripts/keyboard_movement_script.hpp"
 #include "../core/scripts/basic_input_manager.hpp"
+#include "../core/scripts/camera_aspect_ratio_script.hpp"
 
 LightingSandbox::LightingSandbox()
 {
@@ -78,8 +79,7 @@ void LightingSandbox::run(GLWindowPtr window)
 
     // CAMERA
     SceneObjectPtr cameraObj = Factory::makeSceneObject("Camera");
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), window->getAspectRatio(), 0.1f, 100.0f);
-    CameraPtr camera = std::make_shared<Camera>(projection, CameraYaw, CameraPitch);
+    CameraPtr camera = std::make_shared<Camera>();
     cameraObj->addComponent<CameraComponent>(camera);
 
     // Register everything in scene and create relationships
@@ -90,8 +90,15 @@ void LightingSandbox::run(GLWindowPtr window)
     scene->registerObject(tetrahedronObj, smallTorusObj->id);
     scene->registerObject(cameraObj);
 
-    // Add script components to camera
-    Factory::addMouseKBScriptsToCameraObject(cameraObj);
+    // Add script component to camera: MouseCameraScript
+    Factory::createInputProcessingScriptAndAttachToObject<MouseCameraScript>(cameraObj);
+
+    // Add script component to camera: KeyboardMovementScript
+    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
+    Factory::createInputProcessingScriptAndAttachToObject<KeyboardMovementScript>(cameraObj, cameraAsBasisProvider);
+
+    // Add script component to camera: CameraAspectRatioScript
+    Factory::createInputProcessingScriptAndAttachToObject<CameraAspectRatioScript>(cameraObj);
 
     const glm::vec3 X = Transform::X;
     const glm::vec3 Y = Transform::Y;

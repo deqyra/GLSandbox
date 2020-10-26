@@ -41,7 +41,7 @@ void MouseCameraScript::setSceneObject(SceneObjectPtr sceneObject)
 {
     if (!sceneObject)
     {
-        std::string s = "MouseCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was provided a null scene object pointer.";
+        std::string s = "MouseCameraScript: null scene object pointer was provided.";
         throw std::runtime_error(s.c_str());
     }
 
@@ -49,7 +49,7 @@ void MouseCameraScript::setSceneObject(SceneObjectPtr sceneObject)
     std::shared_ptr<CameraComponent> cameraComponent = sceneObject->getComponent<CameraComponent>();
     if (!cameraComponent)
     {
-        std::string s = "MouseCameraScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was attached to a scene object with no camera component.";
+        std::string s = "MouseCameraScript: attempt to attach to a scene object with no camera component.";
         throw std::runtime_error(s.c_str());
     }
 

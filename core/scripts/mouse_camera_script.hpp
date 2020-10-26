@@ -4,7 +4,9 @@
 #include "../camera.hpp"
 #include "../scene/input_processing_script.hpp"
 
-/// @brief Provides event callbacks to manage a camera as in a FPS game.
+/// @brief Provides event callbacks to manage a camera as in a FPS game. This 
+/// script must be attached to an object which has a camera component, otherwise
+/// an std::runtime_error will be thrown upon attaching.
 class MouseCameraScript : public InputProcessingScript
 {
     private:
@@ -54,8 +56,9 @@ class MouseCameraScript : public InputProcessingScript
         /// @param sceneObject Pointer to the scene object the script should be 
         /// attached to.
         ///
-        /// @exception If the provided pointer is null, this function will throw
-        /// a std::runtime_error.
+        /// @exception If the provided pointer is null, or if the scene object 
+        /// has no camera component, this function will throw a 
+        /// std::runtime_error.
         virtual void setSceneObject(SceneObjectPtr sceneObject);
 
         /// @brief Get a raw pointer to a new camera script instance cloned 

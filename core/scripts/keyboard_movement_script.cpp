@@ -103,7 +103,7 @@ void KeyboardMovementScript::setSceneObject(SceneObjectPtr sceneObject)
 {
     if (!sceneObject)
     {
-        std::string s = "KeyboardMovementScript (script ID " + std::to_string(Script::id) + ", input processor ID " + std::to_string(InputProcessor::id) + ") was provided a null scene object pointer.";
+        std::string s = "KeyboardMovementScript: null scene object pointer was provided.";
         throw std::runtime_error(s.c_str());
     }
 

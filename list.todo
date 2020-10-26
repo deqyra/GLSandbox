@@ -8,8 +8,8 @@ RenderBoi:
         Camera:
             ✔ Use a parent transform instead of a simple up vector @done(20-10-14 12:27)
             ✔ Simplify view matrix retrieval functions @done(20-10-20 14:28)
-            ☐ Set the projection matrix in terms of parameters rather than a full matrix
-            ☐ Clean up smart updates depending on parameter values
+            ✔ Set the projection matrix in terms of parameters rather than a full matrix @done(20-10-26 16:56)
+            ✔ Clean up smart updates depending on parameter values @done(20-10-26 16:56)
         Components:
             ✔ In MeshComponent, make the mesh pointer private, add getter and setter to it @done(20-10-21 16:35)
             ✔ Keep a shared pointer to the SceneObject @done(20-10-21 13:02)
@@ -42,6 +42,7 @@ RenderBoi:
         Scripts:
             ✔ Separate FPSCameraScript into MouseCameraScript and KeyboardMovementScript @done(20-10-20 14:06)
             ✔ Give a camera reference to the KeyboardMovementScript for it to use a proper front vector @done(20-10-20 18:30)
+            ✔ CameraAspectRatioScript: updates the camera aspect ratio based on framebuffer resize events @done(20-10-26 17:22)
         Shaders:
             ✔ Use GL_ARB_shader_language_include @done(20-10-24 17:30)
             ✔ Declare uniform blocks in their own file @done(20-10-24 17:30)
@@ -56,12 +57,6 @@ RenderBoi:
             ✔ Implement `Transform::compoundFrom(const Transform& other)` @done(20-10-13 13:49)
             ☐ Fix all scaling issues in `ObjectTransform`
             ☐ Add frames of reference for `rotateBy(glm::quat)` and `scaleBy(glm::vec3)`
-        Tree:
-            ☐ Iterator semantics
-            ✔ `clear()` method @done(20-10-22 10:11)
-            ✔ Change weak pointers to shared pointers where possible, refactor @done(20-10-22 10:11)
-            ✔ Documentation @done(20-10-25 02:50)
-            ☐ Keep shared pointers even between nodes, manage proper destruction
         VertexDataManager:
             ☐ A VertexDataManager holds actual vertex data and takes care of memory management
             ☐ Meshes now only keep handles to vertex content held in a VertexDataManager
@@ -85,7 +80,13 @@ RenderBoi:
         ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
         ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)
     Tools:
-        ✔ Clean up the massive mess going on in Tree @done(20-10-13 15:46)
+        Tree:
+            ☐ Iterator semantics
+            ✔ Clean up the massive mess going on @done(20-10-13 15:46)
+            ✔ `clear()` method @done(20-10-22 10:11)
+            ✔ Change weak pointers to shared pointers where possible, refactor @done(20-10-22 10:11)
+            ✔ Documentation @done(20-10-25 02:50)
+            ☐ Keep shared pointers even between nodes, manage proper destruction
     FIXME:
         ✔ Transform::lookAt @done(20-10-13 17:04)
         ✔ Light attenuation @done(20-04-20 06:55)
