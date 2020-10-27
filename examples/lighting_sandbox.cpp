@@ -1,7 +1,8 @@
 #include "lighting_sandbox.hpp"
 
-#include <memory>
 #include <iostream>
+#include <memory>
+#include <string>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -32,16 +33,6 @@ using Ref = FrameOfReference;
 #include "../core/scripts/keyboard_movement_script.hpp"
 #include "../core/scripts/basic_input_manager.hpp"
 #include "../core/scripts/camera_aspect_ratio_script.hpp"
-
-LightingSandbox::LightingSandbox()
-{
-    
-}
-
-LightingSandbox::~LightingSandbox()
-{
-
-}
 
 void LightingSandbox::run(GLWindowPtr window)
 {
@@ -130,7 +121,6 @@ void LightingSandbox::run(GLWindowPtr window)
     glEnable(GL_DEPTH_TEST);
     while (!window->shouldClose())
     {
-        float frameTime = (float)glfwGetTime();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Update and draw scene

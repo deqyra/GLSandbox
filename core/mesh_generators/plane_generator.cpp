@@ -30,7 +30,11 @@ PlaneGenerator::PlaneGenerator() :
 PlaneGenerator::PlaneGenerator(Parameters parameters) :
     parameters(parameters)
 {
-    
+    if (parameters.xTexSize <= 0.f)
+        this->parameters.xTexSize = parameters.tileAmountX * parameters.tileSizeX;
+
+    if (parameters.yTexSize <= 0.f)
+        this->parameters.yTexSize = parameters.tileAmountY * parameters.tileSizeY;
 }
 
 MeshPtr PlaneGenerator::generatePtr()
