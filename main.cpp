@@ -11,8 +11,10 @@
 #include "window/enums.hpp"
 #include "window/tools.hpp"
 #include "window/window_backend.hpp"
+
 #include "examples/gl_sandbox.hpp"
 #include "examples/lighting_sandbox.hpp"
+#include "examples/shadow_sandbox.hpp"
 
 #ifdef _WIN32
 	#include <windows.h>
@@ -89,7 +91,8 @@ std::vector<GLSandbox*> createAllSandboxes()
     try
     {
         return std::vector<GLSandbox*>({
-            new LightingSandbox()
+            //new LightingSandbox(),
+			new ShadowSandbox()
         });
     }
     catch (std::runtime_error e)

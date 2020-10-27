@@ -227,6 +227,7 @@
         add_library( ${EXAMPLE_LIB_NAME} ${STATIC_OR_SHARED}
                                                             examples/gl_sandbox.hpp
                     examples/lighting_sandbox.cpp           examples/lighting_sandbox.hpp
+                    examples/shadow_sandbox.cpp             examples/shadow_sandbox.hpp
                     )
         target_link_libraries( ${EXAMPLE_LIB_NAME} PUBLIC ${CORE_LIB_NAME} ${TOOLS_LIB_NAME} ${WINDOW_LIB_NAME} )
 
