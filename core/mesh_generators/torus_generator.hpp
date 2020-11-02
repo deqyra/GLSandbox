@@ -26,18 +26,18 @@ class TorusGenerator : public MeshGenerator
         /// generation.
         struct Parameters
         {
-            /// @brief Default toroidal ("large") radius of the torus.
+            /// @brief Toroidal ("large") radius of the torus.
             float toroidalRadius;
 
-            /// @brief Default poloidal ("small") radius of the torus.
+            /// @brief Poloidal ("small") radius of the torus.
             float poloidalRadius;
 
-            /// @brief How many vertices to use by default along the toroidal 
-            /// ("large") circumference of the torus.
+            /// @brief How many vertices to use along the toroidal ("large") 
+            /// circumference of the torus.
             unsigned int toroidalVertexRes;
 
-            /// @brief How many vertices to use by default along the poloidal 
-            /// ("small") circumference of the torus.
+            /// @brief How many vertices to use along the poloidal ("small") 
+            /// circumference of the torus.
             unsigned int poloidalVertexRes;
         };
 

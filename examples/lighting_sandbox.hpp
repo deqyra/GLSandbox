@@ -33,27 +33,36 @@ class LightingSandbox : public GLSandbox
 class LightingSandboxScript : public InputProcessingScript
 {
     private:
-        // Pointer to the cube of the LightingSandbox
+        /// @brief Pointer to the cube of the LightingSandbox.
         SceneObjectPtr _cubeObj;
-        // Pointer to the big torus of the LightingSandbox
-        SceneObjectPtr _bigTorusObj;
-        // Pointer to the small torus of the LightingSandbox
-        SceneObjectPtr _smallTorusObj;
-        // Pointer to the tetrahedron of the LightingSandbox
-        SceneObjectPtr _tetrahedronObj;
-        // Pointer to the camera of the LightingSandbox
-        SceneObjectPtr _cameraObj;
-        // Pointer to the light whose range to vary
-        std::shared_ptr<PointLight> _light;
-        // Whether objects should move
-        bool _autoRotate;
-        // How fast objects should move
-        float _speedFactor;
-        // Sine along which to vary the light range
-        SineGenerator<float> _sine;
-        // Base range of the light
-        float _baseRange;
 
+        /// @brief Pointer to the big torus of the LightingSandbox.
+        SceneObjectPtr _bigTorusObj;
+
+        /// @brief Pointer to the small torus of the LightingSandbox.
+        SceneObjectPtr _smallTorusObj;
+
+        /// @brief Pointer to the tetrahedron of the LightingSandbox.
+        SceneObjectPtr _tetrahedronObj;
+
+        /// @brief Pointer to the camera of the LightingSandbox.
+        SceneObjectPtr _cameraObj;
+
+        /// @brief Pointer to the light whose range to vary.
+        std::shared_ptr<PointLight> _light;
+
+        /// @brief Whether objects should move.
+        bool _autoRotate;
+
+        /// @brief How fast objects should move.
+        float _speedFactor;
+
+        /// @brief Sine along which to vary the light range.
+        SineGenerator<float> _sine;
+
+        /// @brief Base range of the light.
+        float _baseRange;
+        
     public:
         static constexpr glm::vec3 CubeOrbitAxis = {0.f, 1.f, 0.f};
         static constexpr glm::vec3 BigTorusRotationAxis = {1.f, 0.f, 0.f};
@@ -65,9 +74,9 @@ class LightingSandboxScript : public InputProcessingScript
 
         LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj, SceneObjectPtr cameraObj, std::shared_ptr<PointLight> light, float baseLightRange);
 
-        // Update the transforms of the different scene objects
+        /// @brief Update the transforms of the different scene objects.
         virtual void update(float timeElapsed);
-        // Process keyboard input
+        /// @brief Process keyboard input.
         virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
 
         virtual LightingSandboxScript* clone();

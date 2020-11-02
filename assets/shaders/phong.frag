@@ -90,7 +90,8 @@ vec4 calculatePhong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, v
 {
 	vec3 normal = normalize(vertOut.normal);
 	vec3 viewDir = normalize(vertOut.fragPos);
-	vec3 reflectDir = reflect(lightDirection, normal);
+	// vec3 reflectDir = reflect(lightDirection, normal);
+	vec3 halfwayDir = normalize(viewDir - lightDirection);
 
 	// Ambient lighting
     vec4 ambient = vec4(ambientLight, 1.f) * vec4(material.ambient, 1.f);
@@ -108,7 +109,8 @@ vec4 calculatePhong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, v
 	if (material.specularMapCount > 0)
 		specularTexel = texture(material.specularMaps[0], vertOut.texCoord);
 
-	float spec = pow(max(dot(-viewDir, reflectDir), 0.0), material.shininess);
+	// float spec = pow(max(dot(-viewDir, reflectDir), 0.0), material.shininess);
+	float spec = pow(max(dot(-viewDir, halfwayDir), 0.0), material.shininess);
 	vec4 specular = vec4(specularLight, 1.f) * vec4(material.specular, 1.f) * specularTexel * spec;
 
 	return ambient + diffuse + specular;

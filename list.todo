@@ -18,6 +18,7 @@ RenderBoi:
             ✔ Method to attach camera and scripts to scene object@done(20-10-26 02:40)
         Mesh:
             ☐ Handle several types of draw methods per single mesh
+            ☐ Star mesh generator (branch count, inset, hollow)
         Scene:
             ✔ In `moveObject`, add possibility to keep world position of moved object @done(20-10-13 14:49)
             ☐ Add something like `registerObjectTree(ScenePtr)` to import complex objects into a scene
@@ -48,6 +49,7 @@ RenderBoi:
             ✔ Declare uniform blocks in their own file @done(20-10-24 17:30)
             ✔ Interface blocks too @done(20-10-24 17:31)
             ✔ Find a way to tell whether a shader provides has certain render features @done(20-10-24 17:59)
+            ☐ Kaleidoscopic fragment shader
         Texture:
             ☐ Check texture generation success and display error info
         Transform:
