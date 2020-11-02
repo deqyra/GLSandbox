@@ -6,6 +6,8 @@
 
 #include <glad/gl.h>
 
+#include "pixel_space.hpp"
+
 /// @brief Handler for a 2D texture resource on the GPU.
 class Texture2D
 {
@@ -32,12 +34,13 @@ class Texture2D
         ///
         /// @exception If the image could not be read, the function throws an
         /// std::runtime_error.
-        static unsigned int loadTextureFromFile(const std::string filename);
+        static unsigned int loadTextureFromFile(const std::string filename, PixelSpace space);
 
         /// @brief Free resources upon instance destruction.
         void cleanup();
 
     public:
+
         /// @brief GPU location of the last texture unit available.
         static constexpr unsigned int MaxTextureUnit = GL_TEXTURE31;
         /// @brief Amount of texture units that can be handled by the GPU.
@@ -45,7 +48,9 @@ class Texture2D
 
         /// @param filename Local path to an image file out of which the texture
         /// should be generated.
-        Texture2D(std::string filename);
+        /// @param pixelSpace Literal describing which space the texture pixels
+        /// are in.
+        Texture2D(std::string filename, PixelSpace space);
 
         Texture2D(const Texture2D& other);
 

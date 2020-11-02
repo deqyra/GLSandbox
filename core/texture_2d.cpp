@@ -5,12 +5,13 @@
 #include <glad/gl.h>
 #include <stb_image.hpp>
 
+#include "pixel_space.hpp"
 #include "../tools/exceptions/index_out_of_bounds_error.hpp"
 
 std::unordered_map<unsigned int, unsigned int> Texture2D::_locationRefCounts = std::unordered_map<unsigned int, unsigned int>();
 std::unordered_map<std::string , unsigned int> Texture2D::_pathsToIds  = std::unordered_map<std::string, unsigned int>();
 
-Texture2D::Texture2D(std::string filename) :
+Texture2D::Texture2D(std::string filename, PixelSpace space) :
     _path(filename)
 {
     auto it = _pathsToIds.find(filename);
@@ -25,7 +26,7 @@ Texture2D::Texture2D(std::string filename) :
     else
     {
         // Load the image
-        _location = loadTextureFromFile(filename);
+        _location = loadTextureFromFile(filename, space);
         // Map the new texture location to image filename and set a refcount
         _pathsToIds[filename] = _location;
         _locationRefCounts[_location] = 1;
@@ -73,7 +74,7 @@ void Texture2D::cleanup()
     };
 }
 
-unsigned int Texture2D::loadTextureFromFile(const std::string filename)
+unsigned int Texture2D::loadTextureFromFile(const std::string filename, PixelSpace space)
 {
     // Create a texture resource on the GPU
     unsigned int location;
@@ -91,9 +92,17 @@ unsigned int Texture2D::loadTextureFromFile(const std::string filename)
         else if (nChannels == 4)
             format = GL_RGBA;
 
+        GLenum internalFormat = GL_RGB;
+        if (space == PixelSpace::sRGB)
+        {
+            internalFormat = GL_SRGB;
+            if (format == GL_RGBA)
+                internalFormat = GL_SRGB_ALPHA;
+        }
+
         // Send the texture to the GPU
         glBindTexture(GL_TEXTURE_2D, location);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         // Set texture wrapping and filtering options

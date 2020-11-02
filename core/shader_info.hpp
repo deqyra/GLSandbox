@@ -11,7 +11,8 @@ namespace ShaderInfo
     /// supports rendering a particular aspect of a scene or of its elements.
     enum class RenderFeature
     {
-        Material
+        Material,
+        GammaCorrection
     };
 
     using ShaderToIncludeDirectiveMap = std::unordered_map<std::string, std::vector<std::string>>;

@@ -10,6 +10,7 @@
 #include "../core/material.hpp"
 #include "../core/materials.hpp"
 #include "../core/texture_2d.hpp"
+#include "../core/pixel_space.hpp"
 
 #include "../core/mesh_generators/mesh_type.hpp"
 #include "../core/mesh_generators/plane_generator.hpp"
@@ -37,6 +38,7 @@ void ShadowSandbox::run(GLWindowPtr window)
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
     
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
+    lightingShader.setFloat("gamma", 2.2f);
 
     ScenePtr scene = Factory::makeScene();
 
@@ -60,7 +62,7 @@ void ShadowSandbox::run(GLWindowPtr window)
 
     // FLOOR
     Material floorMaterial = Material();
-    Texture2D floorTex = Texture2D("assets/textures/wood.png");
+    Texture2D floorTex = Texture2D("assets/textures/wood.png", PixelSpace::sRGB);
     floorMaterial.pushDiffuseMap(floorTex);
     SceneObjectPtr floorObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("Floor", planeParameters, floorMaterial, lightingShader);
 
@@ -68,7 +70,7 @@ void ShadowSandbox::run(GLWindowPtr window)
     Material wallMaterial = Material();
     wallMaterial.specular = glm::vec3(0.1f);
     wallMaterial.shininess = 2.f;
-    Texture2D wallTex = Texture2D("assets/textures/wall.jpg");
+    Texture2D wallTex = Texture2D("assets/textures/wall.jpg", PixelSpace::sRGB);
     wallMaterial.pushDiffuseMap(wallTex);
 
     // XY wall
