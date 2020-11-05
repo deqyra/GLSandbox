@@ -50,6 +50,9 @@ RenderBoi:
             ✔ Interface blocks too @done(20-10-24 17:31)
             ✔ Find a way to tell whether a shader provides has certain render features @done(20-10-24 17:59)
             ☐ Kaleidoscopic fragment shader
+            ☐ Fix attenuation
+            ☐ Fix Blinn-Phong
+            ☐ Fix gamma correction
         Texture:
             ☐ Check texture generation success and display error info
         Transform:

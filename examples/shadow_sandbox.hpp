@@ -15,7 +15,7 @@
 class ShadowSandbox : public GLSandbox
 {
     public:
-        static constexpr float LightBaseRange = 10.f;
+        static constexpr float LightBaseRange = 5.f;
         static constexpr Camera::CameraParameters CameraParams = {-45.f, -35.f, 1.f};
         static constexpr glm::vec3 StartingCameraPosition = {15.f, 15.f, 15.f};
         static constexpr unsigned int PlaneTileCount = 10;

@@ -54,7 +54,7 @@ namespace
 
 void attenuationFromRange(float range, float& quadraticFactor, float& linearFactor, float& constant)
 {
-    range *= 4.f;
+    range *= 5;
     quadraticFactor = quadraticFactorForRange(range);
     linearFactor = linearFactorForRange(range);
     constant = 1.f;

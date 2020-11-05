@@ -38,7 +38,7 @@ void ShadowSandbox::run(GLWindowPtr window)
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
     
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
-    lightingShader.setFloat("gamma", 2.2f);
+    lightingShader.setFloat("gamma", 1.7f);
 
     ScenePtr scene = Factory::makeScene();
 
@@ -61,13 +61,23 @@ void ShadowSandbox::run(GLWindowPtr window)
     };
 
     // FLOOR
-    Material floorMaterial = Material(glm::vec3(0.f), glm::vec3(1.f), glm::vec3(1.f), 128.f);
+    Material floorMaterial = Material(
+        glm::vec3(0.f),
+        glm::vec3(1.f),
+        glm::vec3(0.3203125f, 0.254296875f, 0.180859375f),
+        128.f
+    );
     Texture2D floorTex = Texture2D("assets/textures/wood.png", PixelSpace::sRGB);
     floorMaterial.pushDiffuseMap(floorTex);
     SceneObjectPtr floorObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("Floor", planeParameters, floorMaterial, lightingShader);
 
     // WALLS
-    Material wallMaterial = Material(glm::vec3(0.f), glm::vec3(1.f), glm::vec3(0.15f), 2.f);
+    Material wallMaterial = Material(
+        glm::vec3(0.f), 
+        glm::vec3(1.f), 
+        glm::vec3(0.25f, 0.15f, 0.15f), 
+        2.f
+    );
     Texture2D wallTex = Texture2D("assets/textures/wall.jpg", PixelSpace::sRGB);
     wallMaterial.pushDiffuseMap(wallTex);
 
