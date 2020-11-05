@@ -6,7 +6,12 @@
 /// @brief A library of standard (and cheap-looking) materials.
 namespace Materials
 {
-    const Material Default = Material();
+    const Material Default = Material(
+		glm::vec3(0.f), 
+		glm::vec3(1.f), 
+		glm::vec3(0.8f),
+		16.f
+	);
 
     const Material White = Material(
         glm::vec3(1.f),

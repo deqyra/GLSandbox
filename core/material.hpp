@@ -23,8 +23,6 @@ class Material
         /// @brief The maximum amount of specular maps the material can have.
         static constexpr unsigned int SpecularMapMaxCount = 8;
 
-        Material();
-
         Material(const Material& other);
         
         /// @param ambient Fixed ambient component of the reflection of the material.

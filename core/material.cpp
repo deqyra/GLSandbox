@@ -5,12 +5,6 @@
 #include "../tools/exceptions/index_out_of_bounds_error.hpp"
 #include "../tools/exceptions/unmatched_array_size_error.hpp"
 
-Material::Material() :
-    Material(glm::vec3(0.15f), glm::vec3(0.6f), glm::vec3(1.f), 12.8f)
-{
-
-}
-
 Material::Material(const Material& other) :
     ambient(other.ambient),
     diffuse(other.diffuse),

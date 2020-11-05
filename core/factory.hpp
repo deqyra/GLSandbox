@@ -1,6 +1,7 @@
 #ifndef CORE__FACTORY_HPP
 #define CORE__FACTORY_HPP
 
+#include "materials.hpp"
 #include "mesh.hpp"
 #include "mesh_generator.hpp"
 #include "mesh_generators/mesh_type.hpp"
@@ -72,7 +73,7 @@ class Factory
         ///
         /// @return Pointer to the instantiated scene object.
         template<MeshType T>
-        static SceneObjectPtr makeSceneObjectWithMesh(std::string name, typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat = Material(), Shader shader = Shader());
+        static SceneObjectPtr makeSceneObjectWithMesh(std::string name, typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat = Materials::Default, Shader shader = Shader());
 
         /// @brief Create a script of any type and attach it to a scene object.
         ///

@@ -1,7 +1,9 @@
 #include "mesh_component.hpp"
 
+#include "../../materials.hpp"
+
 MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh) :
-    MeshComponent(sceneObject, mesh, Material(), Shader())
+    MeshComponent(sceneObject, mesh, Materials::Default, Shader())
 {
 
 }
@@ -13,7 +15,7 @@ MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material 
 }
 
 MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Shader shader) :
-    MeshComponent(sceneObject, mesh, Material(), shader)
+    MeshComponent(sceneObject, mesh, Materials::Default, shader)
 {
 
 }
