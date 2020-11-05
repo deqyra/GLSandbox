@@ -2,12 +2,6 @@
 
 #include "tools.hpp"
 
-PointLight::PointLight() :
-    PointLight(DefaultRange)
-{
-
-}
-
 PointLight::PointLight(float range) :
     PointLight(glm::vec3(1.f), glm::vec3(1.f), glm::vec3(1.f), range)
 {

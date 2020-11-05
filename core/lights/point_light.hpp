@@ -11,11 +11,6 @@
 class PointLight : public Light
 {
     public:
-        /// @brief Default range for point light instances.
-        static constexpr float DefaultRange = 50.f;
-
-        PointLight();
-
         /// @param range The distance past which the emitted light should have 
         /// noticeably faded out. Will be used to calculate factors in the light
         /// attenuation computation.
