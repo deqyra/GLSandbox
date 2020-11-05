@@ -37,12 +37,16 @@ class Mesh
         void setupBuffers();
 
     protected:
-        /// @brief Vertices the mesh is made of.
-        std::vector<Vertex> _vertices;
-        /// @brief Vertex indices teling how to draw the mesh.
-        std::vector<unsigned int> _indices;
         /// @brief Draw policy to use when drawing.
         unsigned int _drawMode;
+        /// @brief Vertices the mesh is made of.
+        std::vector<Vertex> _vertices;
+        /// @brief Vertex indices telling how to draw the mesh.
+        std::vector<unsigned int> _indices;
+        /// @brief Sizes of the different strips contained within indices.
+        std::vector<unsigned int> _primitiveSizes;
+        /// @brief Indices at which a primitive should start.
+        std::vector<void*> _primitiveOffsets;
 
         /// @brief Handle to the VAO on the GPU.
         unsigned int _vao;
@@ -54,10 +58,17 @@ class Mesh
     public:
         Mesh(const Mesh& other);
 
+        /// @param drawMode Draw policy to use when drawing.
         /// @param vertices Vertex data of the mesh.
         /// @param indices Vertex indices telling how to draw the mesh.
+        Mesh(unsigned int drawMode, std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+
         /// @param drawMode Draw policy to use when drawing.
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode);
+        /// @param vertices Vertex data of the mesh.
+        /// @param indices Vertex indices telling how to draw the mesh.
+        /// @param primitiveSizes Sizes of the different strips contained within indices.
+        /// @param primitiveOffsets Indices at which a primitive should start.
+        Mesh(unsigned int drawMode, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> primitiveSizes, std::vector<void*> primitiveOffsets);
 
         ~Mesh();
 

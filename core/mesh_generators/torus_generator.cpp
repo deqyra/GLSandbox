@@ -117,5 +117,5 @@ MeshPtr TorusGenerator::generatePtr()
         indices[index + 1] = nextVertex;
     }
 
-    return std::make_shared<Mesh>(vertices, indices, GL_TRIANGLE_STRIP);
+    return std::make_shared<Mesh>(GL_TRIANGLE_STRIP, vertices, indices);
 }

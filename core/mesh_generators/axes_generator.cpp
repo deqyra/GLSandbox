@@ -46,5 +46,5 @@ MeshPtr AxesGenerator::generatePtr()
         4, 5    // Z axis
     };
 
-    return std::make_shared<Mesh>(vertices, indices, GL_LINES);
+    return std::make_shared<Mesh>(GL_LINES, vertices, indices);
 }

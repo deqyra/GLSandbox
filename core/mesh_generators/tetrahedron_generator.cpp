@@ -75,5 +75,5 @@ MeshPtr TetrahedronGenerator::generatePtr()
         9, 10, 11
     };
 
-    return std::make_shared<Mesh>(vertices, indices, GL_TRIANGLES);
+    return std::make_shared<Mesh>(GL_TRIANGLES, vertices, indices);
 }

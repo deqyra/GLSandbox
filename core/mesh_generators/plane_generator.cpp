@@ -88,12 +88,13 @@ MeshPtr PlaneGenerator::generatePtr()
         } 
     }
 
-    const unsigned int nIndices = ((p.tileAmountX + 1) * (p.tileAmountY) * 2) + (2 * (p.tileAmountY - 1));
+    const unsigned int nIndices = ((p.tileAmountX + 1) * (p.tileAmountY) * 2);
 
     std::vector<unsigned int> indices;
     indices.reserve(nIndices);
 
     unsigned int xVertexAmount = p.tileAmountX + 1;
+
     for (unsigned int j = 0; j < p.tileAmountY; j++)
     {
         for (unsigned int i = 0; i < xVertexAmount; i++)
@@ -101,15 +102,16 @@ MeshPtr PlaneGenerator::generatePtr()
             indices.push_back(i + (xVertexAmount * (j + 1)));
             indices.push_back(i + (xVertexAmount * j));
         }
-
-        // If this is not the last iteration
-        if (j < p.tileAmountY - 1)
-        {
-            // Insert degenerate triangles to move onto the next strip
-            indices.push_back(p.tileAmountX + (j * xVertexAmount));
-            indices.push_back((j + 1) * xVertexAmount);
-        }
     }
 
-    return std::make_shared<Mesh>(vertices, indices, GL_TRIANGLE_STRIP);
+    unsigned int primitiveSize = 2 * xVertexAmount;
+    std::vector<unsigned int> primitiveSizes(p.tileAmountY, primitiveSize);
+
+    std::vector<void*> primitiveOffsets(p.tileAmountY);
+    for (unsigned int j = 0; j < p.tileAmountY; j++)
+    {
+        primitiveOffsets[j] = (void*)(j * primitiveSize * sizeof(int));
+    }
+
+    return std::make_shared<Mesh>(GL_TRIANGLE_STRIP, vertices, indices, primitiveSizes, primitiveOffsets);
 }

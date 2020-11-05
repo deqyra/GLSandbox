@@ -80,14 +80,21 @@ MeshPtr CubeGenerator::generatePtr()
     }
 
     std::vector<unsigned int> indices = {
-        // Face n strip     // Insert degenerate triangles to move onto the next face strip
-         0,  1,  2,  3,      3,  4,     // Face 1
-         4,  5,  6,  7,      7,  8,     // Face 2
-         8,  9, 10, 11,     11, 12,     // ...
-        12, 13, 14, 15,     15, 16,
-        16, 17, 18, 19,     19, 20,
+        // Face n strip
+         0,  1,  2,  3,
+         4,  5,  6,  7,
+         8,  9, 10, 11,
+        12, 13, 14, 15,
+        16, 17, 18, 19,
         20, 21, 22, 23
     };
 
-    return std::make_shared<Mesh>(vertices, indices, GL_TRIANGLE_STRIP);
+    std::vector<unsigned int> primitiveSizes(6, 4);
+    std::vector<void*> primitiveOffsets(6);
+    for (unsigned int i = 0; i < 6; i++)
+    {
+        primitiveOffsets[i] = (void*)(i * 4 * sizeof(unsigned int));
+    }
+
+    return std::make_shared<Mesh>(GL_TRIANGLE_STRIP, vertices, indices, primitiveSizes, primitiveOffsets);
 }

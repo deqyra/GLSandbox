@@ -40,6 +40,8 @@ void ShadowSandbox::run(GLWindowPtr window)
     Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
     lightingShader.setFloat("gamma", 1.7f);
 
+    Shader depthShader = Shader("assets/shaders/mvp.vert", "assets/shaders/depth.frag");
+
     ScenePtr scene = Factory::makeScene();
 
     // Register the scene as an input processor to the window
@@ -95,7 +97,7 @@ void ShadowSandbox::run(GLWindowPtr window)
     };
 
     // TORUS
-    SceneObjectPtr torusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Torus", torusParameters, Materials::Silver, lightingShader);
+    SceneObjectPtr torusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Torus", torusParameters, Materials::Default, lightingShader);
 
     // LIGHT
     SceneObjectPtr lightObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Materials::Default, lightingShader);
@@ -106,6 +108,9 @@ void ShadowSandbox::run(GLWindowPtr window)
     SceneObjectPtr cameraObj = Factory::makeSceneObject("Camera");
     CameraPtr camera = std::make_shared<Camera>(CameraParams);
     cameraObj->addComponent<CameraComponent>(camera);
+
+    depthShader.setFloat("near", camera->getNearDistance());
+    depthShader.setFloat("far", camera->getFarDistance());
 
     // Register all objects
     scene->registerObject(floorObj);
@@ -154,9 +159,10 @@ void ShadowSandbox::run(GLWindowPtr window)
 
     glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
     while (!window->shouldClose())
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
 
         // Update and draw scene
         scene->triggerUpdate();

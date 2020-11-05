@@ -1,8 +1,9 @@
 #include "mesh.hpp"
 
+#include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
-#include <memory>
 
 #include "material.hpp"
 #include "materials.hpp"
@@ -12,15 +13,28 @@ unsigned int Mesh::_count = 0;
 std::unordered_map<unsigned int, unsigned int> Mesh::_arrayRefCount = std::unordered_map<unsigned int, unsigned int>();
 std::unordered_map<unsigned int, unsigned int> Mesh::_bufferRefCount = std::unordered_map<unsigned int, unsigned int>();
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int drawMode) :
+Mesh::Mesh(unsigned int drawMode, std::vector<Vertex> vertices, std::vector<unsigned int> indices) :
+    Mesh(drawMode, vertices, indices, {(unsigned int)indices.size()}, {nullptr})
+{
+
+}
+
+Mesh::Mesh(unsigned int drawMode, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> primitiveSizes, std::vector<void*> primitiveOffsets) :
+    _drawMode(drawMode),
     _vertices(vertices),
     _indices(indices),
-    _drawMode(drawMode),
+    _primitiveSizes(primitiveSizes),
+    _primitiveOffsets(primitiveOffsets),
     _vao(0),
     _vbo(0),
     _ebo(0),
     id(_count++)
 {
+    if (primitiveSizes.size() != primitiveOffsets.size())
+    {
+        throw std::runtime_error("Mesh: sizes of provided arrays of primitive info do not match.");
+    }
+
     // Setup resources on the GPU
     setupBuffers();
 
@@ -59,8 +73,8 @@ Mesh::Mesh(const Mesh& other) :
 Mesh& Mesh::operator=(const Mesh& other)
 {
     // Free current resources
-    cleanup();
 
+    cleanup();
     // Copy everything
     _vertices = other._vertices;
     _indices = other._indices;
@@ -143,5 +157,11 @@ void Mesh::draw()
 {
     // Draw mesh
     glBindVertexArray(_vao);
-    glDrawElements(_drawMode, (unsigned int) _indices.size(), GL_UNSIGNED_INT, 0);
+    glMultiDrawElements(
+        _drawMode, 
+        (GLsizei*) &(_primitiveSizes[0]), 
+        GL_UNSIGNED_INT, 
+        (void* const*) &(_primitiveOffsets[0]), 
+        _primitiveSizes.size()
+    );
 }

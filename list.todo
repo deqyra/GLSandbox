@@ -18,6 +18,7 @@ RenderBoi:
             ✔ Method to attach camera and scripts to scene object@done(20-10-26 02:40)
         Mesh:
             ☐ Handle several types of draw methods per single mesh
+            ✔ Use glMultiDrawElements, adapt mesh generators @done(20-11-05 08:59)
             ☐ Star mesh generator (branch count, inset, hollow)
         Scene:
             ✔ In `moveObject`, add possibility to keep world position of moved object @done(20-10-13 14:49)
@@ -50,9 +51,9 @@ RenderBoi:
             ✔ Interface blocks too @done(20-10-24 17:31)
             ✔ Find a way to tell whether a shader provides has certain render features @done(20-10-24 17:59)
             ☐ Kaleidoscopic fragment shader
-            ☐ Fix attenuation
-            ☐ Fix Blinn-Phong
-            ☐ Fix gamma correction
+            ✔ Fix attenuation @done(20-11-05 07:27)
+            ✔ Fix Blinn-Phong @done(20-11-05 07:27)
+            ✔ Fix gamma correction @done(20-11-05 07:27)
         Texture:
             ☐ Check texture generation success and display error info
         Transform:
