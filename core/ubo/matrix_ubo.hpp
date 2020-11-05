@@ -51,7 +51,13 @@ class MatrixUBO : public UniformBufferObject
 
         /// @brief Set the normal matrix in the UBO.
         ///
-        /// @param normal The normal matrix to set in the UBO.
+        /// @param normal The normal matrix to set in the UBO. The normal
+        /// restoration matrix is supposed to be a 3x3 matrix, but a mat3 will
+        /// be aligned to an array of vec4's on the GPU. Since the calculation  
+        /// of the normal matrix is performed using 4x4 matrices anyway, the 
+        /// result can be directly passed in as a mat4: only the first three 
+        /// rows will be sent to the GPU as vec4's, and the last element of 
+        /// those will be ignored.
         void setNormal(glm::mat4 normal);
 };
 

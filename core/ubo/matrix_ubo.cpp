@@ -23,7 +23,7 @@ unsigned int MatrixUBO::getBindingPoint()
 
 unsigned int MatrixUBO::getSize()
 {
-    return 256;
+    return 240;
 }
 
 void MatrixUBO::setModel(glm::mat4 model)
@@ -51,5 +51,5 @@ void MatrixUBO::setNormal(glm::mat4 normal)
 {
     // Send the matrix on the GPU memory, with an appropriate offset
     glBindBuffer(GL_UNIFORM_BUFFER, _location);
-    glBufferSubData(GL_UNIFORM_BUFFER, 192, sizeof(glm::mat4), glm::value_ptr(normal));
+    glBufferSubData(GL_UNIFORM_BUFFER, 192, 3*sizeof(glm::vec4), glm::value_ptr(normal));
 }
