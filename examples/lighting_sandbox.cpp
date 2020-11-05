@@ -61,7 +61,7 @@ void LightingSandbox::run(GLWindowPtr window)
     SceneObjectPtr axesObj = Factory::makeSceneObjectWithMesh<MeshType::Axes>("Axes", {3.f});
     
     // CUBE
-    SceneObjectPtr cubeObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Material(), lightingShader);
+    SceneObjectPtr cubeObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Materials::Default, lightingShader);
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>(LightBaseRange);
     cubeObj->addComponent<LightComponent>(light);
 

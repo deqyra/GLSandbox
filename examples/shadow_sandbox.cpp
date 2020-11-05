@@ -61,15 +61,13 @@ void ShadowSandbox::run(GLWindowPtr window)
     };
 
     // FLOOR
-    Material floorMaterial = Material();
+    Material floorMaterial = Material(glm::vec3(0.f), glm::vec3(1.f), glm::vec3(1.f), 128.f);
     Texture2D floorTex = Texture2D("assets/textures/wood.png", PixelSpace::sRGB);
     floorMaterial.pushDiffuseMap(floorTex);
     SceneObjectPtr floorObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("Floor", planeParameters, floorMaterial, lightingShader);
 
     // WALLS
-    Material wallMaterial = Material();
-    wallMaterial.specular = glm::vec3(0.1f);
-    wallMaterial.shininess = 2.f;
+    Material wallMaterial = Material(glm::vec3(0.f), glm::vec3(1.f), glm::vec3(0.15f), 2.f);
     Texture2D wallTex = Texture2D("assets/textures/wall.jpg", PixelSpace::sRGB);
     wallMaterial.pushDiffuseMap(wallTex);
 
@@ -90,7 +88,7 @@ void ShadowSandbox::run(GLWindowPtr window)
     SceneObjectPtr torusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Torus", torusParameters, Materials::Silver, lightingShader);
 
     // LIGHT
-    SceneObjectPtr lightObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Material(), lightingShader);
+    SceneObjectPtr lightObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Materials::Default, lightingShader);
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>(LightBaseRange);
     lightObj->addComponent<LightComponent>(light);
 
