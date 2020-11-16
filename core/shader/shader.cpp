@@ -32,7 +32,7 @@ Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
     // If the program key is not being used by a shader resource...
     if (it == _programLocations.end())
     {
-        std::vector<ShaderInfo::RenderFeature> supportedFeatures;
+        std::vector<ShaderInfo::ShaderFeature> supportedFeatures;
         // Compile provided shaders
         unsigned int vertexShader = loadShader(GL_VERTEX_SHADER, vertexPath);
         if (!vertexShader)
@@ -72,7 +72,7 @@ Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
         // Map the supported features to the GPU location of the program
         if (supportedFeatures.size() > 0)
         {
-            _supportedFeatures[_location] = std::unordered_map<ShaderInfo::RenderFeature, bool>();
+            _supportedFeatures[_location] = std::unordered_map<ShaderInfo::ShaderFeature, bool>();
             for (auto it = supportedFeatures.begin(); it != supportedFeatures.end(); it++)
             {
                 _supportedFeatures[_location][*it] = true;
@@ -268,7 +268,7 @@ void Shader::setPointLightArray(const std::string& name, unsigned int index, Poi
     setPointLight(indexedName, value, position);
 }
 
-bool Shader::isSupported(ShaderInfo::RenderFeature feature)
+bool Shader::isSupported(ShaderInfo::ShaderFeature feature)
 {
     auto it = _supportedFeatures[_location].find(feature);
 
@@ -374,7 +374,7 @@ void Shader::makeNamedString(std::string name, std::string sourceFilename)
     _namedStringLoadStatus[name] = true;
 }
 
-void Shader::appendSupportedFeaturesOfShader(std::vector<ShaderInfo::RenderFeature>& destination, std::string filename)
+void Shader::appendSupportedFeaturesOfShader(std::vector<ShaderInfo::ShaderFeature>& destination, std::string filename)
 {
     // Find the entry for the provided filename
     auto it = ShaderInfo::SupportedFeatures.find(filename);

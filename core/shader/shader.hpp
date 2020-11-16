@@ -26,7 +26,7 @@ class Shader
         /// @brief The location of the shader resource on the GPU.
         unsigned int _location;
 
-        using ShaderToRenderFeatureMap = std::unordered_map<unsigned int, std::unordered_map<typename ShaderInfo::RenderFeature, bool>>;
+        using ShaderToRenderFeatureMap = std::unordered_map<unsigned int, std::unordered_map<typename ShaderInfo::ShaderFeature, bool>>;
         /// @brief Structure mapping supported render features to the file names
         /// of the shaders which support them.
         static ShaderToRenderFeatureMap _supportedFeatures;
@@ -86,7 +86,7 @@ class Shader
         ///
         /// @param destination Array to which the features should be appended.
         /// @param filename Path to the shader source file.
-        static void appendSupportedFeaturesOfShader(std::vector<ShaderInfo::RenderFeature>& destination, std::string filename);
+        static void appendSupportedFeaturesOfShader(std::vector<ShaderInfo::ShaderFeature>& destination, std::string filename);
 
         /// @brief Combine shaders and link them into a program.
         ///
@@ -207,7 +207,7 @@ class Shader
         /// @param feature Literal describing the feature to check on.
         ///
         /// @return Whether or not the feature is supported.
-        bool isSupported(ShaderInfo::RenderFeature feature);
+        bool isSupported(ShaderInfo::ShaderFeature feature);
 };
 
 #endif//CORE__SHADER_HPP

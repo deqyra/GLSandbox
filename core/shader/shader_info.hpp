@@ -7,12 +7,23 @@
 
 namespace ShaderInfo
 {
-    /// @brief Collection of literals to be used to describe whether a shader
-    /// supports rendering a particular aspect of a scene or of its elements.
-    enum class RenderFeature
+    /// @brief Collection of literals describing the different aspects which
+    /// a shader might support when rendering a scene or its elements.
+    enum class ShaderFeature
     {
-        Material,
-        GammaCorrection
+        VertexMVP,
+        VertexFishEye,
+        GeometryShowNormals,
+        FragmentFullLight,
+        FragmentDepthView,
+        FragmentMeshMaterial,
+        FragmentPhong,
+        FragmentBlinnPhong,
+        FragmentGammaCorrection,
+        FragmentOutline,
+        FragmentCubemap,
+        FragmentBlending,
+        FragmentShadows
     };
 
     using ShaderToIncludeDirectiveMap = std::unordered_map<std::string, std::vector<std::string>>;
@@ -41,7 +52,7 @@ namespace ShaderInfo
     /// directive.
     IncludeToFilenameMap getIncludeFilenames();
 
-    using ShaderToSupportedFeatureMap = std::unordered_map<std::string, std::vector<RenderFeature>>;
+    using ShaderToSupportedFeatureMap = std::unordered_map<std::string, std::vector<ShaderFeature>>;
 
     /// @brief Structure mapping shader source filenames to the include 
     /// render features which they support.
@@ -54,6 +65,11 @@ namespace ShaderInfo
     /// certain shader source file.
     ShaderToSupportedFeatureMap getSupportedFeatures();
 
+}
+
+namespace std
+{
+    std::string to_string(ShaderInfo::ShaderFeature v);
 }
 
 #endif//CORE__SHADER_INFO_HPP
