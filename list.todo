@@ -2,6 +2,8 @@ RenderBoi:
     Project:
         ✔ Port to VSCode @done(20-04-17 03:59)
         ☐ Write test suite
+        ☐ Better exceptions
+        ☐ Use const refs where applicable (especially upon fetching values held by iterators)
         ☐ Set up continuous integration
         ✔ Better documentation @done(20-10-19 19:22)
     Core:

@@ -5,7 +5,7 @@
 #include "../component_type.hpp"
 #include "../../mesh.hpp"
 #include "../../material.hpp"
-#include "../../shader.hpp"
+#include "../../shader/shader.hpp"
 
 #include <string>
 

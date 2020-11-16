@@ -16,7 +16,7 @@
 
 #include "../mesh.hpp"
 #include "../material.hpp"
-#include "../shader.hpp"
+#include "../shader/shader.hpp"
 
 /// @brief Manages the render process of a scene.
 class SceneRenderer

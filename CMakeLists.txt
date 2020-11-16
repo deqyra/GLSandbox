@@ -180,8 +180,9 @@
                     core/object_transform.cpp                                   core/object_transform.hpp
                                                                                 core/pixel_space.hpp
                     core/transform.cpp                                          core/transform.hpp
-                    core/shader.cpp                                             core/shader.hpp
-                    core/shader_info.cpp                                        core/shader_info.hpp
+                    core/shader/shader.cpp                                      core/shader/shader.hpp
+                    core/shader/shader_builder.cpp                              core/shader/shader_builder.hpp
+                    core/shader/shader_info.cpp                                 core/shader/shader_info.hpp
                     core/texture_2d.cpp                                         core/texture_2d.hpp
                                                                                 core/vertex.hpp
                     core/lights/directional_light.cpp                           core/lights/directional_light.hpp

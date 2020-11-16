@@ -89,7 +89,7 @@ namespace StringTools
         const std::string& opening = "",       const std::string& closing = "",
         const std::string& elementPrefix = "", const std::string& elementSuffix = "")
     {
-        return iterableToString(container.begin(), container.end(), delimiter, opening, closing, elementPrefix, elementSuffix);
+        return iterableToString(std::begin(container), std::end(container), delimiter, opening, closing, elementPrefix, elementSuffix);
     }
 } // namespace StringTools
 

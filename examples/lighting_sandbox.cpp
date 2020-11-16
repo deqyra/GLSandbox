@@ -14,9 +14,9 @@
 #include "../core/common_macros.hpp"
 #include "../core/mesh.hpp"
 #include "../core/materials.hpp"
-#include "../core/shader.hpp"
 #include "../core/lights/point_light.hpp"
 #include "../core/frame_of_reference.hpp"
+#include "../core/shader/shader.hpp"
 
 using Ref = FrameOfReference;
 

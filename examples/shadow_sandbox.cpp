@@ -6,11 +6,11 @@
 #include "../core/camera.hpp"
 #include "../core/factory.hpp"
 #include "../core/frame_of_reference.hpp"
-#include "../core/shader.hpp"
 #include "../core/material.hpp"
 #include "../core/materials.hpp"
 #include "../core/texture_2d.hpp"
 #include "../core/pixel_space.hpp"
+#include "../core/shader/shader.hpp"
 
 #include "../core/mesh_generators/mesh_type.hpp"
 #include "../core/mesh_generators/plane_generator.hpp"

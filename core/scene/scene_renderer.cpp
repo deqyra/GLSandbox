@@ -19,7 +19,7 @@
 
 #include "../mesh.hpp"
 #include "../material.hpp"
-#include "../shader.hpp"
+#include "../shader/shader.hpp"
 
 SceneRenderer::SceneRenderer(unsigned int framerateLimit) :
     _matrixUbo(),
@@ -189,7 +189,7 @@ void SceneRenderer::drawMesh(SceneObjectPtr meshObject, glm::mat4 viewMatrix)
     shader.use();
     material.bindTextures();
 
-    if (shader.isSupported(ShaderInfo::RenderFeature::Material))
+    if (shader.isSupported(ShaderInfo::ShaderFeature::FragmentMeshMaterial))
     {
         shader.setMaterial("material", material);
     }
