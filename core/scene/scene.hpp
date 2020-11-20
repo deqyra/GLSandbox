@@ -424,7 +424,7 @@ std::vector<SceneObjectPtr> Scene::getObjectsWithComponent(bool mustBeEnabled)
     std::vector<SceneObjectPtr> result;
 
     // Tells whether an object whose weak pointer is provided should be added to the result vector
-    std::function<bool(SceneObjectPtr)> componentChecker = [this, mustBeEnabled](SceneObjectPtr obj)
+    std::function<bool(SceneObjectPtr)> componentChecker = [this, mustBeEnabled](SceneObjectPtr obj) -> bool
     {
         // Skip if the object is not enabled or if any of its parents is not enabled
         if (mustBeEnabled && !obj->enabled) return false;

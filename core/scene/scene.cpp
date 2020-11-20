@@ -468,7 +468,7 @@ void Scene::performObjectRegistration(SceneObjectPtr object, SceneObjectMetadata
     unsigned int updateNodeId = _updateMarkers.addNode(false, parentMeta.updateNodeId);
 
     // Hook up the notification receiver of the scene with the notifier of the object transform
-    std::function<void(const unsigned int&)> callback = [this](const unsigned int& id)
+    static std::function<void(const unsigned int&)> callback = [this](const unsigned int& id)
     {
         this->objectTransformModified(id);
     };

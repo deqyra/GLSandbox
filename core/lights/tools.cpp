@@ -38,14 +38,14 @@ namespace
     constexpr float LinearComponentInLinearFactor = (float)(0.234686);
     constexpr float ConstantComponentInLinearFactor = (float)(-0.212775);
 
-    const std::function<float(float)> quadraticFactorForRange = [](float range)
+    const std::function<float(float)> quadraticFactorForRange = [](float range) -> float
     {
         float quadratic = QuadraticComponentInQuadraticFactor * range * range;
         float linear = LinearComponentInQuadraticFactor * range;
         return (float)(1.f / (quadratic + linear + ConstantComponentInQuadraticFactor));
     };
 
-    const std::function<float(float)> linearFactorForRange = [](float range)
+    const std::function<float(float)> linearFactorForRange = [](float range) -> float
     {
         float linear = LinearComponentInLinearFactor * range;
         return (float)(1.f / (linear + ConstantComponentInLinearFactor));

@@ -206,7 +206,7 @@ template<typename T>
 bool TreeNode<T>::hasChild(unsigned int id)
 {
     // Lambda to check whether a provided weak pointer to a node has the provided ID
-    std::function<bool(TreeNodeWPtr)> checkId = [id](TreeNodeWPtr wNode)
+    std::function<bool(TreeNodeWPtr)> checkId = [id](TreeNodeWPtr wNode) -> bool
     {
         TreeNodePtr node = wNode.lock();
         // Not checking whether node is nullptr because it should never happen
@@ -223,7 +223,7 @@ template<typename T>
 void TreeNode<T>::removeChild(unsigned int id)
 {
     // Lambda to check whether a provided weak pointer to a node has the provided ID
-    std::function<bool(TreeNodeWPtr)> checkId = [id](TreeNodeWPtr wNode)
+    std::function<bool(TreeNodeWPtr)> checkId = [id](TreeNodeWPtr wNode) -> bool
     {
         auto node = wNode.lock();
         // Not checking whether node is nullptr because it should never happen

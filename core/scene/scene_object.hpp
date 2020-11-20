@@ -194,7 +194,8 @@ std::vector<std::shared_ptr<T>> SceneObject::getComponents()
     ComponentType expectedType = Component::componentType<T>();
     std::vector<std::shared_ptr<T>> components;
 
-    std::function<bool(std::shared_ptr<T>)> checkType = [expectedType](std::shared_ptr<T> val) {
+    std::function<bool(std::shared_ptr<T>)> checkType = [expectedType](std::shared_ptr<T> val) -> bool
+    {
         return val->type == expectedType;
     };
 
