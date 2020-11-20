@@ -33,6 +33,9 @@ namespace StringTools
     // Checks whether a string is only made of digits.
     bool stringIsNum(const std::string& str, bool acceptMinusSign = true);
 
+    // Checks whether a string is only made of whitespaces.
+    bool stringIsWhitespace(const std::string& str);
+
     // Splits a string into substring based on a given delimiter, and returns all substrings in a vector.
     std::vector<std::string> tokenizeString(const std::string& str, char delimiter, bool discardEmptyTokens = false);
 
@@ -47,6 +50,12 @@ namespace StringTools
 
     // Remove carriage returns in provided string. Returns whether operation was successful.
     void stripCR(std::string& str);
+
+    // Considering the input string is C / C++ source code, remove all comments from it, leaving it with only relevant source code.
+    void stripComments(std::string& str);
+
+    // Remove whitespace from both ends of the string.
+    void trim(std::string& str);
 
     // Parse two ints separated by a single character
     void parseIntRange(const std::string& input,                        // The input string to parse

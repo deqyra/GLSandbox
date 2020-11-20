@@ -132,6 +132,18 @@ namespace StringTools
         return true;
     }
 
+    bool stringIsWhitespace(const std::string& str)
+    {
+        if (str.size() == 0) return true;
+
+        for (auto it = str.begin(); it != str.end(); it++)
+        {
+            if (!std::isspace(*it)) return false;
+        }
+
+        return true;
+    }
+
     std::vector<std::string> tokenizeString(const std::string& str, char delimiter, bool discardEmptyTokens)
     {
         // If the string does not contain the delimiter, return the string as-is (within a vector).
@@ -288,6 +300,64 @@ namespace StringTools
             result += *it;
         }
         str = result;        
+    }
+
+    void stripComments(std::string& str)
+    {
+        std::string result;
+
+        // Find and remove multiline comments
+        unsigned int offset = str.find("/*", 0);
+        while (offset != std::string::npos)
+        {
+            // Find end of multiline comment
+            unsigned int end = str.find("*/", offset);
+            // Find total length of comment
+            unsigned int len = std::string::npos;
+            if (end != std::string::npos)
+            {
+                // Account for extra 2 chars in "*/"
+                len = end - offset + 2;
+            }
+
+            // Erase all of it
+            str.erase(offset, len);
+
+            offset = str.find("/*", 0);
+        }
+
+        // Find and remove single line comments
+        offset = str.find("//", 0);
+        while (offset != std::string::npos)
+        {
+            // Find end of multiline comment
+            unsigned int end = str.find('\n', offset);
+            // Find total length of comment
+            unsigned int len = std::string::npos;
+            if (end != std::string::npos)
+            {
+                // Do not account for extra 1 char '\n', leave as is
+                len = end - offset;
+            }
+
+            // Erase all of it
+            str.erase(offset, len);
+
+            offset = str.find("//", 0);
+        }
+    }
+
+    void trim(std::string& str)
+    {
+        static auto isNonWhite = [](unsigned char ch) {
+            return !std::isspace(ch);
+        };
+
+        auto itFirstNonWhite = std::find_if(str.begin(), str.end(), isNonWhite);
+        str.erase(str.begin(), itFirstNonWhite);
+
+        auto itLastNonWhite = std::find_if(str.rbegin(), str.rend(), isNonWhite).base();
+        str.erase(itLastNonWhite, str.end());
     }
 
     void parseIntRange(const std::string& input, char delimiter, int& lowBound, int& highBound, int min, int max, bool throwOnExceedingBounds)
