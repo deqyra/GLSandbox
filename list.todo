@@ -4,6 +4,8 @@ RenderBoi:
         ☐ Write test suite
         ☐ Better exceptions
         ☐ Use const refs where applicable (especially upon fetching values held by iterators)
+        ☐ Start static member names with caps
+        ☐ Add const qualifiers everywhere and constexpr qualifiers where possible
         ☐ Set up continuous integration
         ✔ Better documentation @done(20-10-19 19:22)
     Core:
@@ -18,6 +20,7 @@ RenderBoi:
             ✔ Provide info as to whether a certain component type is allowed more than once per object @done(20-10-20 16:02)
         Factory:
             ✔ Method to attach camera and scripts to scene object@done(20-10-26 02:40)
+            ☐ Forwarding methods to ShaderBuilder
         Mesh:
             ☐ Handle several types of draw methods per single mesh
             ✔ Use glMultiDrawElements, adapt mesh generators @done(20-11-05 08:59)
@@ -52,6 +55,8 @@ RenderBoi:
             ✔ Declare uniform blocks in their own file @done(20-10-24 17:30)
             ✔ Interface blocks too @done(20-10-24 17:31)
             ✔ Find a way to tell whether a shader provides has certain render features @done(20-10-24 17:59)
+            ☐ On-demand shader generation
+            ☐ Remember the location of a shader and give it back when asked to generate again
             ☐ Kaleidoscopic fragment shader
             ✔ Fix attenuation @done(20-11-05 07:27)
             ✔ Fix Blinn-Phong @done(20-11-05 07:27)
@@ -95,6 +100,8 @@ RenderBoi:
             ✔ Change weak pointers to shared pointers where possible, refactor @done(20-10-22 10:11)
             ✔ Documentation @done(20-10-25 02:50)
             ☐ Keep shared pointers even between nodes, manage proper destruction
+        C preprocessor:
+            ☐ Build upon the stub in StringTools
     FIXME:
         ✔ Transform::lookAt @done(20-10-13 17:04)
         ✔ Light attenuation @done(20-04-20 06:55)

@@ -182,7 +182,11 @@
                     core/transform.cpp                                          core/transform.hpp
                     core/shader/shader.cpp                                      core/shader/shader.hpp
                     core/shader/shader_builder.cpp                              core/shader/shader_builder.hpp
+                    core/shader/shader_config.cpp                               core/shader/shader_config.hpp
+                    core/shader/shader_feature.cpp                              core/shader/shader_feature.hpp
                     core/shader/shader_info.cpp                                 core/shader/shader_info.hpp
+                    core/shader/shader_program.cpp                              core/shader/shader_program.hpp
+                    core/shader/shader_stage.cpp                                core/shader/shader_stage.hpp
                     core/texture_2d.cpp                                         core/texture_2d.hpp
                                                                                 core/vertex.hpp
                     core/lights/directional_light.cpp                           core/lights/directional_light.hpp
