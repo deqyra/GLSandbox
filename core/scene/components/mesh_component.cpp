@@ -1,26 +1,27 @@
 #include "mesh_component.hpp"
 
+#include "../../shader/shader_builder.hpp"
 #include "../../materials.hpp"
 
 MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh) :
-    MeshComponent(sceneObject, mesh, Materials::Default, Shader())
+    MeshComponent(sceneObject, mesh, Materials::Default, ShaderBuilder::buildMinimalShaderProgram())
 {
 
 }
 
 MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material) :
-    MeshComponent(sceneObject, mesh, material, Shader())
+    MeshComponent(sceneObject, mesh, material, ShaderBuilder::buildMinimalShaderProgram())
 {
 
 }
 
-MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Shader shader) :
+MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, ShaderProgram shader) :
     MeshComponent(sceneObject, mesh, Materials::Default, shader)
 {
 
 }
 
-MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material, Shader shader) :
+MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material, ShaderProgram shader) :
     Component(ComponentType::Mesh, sceneObject),
     _mesh(mesh),
     _material(material),
@@ -62,12 +63,12 @@ void MeshComponent::setMaterial(Material material)
     _material = material;
 }
 
-Shader MeshComponent::getShader()
+ShaderProgram MeshComponent::getShader()
 {
     return _shader;
 }
 
-void MeshComponent::setShader(Shader shader)
+void MeshComponent::setShader(ShaderProgram shader)
 {
     _shader = shader;
 }

@@ -37,10 +37,17 @@ void ShadowSandbox::run(GLWindowPtr window)
     namespace InputMode = Window::Input::Mode;
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
     
-    Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
+    ShaderConfig lightConfig;
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentGammaCorrection);
+    ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
     lightingShader.setFloat("gamma", 1.7f);
 
-    Shader depthShader = Shader("assets/shaders/mvp.vert", "assets/shaders/depth.frag");
+    ShaderConfig depthConfig;
+    depthConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
+    depthConfig.addFeature(ShaderInfo::ShaderFeature::FragmentDepthView);
+    ShaderProgram depthShader = ShaderBuilder::buildShaderProgramFromConfig(depthConfig);
 
     ScenePtr scene = Factory::makeScene();
 

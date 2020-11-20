@@ -5,7 +5,7 @@
 #include "../component_type.hpp"
 #include "../../mesh.hpp"
 #include "../../material.hpp"
-#include "../../shader/shader.hpp"
+#include "../../shader/shader_program.hpp"
 
 #include <string>
 
@@ -22,8 +22,8 @@ class MeshComponent : public Component
         /// @brief Material to paint the mesh with.
         Material _material;
         
-        /// @brief Shader to render the mesh with.
-        Shader _shader;
+        /// @brief Shader program to render the mesh with.
+        ShaderProgram _shader;
 
     public:
         /// @param sceneObject Pointer to the scene object which will be parent
@@ -46,21 +46,21 @@ class MeshComponent : public Component
         /// @param sceneObject Pointer to the scene object which will be parent
         /// to this component.
         /// @param mesh Pointer to the mesh which the component should use.
-        /// @param shader Shader which the mesh should be rendred by.
+        /// @param shader Shader program which the mesh should be rendred by.
         ///
         /// @exception If the provided mesh pointer is null, the constructor
         /// will throw a std::runtime_error.
-        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Shader shader);
+        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, ShaderProgram shader);
 
         /// @param sceneObject Pointer to the scene object which will be parent
         /// to this component.
         /// @param mesh Pointer to the mesh which the component should use.
         /// @param material Material which the mesh should be rendered with.
-        /// @param shader Shader which the mesh should be rendred by.
+        /// @param shader Shader program which the mesh should be rendred by.
         ///
         /// @exception If the provided mesh pointer is null, the constructor
         /// will throw a std::runtime_error.
-        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material, Shader shader);
+        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material, ShaderProgram shader);
 
         virtual ~MeshComponent();
 
@@ -90,12 +90,12 @@ class MeshComponent : public Component
         /// @brief Get the shader used by the component.
         ///
         /// @return The shader used by the component.
-        Shader getShader();
+        ShaderProgram getShader();
 
         /// @brief Set the shader used by the component.
         ///
         /// @param shader The new shader to be used by the component.
-        void setShader(Shader shader);
+        void setShader(ShaderProgram shader);
 
         /// @brief Get a raw pointer to a new component instance cloned 
         /// from this one. Ownership and responsibility for the allocated 

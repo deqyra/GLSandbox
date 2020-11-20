@@ -184,12 +184,12 @@ void SceneRenderer::drawMesh(SceneObjectPtr meshObject, glm::mat4 viewMatrix)
     std::shared_ptr<MeshComponent> meshComponent = meshObject->getComponent<MeshComponent>();
     
     // Set up shader and material
-    Shader shader = meshComponent->getShader();
+    ShaderProgram shader = meshComponent->getShader();
     Material material = meshComponent->getMaterial();
     shader.use();
     material.bindTextures();
 
-    if (shader.isSupported(ShaderInfo::ShaderFeature::FragmentMeshMaterial))
+    if (shader.supports(ShaderInfo::ShaderFeature::FragmentMeshMaterial))
     {
         shader.setMaterial("material", material);
     }

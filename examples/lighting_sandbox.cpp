@@ -16,7 +16,7 @@
 #include "../core/materials.hpp"
 #include "../core/lights/point_light.hpp"
 #include "../core/frame_of_reference.hpp"
-#include "../core/shader/shader.hpp"
+#include "../core/shader/shader_builder.hpp"
 
 using Ref = FrameOfReference;
 
@@ -44,7 +44,10 @@ void LightingSandbox::run(GLWindowPtr window)
     namespace InputMode = Window::Input::Mode;
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
     
-    Shader lightingShader = Shader("assets/shaders/mvp.vert", "assets/shaders/phong.frag");
+    ShaderConfig lightConfig;
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
+    ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
 
     ScenePtr scene = Factory::makeScene();
 
