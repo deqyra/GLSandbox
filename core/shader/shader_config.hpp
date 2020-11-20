@@ -1,7 +1,7 @@
 #ifndef CORE__SHADER__SHADER_CONFIG_HPP
 #define CORE__SHADER__SHADER_CONFIG_HPP
 
-#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "shader_info.hpp"
@@ -12,18 +12,19 @@ namespace ShaderInfo
     class ShaderConfig
     {
         private:
-            /// @brief List of literals describing the features which the shader 
+            /// @brief Set of literals describing the features which the shader 
             /// should provide.
-            std::unordered_map<ShaderFeature, bool> _requestedFeatures;
+            std::unordered_set<ShaderFeature> _requestedFeatures;
 
-            /// @brief List of the features conflicting with a feature which was
-            /// to be added to the config. Used by checkForConflicts.
-            std::vector<ShaderFeature> _detectedConflicts;
+            /// @brief List of the features which were detected to be a problem
+            /// upon adding a new feature. Used by checkForConflicts and 
+            /// checkRequirementsAreMet.
+            std::vector<ShaderFeature> _problems;
 
             /// @brief Check for conflicts between the currently registered 
-            /// features and a new to-be-added feature. If a conflict is 
-            /// detected, _detectedConflicts will be filled with literals 
-            /// describing the conflicting features.
+            /// features and a new to-be-added feature. If conflicts are 
+            /// detected, _problems will be filled with literals describing
+            /// those.
             ///
             /// @param newFeature Literal describing the new feature about to 
             /// be added to the config.
@@ -31,8 +32,26 @@ namespace ShaderInfo
             /// @return Whether or not conflicts were detected.
             bool checkForConflicts(ShaderFeature newFeature);
 
+            /// @brief Check that the config currently meets the requirements 
+            /// for a new to-be-added feature. If requirements are unmet,
+            /// _problems will be filled with literals describing those.
+            ///
+            /// @param newFeature Literal describing the new feature about to 
+            /// be added to the config.
+            ///
+            /// @return Whether or not all requirements are met.
+            bool checkRequirementsAreMet(ShaderFeature newFeature);
+
         public:
             ShaderConfig();
+
+            /// @brief Object holding the minimum functionality a shader should 
+            /// provide.
+            static const ShaderConfig MinimalConfig;
+
+            /// @brief Get a config object for the minimum functionality a 
+            /// shader should provide.
+            static ShaderConfig getMinimalConfig();
 
             /// @brief Add a new feature to the list of currently requested 
             /// shader features.
@@ -42,8 +61,24 @@ namespace ShaderInfo
             ///
             /// @exception If the new feature is found to be incompatible with 
             /// one of the features already requested in the config, the 
-            /// funciton will throw an std::runtime_error.
+            /// funciton will throw an std::runtime_error. If the requirements
+            /// of the new feature are not met at the time this function is 
+            /// called, it will throw an std::runtime_error.
             void addFeature(ShaderFeature newFeature);
+
+            /// @brief Add a new feature to the list of currently requested 
+            /// shader features, and add any unmet requirements along with it.
+            ///
+            /// @param newFeature Literal describing the new feature to add to
+            /// the config.
+            ///
+            /// @exception If the new feature is found to be incompatible with 
+            /// one of the features already requested in the config, the 
+            /// funciton will throw an std::runtime_error. If another feature 
+            /// needs to be added as a requirement, and it is found to be 
+            /// incompatible with one of the features already requested in the 
+            /// config, the funciton will throw an std::runtime_error. 
+            void addFeatureWithRequirements(ShaderFeature newFeature);
 
             /// @brief Add a new feature to the list of currently requested 
             /// shader features.
@@ -55,8 +90,19 @@ namespace ShaderInfo
             /// @brief Get the list of requested shader features in the config.
             ///
             /// @return The list of requested shader features in the config.
-            std::unordered_map<ShaderFeature, bool> getRequestedFeatures();
+            const std::vector<ShaderFeature>& getRequestedFeatures();
     };
+
+    using FeatureRequirementsMap = std::unordered_map<ShaderFeature, std::vector<ShaderFeature>>;
+
+    /// @brief Stores which features are required by others. One entry is mapped
+    /// to the list of features which it requires.
+    const FeatureRequirementsMap FeatureRequirements;
+
+    /// @brief Get a map describing requirements between shader features.
+    /// 
+    /// @return A map describing requirements between shader features.
+    FeatureRequirementsMap getRequiredFeatures();
 
     using IncompatibleFeaturesMap = std::unordered_map<ShaderFeature, std::vector<ShaderFeature>>;
 
