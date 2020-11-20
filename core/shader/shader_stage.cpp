@@ -9,7 +9,7 @@ const ShaderInfo::ShaderStageToGLMacroMap ShaderInfo::StageMacros = ShaderInfo::
 
 namespace ShaderInfo
 {
-    const ShaderStageToGLMacroMap& getStageMacros()
+    const ShaderStageToGLMacroMap getStageMacros()
     {
         static bool runOnce = false;
         if (runOnce) return StageMacros;

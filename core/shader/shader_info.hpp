@@ -21,7 +21,7 @@ namespace ShaderInfo
     ///
     /// @return A map describing which source files satisfy a certain include 
     /// directive.
-    const IncludeDirectiveToFilenameMap& getIncludeFilenames();
+    const IncludeDirectiveToFilenameMap getIncludeFilenames();
 
     using FilenameToSupportedFeatureMap = std::unordered_map<std::string, std::vector<ShaderFeature>>;
 
@@ -34,7 +34,7 @@ namespace ShaderInfo
     ///
     /// @return A map describing which shader features are supported by a 
     /// certain shader source file.
-    const FilenameToSupportedFeatureMap& getSupportedFeatures();
+    const FilenameToSupportedFeatureMap getSupportedFeatures();
 }
 
 namespace std

@@ -1,6 +1,9 @@
 #ifndef CORE__SHADER__SHADER_STAGE_HPP
 #define CORE__SHADER__SHADER_STAGE_HPP
 
+#include <string>
+#include <unordered_map>
+
 namespace ShaderInfo
 {
     enum class ShaderStage
@@ -21,7 +24,7 @@ namespace ShaderInfo
     ///
     /// @return A map describing which OpenGL macro correpsonds to which shader
     /// stage.
-    const ShaderStageToGLMacroMap& getStageMacros();
+    const ShaderStageToGLMacroMap getStageMacros();
 }
 
 namespace std

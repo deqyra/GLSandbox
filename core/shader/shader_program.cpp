@@ -8,8 +8,8 @@
 #include <unordered_map>
 
 #include "shader_info.hpp"
-#include "ubo/ubo_info.hpp"
-#include "common_macros.hpp"
+#include "../ubo/ubo_info.hpp"
+#include "../common_macros.hpp"
 
 ShaderProgram::ProgramToUniformLocationMap ShaderProgram::_uniformLocations = ShaderProgram::ProgramToUniformLocationMap();
 ShaderProgram::LocationToRefCountMap ShaderProgram::_locationRefCounts = ShaderProgram::LocationToRefCountMap();
@@ -189,20 +189,6 @@ void ShaderProgram::setMaterial(const std::string& name, Material value)
         setInt(samplerName, Material::SpecularMapMaxCount + (int)i);
     }
     setUint(name + ".specularMapCount", count);
-}
-
-void ShaderProgram::setPointLight(const std::string& name, PointLight value, glm::vec3 position)
-{
-    setVec3f(name + ".position", position);
-    setVec3f(name + ".ambient", value.ambient);
-    setVec3f(name + ".diffuse", value.diffuse);
-    setVec3f(name + ".specular", value.specular);
-}
-
-void ShaderProgram::setPointLightArray(const std::string& name, unsigned int index, PointLight value, glm::vec3 position)
-{
-    std::string indexedName = name + "[" + std::to_string(index) + "]";
-    setPointLight(indexedName, value, position);
 }
 
 const std::vector<ShaderInfo::ShaderFeature>& ShaderProgram::getSupportedFeatures() const

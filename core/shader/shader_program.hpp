@@ -11,7 +11,6 @@
 #include <unordered_map>
 
 #include "../material.hpp"
-#include "lights/point_light.hpp"
 #include "shader_info.hpp"
 
 class ShaderBuilder;
@@ -129,23 +128,6 @@ class ShaderProgram
         /// @param value The value to set the uniform at.
         void setMaterial(const std::string& name, Material value);
         
-        /// @brief Set the value of a named uniform in the program.
-        /// Use for uniforms of type point light.
-        ///
-        /// @param name The name of the uniform whose value to set.
-        /// @param value The value to set the uniform at.
-        /// @param position The world position of the point light.
-        void setPointLight(const std::string& name, PointLight value, glm::vec3 position);
-        
-        /// @brief Set the value of a named uniform in the program.
-        /// Use for uniforms of type array of point lights.
-        ///
-        /// @param name The name of the uniform whose value to set.
-        /// @param index The index of the array cell to set.
-        /// @param value The value to set the array cell at.
-        /// @param position The world position of the point light.
-        void setPointLightArray(const std::string& name, unsigned int index, PointLight value, glm::vec3 position);
-
         /// @brief Get the features which this shader program supports.
         ///
         /// @return A const reference to an array of literals describing which 

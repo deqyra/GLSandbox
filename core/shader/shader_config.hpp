@@ -97,18 +97,18 @@ namespace ShaderInfo
 
     /// @brief Stores which features are required by others. One entry is mapped
     /// to the list of features which it requires.
-    const FeatureRequirementsMap FeatureRequirements;
+    extern const FeatureRequirementsMap FeatureRequirements;
 
     /// @brief Get a map describing requirements between shader features.
     /// 
     /// @return A map describing requirements between shader features.
-    FeatureRequirementsMap getRequiredFeatures();
+    FeatureRequirementsMap getFeatureRequirements();
 
     using IncompatibleFeaturesMap = std::unordered_map<ShaderFeature, std::vector<ShaderFeature>>;
 
     /// @brief Stores which features are incompatible together. One entry is 
     /// mapped to the list of features which it is incompatible with.
-    const IncompatibleFeaturesMap IncompatibleFeatures;
+    extern const IncompatibleFeaturesMap IncompatibleFeatures;
 
     /// @brief Get a map describing incompatibilities between shader features.
     /// 

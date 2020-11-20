@@ -65,6 +65,11 @@ unsigned int Shader::location() const
     return _location;
 }
 
+ShaderInfo::ShaderStage Shader::stage() const
+{
+    return _stage;
+}
+
 const std::vector<ShaderInfo::ShaderFeature>& Shader::getSupportedFeatures() const
 {
     return _supportedFeatures;

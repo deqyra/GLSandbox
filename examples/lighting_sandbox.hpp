@@ -11,6 +11,7 @@
 
 #include "../core/camera.hpp"
 #include "../core/input_processor.hpp"
+#include "../core/lights/point_light.hpp"
 #include "../core/scene/scene_object.hpp"
 #include "../core/scene/input_processing_script.hpp"
 

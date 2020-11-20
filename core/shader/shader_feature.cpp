@@ -5,11 +5,11 @@
 #include <string>
 #include <unordered_map>
 
-const ShaderInfo::ShaderFeatureToShaderStageMap ShaderInfo::FeatureStages = ShaderInfo::getFeatureStages();
-
 namespace ShaderInfo
 {
-    const ShaderFeatureToShaderStageMap& getFeatureStages()
+    const ShaderFeatureToShaderStageMap FeatureStages = getFeatureStages();
+
+    const ShaderFeatureToShaderStageMap getFeatureStages()
     {
         static bool runOnce = false;
         if (runOnce) return FeatureStages;

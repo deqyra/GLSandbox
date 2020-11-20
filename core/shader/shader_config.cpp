@@ -9,6 +9,13 @@ namespace ShaderInfo
 {
     const ShaderConfig ShaderConfig::MinimalConfig = ShaderConfig::getMinimalConfig();
 
+    ShaderConfig::ShaderConfig() :
+        _requestedFeatures(),
+        _problems()
+    {
+
+    }
+
     ShaderConfig ShaderConfig::getMinimalConfig()
     {
         static bool runOnce = false;
@@ -134,7 +141,7 @@ namespace ShaderInfo
 
     const std::vector<ShaderFeature>& ShaderConfig::getRequestedFeatures()
     {
-        std::vector<ShaderFeature> result;
+        static std::vector<ShaderFeature> result;
         std::copy(_requestedFeatures.begin(), _requestedFeatures.end(), std::back_inserter(result));
         return result;
     }

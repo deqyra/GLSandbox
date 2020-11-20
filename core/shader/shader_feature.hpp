@@ -1,6 +1,11 @@
 #ifndef CORE__SHADER__SHADER_FEATURE_HPP
 #define CORE__SHADER__SHADER_FEATURE_HPP
 
+#include <string>
+#include <unordered_map>
+
+#include "shader_stage.hpp"
+
 namespace ShaderInfo
 {
     /// @brief Collection of literals describing the different aspects which
@@ -35,7 +40,7 @@ namespace ShaderInfo
     /// implemented.
     ///
     /// @return A map describing in which stage shader features are implemented.
-    const ShaderFeatureToShaderStageMap& getFeatureStages();
+    const ShaderFeatureToShaderStageMap getFeatureStages();
 }
 
 namespace std

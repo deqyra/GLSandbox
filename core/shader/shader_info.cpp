@@ -5,7 +5,7 @@ const ShaderInfo::FilenameToSupportedFeatureMap ShaderInfo::SupportedFeatures = 
 
 namespace ShaderInfo
 {
-    const IncludeDirectiveToFilenameMap& getIncludeFilenames()
+    const IncludeDirectiveToFilenameMap getIncludeFilenames()
     {
         static bool runOnce = false;
         if (runOnce) return IncludeFilenames;
@@ -26,7 +26,7 @@ namespace ShaderInfo
         return map;
     }
 
-    const FilenameToSupportedFeatureMap& getSupportedFeatures()
+    const FilenameToSupportedFeatureMap getSupportedFeatures()
     {
         static bool runOnce = false;
         if (runOnce) return SupportedFeatures;
