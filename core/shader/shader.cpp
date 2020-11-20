@@ -1,98 +1,32 @@
 #include "shader.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
-
-#include <filesystem>
-#include <sstream>
 #include <stdexcept>
-#include <string>
-#include <cstdarg>
-#include <unordered_map>
 
-#include "shader_info.hpp"
-#include "ubo/ubo_info.hpp"
-#include "common_macros.hpp"
+#include <glad/gl.h>
 
-#define INFO_BUFFER_SIZE 512
-
-namespace fs = std::filesystem;
-
-Shader::ProgramToUniformLocationMap Shader::_uniformLocations = Shader::ProgramToUniformLocationMap();
-Shader::ProgramKeyToLocationMap Shader::_programLocations = Shader::ProgramKeyToLocationMap();
 Shader::LocationToRefCountMap Shader::_locationRefCounts = Shader::LocationToRefCountMap();
-Shader::NamedStringToLoadStatusMap Shader::_namedStringLoadStatus = Shader::NamedStringToLoadStatusMap();
-Shader::ShaderToRenderFeatureMap Shader::_supportedFeatures = Shader::ShaderToRenderFeatureMap();
 
-Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
+Shader::Shader(unsigned int location, ShaderInfo::ShaderStage stage, std::vector<ShaderInfo::ShaderFeature> supportedFeatures) :
+    _location(location),
+    _stage(stage),
+    _supportedFeatures(supportedFeatures)
 {
-    // Concatenate string paths to get the program key
-    _programKey = fs::absolute(vertexPath).string() + fs::absolute(fragmentPath).string();
-
-    auto it = _programLocations.find(_programKey);
-    // If the program key is not being used by a shader resource...
-    if (it == _programLocations.end())
+    if (!location)
     {
-        std::vector<ShaderInfo::ShaderFeature> supportedFeatures;
-        // Compile provided shaders
-        unsigned int vertexShader = loadShader(GL_VERTEX_SHADER, vertexPath);
-        if (!vertexShader)
-        {
-            std::stringstream errorText;
-            errorText << "Shader error: \"" << vertexPath << "\" is not valid vertex shader." << std::endl;
-            throw std::runtime_error(errorText.str().c_str());
-        }
-
-        unsigned int fragmentShader = loadShader(GL_FRAGMENT_SHADER, fragmentPath);
-        if (!fragmentShader)
-        {
-            std::stringstream errorText;
-            errorText << "Shader error: \"" << fragmentPath << "\" is not a valid fragment shader." << std::endl;
-            throw std::runtime_error(errorText.str().c_str());
-        }
-
-        // Link compiled shaders
-        _location = makeShaderProgram(2, vertexShader, fragmentShader);
-
-        // Clean up
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-
-        if (!_location)
-        {
-            throw std::runtime_error("Shader error: provided shaders could not be assembled into a program.");
-        }
-
-        appendSupportedFeaturesOfShader(supportedFeatures, vertexPath);
-        appendSupportedFeaturesOfShader(supportedFeatures, fragmentPath);
-
-        // Map the resource GPU location to the program key
-        _programLocations[_programKey] = _location;
-        // Set the refcount
-        _locationRefCounts[_location] = 1;
-        // Map the supported features to the GPU location of the program
-        if (supportedFeatures.size() > 0)
-        {
-            _supportedFeatures[_location] = std::unordered_map<ShaderInfo::ShaderFeature, bool>();
-            for (auto it = supportedFeatures.begin(); it != supportedFeatures.end(); it++)
-            {
-                _supportedFeatures[_location][*it] = true;
-            }
-        }
+        throw std::runtime_error("Shader: cannot create object wrapping no resource on the GPU (location == 0).");
     }
-    // If the program key is already being used by a shader resource...
-    else
-    {
-        // Just copy the GPU location and increase the refcount
-        _location = _programLocations[_programKey];
-        _locationRefCounts[_location]++;
-    }
+
+    auto it = _locationRefCounts.find(location);
+    if (it == _locationRefCounts.end()) _locationRefCounts[location] = 0;
+
+    _locationRefCounts[location]++;
 }
 
-Shader::Shader(const Shader& other)
+Shader::Shader(const Shader& other) :
+    _location(other._location),
+    _stage(other._stage),
+    _supportedFeatures(other._supportedFeatures)
 {
-    // Copy the location, program key, increase refcount
-    _location = other._location;
-    _programKey = other._programKey;
     _locationRefCounts[_location]++;
 }
 
@@ -103,7 +37,7 @@ Shader& Shader::operator=(const Shader& other)
 
     // Copy the location, program key, increase refcount
     _location = other._location;
-    _programKey = other._programKey;
+    _stage = other._stage;
     _locationRefCounts[_location]++;
 
     return *this;
@@ -122,10 +56,7 @@ void Shader::cleanup()
     // If refcount is zero, destroy resource on the GPU
     if (!count)
     {
-        _programLocations.erase(_programKey);
-        _supportedFeatures.erase(_location);
-        _uniformLocations.erase(_location);
-        glDeleteProgram(_location);
+        glDeleteShader(_location);
     };
 }
 
@@ -134,288 +65,14 @@ unsigned int Shader::location() const
     return _location;
 }
 
-void Shader::use() const
+const std::vector<ShaderInfo::ShaderFeature>& Shader::getSupportedFeatures() const
 {
-    glUseProgram(_location);
+    return _supportedFeatures;
 }
 
-unsigned int Shader::getUniformLocation(const std::string& name) const
+bool Shader::supports(ShaderInfo::ShaderFeature feature) const
 {
-    // First find the program ID in the location hash map
-    auto it = _uniformLocations.find(_location);
-    if (it != _uniformLocations.end())
-    {
-        // If the program ID is present, attempt to find the uniform location
-        auto jt = _uniformLocations[_location].find(name);
-        if (jt != _uniformLocations[_location].end())
-        {
-            return jt->second;
-        }
-    }
-    else
-    {
-        // If the program ID is not present, put an empty hash map in place
-        _uniformLocations[_location] = std::unordered_map<std::string, unsigned int>();
-    }
+    auto it = std::find(_supportedFeatures.begin(), _supportedFeatures.end(), feature);
 
-    // If the location was found, store it away before returning it
-    int location = glGetUniformLocation(_location, name.c_str());
-    if (location != -1)
-    {
-        _uniformLocations[_location][name] = location;
-    }
-    // Otherwise, print a warning message
-    else
-    {
-        std::cerr << "Shader: attempt to get location of uniform \"" << name << "\","
-        " which does not exist in shader with program key \"" << _programKey << "\"" << std::endl;
-    }
-    
-    return location;
+    return it != _supportedFeatures.end();
 }
-
-void Shader::setBool(const std::string& name, bool value)
-{
-    unsigned int uniformLocation = getUniformLocation(name);
-    glProgramUniform1i(_location, uniformLocation, (int)value);
-}
-
-void Shader::setInt(const std::string& name, int value)
-{
-    unsigned int uniformLocation = getUniformLocation(name);
-    glProgramUniform1i(_location, uniformLocation, value);
-}
-
-void Shader::setUint(const std::string& name, unsigned int value)
-{
-    unsigned int uniformLocation = getUniformLocation(name);
-    glProgramUniform1ui(_location, uniformLocation, value);
-}
-
-void Shader::setFloat(const std::string& name, float value)
-{
-    unsigned int uniformLocation = getUniformLocation(name);
-    glProgramUniform1f(_location, uniformLocation, value);
-}
-
-void Shader::setMat3f(const std::string& name, glm::mat3 value, bool transpose)
-{
-    unsigned int transposition = GL_FALSE;
-    if (transpose)
-    {
-        transposition = GL_TRUE;
-    }
-
-    unsigned int uniformLocation = getUniformLocation(name);
-    glProgramUniformMatrix3fv(_location, uniformLocation, 1, transposition, glm::value_ptr(value));
-}
-
-void Shader::setMat4f(const std::string& name, glm::mat4 value, bool transpose)
-{
-    unsigned int transposition = GL_FALSE;
-    if (transpose)
-    {
-        transposition = GL_TRUE;
-    }
-
-    unsigned int uniformLocation = getUniformLocation(name);
-    glProgramUniformMatrix4fv(_location, uniformLocation, 1, transposition, glm::value_ptr(value));
-}
-
-void Shader::setVec3f(const std::string& name, glm::vec3 value)
-{
-    unsigned int uniformLocation = getUniformLocation(name);
-    glProgramUniform3fv(_location, uniformLocation, 1, glm::value_ptr(value));
-}
-
-void Shader::setMaterial(const std::string& name, Material value)
-{
-    setVec3f(name + ".ambient", value.ambient);
-    setVec3f(name + ".diffuse", value.diffuse);
-    setVec3f(name + ".specular", value.specular);
-    setFloat(name + ".shininess", value.shininess);
-
-    unsigned int count = value.getDiffuseMapCount();
-    // Diffuse maps are bound in texture units 0 through 7
-    for (unsigned int i = 0; i < count; i++)
-    {
-        std::string samplerName = name + ".diffuseMaps[" + std::to_string(i) + "]";
-        setInt(samplerName, (int)i);
-    }
-    setUint(name + ".diffuseMapCount", count);
-
-    count = value.getSpecularMapCount();
-    // Specular maps are bound in texture units 8 through 15
-    for (unsigned int i = 0; i < count; i++)
-    {
-        std::string samplerName = name + ".specularMaps[" + std::to_string(i) + "]";
-        setInt(samplerName, Material::SpecularMapMaxCount + (int)i);
-    }
-    setUint(name + ".specularMapCount", count);
-}
-
-void Shader::setPointLight(const std::string& name, PointLight value, glm::vec3 position)
-{
-    setVec3f(name + ".position", position);
-    setVec3f(name + ".ambient", value.ambient);
-    setVec3f(name + ".diffuse", value.diffuse);
-    setVec3f(name + ".specular", value.specular);
-}
-
-void Shader::setPointLightArray(const std::string& name, unsigned int index, PointLight value, glm::vec3 position)
-{
-    std::string indexedName = name + "[" + std::to_string(index) + "]";
-    setPointLight(indexedName, value, position);
-}
-
-bool Shader::isSupported(ShaderInfo::ShaderFeature feature)
-{
-    auto it = _supportedFeatures[_location].find(feature);
-
-    return (it != _supportedFeatures[_location].end()) && (it->second == true);
-}
-
-unsigned int Shader::loadShader(unsigned int shaderType, std::string filename)
-{
-	// Open input file 
-	std::ifstream file(filename);
-
-	if (!file.is_open())
-    {
-		std::string s = "Shader \"" + filename + "\" could not be found.";
-        throw std::runtime_error(s.c_str());
-    }
-
-    // In case the shader makes use of #include directives, process them
-    processIncludeDirectives(filename);
-
-    // Read all of its contents
-	std::string all("");
-	std::string line;
-	while (std::getline(file, line))
-		all += line + "\n";
-
-	const char* source = all.c_str();
-
-	// Compile into shader
-	unsigned int shader;
-	shader = glCreateShader(shaderType);
-	glShaderSource(shader, 1, &source, nullptr);
-	glCompileShaderIncludeARB(shader, 0, nullptr, nullptr);
-
-	// Print errors if any
-	int success;
-	char info[INFO_BUFFER_SIZE];
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(shader, INFO_BUFFER_SIZE, nullptr, info);
-		std::cerr << "Shader compilation \"" << filename << "\" failed:\n" << info << std::endl;
-		return 0;
-	}
-
-	return shader;
-}
-
-void Shader::processIncludeDirectives(std::string filename)
-{
-    using ShaderInfo::IncludeDirectives;
-    using ShaderInfo::IncludeFilenames;
-
-    // Find the include requirements for the shader source file
-    auto it = IncludeDirectives.find(filename);
-    // If info about the shader source file cannot be found, return
-    if (it == IncludeDirectives.end()) return;
-
-    for (auto it = IncludeDirectives.at(filename).begin(); it != IncludeDirectives.at(filename).end(); it++)
-    {
-        // Find whether the named string for the requested include directive is loaded
-        auto jt = _namedStringLoadStatus.find(*it);
-        // If loaded already, skip
-        if (jt != _namedStringLoadStatus.end() && jt->second == true) continue;
-
-        // Find the source file needed to create the requested named string
-        auto kt = IncludeFilenames.find(*it);
-        // If info about the requested include cannot be found, throw
-        if (kt == IncludeFilenames.end())
-        {
-            std::string s = "Shader: Info about include directive <" + *it + "> cannot be found.";
-            throw std::runtime_error(s.c_str());
-        }
-
-        // Otherwise, create the named string
-        makeNamedString(kt->first, kt->second);
-    }
-}
-
-void Shader::makeNamedString(std::string name, std::string sourceFilename)
-{
-	// Open input file
-	std::ifstream file(sourceFilename);
-
-	if (!file.is_open())
-    {
-		std::string s = "Shader \"" + sourceFilename + "\" could not be found.";
-        throw std::runtime_error(s.c_str());
-    }
-
-    // Read all of its contents
-	std::string all("");
-	std::string line;
-	while (std::getline(file, line))
-		all += line + "\n";
-
-	const char* source = all.c_str();
-
-    // Create the named string
-    glNamedStringARB(GL_SHADER_INCLUDE_ARB, -1, name.c_str(), -1, source);
-
-    // Update load status
-    _namedStringLoadStatus[name] = true;
-}
-
-void Shader::appendSupportedFeaturesOfShader(std::vector<ShaderInfo::ShaderFeature>& destination, std::string filename)
-{
-    // Find the entry for the provided filename
-    auto it = ShaderInfo::SupportedFeatures.find(filename);
-    // If non existent, return
-    if (it == ShaderInfo::SupportedFeatures.end()) return;
-    
-    // Append the found features to the input vector
-    std::copy(ShaderInfo::SupportedFeatures.at(filename).begin(), ShaderInfo::SupportedFeatures.at(filename).end(), std::back_inserter(destination));
-}
-
-// There must be `count` arguments after `count`, all of type `unsigned int`.
-unsigned int Shader::makeShaderProgram(unsigned int count...)
-{
-	unsigned int program = glCreateProgram();
-
-	// Iterate through arguments.
-	va_list args;
-	va_start(args, count);
-
-	for (unsigned int i = 0; i < count; i++)
-	{
-		// Attach all provided shaders
-		unsigned int shader = va_arg(args, unsigned int);
-		glAttachShader(program, shader);
-	}
-
-	va_end(args);
-
-	// Link all shaders
-	glLinkProgram(program);
-
-	// Print errors if any
-	int success;
-	char info[INFO_BUFFER_SIZE];
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(program, INFO_BUFFER_SIZE, NULL, info);
-		std::cerr << "Shader linking failed:\n" << info << std::endl;
-		return 0;
-	}
-
-	return program;
-}
-
