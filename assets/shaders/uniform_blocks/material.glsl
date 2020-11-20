@@ -1,3 +1,6 @@
+#ifndef UNIFORM_BLOCKS__MATERIAL
+#define UNIFORM_BLOCKS__MATERIAL
+
 #define DIFFUSE_MAP_MAX_COUNT   8
 #define SPECULAR_MAP_MAX_COUNT  8
 
@@ -16,3 +19,5 @@ struct Material
 };
 
 uniform Material material;
+
+#endif//UNIFORM_BLOCKS__MATERIAL
