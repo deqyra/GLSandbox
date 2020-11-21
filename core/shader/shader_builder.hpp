@@ -21,7 +21,7 @@ class ShaderBuilder
         /// functionality which should be provided by a shader program.
         ///
         /// @return A ShaderProgram object wrapping resources on the GPU.
-        static ShaderProgram buildMinimalShaderProgram();
+        static ShaderProgram MinimalShaderProgram();
 
         /// @brief Build shader stages from an expected configuration, link them
         /// together and return a ShaderProgram instance wrapping the resulting
@@ -116,10 +116,6 @@ class ShaderBuilder
         /// Assume that (string not present == string not loaded).
         static NamedStringToLoadStatusMap _namedStringLoadStatus;
 
-        /// @brief A shader program corresponding to the minimal functionality
-        /// which should be provided by a shader program.
-        static const ShaderProgram _minimalShaderProgram;
-
         /// @brief Combine shaders and link them into a program.
         ///
         /// @param locations GPU locations of the shaders to link together.
@@ -148,7 +144,7 @@ class ShaderBuilder
         ///
         /// @exception If an #include directive is found to be badly formatted,
         /// the function will throw an std::runtime_error.
-        static std::vector<std::string> findIncludeFilenamesInSource(std::string text);
+        static std::unordered_set<std::string> findIncludeFilenamesInSource(std::string text, bool recursive);
 
         /// @brief Load the contents of a file into a named string which will be
         /// uploaded to the GPU.
@@ -181,39 +177,48 @@ class ShaderBuilder
         /// shader stage.
         static std::vector<ShaderInfo::ShaderFeature> filterFeaturesByStage(const std::vector<ShaderInfo::ShaderFeature>& features, ShaderInfo::ShaderStage stage);
 
+        /// @brief Write source code to hard disk and return filename.
+        ///
+        /// @param stage Literal describing the shader stage which the source 
+        /// code was meant for.
+        /// @param text Source code to dump.
+        ///
+        /// @return Path to the file which the source was dumped to.
+        static std::string dumpSource(ShaderInfo::ShaderStage stage, const std::string& text);
+
         /// @brief Get a string containing the appropriate GLSL version 
         /// directive.
         ///
         /// @return A string containing the appropriate GLSL version directive.
-        static const std::string& generateVersionDirective();
+        static const std::string& GenerateVersionDirective();
 
         /// @brief Get a string containing the appropriate GLSL extension 
         /// directives.
         ///
         /// @return A string containing the appropriate GLSL extensions
         /// directives.
-        static const std::string& generateExtensionDirectives();
+        static const std::string& GenerateExtensionDirectives();
 
         /// @brief Get a structure holding all extensions which may be used by 
         /// shaders at some point.
         ///
         /// @return A map holding all extensions which may be used by shaders at
         /// some point.
-        static const std::unordered_map<std::string, std::string>& getShadingLanguageExtensions();
+        static const std::unordered_map<std::string, std::string>& ShadingLanguageExtensions();
 
         /// @brief Structure holding the paths to the templates to generate 
         /// shader stages from.
         ///
         /// @return A map holding the paths to the templates to generate 
         /// shader stages from.
-        static const std::unordered_map<ShaderInfo::ShaderStage, std::string>& getStageTemplatePaths();
+        static const std::unordered_map<ShaderInfo::ShaderStage, std::string>& StageTemplatePaths();
 
         /// @brief Structure holding the macros to define in a template in order
         /// to make use of a given feature.
         ///
         /// @return A map holding the macros to define in a template in order
         /// to make use of a given feature.
-        static const std::unordered_map<ShaderInfo::ShaderFeature, std::string>& getFeatureDefineMacros();
+        static const std::unordered_map<ShaderInfo::ShaderFeature, std::string>& FeatureDefineMacros();
 
         /// @brief Generate the #define directives to include at the top of a 
         /// shader source in order for it to make use of certain features.
@@ -222,7 +227,7 @@ class ShaderBuilder
         /// for which to generate #define directives.
         ///
         /// @return A string containing all the necessary #define directives.
-        static std::string generateDefineDirectives(const std::vector<ShaderInfo::ShaderFeature>& features);
+        static std::string GenerateDefineDirectives(const std::vector<ShaderInfo::ShaderFeature>& features);
 };
 
 #endif//CORE__SHADER__SHADER_BUILDER_HPP

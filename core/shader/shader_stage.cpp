@@ -5,22 +5,39 @@
 
 #include <glad/gl.h>
 
-const ShaderInfo::ShaderStageToGLMacroMap ShaderInfo::StageMacros = ShaderInfo::getStageMacros();
-
 namespace ShaderInfo
 {
-    const ShaderStageToGLMacroMap getStageMacros()
+    const ShaderStageToGLMacroMap& StageMacros()
     {
         static bool runOnce = false;
-        if (runOnce) return StageMacros;
+        static ShaderStageToGLMacroMap map;
 
-        ShaderStageToGLMacroMap map;
+        if (!runOnce)
+        {
+            map[ShaderStage::Vertex]    = GL_VERTEX_SHADER;
+            map[ShaderStage::Geometry]  = GL_GEOMETRY_SHADER;
+            map[ShaderStage::Fragment]  = GL_FRAGMENT_SHADER;
 
-        map[ShaderStage::Vertex]    = GL_VERTEX_SHADER;
-        map[ShaderStage::Geometry]  = GL_GEOMETRY_SHADER;
-        map[ShaderStage::Fragment]  = GL_FRAGMENT_SHADER;
+            runOnce = true;
+        }
 
-        runOnce = true;
+        return map;
+    }
+
+    const ShaderStageFileExtensionMap& StageFileExtensions()
+    {
+        static bool runOnce = false;
+        static ShaderStageFileExtensionMap map;
+
+        if (!runOnce)
+        {
+            map[ShaderStage::Vertex]    = "vert";
+            map[ShaderStage::Geometry]  = "geom";
+            map[ShaderStage::Fragment]  = "frag";
+
+            runOnce = true;
+        }
+
         return map;
     }
 }
@@ -29,8 +46,8 @@ namespace std
 {
     std::string to_string(ShaderInfo::ShaderStage v)
     {
-        static std::unordered_map<ShaderInfo::ShaderStage, std::string> _stageNames;
         static bool runOnce = false;
+        static std::unordered_map<ShaderInfo::ShaderStage, std::string> _stageNames;
 
         if (!runOnce)
         {

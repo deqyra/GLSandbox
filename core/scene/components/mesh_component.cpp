@@ -4,13 +4,13 @@
 #include "../../materials.hpp"
 
 MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh) :
-    MeshComponent(sceneObject, mesh, Materials::Default, ShaderBuilder::buildMinimalShaderProgram())
+    MeshComponent(sceneObject, mesh, Materials::Default, ShaderBuilder::MinimalShaderProgram())
 {
 
 }
 
 MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material) :
-    MeshComponent(sceneObject, mesh, material, ShaderBuilder::buildMinimalShaderProgram())
+    MeshComponent(sceneObject, mesh, material, ShaderBuilder::MinimalShaderProgram())
 {
 
 }

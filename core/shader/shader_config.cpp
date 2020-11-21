@@ -7,25 +7,25 @@
 
 namespace ShaderInfo
 {
-    const ShaderConfig ShaderConfig::MinimalConfig = ShaderConfig::getMinimalConfig();
-
     ShaderConfig::ShaderConfig() :
         _requestedFeatures(),
-        _problems()
+        _problems(),
+        _configVectorOutdated(false)
     {
 
     }
 
-    ShaderConfig ShaderConfig::getMinimalConfig()
+    const ShaderConfig& ShaderConfig::MinimalConfig()
     {
         static bool runOnce = false;
-        if (runOnce) return MinimalConfig;
+        static ShaderConfig config;
+        if (!runOnce)
+        {
+            config.addFeature(ShaderFeature::VertexMVP);
+            config.addFeature(ShaderFeature::FragmentFullColor);
+            runOnce = true;
+        }
 
-        ShaderConfig config;
-        config.addFeature(ShaderFeature::VertexMVP);
-        config.addFeature(ShaderFeature::FragmentFullColor);
-
-        runOnce = true;
         return config;
     }
 
@@ -33,8 +33,8 @@ namespace ShaderInfo
     {
         _problems.clear();
 
-        auto it = IncompatibleFeatures.find(newFeature);
-        if (it == IncompatibleFeatures.end()) return false;
+        auto it = IncompatibleFeatures().find(newFeature);
+        if (it == IncompatibleFeatures().end()) return false;
 
         const std::vector<ShaderFeature>& incompatibleFeatures = it->second;
 
@@ -57,12 +57,12 @@ namespace ShaderInfo
     {
         _problems.clear();
 
-        auto it = FeatureRequirements.find(newFeature);
-        if (it == FeatureRequirements.end()) return false;
+        auto it = FeatureRequirements().find(newFeature);
+        if (it == FeatureRequirements().end()) return true;
 
         const std::vector<ShaderFeature>& featureRequirements = it->second;
 
-        // For all features incompatible with the newly requested feature
+        // For all features required by the newly requested feature
         for (auto jt = featureRequirements.begin(); jt != featureRequirements.end(); jt++)
         {
             // Check if it is part of the currently requested features
@@ -70,7 +70,7 @@ namespace ShaderInfo
             if (kt == _requestedFeatures.end())
             {
                 // If it is not, add it to the conflicts array
-                _problems.push_back(*kt);
+                _problems.push_back(*jt);
             }
         }
 
@@ -105,6 +105,7 @@ namespace ShaderInfo
 
         // Add the new feature
         _requestedFeatures.insert(newFeature);
+        _configVectorOutdated = true;
     }
 
     void ShaderConfig::addFeatureWithRequirements(ShaderFeature newFeature)
@@ -132,109 +133,120 @@ namespace ShaderInfo
         }
 
         _requestedFeatures.insert(newFeature);
+        _configVectorOutdated = true;
     }
 
     void ShaderConfig::removeFeature(ShaderFeature feature)
     {
-        _requestedFeatures.erase(feature);
+        auto it = _requestedFeatures.find(feature);
+        if (it != _requestedFeatures.end())
+        {
+            _requestedFeatures.erase(feature);
+            _configVectorOutdated = true;
+        }
     }
 
     const std::vector<ShaderFeature>& ShaderConfig::getRequestedFeatures()
     {
         static std::vector<ShaderFeature> result;
-        std::copy(_requestedFeatures.begin(), _requestedFeatures.end(), std::back_inserter(result));
+        if (_configVectorOutdated)
+        {
+            result.clear();
+            std::copy(_requestedFeatures.begin(), _requestedFeatures.end(), std::back_inserter(result));
+            _configVectorOutdated = false;
+        }
         return result;
     }
 
-    const FeatureRequirementsMap FeatureRequirements = getFeatureRequirements();
-
-    FeatureRequirementsMap getFeatureRequirements()
+    const FeatureRequirementsMap& FeatureRequirements()
     {
         static bool runOnce = false;
-        if (runOnce) return FeatureRequirements;
+        static FeatureRequirementsMap map;
 
-        FeatureRequirementsMap map;
+        if (!runOnce)
+        {
+            map[ShaderFeature::VertexMVP]                   = {};
+            map[ShaderFeature::VertexNormalsToColor]        = {
+                ShaderFeature::VertexMVP
+            };
+            // map[ShaderFeature::VertexFishEye]               = {};   // IMPLEMENT VERT LENS
+            // map[ShaderFeature::GeometryShowNormals]         = {};   // IMPLEMENT GEOM NORMALS
+            map[ShaderFeature::FragmentFullColor]           = {};
+            map[ShaderFeature::FragmentDepthView]           = {};
+            map[ShaderFeature::FragmentPhong]               = {
+                ShaderFeature::FragmentMeshMaterial
+            };
+            map[ShaderFeature::FragmentBlinnPhong]          = {
+                ShaderFeature::FragmentMeshMaterial
+            };
+            // map[ShaderFeature::FragmentFlatShading]         = {};   // IMPLEMENT FRAG FLAT
+            map[ShaderFeature::FragmentMeshMaterial]        = {};
+            map[ShaderFeature::FragmentBypassVertexColor]   = {};
+            map[ShaderFeature::FragmentGammaCorrection]     = {};
+            // map[ShaderFeature::FragmentOutline]             = {};   // IMPLEMENT FRAG OUTLINE
+            // map[ShaderFeature::FragmentCubemap]             = {};   // IMPLEMENT FRAG CUBEMAP
+            // map[ShaderFeature::FragmentBlending]            = {};   // IMPLEMENT FRAG BLENDING
+            // map[ShaderFeature::FragmentShadows]             = {};   // IMPLEMENT FRAG SHADOWS
 
-        map[ShaderFeature::VertexMVP]                   = {};
-        map[ShaderFeature::VertexNormalsToColor]        = {
-            ShaderFeature::VertexMVP
-        };
-        // map[ShaderFeature::VertexFishEye]               = {};   // IMPLEMENT VERT LENS
-        // map[ShaderFeature::GeometryShowNormals]         = {};   // IMPLEMENT GEOM NORMALS
-        map[ShaderFeature::FragmentFullColor]           = {};
-        map[ShaderFeature::FragmentDepthView]           = {};
-        map[ShaderFeature::FragmentPhong]               = {
-            ShaderFeature::FragmentMeshMaterial
-        };
-        map[ShaderFeature::FragmentBlinnPhong]          = {
-            ShaderFeature::FragmentMeshMaterial
-        };
-        // map[ShaderFeature::FragmentFlatShading]         = {};   // IMPLEMENT FRAG FLAT
-        map[ShaderFeature::FragmentMeshMaterial]        = {};
-        map[ShaderFeature::FragmentBypassVertexColor]   = {};
-        map[ShaderFeature::FragmentGammaCorrection]     = {};
-        // map[ShaderFeature::FragmentOutline]             = {};   // IMPLEMENT FRAG OUTLINE
-        // map[ShaderFeature::FragmentCubemap]             = {};   // IMPLEMENT FRAG CUBEMAP
-        // map[ShaderFeature::FragmentBlending]            = {};   // IMPLEMENT FRAG BLENDING
-        // map[ShaderFeature::FragmentShadows]             = {};   // IMPLEMENT FRAG SHADOWS
+            runOnce = true;
+        }
 
-        runOnce = true;
         return map;
     }
 
-    const IncompatibleFeaturesMap IncompatibleFeatures = getIncompatibleFeatures();
-
-    IncompatibleFeaturesMap getIncompatibleFeatures()
+    const IncompatibleFeaturesMap& IncompatibleFeatures()
     {
         static bool runOnce = false;
-        if (runOnce) return IncompatibleFeatures;
+        static IncompatibleFeaturesMap map;
 
-        IncompatibleFeaturesMap map;
+        if (!runOnce)
+        {
+            map[ShaderFeature::VertexMVP]                   = {};
+            map[ShaderFeature::VertexNormalsToColor]        = {};
+            // map[ShaderFeature::VertexFishEye]               = {};   // IMPLEMENT VERT LENS
+            // map[ShaderFeature::GeometryShowNormals]         = {};   // IMPLEMENT GEOM NORMALS
+            map[ShaderFeature::FragmentFullColor]           = {
+                ShaderFeature::FragmentDepthView,
+                ShaderFeature::FragmentPhong,
+                ShaderFeature::FragmentBlinnPhong,
+                ShaderFeature::FragmentBypassVertexColor
+                // ShaderFeature::FragmentFlatShading                  // IMPLEMENT FRAG FLAT
+            };
+            map[ShaderFeature::FragmentDepthView]           = {
+                ShaderFeature::FragmentFullColor,
+                ShaderFeature::FragmentPhong,
+                ShaderFeature::FragmentBlinnPhong,
+                ShaderFeature::FragmentBypassVertexColor
+                // ShaderFeature::FragmentFlatShading                  // IMPLEMENT FRAG FLAT
+            };
+            map[ShaderFeature::FragmentPhong]               = {
+                ShaderFeature::FragmentFullColor,
+                ShaderFeature::FragmentDepthView,
+                ShaderFeature::FragmentBlinnPhong
+            };
+            map[ShaderFeature::FragmentBlinnPhong]          = {
+                ShaderFeature::FragmentFullColor,
+                ShaderFeature::FragmentDepthView,
+                ShaderFeature::FragmentPhong
+            };
+            /* map[ShaderFeature::FragmentFlatShading]         = { // IMPLEMENT FRAG FLAT
+                ShaderFeature::FragmentFullColor,
+                ShaderFeature::FragmentDepthView
+            }; */
+            map[ShaderFeature::FragmentMeshMaterial]        = {};
+            map[ShaderFeature::FragmentBypassVertexColor]   = {
+                ShaderFeature::FragmentFullColor,
+                ShaderFeature::FragmentDepthView
+            };
+            map[ShaderFeature::FragmentGammaCorrection]     = {};
+            // map[ShaderFeature::FragmentOutline]             = {};   // IMPLEMENT FRAG OUTLINE
+            // map[ShaderFeature::FragmentCubemap]             = {};   // IMPLEMENT FRAG CUBEMAP
+            // map[ShaderFeature::FragmentBlending]            = {};   // IMPLEMENT FRAG BLENDING
+            // map[ShaderFeature::FragmentShadows]             = {};   // IMPLEMENT FRAG SHADOWS
 
-        map[ShaderFeature::VertexMVP]                   = {};
-        map[ShaderFeature::VertexNormalsToColor]        = {};
-        // map[ShaderFeature::VertexFishEye]               = {};   // IMPLEMENT VERT LENS
-        // map[ShaderFeature::GeometryShowNormals]         = {};   // IMPLEMENT GEOM NORMALS
-        map[ShaderFeature::FragmentFullColor]           = {
-            ShaderFeature::FragmentDepthView,
-            ShaderFeature::FragmentPhong,
-            ShaderFeature::FragmentBlinnPhong,
-            ShaderFeature::FragmentBypassVertexColor
-            // ShaderFeature::FragmentFlatShading                  // IMPLEMENT FRAG FLAT
-        };
-        map[ShaderFeature::FragmentDepthView]           = {
-            ShaderFeature::FragmentFullColor,
-            ShaderFeature::FragmentPhong,
-            ShaderFeature::FragmentBlinnPhong,
-            ShaderFeature::FragmentBypassVertexColor
-            // ShaderFeature::FragmentFlatShading                  // IMPLEMENT FRAG FLAT
-        };
-        map[ShaderFeature::FragmentPhong]               = {
-            ShaderFeature::FragmentFullColor,
-            ShaderFeature::FragmentDepthView,
-            ShaderFeature::FragmentBlinnPhong
-        };
-        map[ShaderFeature::FragmentBlinnPhong]          = {
-            ShaderFeature::FragmentFullColor,
-            ShaderFeature::FragmentDepthView,
-            ShaderFeature::FragmentPhong
-        };
-        /* map[ShaderFeature::FragmentFlatShading]         = { // IMPLEMENT FRAG FLAT
-            ShaderFeature::FragmentFullColor,
-            ShaderFeature::FragmentDepthView
-        }; */
-        map[ShaderFeature::FragmentMeshMaterial]        = {};
-        map[ShaderFeature::FragmentBypassVertexColor]   = {
-            ShaderFeature::FragmentFullColor,
-            ShaderFeature::FragmentDepthView
-        };
-        map[ShaderFeature::FragmentGammaCorrection]     = {};
-        // map[ShaderFeature::FragmentOutline]             = {};   // IMPLEMENT FRAG OUTLINE
-        // map[ShaderFeature::FragmentCubemap]             = {};   // IMPLEMENT FRAG CUBEMAP
-        // map[ShaderFeature::FragmentBlending]            = {};   // IMPLEMENT FRAG BLENDING
-        // map[ShaderFeature::FragmentShadows]             = {};   // IMPLEMENT FRAG SHADOWS
+            runOnce = true;
+        }
 
-        runOnce = true;
         return map;
     }
 }

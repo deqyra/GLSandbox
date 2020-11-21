@@ -39,6 +39,7 @@ void ShadowSandbox::run(GLWindowPtr window)
     
     ShaderConfig lightConfig;
     lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentGammaCorrection);
     ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);

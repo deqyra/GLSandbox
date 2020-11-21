@@ -15,7 +15,7 @@ vec3 phong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specu
 	// Ambient lighting
     vec3 total = ambientLight;
 #ifdef FRAGMENT_MESH_MATERIAL
-	total =* material.ambient;
+	total *= material.ambient;
 #endif//FRAGMENT_MESH_MATERIAL
 
 	// Diffuse lighting

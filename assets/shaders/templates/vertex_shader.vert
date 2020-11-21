@@ -10,7 +10,7 @@ out VertexOut vertOut;
 void main()
 {
 #ifdef VERTEX_MVP
-	vec4 mvPos = matrices.view * matrices.model * vec4(inPosition, 1.0f)
+	vec4 mvPos = matrices.view * matrices.model * vec4(inPosition, 1.0f);
     gl_Position = matrices.projection * mvPos;
 	vertOut.fragPos = vec3(mvPos);
 	vertOut.normal = normalize(matrices.normal * inNormal);

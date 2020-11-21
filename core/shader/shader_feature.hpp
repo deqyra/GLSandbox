@@ -32,15 +32,11 @@ namespace ShaderInfo
 
     using ShaderFeatureToShaderStageMap = std::unordered_map<ShaderFeature, ShaderStage>;
 
-    /// @brief Structure mapping shader features to the shader stage which they
-    /// are implemented in.
-    extern const ShaderFeatureToShaderStageMap FeatureStages;
-
     /// @brief Get the map describing in which stage shader features are
     /// implemented.
     ///
     /// @return A map describing in which stage shader features are implemented.
-    const ShaderFeatureToShaderStageMap getFeatureStages();
+    const ShaderFeatureToShaderStageMap& FeatureStages();
 }
 
 namespace std

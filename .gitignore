@@ -1,6 +1,7 @@
-bin
-obj
 .vs
-include/glm/out/*
-build
 .vscode
+bin
+build
+include/glm/out/*
+obj
+output

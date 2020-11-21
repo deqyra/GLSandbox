@@ -21,6 +21,10 @@ namespace ShaderInfo
             /// checkRequirementsAreMet.
             std::vector<ShaderFeature> _problems;
 
+            /// @brief Tells whether or not the config the last computed config
+            /// vector is outdated, due to a recent change in the config state.
+            bool _configVectorOutdated;
+
             /// @brief Check for conflicts between the currently registered 
             /// features and a new to-be-added feature. If conflicts are 
             /// detected, _problems will be filled with literals describing
@@ -45,13 +49,9 @@ namespace ShaderInfo
         public:
             ShaderConfig();
 
-            /// @brief Object holding the minimum functionality a shader should 
-            /// provide.
-            static const ShaderConfig MinimalConfig;
-
             /// @brief Get a config object for the minimum functionality a 
             /// shader should provide.
-            static ShaderConfig getMinimalConfig();
+            static const ShaderConfig& MinimalConfig();
 
             /// @brief Add a new feature to the list of currently requested 
             /// shader features.
@@ -95,25 +95,17 @@ namespace ShaderInfo
 
     using FeatureRequirementsMap = std::unordered_map<ShaderFeature, std::vector<ShaderFeature>>;
 
-    /// @brief Stores which features are required by others. One entry is mapped
-    /// to the list of features which it requires.
-    extern const FeatureRequirementsMap FeatureRequirements;
-
     /// @brief Get a map describing requirements between shader features.
     /// 
     /// @return A map describing requirements between shader features.
-    FeatureRequirementsMap getFeatureRequirements();
+    const FeatureRequirementsMap& FeatureRequirements();
 
     using IncompatibleFeaturesMap = std::unordered_map<ShaderFeature, std::vector<ShaderFeature>>;
-
-    /// @brief Stores which features are incompatible together. One entry is 
-    /// mapped to the list of features which it is incompatible with.
-    extern const IncompatibleFeaturesMap IncompatibleFeatures;
 
     /// @brief Get a map describing incompatibilities between shader features.
     /// 
     /// @return A map describing incompatibilities between shader features.
-    IncompatibleFeaturesMap getIncompatibleFeatures();
+    const IncompatibleFeaturesMap& IncompatibleFeatures();
 }
 
 using ShaderConfig = ShaderInfo::ShaderConfig;

@@ -92,7 +92,7 @@ void main()
 							lights.direct[i].specular);
 	}
 
-    vec4 color = vec4(colorTotal, 1.f);
+    color = vec4(colorTotal, 1.f);
 	#ifndef FRAGMENT_BYPASS_VERTEX_COLOR
 		color *= vec4(vertOut.color, 1.f);
 	#endif//FRAGMENT_BYPASS_VERTEX_COLOR
