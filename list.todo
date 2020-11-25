@@ -6,6 +6,7 @@ RenderBoi:
         ☐ Use const refs where applicable (especially upon fetching values held by iterators)
         ☐ Start static member names with caps
         ☐ Add const qualifiers everywhere and constexpr qualifiers where possible
+        ☐ Move tools to external repo and update CMake to use it
         ☐ Set up continuous integration
         ✔ Better documentation @done(20-10-19 19:22)
     Core:
@@ -55,7 +56,7 @@ RenderBoi:
             ✔ Declare uniform blocks in their own file @done(20-10-24 17:30)
             ✔ Interface blocks too @done(20-10-24 17:31)
             ✔ Find a way to tell whether a shader provides has certain render features @done(20-10-24 17:59)
-            ☐ On-demand shader generation
+            ✔ On-demand shader generation @done(20-11-21 02:50)
             ☐ Remember the location of a shader and give it back when asked to generate again
             ☐ Kaleidoscopic fragment shader
             ✔ Fix attenuation @done(20-11-05 07:27)

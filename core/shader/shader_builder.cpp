@@ -236,7 +236,7 @@ unsigned int ShaderBuilder::makeShaderProgram(std::vector<unsigned int> location
 
 void ShaderBuilder::processIncludeDirectives(const std::string& text)
 {
-    std::unordered_set<std::string> includeDirectives = findIncludeFilenamesInSource(text, true);
+    std::unordered_set<std::string> includeDirectives = findIncludeDirectivesInSource(text, true);
     
     for (auto it = includeDirectives.begin(); it != includeDirectives.end(); it++)
     {
@@ -259,7 +259,7 @@ void ShaderBuilder::processIncludeDirectives(const std::string& text)
     }
 }
 
-std::unordered_set<std::string> ShaderBuilder::findIncludeFilenamesInSource(std::string text, bool recursive)
+std::unordered_set<std::string> ShaderBuilder::findIncludeDirectivesInSource(std::string text, bool recursive)
 {
     static const std::string includeStringStart = "#include";
     std::unordered_set<std::string> includeDirectives;
@@ -340,7 +340,7 @@ std::unordered_set<std::string> ShaderBuilder::findIncludeFilenamesInSource(std:
             // Read file
             std::string all = StringTools::readFileIntoString(jt->second);
             // Process include contained in it
-            std::unordered_set<std::string> newIncludeDirectives = findIncludeFilenamesInSource(all, true);
+            std::unordered_set<std::string> newIncludeDirectives = findIncludeDirectivesInSource(all, true);
 
             // Add them all to the current include directives
             includeDirectives.merge(newIncludeDirectives);

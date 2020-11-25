@@ -144,7 +144,7 @@ class ShaderBuilder
         ///
         /// @exception If an #include directive is found to be badly formatted,
         /// the function will throw an std::runtime_error.
-        static std::unordered_set<std::string> findIncludeFilenamesInSource(std::string text, bool recursive);
+        static std::unordered_set<std::string> findIncludeDirectivesInSource(std::string text, bool recursive);
 
         /// @brief Load the contents of a file into a named string which will be
         /// uploaded to the GPU.
