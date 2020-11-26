@@ -1,266 +1,184 @@
 # CMake configuration
-    cmake_minimum_required( VERSION 3.1...3.15 )
+cmake_minimum_required( VERSION 3.1...3.15 )
 
-    if( ${CMAKE_VERSION} VERSION_LESS 3.12 )
-        cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} )
-    endif(  )
+if( ${CMAKE_VERSION} VERSION_LESS 3.12 )
+    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} )
+endif(  )
 
-    set( CMAKE_CXX_COMPILER_WORKS 1 )   # Skips the compiler test, which is platform-dependent
+set( CMAKE_CXX_COMPILER_WORKS 1 )   # Skips the compiler test, which is platform-dependent
 
 # Toggles
-    option( BUILD_STATIC_LIBS "Build libraries as static libraries" OFF )
-    option( BUILD_64BIT "Whether to build for a x64 target (x86 is used otherwise)" OFF)
-    option( BUILD_RELEASE "Whether to build for a debug or release profile" OFF)
+option( BUILD_STATIC_LIBS "Build libraries as static libraries" OFF )
+option( BUILD_RELEASE "Whether to build for a debug or release profile" OFF)
 
-    if ( ${BUILD_RELEASE} )
-        set( CMAKE_BUILD_TYPE "Release" )
-    else(  )
-        set( CMAKE_BUILD_TYPE "Debug" )
-    endif(  )
+if ( ${BUILD_RELEASE} )
+    set( CMAKE_BUILD_TYPE "Release" )
+else(  )
+    set( CMAKE_BUILD_TYPE "Debug" )
+endif(  )
 
-    if ( ${BUILD_64BIT} )
-        set( BUILD_TARGET "x64" )
-    else(  )
-        set( BUILD_TARGET "x86" )
-    endif(  )
+if( WIN32 )
+    message( STATUS "Windows detected, forcing static libs." )
+    set( BUILD_STATIC_LIBS ON )
+endif(  )
 
-    set( GLFW_PROFILE_HINT_COMMENT "" )
+if( ${BUILD_STATIC_LIBS} )
+    set( STATIC_OR_SHARED "STATIC" )
+else(  )
+    set( STATIC_OR_SHARED "SHARED" )
+endif(  )
 
-    if( WIN32 )
-        message( STATUS "Windows detected, forcing static libs." )
-        set( BUILD_STATIC_LIBS ON )
-    elseif( UNIX )
-        if ( DEFINED ENV{WAYLAND_DISPLAY} )
-            message( STATUS "Wayland detected, disabling GLFW context profile hint for compatibility with EGL." )
-            set( GLFW_PROFILE_HINT_COMMENT "/*" )
-        endif(  )
-    endif(  )
-
-    if( ${BUILD_STATIC_LIBS} )
-        set( STATIC_OR_SHARED "STATIC" )
-    else(  )
-        set( STATIC_OR_SHARED "SHARED" )
-    endif(  )
 
 # Project general info
-    set( PROJECT_MAINTAINER_NAME "François Brachais" )
-    set( PROJECT_MAINTAINER_EMAIL "deqyra@gmail.com" )
-
-# Project target structure
-    set( PROJECT_TARGET_NAME "RenderBoi" )
-    set( TOOLS_LIB_NAME "Tools" )
-    set( GL_LOADER_LIB_NAME "GLAD" )
-    set( STBI_LIB_NAME "STBImage" )
-    set( CORE_LIB_NAME "${PROJECT_TARGET_NAME}.Core" )
-    set( WINDOW_LIB_NAME "${PROJECT_TARGET_NAME}.Window" )
-    set( EXAMPLE_LIB_NAME "${PROJECT_TARGET_NAME}.Examples" )
-    set( EXECUTABLE_NAME ${PROJECT_TARGET_NAME} )
-    set( TEST_TARGET_NAME "tests" )
-    set( COPY_ASSETS_TARGET_NAME "copy_assets" )
-    set( COPY_LIBS_TARGET_NAME "copy_libs" )
-    set( COPY_DLLS_TARGET_NAME "copy_dlls" )
+set( PROJECT_MAINTAINER_NAME "François Brachais" )
+set( PROJECT_MAINTAINER_EMAIL "deqyra@gmail.com" )
 
 # Project library dependency names
-    set( GLFW3_LIB "glfw" )
-    set( ASSIMP_LIB "assimp" )
-    if ( WIN32 )
-        set( GLFW3_LIB "glfw/${BUILD_TARGET}/glfw3dll")
-    endif(  )
+set( GLFW3_LIB "glfw" )
+set( ASSIMP_LIB "assimp" )
+if ( WIN32 )
+    set( GLFW3_LIB "glfw/${BUILD_TARGET}/glfw3dll")
+endif(  )
 
 # GL loader information
-    set(LOADER_FILES "glad/gl.c" "include/glad/gl.h")
-    set(GL_CONTEXT_VERSION_MAJOR "4")
-    set(GL_CONTEXT_VERSION_MINOR "2")
+set( GL_CONTEXT_VERSION_MAJOR "4")
+set( GL_CONTEXT_VERSION_MINOR "2")
 
 # Copy assets folder
-    add_custom_target( ${COPY_ASSETS_TARGET_NAME} )
-    add_custom_command( TARGET ${COPY_ASSETS_TARGET_NAME}
-                        COMMENT "Copying assets"
-                        POST_BUILD
-                        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets ./assets )
+add_custom_target( "copy_assets" )
+add_custom_command( TARGET "copy_assets"
+                    COMMENT "Copying assets"
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets ./assets )
 
 # Copy lib folder
-    add_custom_target( ${COPY_LIBS_TARGET_NAME} )
-    add_custom_command( TARGET ${COPY_LIBS_TARGET_NAME}
-                        COMMENT "Copying libs"
-                        POST_BUILD
-                        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/lib ./lib )
-
-# Copy DLL in exe folder
-    add_custom_target( ${COPY_DLLS_TARGET_NAME} )
-    if( WIN32 )
-        add_custom_command( TARGET ${COPY_DLLS_TARGET_NAME}
-                            COMMENT "Copying DLLs"
-                            POST_BUILD
-                            COMMAND ${CMAKE_COMMAND} -E copy lib/glfw/${BUILD_TARGET}/glfw3.dll ./${CMAKE_BUILD_TYPE}/glfw3.dll )
-    endif(  )
-    add_dependencies( ${COPY_DLLS_TARGET_NAME} ${COPY_LIBS_TARGET_NAME} )
+add_custom_target( "copy_libs" )
+add_custom_command( TARGET "copy_libs"
+                    COMMENT "Copying libs"
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/lib ./lib )
 
 # Header configuration variables
-    set( PROJECT_VERSION "1.0" )
-    set( PROJECT_NAME "RenderBoi" )
+set( PROJECT_VERSION "1.0" )
+set( PROJECT_NAME "RenderBoi" )
 
-    # Copyleft notice generation
-        set( PROJECT_START_YEAR "2019" )
-        string( TIMESTAMP CURRENT_YEAR "%Y" )
-        # "(C) 2019"
-        set( PROJECT_COPYLEFT "Copyleft ${PROJECT_START_YEAR}" )
-        if( NOT CURRENT_YEAR EQUAL PROJECT_START_YEAR )
-            # "(C) 2019-2020"
-            set( PROJECT_COPYLEFT "${PROJECT_COPYLEFT}-${CURRENT_YEAR}" )
-        endif( )
-        # "(C) 2019-2020 François Brachais <deqyra@gmail.com>"
-        set( PROJECT_COPYLEFT "${PROJECT_COPYLEFT} ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>" )
+# Copyleft notice generation
+    set( PROJECT_START_YEAR "2019" )
+    string( TIMESTAMP CURRENT_YEAR "%Y" )
+    # "(C) 2019"
+    set( PROJECT_COPYLEFT "Copyleft ${PROJECT_START_YEAR}" )
+    if( NOT CURRENT_YEAR EQUAL PROJECT_START_YEAR )
+        # "(C) 2019-2020"
+        set( PROJECT_COPYLEFT "${PROJECT_COPYLEFT}-${CURRENT_YEAR}" )
+    endif( )
+    # "(C) 2019-2020 François Brachais <deqyra@gmail.com>"
+    set( PROJECT_COPYLEFT "${PROJECT_COPYLEFT} ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>" )
 
 # File configuration
-    configure_file( "${CMAKE_SOURCE_DIR}/config/project_macros.config.hpp" "${CMAKE_SOURCE_DIR}/project_macros.hpp" )
-    configure_file( "${CMAKE_SOURCE_DIR}/config/window_tools.config.cpp" "${CMAKE_SOURCE_DIR}/window/tools.cpp" )
+configure_file( "${CMAKE_SOURCE_DIR}/renderboi/config/project_macros.config.hpp" "${CMAKE_SOURCE_DIR}/renderboi/project_macros.hpp" )
 
 # Project definition
-    project( ${PROJECT_TARGET_NAME} VERSION ${PROJECT_VERSION}
-                                    DESCRIPTION "A rendering engine with a modest feature set"
-                                    LANGUAGES C CXX )
-    link_directories( ${CMAKE_SOURCE_DIR}/lib )
-    include_directories( ${CMAKE_SOURCE_DIR}/include )
+project( ${PROJECT_NAME} VERSION ${PROJECT_VERSION}
+                                DESCRIPTION "A rendering engine with a modest feature set"
+                                LANGUAGES C CXX )
 
 # Compiler options
-    # C++17 requires at least gcc 7 to be compiled
-    set( CMAKE_CXX_STANDARD 17 )
+# C++17 requires at least gcc 7 to be compiled
+set( CMAKE_CXX_STANDARD 17 )
 
-    if( UNIX )
-        set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
-    endif( )
+if( UNIX )
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
+endif( )
 
-# Build project
-    # Build tools lib
-        add_library( ${TOOLS_LIB_NAME} ${STATIC_OR_SHARED}
-                    tools/string_tools.cpp                              tools/string_tools.hpp
-                    tools/tree.hpp                                      tools/tree_node.hpp
-                                                                        tools/sine_generator.hpp
-                                                                        tools/make_basic_exception.hpp
-                                                                        tools/enum_map.hpp
-                    tools/exceptions/index_out_of_bounds_error.cpp      tools/exceptions/index_out_of_bounds_error.hpp
-                    tools/exceptions/file_not_found_error.cpp           tools/exceptions/file_not_found_error.hpp 
-                    tools/exceptions/range_bounds_exceeded_error.cpp    tools/exceptions/range_bounds_exceeded_error.hpp 
-                    tools/exceptions/unmatched_array_size_error.cpp     tools/exceptions/unmatched_array_size_error.hpp
-                    )
 
-    # Build STBI lib
-        add_library( ${STBI_LIB_NAME} ${STATIC_OR_SHARED}
-                    stb_image.cpp                                       include/stb_image.hpp
-                    )
-    
-    # Build GL loader
-        add_library( ${GL_LOADER_LIB_NAME} ${STATIC_OR_SHARED} ${LOADER_FILES} )
-        target_link_libraries( ${GL_LOADER_LIB_NAME} PUBLIC "${CMAKE_DL_LIBS}" )
+# Set up external dependencies
+set( CMAKE_INSTALL_PREFIX ${EXTERNAL_INSTALL_LOCATION} )
+set( RENDERBOI_INCLUDE_DIR ${EXTERNAL_INSTALL_LOCATION} )
+set( EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external )
+file( MAKE_DIRECTORY ${EXTERNAL_INSTALL_LOCATION} )
 
-    # Build window lib
-        add_library( ${WINDOW_LIB_NAME} ${STATIC_OR_SHARED}
-                    window/glfw3/glfw3_window_callbacks.cpp             window/glfw3/glfw3_window_callbacks.hpp
-                    window/glfw3/glfw3_adapter.cpp                      window/glfw3/glfw3_adapter.hpp
-                    window/glfw3/glfw3_window.cpp                       window/glfw3/glfw3_window.hpp
-                    window/gl_window.cpp                                window/gl_window.hpp
-                    window/tools.cpp                                    window/tools.hpp
-                    window/enums.cpp                                    window/enums.hpp
-                                                                        window/window_backend.hpp
-                    )
-        target_link_libraries( ${WINDOW_LIB_NAME} PUBLIC ${GLFW3_LIB} )
-        target_link_libraries( ${WINDOW_LIB_NAME} PUBLIC ${GL_LOADER_LIB_NAME} "${CMAKE_DL_LIBS}" )
+include( ExternalProject )
 
-    # Build core lib
-        add_library( ${CORE_LIB_NAME} ${STATIC_OR_SHARED}
-                                                                                core/common_macros.hpp
-                    core/camera.cpp                                             core/camera.hpp
-                    core/factory.cpp                                            core/factory.hpp
-                    core/input_processor.cpp                                    core/input_processor.hpp
-                    core/material.cpp                                           core/material.hpp
-                                                                                core/materials.hpp
-                    core/mesh.cpp                                               core/mesh.hpp
-                                                                                core/mesh_generator.hpp
-                    core/object_transform.cpp                                   core/object_transform.hpp
-                                                                                core/pixel_space.hpp
-                    core/transform.cpp                                          core/transform.hpp
-                    core/shader/shader.cpp                                      core/shader/shader.hpp
-                    core/shader/shader_builder.cpp                              core/shader/shader_builder.hpp
-                    core/shader/shader_config.cpp                               core/shader/shader_config.hpp
-                    core/shader/shader_feature.cpp                              core/shader/shader_feature.hpp
-                    core/shader/shader_info.cpp                                 core/shader/shader_info.hpp
-                    core/shader/shader_program.cpp                              core/shader/shader_program.hpp
-                    core/shader/shader_stage.cpp                                core/shader/shader_stage.hpp
-                    core/texture_2d.cpp                                         core/texture_2d.hpp
-                                                                                core/vertex.hpp
-                    core/lights/directional_light.cpp                           core/lights/directional_light.hpp
-                    core/lights/light.cpp                                       core/lights/light.hpp
-                                                                                core/lights/light_type.hpp
-                    core/lights/point_light.cpp                                 core/lights/point_light.hpp
-                    core/lights/spot_light.cpp                                  core/lights/spot_light.hpp 
-                    core/lights/tools.cpp                                       core/lights/tools.hpp 
-                    core/mesh_generators/axes_generator.cpp                     core/mesh_generators/axes_generator.hpp
-                    core/mesh_generators/cube_generator.cpp                     core/mesh_generators/cube_generator.hpp
-                    core/mesh_generators/plane_generator.cpp                    core/mesh_generators/plane_generator.hpp
-                    core/mesh_generators/tetrahedron_generator.cpp              core/mesh_generators/tetrahedron_generator.hpp
-                    core/mesh_generators/torus_generator.cpp                    core/mesh_generators/torus_generator.hpp
-                                                                                core/mesh_generators/mesh_type.hpp
-                                                                                core/mesh_generators/type_to_gen_mapping.hpp
-                    core/scene/component.cpp                                    core/scene/component.hpp 
-                                                                                core/scene/component_type.hpp 
-                    core/scene/input_processing_script.cpp                      core/scene/input_processing_script.hpp 
-                    core/scene/scene.cpp                                        core/scene/scene.hpp 
-                                                                                core/scene/scene_object_metadata.hpp 
-                    core/scene/scene_object.cpp                                 core/scene/scene_object.hpp 
-                    core/scene/scene_renderer.cpp                               core/scene/scene_renderer.hpp 
-                    core/scene/script.cpp                                       core/scene/script.hpp 
-                                                                                core/scene/components/all_components.hpp 
-                    core/scene/components/camera_component.cpp                  core/scene/components/camera_component.hpp 
-                    core/scene/components/input_processing_script_component.cpp core/scene/components/input_processing_script_component.hpp 
-                    core/scene/components/light_component.cpp                   core/scene/components/light_component.hpp 
-                    core/scene/components/mesh_component.cpp                    core/scene/components/mesh_component.hpp 
-                    core/scene/components/script_component.cpp                  core/scene/components/script_component.hpp 
-                    core/scripts/basic_input_manager.cpp                        core/scripts/basic_input_manager.hpp 
-                    core/scripts/mouse_camera_script.cpp                        core/scripts/mouse_camera_script.hpp 
-                    core/scripts/camera_aspect_ratio_script.cpp                 core/scripts/camera_aspect_ratio_script.hpp 
-                    core/scripts/keyboard_movement_script.cpp                   core/scripts/keyboard_movement_script.hpp 
-                    core/scripts/lambda_script.cpp                              core/scripts/lambda_script.hpp 
-                                                                                core/ubo/ubo_info.hpp 
-                    core/ubo/uniform_buffer_object.cpp                          core/ubo/uniform_buffer_object.hpp 
-                    core/ubo/light_ubo.cpp                                      core/ubo/light_ubo.hpp 
-                    core/ubo/matrix_ubo.cpp                                     core/ubo/matrix_ubo.hpp 
-                    )
-        target_link_libraries( ${CORE_LIB_NAME} PUBLIC ${TOOLS_LIB_NAME} ${STBI_LIB_NAME} )
-        target_link_libraries( ${CORE_LIB_NAME} PUBLIC ${GL_LOADER_LIB_NAME} "${CMAKE_DL_LIBS}" )
+ExternalProject_Add( "00_CppTools"
+    GIT_REPOSITORY https://github.com/deqyra/CppTools
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    -DCPPTOOLS_EXTERNAL_INSTALL_PREFIX=True
+    -DCPPTOOLS_SKIP_TESTS=ON
+)
 
-    # Build example lib
-        add_library( ${EXAMPLE_LIB_NAME} ${STATIC_OR_SHARED}
-                                                            examples/gl_sandbox.hpp
-                    examples/lighting_sandbox.cpp           examples/lighting_sandbox.hpp
-                    examples/shadow_sandbox.cpp             examples/shadow_sandbox.hpp
-                    )
-        target_link_libraries( ${EXAMPLE_LIB_NAME} PUBLIC ${CORE_LIB_NAME} ${TOOLS_LIB_NAME} ${WINDOW_LIB_NAME} )
+ExternalProject_Add( "01_STBImage"
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/external/stb_image"
+    CMAKE_ARGS 
+    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+)
 
-    # Build executable
-        add_executable( ${EXECUTABLE_NAME}
-                        main.cpp            project_macros.hpp )        
-        target_link_libraries( ${EXECUTABLE_NAME} PUBLIC
-                                ${TOOLS_LIB_NAME}
-                                ${CORE_LIB_NAME}
-                                ${WINDOW_LIB_NAME}
-                                ${EXAMPLE_LIB_NAME}
-                                ${GL_LOADER_LIB_NAME}
-                                ${GLFW3_LIB}
-                            ) 
-        add_dependencies( ${EXECUTABLE_NAME} ${COPY_ASSETS_TARGET_NAME} ${COPY_LIBS_TARGET_NAME} )
-        if( WIN32 )
-            add_dependencies( ${EXECUTABLE_NAME} ${COPY_DLLS_TARGET_NAME} )
-        endif(  )
+ExternalProject_Add( "02_GLAD"
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/external/glad"
+    CMAKE_ARGS 
+    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+)
+
+ExternalProject_Add( "03_RenderBoiWindow"
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/renderboi/window"
+    CMAKE_ARGS 
+    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+    -DINCLUDE_PATH=${EXTERNAL_INSTALL_LOCATION}/include
+)
+
+ExternalProject_Add( "04_GLM"
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/external/glm"
+    CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+)
+
+ExternalProject_Add( "05_RenderBoiCore"
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/renderboi/core"
+    CMAKE_ARGS 
+    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+    -DINCLUDE_PATH=${EXTERNAL_INSTALL_LOCATION}/include
+)
+
+ExternalProject_Add( "06_RenderBoiExamples"
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/renderboi/examples"
+    CMAKE_ARGS 
+    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+    -DINCLUDE_PATH=${EXTERNAL_INSTALL_LOCATION}/include
+)
+
+# Build executable
+add_executable( "RenderBoi"
+                renderboi/main.cpp            renderboi/project_macros.hpp )   
+target_include_directories( "RenderBoi" PUBLIC ${EXTERNAL_INSTALL_LOCATION}/include )
+target_link_directories( "RenderBoi" PUBLIC ${EXTERNAL_INSTALL_LOCATION}/lib )
+target_link_libraries( "RenderBoi" PUBLIC
+                        "cpptools"
+                        "RenderBoi.Core"
+                        "RenderBoi.Window"
+                        "RenderBoi.Examples"
+                        "glad"
+                        "glfw3"
+                        "stb_image"
+                    ) 
+add_dependencies( "RenderBoi" "copy_assets" "copy_libs" )
+if( WIN32 )
+    #add_dependencies( "RenderBoi" "copy_dlls" )
+endif(  )
 
 # Build and run tests
-    # enable_testing( )
-    # add_executable( ${TEST_TARGET_NAME} )
-    # target_link_libraries( ${TEST_TARGET_NAME} PUBLIC ${CORE_LIB_NAME} ${TOOLS_LIB_NAME} )
-    # add_dependencies( ${TEST_TARGET_NAME} ${COPY_ASSETS_TARGET_NAME} ${COPY_DLLS_TARGET_NAME} )
+# enable_testing( )
+# add_executable( ${TEST_TARGET_NAME} )
+# target_link_libraries( ${TEST_TARGET_NAME} PUBLIC "RenderBoi.Core" "cpptools" )
+# add_dependencies( ${TEST_TARGET_NAME} "copy_assets" "copy_dlls" )
 
-    # add_test( NAME "tests" COMMAND ${TEST_TARGET_NAME} )
-    # add_custom_command( TARGET ${TEST_TARGET_NAME}
-    #                    COMMENT "Running tests"
-    #                    POST_BUILD
-    #                    COMMAND "./tests" )
+# add_test( NAME "tests" COMMAND ${TEST_TARGET_NAME} )
+# add_custom_command( TARGET ${TEST_TARGET_NAME}
+#                    COMMENT "Running tests"
+#                    POST_BUILD
+#                    COMMAND "./tests" )

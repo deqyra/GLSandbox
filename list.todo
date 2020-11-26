@@ -93,16 +93,6 @@ RenderBoi:
     Examples:
         ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
         ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)
-    Tools:
-        Tree:
-            ☐ Iterator semantics
-            ✔ Clean up the massive mess going on @done(20-10-13 15:46)
-            ✔ `clear()` method @done(20-10-22 10:11)
-            ✔ Change weak pointers to shared pointers where possible, refactor @done(20-10-22 10:11)
-            ✔ Documentation @done(20-10-25 02:50)
-            ☐ Keep shared pointers even between nodes, manage proper destruction
-        C preprocessor:
-            ☐ Build upon the stub in StringTools
     FIXME:
         ✔ Transform::lookAt @done(20-10-13 17:04)
         ✔ Light attenuation @done(20-04-20 06:55)
