@@ -51,13 +51,6 @@ add_custom_command( TARGET "copy_assets"
                     POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets ./assets )
 
-# Copy lib folder
-add_custom_target( "copy_libs" )
-add_custom_command( TARGET "copy_libs"
-                    COMMENT "Copying libs"
-                    POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/lib ./lib )
-
 # Header configuration variables
 set( PROJECT_VERSION "1.0" )
 set( PROJECT_NAME "RenderBoi" )
@@ -144,7 +137,15 @@ ExternalProject_Add( "05_RenderBoiCore"
     -DINCLUDE_PATH=${EXTERNAL_INSTALL_LOCATION}/include
 )
 
-ExternalProject_Add( "06_RenderBoiExamples"
+ExternalProject_Add( "06_RenderBoiToolbox"
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/renderboi/toolbox"
+    CMAKE_ARGS 
+    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+    -DINCLUDE_PATH=${EXTERNAL_INSTALL_LOCATION}/include
+)
+
+ExternalProject_Add( "07_RenderBoiExamples"
     SOURCE_DIR "${CMAKE_SOURCE_DIR}/renderboi/examples"
     CMAKE_ARGS 
     -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
@@ -158,15 +159,16 @@ add_executable( "RenderBoi"
 target_include_directories( "RenderBoi" PUBLIC ${EXTERNAL_INSTALL_LOCATION}/include )
 target_link_directories( "RenderBoi" PUBLIC ${EXTERNAL_INSTALL_LOCATION}/lib )
 target_link_libraries( "RenderBoi" PUBLIC
-                        "cpptools"
-                        "RenderBoi.Core"
-                        "RenderBoi.Window"
-                        "RenderBoi.Examples"
-                        "glad"
-                        "glfw3"
-                        "stb_image"
+                        cpptools
+                        RenderBoi.Core
+                        RenderBoi.Window
+                        RenderBoi.Toolbox
+                        RenderBoi.Examples
+                        glad
+                        glfw3
+                        stb_image
                     ) 
-add_dependencies( "RenderBoi" "copy_assets" "copy_libs" )
+add_dependencies( "RenderBoi" "copy_assets" )
 if( WIN32 )
     #add_dependencies( "RenderBoi" "copy_dlls" )
 endif(  )

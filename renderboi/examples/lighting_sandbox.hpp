@@ -1,19 +1,19 @@
-#ifndef EXAMPLES__LIGHTING_EXAMPLE_HPP
-#define EXAMPLES__LIGHTING_EXAMPLE_HPP
+#ifndef RENDERBOI__EXAMPLES__LIGHTING_EXAMPLE_HPP
+#define RENDERBOI__EXAMPLES__LIGHTING_EXAMPLE_HPP
 
 #include <string>
 #include <glm/glm.hpp>
 
 #include "gl_sandbox.hpp"
 
-#include "../window/gl_window.hpp"
+#include <renderboi/window/gl_window.hpp>
 #include <cpptools/sine_generator.hpp>
 
-#include "../core/camera.hpp"
-#include "../core/input_processor.hpp"
-#include "../core/lights/point_light.hpp"
-#include "../core/scene/scene_object.hpp"
-#include "../core/scene/input_processing_script.hpp"
+#include <renderboi/core/camera.hpp>
+#include <renderboi/window/input_processor.hpp>
+#include <renderboi/core/lights/point_light.hpp>
+#include <renderboi/core/scene/scene_object.hpp>
+#include <renderboi/core/scene/input_processing_script.hpp>
 
 // Display lit moving objects
 class LightingSandbox : public GLSandbox
@@ -83,4 +83,4 @@ class LightingSandboxScript : public InputProcessingScript
         virtual LightingSandboxScript* clone();
 };
 
-#endif//EXAMPLES__LIGHTING_EXAMPLE_HPP
+#endif//RENDERBOI__EXAMPLES__LIGHTING_EXAMPLE_HPP

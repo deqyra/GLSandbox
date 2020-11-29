@@ -4,7 +4,6 @@
 #include <string>
 
 #include "glfw3_adapter.hpp"
-#include "../../core/input_processor.hpp"
 
 GLFW3Window::GLFW3Window(GLFWwindow* window, std::string title) :
     GLWindow(title),

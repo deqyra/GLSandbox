@@ -1,5 +1,5 @@
-#ifndef CORE__UBO__UNIFORM_BUFFER_OBJECT_HPP
-#define CORE__UBO__UNIFORM_BUFFER_OBJECT_HPP
+#ifndef RENDERBOI__CORE__UBO__UNIFORM_BUFFER_OBJECT_HPP
+#define RENDERBOI__CORE__UBO__UNIFORM_BUFFER_OBJECT_HPP
 
 #include <string>
 #include <glm/glm.hpp>
@@ -25,4 +25,4 @@ class UniformBufferObject
         virtual unsigned int getSize() = 0;
 };
 
-#endif//CORE__UBO__UNIFORM_BUFFER_OBJECT_HPP
+#endif//RENDERBOI__CORE__UBO__UNIFORM_BUFFER_OBJECT_HPP

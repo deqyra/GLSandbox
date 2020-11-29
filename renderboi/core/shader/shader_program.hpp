@@ -1,5 +1,5 @@
-#ifndef CORE__SHADER__SHADER_PROGRAM_HPP
-#define CORE__SHADER__SHADER_PROGRAM_HPP
+#ifndef RENDERBOI__CORE__SHADER__SHADER_PROGRAM_HPP
+#define RENDERBOI__CORE__SHADER__SHADER_PROGRAM_HPP
 
 #include <glad/gl.h>
 #include <glm/glm.hpp>
@@ -142,4 +142,4 @@ class ShaderProgram
         bool supports(ShaderInfo::ShaderFeature feature) const;
 };
 
-#endif//CORE__SHADER__SHADER_PROGRAM_HPP
+#endif//RENDERBOI__CORE__SHADER__SHADER_PROGRAM_HPP

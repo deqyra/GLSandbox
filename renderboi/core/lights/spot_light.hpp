@@ -1,5 +1,5 @@
-#ifndef CORE__LIGHTS__SPOT_LIGHT_HPP
-#define CORE__LIGHTS__SPOT_LIGHT_HPP
+#ifndef RENDERBOI__CORE__LIGHTS__SPOT_LIGHT_HPP
+#define RENDERBOI__CORE__LIGHTS__SPOT_LIGHT_HPP
 
 #include <functional>
 #include <glm/glm.hpp>
@@ -148,4 +148,4 @@ class SpotLight : public Light
         void setRange(float range);
 };
 
-#endif//CORE__LIGHTS__SPOT_LIGHT_HPP
+#endif//RENDERBOI__CORE__LIGHTS__SPOT_LIGHT_HPP

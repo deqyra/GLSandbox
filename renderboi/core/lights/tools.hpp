@@ -1,5 +1,5 @@
-#ifndef CORE__LIGHTS__TOOLS_HPP
-#define CORE__LIGHTS__TOOLS_HPP
+#ifndef RENDERBOI__CORE__LIGHTS__TOOLS_HPP
+#define RENDERBOI__CORE__LIGHTS__TOOLS_HPP
 
 /// @brief Get components for light attenuation computation from a given range.
 ///
@@ -12,4 +12,4 @@
 /// light attenuation.
 void attenuationFromRange(float range, float& quadraticFactor, float& linearFactor, float& constantFactor);
 
-#endif//CORE__LIGHTS__TOOLS_HPP
+#endif//RENDERBOI__CORE__LIGHTS__TOOLS_HPP

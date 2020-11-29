@@ -1,16 +1,16 @@
-#ifndef EXAMPLES__SHADOW_SANDBOX_HPP
-#define EXAMPLES__SHADOW_SANDBOX_HPP
+#ifndef RENDERBOI__EXAMPLES__SHADOW_SANDBOX_HPP
+#define RENDERBOI__EXAMPLES__SHADOW_SANDBOX_HPP
 
 #include <glm/glm.hpp>
 
-#include "../window/gl_window.hpp"
+#include <renderboi/window/gl_window.hpp>
 #include <cpptools/sine_generator.hpp>
 
 #include "gl_sandbox.hpp"
 
-#include "../core/camera.hpp"
-#include "../core/scene/scene_object.hpp"
-#include "../core/scene/input_processing_script.hpp"
+#include <renderboi/core/camera.hpp>
+#include <renderboi/core/scene/scene_object.hpp>
+#include <renderboi/core/scene/input_processing_script.hpp>
 
 class ShadowSandbox : public GLSandbox
 {
@@ -65,4 +65,4 @@ class ShadowSandboxScript : public InputProcessingScript
         virtual ShadowSandboxScript* clone();
 };
 
-#endif//EXAMPLES__SHADOW_SANDBOX_HPP
+#endif//RENDERBOI__EXAMPLES__SHADOW_SANDBOX_HPP

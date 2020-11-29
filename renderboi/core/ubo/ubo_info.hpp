@@ -1,5 +1,5 @@
-#ifndef CORE__UBO__UBO_INFO_HPP
-#define CORE__UBO__UBO_INFO_HPP
+#ifndef RENDERBOI__CORE__UBO__UBO_INFO_HPP
+#define RENDERBOI__CORE__UBO__UBO_INFO_HPP
 
 /* UNIFORM BLOCK LAYOUT RULE
  * =========================
@@ -64,4 +64,4 @@
 /// @brief The next available binding point on the GPU.
 #define NEXT_UBO_BINDING_POINT     2
 
-#endif//CORE__UBO__UBO_INFO_HPP
+#endif//RENDERBOI__CORE__UBO__UBO_INFO_HPP

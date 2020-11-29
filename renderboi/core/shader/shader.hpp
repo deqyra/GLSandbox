@@ -1,5 +1,5 @@
-#ifndef CORE__SHADER__SHADER_HPP
-#define CORE__SHADER__SHADER_HPP
+#ifndef RENDERBOI__CORE__SHADER__SHADER_HPP
+#define RENDERBOI__CORE__SHADER__SHADER_HPP
 
 #include <unordered_map>
 #include <vector>
@@ -72,4 +72,4 @@ class Shader
         bool supports(ShaderInfo::ShaderFeature feature) const;
 };
 
-#endif//CORE__SHADER__SHADER_HPP
+#endif//RENDERBOI__CORE__SHADER__SHADER_HPP

@@ -1,5 +1,5 @@
-#ifndef CORE__UBO__MATRIX_UBO_HPP
-#define CORE__UBO__MATRIX_UBO_HPP
+#ifndef RENDERBOI__CORE__UBO__MATRIX_UBO_HPP
+#define RENDERBOI__CORE__UBO__MATRIX_UBO_HPP
 
 #include <glm/glm.hpp>
 
@@ -61,4 +61,4 @@ class MatrixUBO : public UniformBufferObject
         void setNormal(glm::mat4 normal);
 };
 
-#endif//CORE__UBO__MATRIX_UBO_HPP
+#endif//RENDERBOI__CORE__UBO__MATRIX_UBO_HPP

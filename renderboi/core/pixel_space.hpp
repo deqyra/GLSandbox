@@ -1,5 +1,5 @@
-#ifndef CORE__PIXEL_SPACE_HPP
-#define CORE__PIXEL_SPACE_HPP
+#ifndef RENDERBOI__CORE__PIXEL_SPACE_HPP
+#define RENDERBOI__CORE__PIXEL_SPACE_HPP
 
 enum class PixelSpace
 {
@@ -7,4 +7,4 @@ enum class PixelSpace
     sRGB
 };
 
-#endif//CORE__PIXEL_SPACE_HPP
+#endif//RENDERBOI__CORE__PIXEL_SPACE_HPP

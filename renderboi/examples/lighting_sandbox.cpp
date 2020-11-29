@@ -8,31 +8,31 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "../window/gl_window.hpp"
-#include "../window/tools.hpp"
+#include <renderboi/window/gl_window.hpp>
+#include <renderboi/window/tools.hpp>
 
-#include "../core/common_macros.hpp"
-#include "../core/mesh.hpp"
-#include "../core/materials.hpp"
-#include "../core/lights/point_light.hpp"
-#include "../core/frame_of_reference.hpp"
-#include "../core/shader/shader_builder.hpp"
+#include <renderboi/core/common_macros.hpp>
+#include <renderboi/core/mesh.hpp>
+#include <renderboi/core/materials.hpp>
+#include <renderboi/core/lights/point_light.hpp>
+#include <renderboi/core/frame_of_reference.hpp>
+#include <renderboi/core/shader/shader_builder.hpp>
 
 using Ref = FrameOfReference;
 
-#include "../core/factory.hpp"
-#include "../core/mesh_generators/mesh_type.hpp"
+#include <renderboi/core/factory.hpp>
+#include <renderboi/core/mesh_generators/mesh_type.hpp>
 
-#include "../core/scene/scene.hpp"
-#include "../core/scene/scene_renderer.hpp"
-#include "../core/scene/scene_object.hpp"
-#include "../core/scene/component_type.hpp"
-#include "../core/scene/components/all_components.hpp"
+#include <renderboi/core/scene/scene.hpp>
+#include <renderboi/core/scene/scene_renderer.hpp>
+#include <renderboi/core/scene/scene_object.hpp>
+#include <renderboi/core/scene/component_type.hpp>
+#include <renderboi/core/scene/components/all_components.hpp>
 
-#include "../core/scripts/mouse_camera_script.hpp"
-#include "../core/scripts/keyboard_movement_script.hpp"
-#include "../core/scripts/basic_input_manager.hpp"
-#include "../core/scripts/camera_aspect_ratio_script.hpp"
+#include <renderboi/core/scripts/mouse_camera_script.hpp>
+#include <renderboi/core/scripts/keyboard_movement_script.hpp>
+#include <renderboi/core/scripts/basic_input_manager.hpp>
+#include <renderboi/core/scripts/camera_aspect_ratio_script.hpp>
 
 void LightingSandbox::run(GLWindowPtr window)
 {

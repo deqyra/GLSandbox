@@ -1,5 +1,5 @@
-#ifndef CORE__TRANSFORM_HPP
-#define CORE__TRANSFORM_HPP
+#ifndef RENDERBOI__CORE__TRANSFORM_HPP
+#define RENDERBOI__CORE__TRANSFORM_HPP
 
 #include <memory>
 
@@ -252,4 +252,4 @@ class Transform
         glm::mat4 getModelMatrix() const;
 };
 
-#endif//CORE__TRANSFORM_HPP
+#endif//RENDERBOI__CORE__TRANSFORM_HPP

@@ -1,5 +1,5 @@
-#ifndef CORE__SHADER_INFO_HPP
-#define CORE__SHADER_INFO_HPP
+#ifndef RENDERBOI__CORE__SHADER_INFO_HPP
+#define RENDERBOI__CORE__SHADER_INFO_HPP
 
 #include <string>
 #include <unordered_map>
@@ -34,4 +34,4 @@ namespace std
     std::string to_string(ShaderInfo::ShaderFeature v);
 }
 
-#endif//CORE__SHADER_INFO_HPP
+#endif//RENDERBOI__CORE__SHADER_INFO_HPP

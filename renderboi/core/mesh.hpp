@@ -1,5 +1,5 @@
-#ifndef CORE__MESH_HPP
-#define CORE__MESH_HPP
+#ifndef RENDERBOI__CORE__MESH_HPP
+#define RENDERBOI__CORE__MESH_HPP
 
 #include <string>
 #include <vector>
@@ -81,4 +81,4 @@ class Mesh
         const unsigned int id;
 };
 
-#endif//CORE__MESH_HPP
+#endif//RENDERBOI__CORE__MESH_HPP

@@ -1,5 +1,5 @@
-#ifndef CORE__INTERFACES__BASIS_PROVIDER_HPP
-#define CORE__INTERFACES__BASIS_PROVIDER_HPP
+#ifndef RENDERBOI__CORE__INTERFACES__BASIS_PROVIDER_HPP
+#define RENDERBOI__CORE__INTERFACES__BASIS_PROVIDER_HPP
 
 #include <memory>
 
@@ -15,4 +15,4 @@ class BasisProvider
 
 using BasisProviderPtr = std::shared_ptr<BasisProvider>;
 
-#endif//CORE__INTERFACES__BASIS_PROVIDER_HPP
+#endif//RENDERBOI__CORE__INTERFACES__BASIS_PROVIDER_HPP

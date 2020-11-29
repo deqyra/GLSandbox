@@ -9,7 +9,6 @@
 
 #include "shader_info.hpp"
 #include "../ubo/ubo_info.hpp"
-#include "../common_macros.hpp"
 
 ShaderProgram::ProgramToUniformLocationMap ShaderProgram::_uniformLocations = ShaderProgram::ProgramToUniformLocationMap();
 ShaderProgram::LocationToRefCountMap ShaderProgram::_locationRefCounts = ShaderProgram::LocationToRefCountMap();

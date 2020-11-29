@@ -1,5 +1,5 @@
-#ifndef CORE__SHADER__SHADER_BUILDER_HPP
-#define CORE__SHADER__SHADER_BUILDER_HPP
+#ifndef RENDERBOI__CORE__SHADER__SHADER_BUILDER_HPP
+#define RENDERBOI__CORE__SHADER__SHADER_BUILDER_HPP
 
 #include <string>
 
@@ -230,4 +230,4 @@ class ShaderBuilder
         static std::string GenerateDefineDirectives(const std::vector<ShaderInfo::ShaderFeature>& features);
 };
 
-#endif//CORE__SHADER__SHADER_BUILDER_HPP
+#endif//RENDERBOI__CORE__SHADER__SHADER_BUILDER_HPP

@@ -1,5 +1,5 @@
-#ifndef CORE__TEXTURE_2D_HPP
-#define CORE__TEXTURE_2D_HPP
+#ifndef RENDERBOI__CORE__TEXTURE_2D_HPP
+#define RENDERBOI__CORE__TEXTURE_2D_HPP
 
 #include <string>
 #include <unordered_map>
@@ -77,4 +77,4 @@ class Texture2D
         void bind(unsigned int unit);
 };
 
-#endif//CORE__TEXTURE_2D_HPP
+#endif//RENDERBOI__CORE__TEXTURE_2D_HPP

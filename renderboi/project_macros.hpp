@@ -10,8 +10,8 @@
    Instead, edit config/project_macros.config.hpp.
 */
 
-#ifndef PROJECT_MACROS_HPP
-#define PROJECT_MACROS_HPP
+#ifndef RENDERBOI__PROJECT_MACROS_HPP
+#define RENDERBOI__PROJECT_MACROS_HPP
 
 #define PROJECT_NAME "RenderBoi"
 #define PROJECT_VERSION "1.0"
@@ -19,4 +19,4 @@
 #define GL_CONTEXT_VERSION_MAJOR 4
 #define GL_CONTEXT_VERSION_MINOR 2
 
-#endif//PROJECT_MACROS_HPP
+#endif//RENDERBOI__PROJECT_MACROS_HPP

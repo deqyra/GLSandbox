@@ -40,6 +40,8 @@ add_library( "RenderBoi.Window" ${STATIC_OR_SHARED}
     env_info.hpp
     gl_window.cpp
     gl_window.hpp
+    input_processor.cpp
+    input_processor.hpp
     tools.cpp
     tools.hpp
     window_backend.hpp
@@ -62,7 +64,7 @@ install(
 
 install(
     DIRECTORY "${CMAKE_SOURCE_DIR}"
-    DESTINATION "${CMAKE_INSTALL_PREFIX}/include/RenderBoi"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/include/renderboi"
     FILES_MATCHING 
     PATTERN "*.h"
     PATTERN "*.hpp"

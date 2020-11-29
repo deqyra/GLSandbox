@@ -4,7 +4,7 @@
 #include <string>
 
 #include "glfw3/glfw3_adapter.hpp"
-#include "../core/input_processor.hpp"
+#include "input_processor.hpp"
 
 InputProcessorPtr GLWindow::_defaultInputProcessor = std::make_shared<InputProcessor>();
 

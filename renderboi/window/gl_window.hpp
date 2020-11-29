@@ -10,7 +10,7 @@
 #undef GLFW_INCLUDE_NONE
 
 #include "enums.hpp"
-#include "../core/input_processor.hpp"
+#include "input_processor.hpp"
 
 /// @brief Abstract window, supporting event callbacks through a custom 
 /// InputProcessor.

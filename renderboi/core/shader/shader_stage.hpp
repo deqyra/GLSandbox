@@ -1,5 +1,5 @@
-#ifndef CORE__SHADER__SHADER_STAGE_HPP
-#define CORE__SHADER__SHADER_STAGE_HPP
+#ifndef RENDERBOI__CORE__SHADER__SHADER_STAGE_HPP
+#define RENDERBOI__CORE__SHADER__SHADER_STAGE_HPP
 
 #include <string>
 #include <unordered_map>
@@ -36,4 +36,4 @@ namespace std
 {
     std::string to_string(ShaderInfo::ShaderStage v);
 }
-#endif//CORE__SHADER__SHADER_STAGE_HPP
+#endif//RENDERBOI__CORE__SHADER__SHADER_STAGE_HPP

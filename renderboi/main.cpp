@@ -8,9 +8,9 @@
 
 #include "project_macros.hpp"
 
-#include "window/enums.hpp"
-#include "window/tools.hpp"
-#include "window/window_backend.hpp"
+#include <renderboi/window/enums.hpp>
+#include <renderboi/window/tools.hpp>
+#include <renderboi/window/window_backend.hpp>
 
 #include "examples/gl_sandbox.hpp"
 #include "examples/lighting_sandbox.hpp"

@@ -1,5 +1,5 @@
-#ifndef CORE__LIGHT_HPP
-#define CORE__LIGHT_HPP
+#ifndef RENDERBOI__CORE__LIGHT_HPP
+#define RENDERBOI__CORE__LIGHT_HPP
 
 #include <memory>
 
@@ -37,4 +37,4 @@ class Light
 using LightPtr = std::shared_ptr<Light>;
 using LightWPtr = std::weak_ptr<Light>;
 
-#endif//CORE__LIGHT_HPP
+#endif//RENDERBOI__CORE__LIGHT_HPP

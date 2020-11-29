@@ -1,5 +1,5 @@
-#ifndef CORE__MATERIALS_HPP
-#define CORE__MATERIALS_HPP
+#ifndef RENDERBOI__CORE__MATERIALS_HPP
+#define RENDERBOI__CORE__MATERIALS_HPP
 
 #include "material.hpp"
 
@@ -189,4 +189,4 @@ namespace Materials
 	);
 }//namespace Materials
 
-#endif//CORE__MATERIALS_HPP
+#endif//RENDERBOI__CORE__MATERIALS_HPP

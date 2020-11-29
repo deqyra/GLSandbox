@@ -1,5 +1,5 @@
-#ifndef CORE__MATERIAL_HPP
-#define CORE__MATERIAL_HPP
+#ifndef RENDERBOI__CORE__MATERIAL_HPP
+#define RENDERBOI__CORE__MATERIAL_HPP
 
 #include <glm/glm.hpp>
 #include <vector>
@@ -134,4 +134,4 @@ class Material
         float shininess;
 };
 
-#endif//CORE__MATERIAL_HPP
+#endif//RENDERBOI__CORE__MATERIAL_HPP

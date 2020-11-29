@@ -1,12 +1,11 @@
-#ifndef CORE__CAMERA_HPP
-#define CORE__CAMERA_HPP
+#ifndef RENDERBOI__CORE__CAMERA_HPP
+#define RENDERBOI__CORE__CAMERA_HPP
 
 #include <memory>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 #include "interfaces/basis_provider.hpp"
-
 #include "transform.hpp"
 
 /// @brief A camera managing its own orientation and providing view and projection matrices.
@@ -206,4 +205,4 @@ class Camera : public BasisProvider
 using CameraPtr = std::shared_ptr<Camera>;
 using CameraWPtr = std::weak_ptr<Camera>;
 
-#endif//CORE__CAMERA_HPP
+#endif//RENDERBOI__CORE__CAMERA_HPP

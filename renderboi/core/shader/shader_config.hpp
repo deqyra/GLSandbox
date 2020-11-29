@@ -1,5 +1,5 @@
-#ifndef CORE__SHADER__SHADER_CONFIG_HPP
-#define CORE__SHADER__SHADER_CONFIG_HPP
+#ifndef RENDERBOI__CORE__SHADER__SHADER_CONFIG_HPP
+#define RENDERBOI__CORE__SHADER__SHADER_CONFIG_HPP
 
 #include <unordered_set>
 #include <vector>
@@ -110,4 +110,4 @@ namespace ShaderInfo
 
 using ShaderConfig = ShaderInfo::ShaderConfig;
 
-#endif//CORE__SHADER__SHADER_CONFIG_HPP
+#endif//RENDERBOI__CORE__SHADER__SHADER_CONFIG_HPP

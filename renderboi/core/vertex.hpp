@@ -1,5 +1,5 @@
-#ifndef CORE__VERTEX_HPP
-#define CORE__VERTEX_HPP
+#ifndef RENDERBOI__CORE__VERTEX_HPP
+#define RENDERBOI__CORE__VERTEX_HPP
 
 #include <glm/glm.hpp>
 
@@ -19,4 +19,4 @@ struct Vertex
     glm::vec2 texCoord;
 };
 
-#endif//CORE__VERTEX_HPP
+#endif//RENDERBOI__CORE__VERTEX_HPP
