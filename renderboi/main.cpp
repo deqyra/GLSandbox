@@ -3,18 +3,17 @@
 #include <string>
 #include <vector>
 
-#include <glad/gl.h>
 #include <GLFW/glfw3.h>
-
-#include "project_macros.hpp"
 
 #include <renderboi/window/enums.hpp>
 #include <renderboi/window/tools.hpp>
 #include <renderboi/window/window_backend.hpp>
 
-#include "examples/gl_sandbox.hpp"
-#include "examples/lighting_sandbox.hpp"
-#include "examples/shadow_sandbox.hpp"
+#include <renderboi/examples/gl_sandbox.hpp>
+#include <renderboi/examples/lighting_sandbox.hpp>
+#include <renderboi/examples/shadow_sandbox.hpp>
+
+#include "project_macros.hpp"
 
 #ifdef _WIN32
 	#include <windows.h>

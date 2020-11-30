@@ -4,7 +4,6 @@
 #include <glad/gl.h>
 
 #include <renderboi/core/camera.hpp>
-#include <renderboi/core/factory.hpp>
 #include <renderboi/core/frame_of_reference.hpp>
 #include <renderboi/core/material.hpp>
 #include <renderboi/core/materials.hpp>
@@ -12,18 +11,20 @@
 #include <renderboi/core/pixel_space.hpp>
 #include <renderboi/core/shader/shader.hpp>
 
-#include <renderboi/core/mesh_generators/mesh_type.hpp>
-#include <renderboi/core/mesh_generators/plane_generator.hpp>
-#include <renderboi/core/mesh_generators/torus_generator.hpp>
-
-#include <renderboi/core/scene/scene.hpp>
-#include <renderboi/core/scene/scene_object.hpp>
-#include <renderboi/core/scene/scene_renderer.hpp>
-
-#include <renderboi/core/scripts/basic_input_manager.hpp>
-#include <renderboi/core/scripts/mouse_camera_script.hpp>
-#include <renderboi/core/scripts/keyboard_movement_script.hpp>
-#include <renderboi/core/scripts/camera_aspect_ratio_script.hpp>
+#include <renderboi/toolbox/factory.hpp>
+#include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
+#include <renderboi/toolbox/mesh_generators/plane_generator.hpp>
+#include <renderboi/toolbox/mesh_generators/torus_generator.hpp>
+#include <renderboi/toolbox/scene/scene.hpp>
+#include <renderboi/toolbox/scene/scene_object.hpp>
+#include <renderboi/toolbox/scene/scene_renderer.hpp>
+#include <renderboi/toolbox/scene/components/camera_component.hpp>
+#include <renderboi/toolbox/scene/components/light_component.hpp>
+#include <renderboi/toolbox/scene/components/mesh_component.hpp>
+#include <renderboi/toolbox/scripts/basic_input_manager.hpp>
+#include <renderboi/toolbox/scripts/mouse_camera_script.hpp>
+#include <renderboi/toolbox/scripts/keyboard_movement_script.hpp>
+#include <renderboi/toolbox/scripts/camera_aspect_ratio_script.hpp>
 
 using Ref = FrameOfReference;
 
@@ -39,10 +40,10 @@ void ShadowSandbox::run(GLWindowPtr window)
     
     ShaderConfig lightConfig;
     lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
-    //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
-    //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
-    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentFullColor);
-    //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentGammaCorrection);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
+    //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentFullColor);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentGammaCorrection);
     ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
     lightingShader.setFloat("gamma", 1.7f);
 

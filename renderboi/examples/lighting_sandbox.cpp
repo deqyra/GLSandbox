@@ -11,7 +11,6 @@
 #include <renderboi/window/gl_window.hpp>
 #include <renderboi/window/tools.hpp>
 
-#include <renderboi/core/common_macros.hpp>
 #include <renderboi/core/mesh.hpp>
 #include <renderboi/core/materials.hpp>
 #include <renderboi/core/lights/point_light.hpp>
@@ -20,19 +19,18 @@
 
 using Ref = FrameOfReference;
 
-#include <renderboi/core/factory.hpp>
-#include <renderboi/core/mesh_generators/mesh_type.hpp>
-
-#include <renderboi/core/scene/scene.hpp>
-#include <renderboi/core/scene/scene_renderer.hpp>
-#include <renderboi/core/scene/scene_object.hpp>
-#include <renderboi/core/scene/component_type.hpp>
-#include <renderboi/core/scene/components/all_components.hpp>
-
-#include <renderboi/core/scripts/mouse_camera_script.hpp>
-#include <renderboi/core/scripts/keyboard_movement_script.hpp>
-#include <renderboi/core/scripts/basic_input_manager.hpp>
-#include <renderboi/core/scripts/camera_aspect_ratio_script.hpp>
+#include <renderboi/toolbox/common_macros.hpp>
+#include <renderboi/toolbox/factory.hpp>
+#include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
+#include <renderboi/toolbox/scene/scene.hpp>
+#include <renderboi/toolbox/scene/scene_renderer.hpp>
+#include <renderboi/toolbox/scene/scene_object.hpp>
+#include <renderboi/toolbox/scene/component_type.hpp>
+#include <renderboi/toolbox/scene/components/all_components.hpp>
+#include <renderboi/toolbox/scripts/mouse_camera_script.hpp>
+#include <renderboi/toolbox/scripts/keyboard_movement_script.hpp>
+#include <renderboi/toolbox/scripts/basic_input_manager.hpp>
+#include <renderboi/toolbox/scripts/camera_aspect_ratio_script.hpp>
 
 void LightingSandbox::run(GLWindowPtr window)
 {

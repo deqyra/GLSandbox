@@ -3,14 +3,14 @@
 
 #include <glm/glm.hpp>
 
-#include <renderboi/window/gl_window.hpp>
-#include <cpptools/sine_generator.hpp>
-
 #include "gl_sandbox.hpp"
 
+#include <cpptools/sine_generator.hpp>
+
+#include <renderboi/window/gl_window.hpp>
 #include <renderboi/core/camera.hpp>
-#include <renderboi/core/scene/scene_object.hpp>
-#include <renderboi/core/scene/input_processing_script.hpp>
+#include <renderboi/toolbox/input_processing_script.hpp>
+#include <renderboi/toolbox/scene/scene_object.hpp>
 
 class ShadowSandbox : public GLSandbox
 {

@@ -44,13 +44,6 @@ endif(  )
 set( GL_CONTEXT_VERSION_MAJOR "4")
 set( GL_CONTEXT_VERSION_MINOR "2")
 
-# Copy assets folder
-add_custom_target( "copy_assets" )
-add_custom_command( TARGET "copy_assets"
-                    COMMENT "Copying assets"
-                    POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets ./assets )
-
 # Header configuration variables
 set( PROJECT_VERSION "1.0" )
 set( PROJECT_NAME "RenderBoi" )
@@ -80,98 +73,147 @@ project( ${PROJECT_NAME} VERSION ${PROJECT_VERSION}
 set( CMAKE_CXX_STANDARD 17 )
 
 if( UNIX )
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
+    set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g" )
 endif( )
 
 
 # Set up external dependencies
-set( CMAKE_INSTALL_PREFIX ${EXTERNAL_INSTALL_LOCATION} )
-set( RENDERBOI_INCLUDE_DIR ${EXTERNAL_INSTALL_LOCATION} )
-set( EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external )
-file( MAKE_DIRECTORY ${EXTERNAL_INSTALL_LOCATION} )
+set( EXPORT_LOCATION ${CMAKE_BINARY_DIR}/external )
+file( MAKE_DIRECTORY ${EXPORT_LOCATION} )
+file( MAKE_DIRECTORY ${EXPORT_LOCATION}/include )
+file( MAKE_DIRECTORY ${EXPORT_LOCATION}/lib )
+
+include_directories( ${EXPORT_LOCATION}/include )
+link_directories( ${EXPORT_LOCATION}/lib )
 
 include( ExternalProject )
-
-ExternalProject_Add( "00_CppTools"
+ExternalProject_Add( "00cpptools"
     GIT_REPOSITORY https://github.com/deqyra/CppTools
     CMAKE_ARGS
-    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    -DCMAKE_INSTALL_PREFIX=${EXPORT_LOCATION}
     -DCPPTOOLS_EXTERNAL_INSTALL_PREFIX=True
     -DCPPTOOLS_SKIP_TESTS=ON
 )
 
-ExternalProject_Add( "01_STBImage"
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/external/stb_image"
-    CMAKE_ARGS 
-    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+# Build stb_image
+add_subdirectory( "external/stb_image" )
+add_custom_target( "export_stb_image" )
+add_dependencies( "export_stb_image"
+    "export_stb_image_lib"
+    "export_stb_image_headers"
+)
+target_include_directories( "stb_image" PUBLIC ${EXPORT_LOCATION}/include )
+target_link_directories( "stb_image" PUBLIC ${EXPORT_LOCATION}/lib )
+
+# Build GLAD
+add_subdirectory( "external/glad" )
+add_custom_target( "export_glad" )
+add_dependencies( "export_glad"
+    "export_glad_lib"
+    "export_glad_headers"
+)
+target_include_directories( "glad" PUBLIC ${EXPORT_LOCATION}/include )
+target_link_directories( "glad" PUBLIC ${EXPORT_LOCATION}/lib )
+
+# Build GLM
+add_subdirectory( "external/glm" )
+add_custom_target( "export_glm" )
+add_dependencies( "export_glm"
+    "export_glm_headers"
 )
 
-ExternalProject_Add( "02_GLAD"
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/external/glad"
-    CMAKE_ARGS 
-    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+# Build RenderBoi.Window
+add_subdirectory( "renderboi/window" )
+add_custom_target( "00solve_renderboi.window_dependencies" )
+add_dependencies( "00solve_renderboi.window_dependencies"
+    "export_glad"
 )
+add_custom_target( "export_renderboi.window" )
+add_dependencies( "export_renderboi.window"
+    "00solve_renderboi.window_dependencies"
+    "export_renderboi.window_lib"
+    "export_renderboi.window_headers"
+)
+target_include_directories( "renderboi.window" PUBLIC ${EXPORT_LOCATION}/include )
+target_link_directories( "renderboi.window" PUBLIC ${EXPORT_LOCATION}/lib )
 
-ExternalProject_Add( "03_RenderBoiWindow"
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/renderboi/window"
-    CMAKE_ARGS 
-    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
-    -DINCLUDE_PATH=${EXTERNAL_INSTALL_LOCATION}/include
+# Build RenderBoi.Core
+add_custom_target( "00solve_renderboi.core_dependencies" )
+add_dependencies( "00solve_renderboi.core_dependencies"
+    "export_glad"
+    "export_glm"
+    "export_stb_image"
 )
+add_subdirectory( "renderboi/core" )
+add_custom_target( "export_renderboi.core" )
+add_dependencies( "export_renderboi.core"
+    "00solve_renderboi.core_dependencies"
+    "export_renderboi.core_lib"
+    "export_renderboi.core_headers"
+)
+target_include_directories( "renderboi.core" PUBLIC ${EXPORT_LOCATION}/include )
+target_link_directories( "renderboi.core" PUBLIC ${EXPORT_LOCATION}/lib )
 
-ExternalProject_Add( "04_GLM"
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/external/glm"
-    CMAKE_ARGS
-    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
+# Build RenderBoi.Toolbox
+add_subdirectory( "renderboi/toolbox" )
+add_custom_target( "00solve_renderboi.toolbox_dependencies" )
+add_dependencies( "00solve_renderboi.toolbox_dependencies"
+    "export_glm"
+    "export_renderboi.core"
+    "export_renderboi.window"
 )
+add_custom_target( "export_renderboi.toolbox" )
+add_dependencies( "export_renderboi.toolbox"
+    "00solve_renderboi.toolbox_dependencies"
+    "export_renderboi.toolbox_lib"
+    "export_renderboi.toolbox_headers"
+)
+target_include_directories( "renderboi.toolbox" PUBLIC ${EXPORT_LOCATION}/include )
+target_link_directories( "renderboi.toolbox" PUBLIC ${EXPORT_LOCATION}/lib )
 
-ExternalProject_Add( "05_RenderBoiCore"
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/renderboi/core"
-    CMAKE_ARGS 
-    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
-    -DINCLUDE_PATH=${EXTERNAL_INSTALL_LOCATION}/include
+# Build RenderBoi.Examples
+add_subdirectory( "renderboi/examples" )
+add_custom_target( "00solve_renderboi.examples_dependencies" )
+add_dependencies( "00solve_renderboi.examples_dependencies"
+    "export_glm"
+    "export_renderboi.core"
+    "export_renderboi.window"
+    "export_renderboi.toolbox"
 )
-
-ExternalProject_Add( "06_RenderBoiToolbox"
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/renderboi/toolbox"
-    CMAKE_ARGS 
-    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
-    -DINCLUDE_PATH=${EXTERNAL_INSTALL_LOCATION}/include
+add_custom_target( "export_renderboi.examples" )
+add_dependencies( "export_renderboi.examples"
+    "00solve_renderboi.examples_dependencies"
+    "export_renderboi.examples_lib"
+    "export_renderboi.examples_headers"
 )
-
-ExternalProject_Add( "07_RenderBoiExamples"
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/renderboi/examples"
-    CMAKE_ARGS 
-    -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-    -DSTATIC_OR_SHARED=${STATIC_OR_SHARED}
-    -DINCLUDE_PATH=${EXTERNAL_INSTALL_LOCATION}/include
-)
+target_include_directories( "renderboi.examples" PUBLIC ${EXPORT_LOCATION}/include )
+target_link_directories( "renderboi.examples" PUBLIC ${EXPORT_LOCATION}/lib )
 
 # Build executable
 add_executable( "RenderBoi"
-                renderboi/main.cpp            renderboi/project_macros.hpp )   
-target_include_directories( "RenderBoi" PUBLIC ${EXTERNAL_INSTALL_LOCATION}/include )
-target_link_directories( "RenderBoi" PUBLIC ${EXTERNAL_INSTALL_LOCATION}/lib )
+                renderboi/main.cpp            renderboi/project_macros.hpp
+)   
+
+add_dependencies( "RenderBoi"
+    "export_glad"
+    "export_renderboi.window"
+    "export_renderboi.examples"
+    "export_renderboi.core"
+)
+
+target_include_directories( "RenderBoi" PUBLIC ${EXPORT_LOCATION}/include )
+target_link_directories( "RenderBoi" PUBLIC ${EXPORT_LOCATION}/lib )
+
 target_link_libraries( "RenderBoi" PUBLIC
-                        cpptools
-                        RenderBoi.Core
-                        RenderBoi.Window
-                        RenderBoi.Toolbox
-                        RenderBoi.Examples
-                        glad
-                        glfw3
-                        stb_image
-                    ) 
-add_dependencies( "RenderBoi" "copy_assets" )
-if( WIN32 )
-    #add_dependencies( "RenderBoi" "copy_dlls" )
-endif(  )
+    cpptools
+    renderBoi.core
+    renderBoi.window
+    renderBoi.toolbox
+    renderBoi.examples
+    glad
+    glfw3
+    stb_image
+) 
 
 # Build and run tests
 # enable_testing( )

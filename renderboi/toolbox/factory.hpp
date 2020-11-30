@@ -3,10 +3,10 @@
 
 #include <renderboi/core/materials.hpp>
 #include <renderboi/core/mesh.hpp>
-#include <renderboi/core/mesh_generator.hpp>
-#include <renderboi/core/mesh_generators/mesh_type.hpp>
-#include <renderboi/core/mesh_generators/type_to_gen_mapping.hpp>
 #include <renderboi/core/shader/shader_builder.hpp>
+#include <renderboi/toolbox/mesh_generator.hpp>
+#include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
+#include <renderboi/toolbox/mesh_generators/type_to_gen_mapping.hpp>
 
 #include "script.hpp"
 #include "input_processing_script.hpp"

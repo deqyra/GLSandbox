@@ -4,13 +4,13 @@ in VertexOut vertOut;
 out vec4 fragColor;
 
 #ifdef FRAGMENT_DEPTH_VIEW
-	uniform float near = 0.1; 
-	uniform float far  = 100.0; 
+	uniform float near = 0.1f; 
+	uniform float far  = 100.f; 
 	
 	float linearizeDepth(float depth) 
 	{
-		float z = depth * 2.0 - 1.0;
-		return (2.0 * near * far) / (far + near - z * (far - near));	
+		float z = depth * 2.f - 1.f;
+		return (2.f * near * far) / (far + near - z * (far - near));	
 	}
 #endif//FRAGMENT_DEPTH_VIEW
 
@@ -31,7 +31,7 @@ out vec4 fragColor;
 #endif//FRAGMENT_PHONG
 
 #ifdef FRAGMENT_GAMMA_CORRECTION
-	uniform float gamma = 2.2;
+	uniform float gamma = 2.2f;
 	#include </functional_blocks/gamma_correction>
 #endif//FRAGMENT_GAMMA_CORRECTION
 
@@ -39,11 +39,11 @@ void main()
 {
 	vec4 color;
 #ifdef FRAGMENT_FULL_COLOR
-	color = vec3(vertOut.color, 1.0f);
+	color = vec4(vertOut.color, 1.f);
 #endif//FRAGMENT_FULL_COLOR
 
 #ifdef FRAGMENT_DEPTH_VIEW
-    color = vec4(vec3(linearizeDepth(gl_FragCoord.z) / far), 1.0);
+    color = vec4(vec3(linearizeDepth(gl_FragCoord.z) / far), 1.f);
 #endif//FRAGMENT_DEPTH_VIEW
 
 #ifdef FRAGMENT_PHONG
@@ -72,7 +72,7 @@ void main()
 		float outerCos = cos(lights.spot[i].outerCutoff);
 		float innerCos = cos(lights.spot[i].innerCutoff);
 		float epsilon = innerCos - outerCos;
-		float intensity = clamp((theta - outerCos) / epsilon, 0.0, 1.0);
+		float intensity = clamp((theta - outerCos) / epsilon, 0.f, 1.f);
 
 		float dist = length(positionDiff);
 		colorTotal += attenuate(lights.spot[i].constant,

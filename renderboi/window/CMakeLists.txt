@@ -15,10 +15,10 @@ endif( )
 # Set up external dependencies
 include( ExternalProject )
 
-ExternalProject_Add( "00_glfw3"
+ExternalProject_Add( "00glfw3"
     GIT_REPOSITORY https://github.com/glfw/glfw
     CMAKE_ARGS
-    -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+    -DCMAKE_INSTALL_PREFIX=${EXPORT_LOCATION}
     -DGLFW_BUILD_EXAMPLES=OFF
     -DGLFW_BUILD_TESTS=OFF
 )
@@ -32,9 +32,23 @@ if( UNIX )
     endif(  )
 endif(  )
 
-configure_file( "${CMAKE_SOURCE_DIR}/config/env_info.config.hpp" "${CMAKE_SOURCE_DIR}/env_info.hpp" )
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/config/env_info.config.hpp" "${CMAKE_CURRENT_SOURCE_DIR}/env_info.hpp" )
 
-add_library( "RenderBoi.Window" ${STATIC_OR_SHARED}
+set( LIBNAME "renderboi.window")
+
+# Create script file to copy headers
+file(WRITE ${CMAKE_BINARY_DIR}/cp_${LIBNAME}_headers.cmake
+    "file( COPY ${CMAKE_CURRENT_SOURCE_DIR}
+        DESTINATION ${EXPORT_LOCATION}/include/renderboi
+        FILES_MATCHING
+        PATTERN \"*.h\"
+        PATTERN \"*.hpp\"
+        PATTERN \"*.hxx\"
+    )\n"
+)
+
+# Build RenderBoi.Window lib
+add_library( ${LIBNAME} ${STATIC_OR_SHARED}
     enums.cpp
     enums.hpp
     env_info.hpp
@@ -52,21 +66,20 @@ add_library( "RenderBoi.Window" ${STATIC_OR_SHARED}
     glfw3/glfw3_window.cpp
     glfw3/glfw3_window.hpp
 )
-target_include_directories( "RenderBoi.Window" PUBLIC ${INCLUDE_PATH} )
-target_link_directories( "RenderBoi.Window" PUBLIC ${EXTERNAL_INSTALL_LOCATION}/lib )
-target_link_libraries( "RenderBoi.Window" PUBLIC glfw3 glad ${CMAKE_DL_LIBS} )
+add_dependencies( ${LIBNAME} "00glfw3" )
+target_include_directories( ${LIBNAME} PUBLIC ${EXPORT_LOCATION}/include )
+target_link_directories( ${LIBNAME} PUBLIC ${EXPORT_LOCATION}/lib )
+target_link_libraries( ${LIBNAME} PUBLIC glfw3 glad ${CMAKE_DL_LIBS} )
 
-# Install
-install(
-    TARGETS "RenderBoi.Window"
-    LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib"
+add_custom_target( "export_${LIBNAME}_lib" )
+add_dependencies( "export_${LIBNAME}_lib" ${LIBNAME})
+add_custom_command(
+  TARGET "export_${LIBNAME}_lib"
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${LIBNAME}> ${EXPORT_LOCATION}/lib
 )
 
-install(
-    DIRECTORY "${CMAKE_SOURCE_DIR}"
-    DESTINATION "${CMAKE_INSTALL_PREFIX}/include/renderboi"
-    FILES_MATCHING 
-    PATTERN "*.h"
-    PATTERN "*.hpp"
-    PATTERN "*.hxx"
+add_custom_target( "export_${LIBNAME}_headers" )
+add_custom_command(
+  TARGET "export_${LIBNAME}_headers"
+  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cp_${LIBNAME}_headers.cmake
 )
