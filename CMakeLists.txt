@@ -1,6 +1,8 @@
-####################### 
-# CMake configuration #
-#######################
+###############################################################################
+#                                                                             #
+#                             CMake configuration                             #
+#                                                                             #
+###############################################################################
 
 cmake_minimum_required(VERSION 3.1...3.15)
 
@@ -10,9 +12,11 @@ endif()
 
 
 
-###########
-# Toggles #
-###########
+###############################################################################
+#                                                                             #
+#                                   Toggles                                   #
+#                                                                             #
+###############################################################################
 
 option(BUILD_STATIC_LIBS "Build libraries as static libraries" OFF)
 option(BUILD_RELEASE "Whether to build for a debug or release profile" OFF)
@@ -36,9 +40,11 @@ endif()
 
 
 
-####################
-# Compiler options #
-####################
+###############################################################################
+#                                                                             #
+#                              Compiler options                               #
+#                                                                             #
+###############################################################################
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -50,9 +56,11 @@ endif()
 
 
 
-######################
-# Project definition #
-######################
+###############################################################################
+#                                                                             #
+#                             Project definition                              #
+#                                                                             #
+###############################################################################
 
 # Project general info
 set(PROJECT_VERSION "1.0")
@@ -88,9 +96,11 @@ configure_file("${CMAKE_SOURCE_DIR}/renderboi/config/project_macros.config.hpp" 
 
 
 
-######################
-# Build dependencies #
-######################
+###############################################################################
+#                                                                             #
+#                            Dependency locations                             #
+#                                                                             #
+###############################################################################
 
 set(EXPORT_LOCATION ${CMAKE_SOURCE_DIR}/external)
 set(EXTERNAL_SOURCE_LOCATION ${CMAKE_SOURCE_DIR}/external/source)
@@ -99,7 +109,17 @@ file(MAKE_DIRECTORY ${EXPORT_LOCATION})
 file(MAKE_DIRECTORY ${EXPORT_LOCATION}/include)
 file(MAKE_DIRECTORY ${EXPORT_LOCATION}/lib)
 
-set(CPPTOOLS_LIB_NAME cpptools)
+
+
+###############################################################################
+#                                                                             #
+#                  Target names and file names masterlists                    #
+#                                                                             #
+###############################################################################
+#    (easier to browse here than to go and update it in each subdirectory)    #
+###############################################################################
+
+set(CPPTOOLS_LIB_NAME "cpptools")
 set(GLM_LIB_NAME "glm")
 set(GLAD_LIB_NAME "glad")
 set(STB_IMAGE_LIB_NAME "stb_image")
@@ -118,9 +138,20 @@ ExternalProject_Add(${CPPTOOLS_LIB_NAME}_source
     -DCPPTOOLS_SKIP_TESTS=ON
 )
 
+###############################################################################
+#                                                                             #
+#                         Include direct dependencies                         #
+#                                                                             #
+###############################################################################
+
 # Build RenderBoi.Examples
-add_subdirectory(${RENDERBOI_MODULE_LOCATION}/examples ${CMAKE_BINARY_DIR}/renderboi.examples)
-set(RB_EXAMPLES_LIB_NAME renderboi.examples)
+add_subdirectory(${RENDERBOI_MODULE_LOCATION}/examples ${CMAKE_BINARY_DIR}/${RB_EXAMPLES_LIB_NAME})
+
+###############################################################################
+#                                                                             #
+#                         Build RenderBoi executable                          #
+#                                                                             #
+###############################################################################
 
 # Build executable
 add_executable("RenderBoi"
@@ -146,6 +177,14 @@ target_link_libraries("RenderBoi" PUBLIC
     ${GLFW3_LIB_NAME}
     ${GLAD_LIB_NAME}
 ) 
+
+
+
+###############################################################################
+#                                                                             #
+#                                    Tests                                    #
+#                                                                             #
+###############################################################################
 
 # Build and run tests
 # enable_testing()

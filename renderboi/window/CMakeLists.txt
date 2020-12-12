@@ -51,8 +51,8 @@ add_library(${RB_WINDOW_LIB_NAME} ${STATIC_OR_SHARED}
     gl_window.hpp
     input_processor.cpp
     input_processor.hpp
-    tools.cpp
-    tools.hpp
+    window_factory.cpp
+    window_factory.hpp
     window_backend.hpp
     glfw3/glfw3_window_callbacks.cpp
     glfw3/glfw3_window_callbacks.hpp

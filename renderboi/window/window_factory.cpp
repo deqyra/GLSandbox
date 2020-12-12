@@ -1,16 +1,4 @@
-/*     // \\
-      //   \\
-     //     \\
-    //WARNING\\
-   //         \\
-   =============
-
-   DO NOT edit window/tools.cpp, or your changes
-   will be OVERWRITTEN by the next run of CMake.
-   Instead, edit config/window_tools.config.cpp.
-*/
-
-#include "tools.hpp"
+#include "window_factory.hpp"
 
 #include <cstdlib>
 #include <cstdarg>
@@ -33,8 +21,22 @@
 #include "glfw3/glfw3_adapter.hpp"
 #include "glfw3/glfw3_window_callbacks.hpp"
 
-template<>
-GLWindowPtr makeWindow<WindowBackend::GLFW3>(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
+int WindowFactory<WindowBackend::GLFW3>::initializeBackend()
+{
+    return glfwInit();
+}
+
+void WindowFactory<WindowBackend::GLFW3>::terminateBackend()
+{
+    glfwTerminate();
+}
+
+void WindowFactory<WindowBackend::GLFW3>::setGLFWErrorCallback(GLFWerrorfun callback)
+{
+    glfwSetErrorCallback(callback);
+}
+
+GLWindowPtr WindowFactory<WindowBackend::GLFW3>::makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
 {
 	// GL metadata
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);

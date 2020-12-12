@@ -3,10 +3,8 @@
 #include <string>
 #include <vector>
 
-#include <GLFW/glfw3.h>
-
 #include <renderboi/window/enums.hpp>
-#include <renderboi/window/tools.hpp>
+#include <renderboi/window/window_factory.hpp>
 #include <renderboi/window/window_backend.hpp>
 
 #include <renderboi/examples/gl_sandbox.hpp>
@@ -19,9 +17,12 @@
 	#include <windows.h>
 #endif
 
+using GLFW3 = WindowFactory<WindowBackend::GLFW3>;
+
 // Halt the execution with a clean exit
 int abortWithError(std::string message, bool terminateGLFW = true);
 
+// Function to use for error-reporting by the window backend
 static void glfwErrorCallback(int error, const char* description);
 
 // Instantiate all available sandboxes
@@ -37,16 +38,16 @@ int main(int argc, char** argv)
     std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << '\n';
     std::cout << COPYLEFT_NOTICE << std::endl;
 
-	glfwSetErrorCallback(glfwErrorCallback);
+	GLFW3::setGLFWErrorCallback(glfwErrorCallback);
 
-	if (!glfwInit())
+	if (!GLFW3::initializeBackend())
 		return EXIT_FAILURE;
 
 	// Init window, GL context and GL pointers
 	GLWindowPtr window;
 	try
 	{
-		window = makeWindow<WindowBackend::GLFW3>("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
+		window = GLFW3::makeWindow("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
 	}
 	catch(const std::exception& e)
 	{
@@ -64,7 +65,7 @@ int main(int argc, char** argv)
 
 	// Destroy window by resetting what should be the only shared pointer to it
 	window = nullptr;
-	glfwTerminate();
+	GLFW3::terminateBackend();
 	return EXIT_SUCCESS;
 }
 
@@ -73,7 +74,7 @@ int abortWithError(std::string message, bool terminateGLFW)
 	std::cerr << message;
 	if (terminateGLFW)
 	{
-		glfwTerminate();
+		GLFW3::terminateBackend();
 	}
 
 	return EXIT_FAILURE;

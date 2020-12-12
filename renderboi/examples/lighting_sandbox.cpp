@@ -9,7 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <renderboi/window/gl_window.hpp>
-#include <renderboi/window/tools.hpp>
+#include <renderboi/window/window_factory.hpp>
 
 #include <renderboi/core/mesh.hpp>
 #include <renderboi/core/materials.hpp>
