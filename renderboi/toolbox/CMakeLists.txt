@@ -12,8 +12,6 @@ if(UNIX)
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
 endif()
 
-set(RB_TOOLBOX_LIB_NAME "renderboi.toolbox")
-
 # Create script file to copy headers
 file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_TOOLBOX_LIB_NAME}_headers.cmake
     "file(COPY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -25,11 +23,9 @@ file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_TOOLBOX_LIB_NAME}_headers.cmake
 
 # Build core lib
 add_subdirectory(${RENDERBOI_MODULE_LOCATION}/core ${CMAKE_BINARY_DIR}/renderboi.core)
-set(RB_CORE_LIB_NAME renderboi.core)
 
 # Build window lib
 add_subdirectory(${RENDERBOI_MODULE_LOCATION}/window ${CMAKE_BINARY_DIR}/renderboi.window)
-set(RB_WINDOW_LIB_NAME renderboi.window)
 
 # Build toolbox lib
 add_library(${RB_TOOLBOX_LIB_NAME} ${STATIC_OR_SHARED}

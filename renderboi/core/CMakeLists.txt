@@ -12,8 +12,6 @@ if(UNIX)
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
 endif()
 
-set(RB_CORE_LIB_NAME "renderboi.core")
-
 # Create script file to copy headers
 file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_CORE_LIB_NAME}_headers.cmake
     "file(COPY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -25,15 +23,12 @@ file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_CORE_LIB_NAME}_headers.cmake
 
 # Build GLAD
 add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/glad ${CMAKE_BINARY_DIR}/glad)
-set(GLAD_LIB_NAME glad)
 
 # Build stb_image
 add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/stb_image ${CMAKE_BINARY_DIR}/stb_image)
-set(STB_IMAGE_LIB_NAME stb_image)
 
 # Export GLM
 add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/glm ${CMAKE_BINARY_DIR}/glm)
-set(GLM_LIB_NAME glm)
 
 # Build core lib
 add_library(${RB_CORE_LIB_NAME} ${STATIC_OR_SHARED}

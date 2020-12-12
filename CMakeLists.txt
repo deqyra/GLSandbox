@@ -1,15 +1,27 @@
-# CMake configuration
+####################### 
+# CMake configuration #
+#######################
+
 cmake_minimum_required(VERSION 3.1...3.15)
 
 if(${CMAKE_VERSION} VERSION_LESS 3.12)
     cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 endif()
 
-set(CMAKE_CXX_COMPILER_WORKS 1)   # Skips the compiler test, which is platform-dependent
 
-# Toggles
+
+###########
+# Toggles #
+###########
+
 option(BUILD_STATIC_LIBS "Build libraries as static libraries" OFF)
 option(BUILD_RELEASE "Whether to build for a debug or release profile" OFF)
+
+if(${BUILD_STATIC_LIBS})
+    set(STATIC_OR_SHARED "STATIC")
+else()
+    set(STATIC_OR_SHARED "SHARED")
+endif()
 
 if (${BUILD_RELEASE})
     set(CMAKE_BUILD_TYPE "Release")
@@ -17,19 +29,42 @@ else()
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
-if(WIN32)
-    message(STATUS "Windows detected, forcing static libs.")
-    set(BUILD_STATIC_LIBS ON)
+# if(WIN32)
+#     message(STATUS "Windows detected, forcing static libs.")
+#     set(BUILD_STATIC_LIBS ON)
+# endif()
+
+
+
+####################
+# Compiler options #
+####################
+
+set(CMAKE_CXX_STANDARD 17)
+
+if(UNIX)
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
 endif()
 
-if(${BUILD_STATIC_LIBS})
-    set(STATIC_OR_SHARED "STATIC")
-# else()
-#     set(STATIC_OR_SHARED "SHARED")
-endif()
+# set(CMAKE_CXX_COMPILER_WORKS 1)   # Skips the compiler test, which is platform-dependent
 
+
+
+######################
+# Project definition #
+######################
 
 # Project general info
+set(PROJECT_VERSION "1.0")
+set(PROJECT_NAME "RenderBoi")
+
+project(
+    ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    DESCRIPTION "A rendering engine with a modest feature set"
+    LANGUAGES C CXX
+)
+
 set(PROJECT_MAINTAINER_NAME "François Brachais")
 set(PROJECT_MAINTAINER_EMAIL "deqyra@gmail.com")
 
@@ -37,39 +72,26 @@ set(PROJECT_MAINTAINER_EMAIL "deqyra@gmail.com")
 set(GL_CONTEXT_VERSION_MAJOR "4")
 set(GL_CONTEXT_VERSION_MINOR "2")
 
-# Header configuration variables
-set(PROJECT_VERSION "1.0")
-set(PROJECT_NAME "RenderBoi")
-
 # Copyleft notice generation
-    set(PROJECT_START_YEAR "2019")
-    string(TIMESTAMP CURRENT_YEAR "%Y")
-    # "(C) 2019"
-    set(PROJECT_COPYLEFT "Copyleft ${PROJECT_START_YEAR}")
-    if(NOT CURRENT_YEAR EQUAL PROJECT_START_YEAR)
-        # "(C) 2019-2020"
-        set(PROJECT_COPYLEFT "${PROJECT_COPYLEFT}-${CURRENT_YEAR}")
-    endif()
-    # "(C) 2019-2020 François Brachais <deqyra@gmail.com>"
-    set(PROJECT_COPYLEFT "${PROJECT_COPYLEFT} ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>")
+set(PROJECT_START_YEAR "2019")
+set(DATE_SPAN "${PROJECT_START_YEAR}")
+
+string(TIMESTAMP CURRENT_YEAR "%Y")
+if(NOT CURRENT_YEAR EQUAL PROJECT_START_YEAR)
+    set(DATE_SPAN "${PROJECT_START_YEAR}-${CURRENT_YEAR}")
+endif()
+
+set(PROJECT_COPYLEFT "${DATE_SPAN} ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>")
 
 # File configuration
 configure_file("${CMAKE_SOURCE_DIR}/renderboi/config/project_macros.config.hpp" "${CMAKE_SOURCE_DIR}/renderboi/project_macros.hpp")
 
-# Project definition
-project(${PROJECT_NAME} VERSION ${PROJECT_VERSION}
-                                DESCRIPTION "A rendering engine with a modest feature set"
-                                LANGUAGES C CXX)
 
-# Compiler options
-# C++17 requires at least gcc 7 to be compiled
-set(CMAKE_CXX_STANDARD 17)
 
-if(UNIX)
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
-endif()
+######################
+# Build dependencies #
+######################
 
-# Set up external dependencies
 set(EXPORT_LOCATION ${CMAKE_SOURCE_DIR}/external)
 set(EXTERNAL_SOURCE_LOCATION ${CMAKE_SOURCE_DIR}/external/source)
 set(RENDERBOI_MODULE_LOCATION ${CMAKE_SOURCE_DIR}/renderboi)
@@ -77,17 +99,17 @@ file(MAKE_DIRECTORY ${EXPORT_LOCATION})
 file(MAKE_DIRECTORY ${EXPORT_LOCATION}/include)
 file(MAKE_DIRECTORY ${EXPORT_LOCATION}/lib)
 
-# Check requirements are present
-foreach(FOLDER glad glm stb_image)
-    if (NOT EXISTS ${EXTERNAL_SOURCE_LOCATION}/${FOLDER})
-        message(FATAL   "RenderBoi depends on ${FOLDER} but it is not present in the
-                        external source location (${EXTERNAL_SOURCE_LOCATION}).\n
-                        Please get a version of RenderBoi which comes with dependencies (checking out branch master on GitHub should do it).")
-    endif()
-endforeach()
+set(CPPTOOLS_LIB_NAME cpptools)
+set(GLM_LIB_NAME "glm")
+set(GLAD_LIB_NAME "glad")
+set(STB_IMAGE_LIB_NAME "stb_image")
+set(GLFW3_LIB_NAME "glfw3")
+set(RB_WINDOW_LIB_NAME "renderboi.window")
+set(RB_CORE_LIB_NAME "renderboi.core")
+set(RB_TOOLBOX_LIB_NAME "renderboi.toolbox")
+set(RB_EXAMPLES_LIB_NAME "renderboi.examples")
 
 include(ExternalProject)
-set(CPPTOOLS_LIB_NAME cpptools)
 ExternalProject_Add(${CPPTOOLS_LIB_NAME}_source
     GIT_REPOSITORY https://github.com/deqyra/CppTools
     CMAKE_ARGS

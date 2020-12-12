@@ -14,7 +14,6 @@ endif()
 
 # Set up external dependencies
 include(ExternalProject)
-set(GLFW3_LIB_NAME glfw3)
 ExternalProject_Add(${GLFW3_LIB_NAME}_source
     GIT_REPOSITORY https://github.com/glfw/glfw
     CMAKE_ARGS
@@ -34,8 +33,6 @@ endif()
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config/env_info.config.hpp" "${CMAKE_CURRENT_SOURCE_DIR}/env_info.hpp")
 
-set(RB_WINDOW_LIB_NAME "renderboi.window")
-
 # Create script file to copy headers
 file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_WINDOW_LIB_NAME}_headers.cmake
     "file(COPY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -44,10 +41,6 @@ file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_WINDOW_LIB_NAME}_headers.cmake
         PATTERN \"*.hpp\"
    )\n"
 )
-
-# Build GLAD
-# add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/glad ${CMAKE_BINARY_DIR}/glad)
-set(GLAD_LIB_NAME glad)
 
 # Build RenderBoi.Window lib
 add_library(${RB_WINDOW_LIB_NAME} ${STATIC_OR_SHARED}

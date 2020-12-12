@@ -4,8 +4,6 @@ if(${CMAKE_VERSION} VERSION_LESS 3.12)
     cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 endif()
 
-set(GLAD_LIB_NAME "glad")
-
 # Create script file to copy headers
 file(WRITE ${CMAKE_BINARY_DIR}/cp_${GLAD_LIB_NAME}_headers.cmake
     "file(COPY ${CMAKE_CURRENT_SOURCE_DIR}

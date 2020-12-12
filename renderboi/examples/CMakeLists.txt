@@ -12,8 +12,6 @@ if(UNIX)
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
 endif()
 
-set(RB_EXAMPLES_LIB_NAME "renderboi.examples")
-
 # Create script file to copy headers
 file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_EXAMPLES_LIB_NAME}_headers.cmake
     "file(COPY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -27,7 +25,6 @@ file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_EXAMPLES_LIB_NAME}_headers.cmake
 
 # Build toolbox lib
 add_subdirectory(${RENDERBOI_MODULE_LOCATION}/toolbox ${CMAKE_BINARY_DIR}/renderboi.toolbox)
-set(RB_TOOLBOX_LIB_NAME renderboi.toolbox)
 
 # Build example lib
 add_library(${RB_EXAMPLES_LIB_NAME} ${STATIC_OR_SHARED}
