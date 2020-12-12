@@ -4,6 +4,8 @@
 #include <renderboi/core/materials.hpp>
 #include <renderboi/core/mesh.hpp>
 #include <renderboi/core/shader/shader_builder.hpp>
+#include <renderboi/toolbox/scene/component.hpp>
+#include <renderboi/toolbox/scene/components/mesh_component.hpp>
 #include <renderboi/toolbox/mesh_generator.hpp>
 #include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
 #include <renderboi/toolbox/mesh_generators/type_to_gen_mapping.hpp>

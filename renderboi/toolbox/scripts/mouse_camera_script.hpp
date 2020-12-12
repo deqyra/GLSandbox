@@ -1,7 +1,7 @@
 #ifndef RENDERBOI__TOOLBOX__SCRIPTS__MOUSE_CAMERA_SCRIPT_HPP
 #define RENDERBOI__TOOLBOX__SCRIPTS__MOUSE_CAMERA_SCRIPT_HPP
 
-#include <Renderboi/core/camera.hpp>
+#include <renderboi/core/camera.hpp>
 
 #include "../input_processing_script.hpp"
 

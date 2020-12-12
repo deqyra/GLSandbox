@@ -2,7 +2,7 @@
 
 #include <exception>
 
-#include <Renderboi/core/frame_of_reference.hpp>
+#include <renderboi/core/frame_of_reference.hpp>
 using Ref = FrameOfReference;
 
 KeyboardMovementScript::KeyboardMovementScript(BasisProviderPtr basisProvider, float speed, float sprintMultiplier) :

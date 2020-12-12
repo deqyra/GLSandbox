@@ -4,10 +4,11 @@
 
 #include <exception>
 #include <functional>
-#include <vector>
 #include <memory>
-#include <type_traits>
 #include <string>
+#include <stdexcept>
+#include <type_traits>
+#include <vector>
 
 #include <renderboi/core/transform.hpp>
 

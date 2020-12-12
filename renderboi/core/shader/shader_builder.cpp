@@ -116,7 +116,7 @@ Shader ShaderBuilder::buildShaderStageFromConfig(ShaderInfo::ShaderStage stage, 
     auto it = StageTemplatePaths().find(stage);
     if (it == StageTemplatePaths().end())
     {
-        std::string s = "ShaderBuilder: cannot find template path for stage \"" + std::to_string(stage) + "\" (" + std::to_string(unsigned int (stage)) + ").";
+        std::string s = "ShaderBuilder: cannot find template path for stage \"" + std::to_string(stage) + "\" (" + std::to_string((unsigned int)(stage)) + ").";
         throw std::runtime_error(s.c_str());
     }
 
@@ -397,7 +397,11 @@ std::string ShaderBuilder::dumpSource(ShaderInfo::ShaderStage stage, const std::
 
     std::time_t t = std::time(nullptr);
     std::tm tm = {};
+#ifdef _WIN32
     ::localtime_s(&tm, &t);
+#else
+    localtime_r(&t, &tm);
+#endif
 
     std::stringstream ss;
     ss << std::put_time(&tm, "%d-%m-%Y-%H-%M-%S");
@@ -508,7 +512,7 @@ std::string ShaderBuilder::GenerateDefineDirectives(const std::vector<ShaderInfo
         auto it = defineMacros.find(feature);
         if (it == defineMacros.cend())
         {
-            std::string s = "ShaderBuilder: cannot generate #define directive for feature \"" + std::to_string(feature) + "\" (" + std::to_string(unsigned int (feature)) + ").";
+            std::string s = "ShaderBuilder: cannot generate #define directive for feature \"" + std::to_string(feature) + "\" (" + std::to_string((unsigned int)(feature)) + ").";
             throw std::runtime_error(s.c_str());
         }
         return aggregate + "#define " + it->second + "\n";

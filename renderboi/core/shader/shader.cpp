@@ -1,5 +1,6 @@
 #include "shader.hpp"
 
+#include <algorithm>
 #include <stdexcept>
 
 #include <glad/gl.h>

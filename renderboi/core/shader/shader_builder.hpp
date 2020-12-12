@@ -164,7 +164,7 @@ class ShaderBuilder
         ///
         /// @return An array filled with all the different features which the 
         /// provided shader objects support.
-        static std::vector<ShaderInfo::ShaderFeature> ShaderBuilder::aggregateShaderFeatures(const std::vector<Shader>& shaders);
+        static std::vector<ShaderInfo::ShaderFeature> aggregateShaderFeatures(const std::vector<Shader>& shaders);
 
         /// @brief Filter features in provided array by the shader stage they
         /// belong to, and get an array of the features which match the provided

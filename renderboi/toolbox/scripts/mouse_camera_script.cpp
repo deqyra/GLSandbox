@@ -1,6 +1,6 @@
 #include "mouse_camera_script.hpp"
 
-#include <Renderboi/core/frame_of_reference.hpp>
+#include <renderboi/core/frame_of_reference.hpp>
 using Ref = FrameOfReference;
 
 #include "../scene/components/camera_component.hpp"

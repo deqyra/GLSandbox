@@ -1,7 +1,7 @@
 #ifndef RENDERBOI__TOOLBOX__SCRIPTS__KEYBOARD_MOVEMENT_SCRIPT_HPP
 #define RENDERBOI__TOOLBOX__SCRIPTS__KEYBOARD_MOVEMENT_SCRIPT_HPP
 
-#include <Renderboi/core/interfaces/basis_provider.hpp>
+#include <renderboi/core/interfaces/basis_provider.hpp>
 
 #include "../input_processing_script.hpp"
 
