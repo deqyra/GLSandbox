@@ -52,7 +52,8 @@ if(UNIX)
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
 endif()
 
-# set(CMAKE_CXX_COMPILER_WORKS 1)   # Skips the compiler test, which is platform-dependent
+# set(CMAKE_CXX_COMPILER_WORKS 1)
+# Skips the compiler test, which is platform-dependent
 
 
 
@@ -138,6 +139,140 @@ ExternalProject_Add(${CPPTOOLS_LIB_NAME}_source
     -DCPPTOOLS_SKIP_TESTS=ON
 )
 
+set(RB_CORE_SOURCE_FILES
+    camera.cpp
+    camera.hpp
+    material.cpp
+    material.hpp
+    materials.hpp
+    mesh.cpp
+    mesh.hpp
+    pixel_space.hpp
+    transform.cpp
+    transform.hpp
+    shader/shader.cpp
+    shader/shader.hpp
+    shader/shader_builder.cpp
+    shader/shader_builder.hpp
+    shader/shader_config.cpp
+    shader/shader_config.hpp
+    shader/shader_feature.cpp
+    shader/shader_feature.hpp
+    shader/shader_info.cpp
+    shader/shader_info.hpp
+    shader/shader_program.cpp
+    shader/shader_program.hpp
+    shader/shader_stage.cpp
+    shader/shader_stage.hpp
+    texture_2d.cpp
+    texture_2d.hpp
+    vertex.hpp
+    lights/directional_light.cpp
+    lights/directional_light.hpp
+    lights/light.cpp
+    lights/light.hpp
+    lights/light_type.hpp
+    lights/point_light.cpp
+    lights/point_light.hpp
+    lights/spot_light.cpp
+    lights/spot_light.hpp 
+    lights/tools.cpp
+    lights/tools.hpp 
+    ubo/ubo_info.hpp 
+    ubo/uniform_buffer_object.cpp
+    ubo/uniform_buffer_object.hpp 
+    ubo/light_ubo.cpp
+    ubo/light_ubo.hpp 
+    ubo/matrix_ubo.cpp
+    ubo/matrix_ubo.hpp 
+)
+
+set(RB_WINDOW_SOURCE_FILES
+    enums.cpp
+    enums.hpp
+    env_info.hpp
+    gl_window.cpp
+    gl_window.hpp
+    input_processor.cpp
+    input_processor.hpp
+    window_factory.cpp
+    window_factory.hpp
+    window_backend.hpp
+    glfw3/glfw3_window_callbacks.cpp
+    glfw3/glfw3_window_callbacks.hpp
+    glfw3/glfw3_adapter.cpp
+    glfw3/glfw3_adapter.hpp
+    glfw3/glfw3_window.cpp
+    glfw3/glfw3_window.hpp
+)
+
+set(RB_TOOLBOX_SOURCE_FILES
+    common_macros.hpp
+    factory.cpp
+    factory.hpp
+    mesh_generator.hpp
+    input_processing_script.cpp
+    input_processing_script.hpp 
+    script.cpp
+    script.hpp 
+    mesh_generators/all_mesh_generators.hpp
+    mesh_generators/axes_generator.cpp
+    mesh_generators/axes_generator.hpp
+    mesh_generators/cube_generator.cpp
+    mesh_generators/cube_generator.hpp
+    mesh_generators/plane_generator.cpp
+    mesh_generators/plane_generator.hpp
+    mesh_generators/tetrahedron_generator.cpp
+    mesh_generators/tetrahedron_generator.hpp
+    mesh_generators/torus_generator.cpp
+    mesh_generators/torus_generator.hpp
+    mesh_generators/mesh_type.hpp
+    mesh_generators/type_to_gen_mapping.hpp
+    scene/component.cpp
+    scene/component.hpp 
+    scene/component_type.hpp 
+    scene/object_transform.cpp
+    scene/object_transform.hpp
+    scene/scene.cpp
+    scene/scene.hpp 
+    scene/scene_object_metadata.hpp 
+    scene/scene_object.cpp
+    scene/scene_object.hpp 
+    scene/scene_renderer.cpp
+    scene/scene_renderer.hpp 
+    scene/components/all_components.hpp 
+    scene/components/camera_component.cpp
+    scene/components/camera_component.hpp 
+    scene/components/input_processing_script_component.cpp
+    scene/components/input_processing_script_component.hpp 
+    scene/components/light_component.cpp
+    scene/components/light_component.hpp 
+    scene/components/mesh_component.cpp
+    scene/components/mesh_component.hpp 
+    scene/components/script_component.cpp
+    scene/components/script_component.hpp 
+    scripts/basic_input_manager.cpp
+    scripts/basic_input_manager.hpp 
+    scripts/mouse_camera_script.cpp
+    scripts/mouse_camera_script.hpp 
+    scripts/camera_aspect_ratio_script.cpp
+    scripts/camera_aspect_ratio_script.hpp 
+    scripts/keyboard_movement_script.cpp
+    scripts/keyboard_movement_script.hpp 
+    scripts/lambda_script.cpp
+    scripts/lambda_script.hpp 
+)
+
+set(RB_EXAMPLES_SOURCE_FILES
+    gl_sandbox.hpp
+    lighting_sandbox.cpp
+    lighting_sandbox.hpp
+    shadow_sandbox.cpp
+    shadow_sandbox.hpp
+)
+
+
+
 ###############################################################################
 #                                                                             #
 #                         Include direct dependencies                         #
@@ -146,6 +281,8 @@ ExternalProject_Add(${CPPTOOLS_LIB_NAME}_source
 
 # Build RenderBoi.Examples
 add_subdirectory(${RENDERBOI_MODULE_LOCATION}/examples ${CMAKE_BINARY_DIR}/${RB_EXAMPLES_LIB_NAME})
+
+
 
 ###############################################################################
 #                                                                             #
@@ -168,14 +305,8 @@ target_include_directories("RenderBoi" PUBLIC ${EXPORT_LOCATION}/include)
 target_link_directories("RenderBoi" PUBLIC ${EXPORT_LOCATION}/lib)
 
 target_link_libraries("RenderBoi" PUBLIC
-    ${CPPTOOLS_LIB_NAME}
-    ${RB_CORE_LIB_NAME}
     ${RB_WINDOW_LIB_NAME}
-    ${RB_TOOLBOX_LIB_NAME}
     ${RB_EXAMPLES_LIB_NAME}
-    ${STB_IMAGE_LIB_NAME}
-    ${GLFW3_LIB_NAME}
-    ${GLAD_LIB_NAME}
 ) 
 
 

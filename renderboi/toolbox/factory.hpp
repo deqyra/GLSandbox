@@ -4,17 +4,16 @@
 #include <renderboi/core/materials.hpp>
 #include <renderboi/core/mesh.hpp>
 #include <renderboi/core/shader/shader_builder.hpp>
-#include <renderboi/toolbox/scene/component.hpp>
-#include <renderboi/toolbox/scene/components/mesh_component.hpp>
-#include <renderboi/toolbox/mesh_generator.hpp>
-#include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
-#include <renderboi/toolbox/mesh_generators/type_to_gen_mapping.hpp>
 
 #include "script.hpp"
 #include "input_processing_script.hpp"
+#include "mesh_generator.hpp"
+#include "mesh_generators/mesh_type.hpp"
+#include "mesh_generators/type_to_gen_mapping.hpp"
 #include "scene/scene.hpp"
 #include "scene/scene_object.hpp"
-
+#include "scene/component.hpp"
+#include "scene/components/mesh_component.hpp"
 #include "scene/components/script_component.hpp"
 #include "scene/components/input_processing_script_component.hpp"
 
