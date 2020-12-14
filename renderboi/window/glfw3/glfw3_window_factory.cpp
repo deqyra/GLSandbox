@@ -1,4 +1,5 @@
-#include "window_factory.hpp"
+#include "../window_factory.hpp"
+#include "glfw3_window_factory.hpp"
 
 #include <cstdlib>
 #include <cstdarg>
@@ -12,14 +13,14 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
-#include "env_info.hpp"
-#include "enums.hpp"
-#include "gl_window.hpp"
-#include "window_backend.hpp"
+#include "../env_info.hpp"
+#include "../enums.hpp"
+#include "../gl_window.hpp"
+#include "../window_backend.hpp"
 
-#include "glfw3/glfw3_window.hpp"
-#include "glfw3/glfw3_adapter.hpp"
-#include "glfw3/glfw3_window_callbacks.hpp"
+#include "glfw3_window.hpp"
+#include "glfw3_adapter.hpp"
+#include "glfw3_window_callbacks.hpp"
 
 int WindowFactory<WindowBackend::GLFW3>::initializeBackend()
 {
@@ -31,9 +32,9 @@ void WindowFactory<WindowBackend::GLFW3>::terminateBackend()
     glfwTerminate();
 }
 
-void WindowFactory<WindowBackend::GLFW3>::setGLFWErrorCallback(GLFWerrorfun callback)
+void WindowFactory<WindowBackend::GLFW3>::setErrorCallback(const void* callback)
 {
-    glfwSetErrorCallback(callback);
+    glfwSetErrorCallback(*((ErrorCallbackSignature*)callback));
 }
 
 GLWindowPtr WindowFactory<WindowBackend::GLFW3>::makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)

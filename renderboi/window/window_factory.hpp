@@ -3,9 +3,7 @@
 
 #include <string>
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#undef GLFW_INCLUDE_NONE
+#include <glad/gl.h>
 
 #include "gl_window.hpp"
 #include "window_backend.hpp"
@@ -17,17 +15,19 @@ template<WindowBackend W>
 class WindowFactory
 {
     public:
+        using ErrorCallbackSignature = void(void);
+
         /// @brief Initialize the window backend in use.
         static int initializeBackend() = delete;
 
         /// @brief Terminate the window backend in use.
         static void terminateBackend() = delete;
 
-        /// @brief Set the error callback for a GLFW window
+        /// @brief Set the error callback for created windows.
         ///
         /// @param callback Function pointer to the callback to use for error
         /// reporting.
-        static void setGLFWErrorCallback(GLFWerrorfun callback) = delete;
+        static void setErrorCallback(const void* callback) = delete;
 
         /// @brief Create an OpenGL context within a window, bind callbacks and 
         /// initialize OpenGL function pointers.
@@ -48,16 +48,6 @@ class WindowFactory
         /// environment does not support GL_ARB_debug_output, the function will 
         /// throw a std::runtime_error.
         static GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug) = delete;
-};
-
-template<>
-class WindowFactory<WindowBackend::GLFW3>
-{
-    public:
-        static int initializeBackend();
-        static void terminateBackend();
-        static void setGLFWErrorCallback(GLFWerrorfun callback);
-        static GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug);
 };
 
 /// @brief Callback given to OpenGL, which will print out error messages from

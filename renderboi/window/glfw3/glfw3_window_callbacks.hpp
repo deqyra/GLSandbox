@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
-/// @brief Callback for a framebuffer resize event. Will get the GLFW3Window instance
+/// @brief Callback for a framebuffer resize event. Will get the GLWindow instance
 /// corresponding to the window which received the event, from its user pointer,
 /// and will forward the event to it.
 ///
@@ -15,7 +15,7 @@
 /// @param height New height (in pixels) of the framebuffer.
 void globalGlfwFramebufferResizeCallback(GLFWwindow* window, int width, int height);
 
-/// @brief Callback for a keyboard event. Will get the GLFW3Window instance
+/// @brief Callback for a keyboard event. Will get the GLWindow instance
 /// corresponding to the window which received the event, from its user pointer,
 /// and will forward the event to it.
 ///
@@ -30,7 +30,7 @@ void globalGlfwFramebufferResizeCallback(GLFWwindow* window, int width, int heig
 /// during the key event (Ctrl, Shift, etc).
 void globalGlfwKeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-/// @brief Callback for a mouse button event. Will get the GLFW3Window instance
+/// @brief Callback for a mouse button event. Will get the GLWindow instance
 /// corresponding to the window which received the event, from its user pointer,
 /// and will forward the event to it.
 ///
@@ -44,7 +44,7 @@ void globalGlfwKeyboardCallback(GLFWwindow* window, int key, int scancode, int a
 /// during the button event (Ctrl, Shift, etc).
 void globalGlfwMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
-/// @brief Callback for a mouse cursor event. Will get the GLFW3Window instance
+/// @brief Callback for a mouse cursor event. Will get the GLWindow instance
 /// corresponding to the window which received the event, from its user pointer,
 /// and will forward the event to it.
 ///
@@ -54,5 +54,11 @@ void globalGlfwMouseButtonCallback(GLFWwindow* window, int button, int action, i
 /// @param ypos Y coordinate of the new position of the mouse.
 void globalGlfwMouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
 
+/// @brief Callback for error-reporting by GLFW.
+///
+/// @param error Code of an error which just occurred.
+/// @param description C-string containing a description of the error which just
+/// occurred.
+void globalGlfwErrorCallback(int error, const char* description);
 
 #endif//RENDERBOI__WINDOW__GLFW_WINDOW_CALLBACKS_HPP

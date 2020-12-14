@@ -7,6 +7,8 @@
 #include "../gl_window.hpp"
 #include "glfw3_adapter.hpp"
 
+#include <iostream>
+
 void globalGlfwFramebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
     static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processFramebufferResize(width, height);
@@ -29,4 +31,9 @@ void globalGlfwMouseButtonCallback(GLFWwindow* window, int button, int action, i
 void globalGlfwMouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
 {
     static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processMouseCursor(xpos, ypos);
+}
+
+void globalGlfwErrorCallback(int error, const char* description)
+{
+	std::cerr << "GLFW error: 0x" << std::hex << error << ", \"" << description << "\"" << std::endl;
 }

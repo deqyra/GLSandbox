@@ -195,15 +195,16 @@ set(RB_WINDOW_SOURCE_FILES
     gl_window.hpp
     input_processor.cpp
     input_processor.hpp
-    window_factory.cpp
     window_factory.hpp
     window_backend.hpp
-    glfw3/glfw3_window_callbacks.cpp
-    glfw3/glfw3_window_callbacks.hpp
     glfw3/glfw3_adapter.cpp
     glfw3/glfw3_adapter.hpp
     glfw3/glfw3_window.cpp
     glfw3/glfw3_window.hpp
+    glfw3/glfw3_window_callbacks.cpp
+    glfw3/glfw3_window_callbacks.hpp
+    glfw3/glfw3_window_factory.cpp
+    glfw3/glfw3_window_factory.hpp
 )
 
 set(RB_TOOLBOX_SOURCE_FILES

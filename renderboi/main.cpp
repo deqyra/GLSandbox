@@ -17,13 +17,14 @@
 	#include <windows.h>
 #endif
 
-using GLFW3 = WindowFactory<WindowBackend::GLFW3>;
+#include <renderboi/window/glfw3/glfw3_window_factory.hpp>
+#include <renderboi/window/glfw3/glfw3_window_callbacks.hpp>
+static constexpr WindowBackend UsedBackend = WindowBackend::GLFW3;
+static const void* UsedErrorCallback = (void*)(&globalGlfwErrorCallback);
+using AppWindowFactory = WindowFactory<UsedBackend>;
 
 // Halt the execution with a clean exit
-int abortWithError(std::string message, bool terminateGLFW = true);
-
-// Function to use for error-reporting by the window backend
-static void glfwErrorCallback(int error, const char* description);
+int abortWithError(std::string message, bool terminateBackend = true);
 
 // Instantiate all available sandboxes
 std::vector<GLSandbox*> createAllSandboxes();
@@ -38,16 +39,16 @@ int main(int argc, char** argv)
     std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << '\n';
     std::cout << COPYLEFT_NOTICE << std::endl;
 
-	GLFW3::setGLFWErrorCallback(glfwErrorCallback);
+	AppWindowFactory::setErrorCallback(UsedErrorCallback);
 
-	if (!GLFW3::initializeBackend())
+	if (!AppWindowFactory::initializeBackend())
 		return EXIT_FAILURE;
 
 	// Init window, GL context and GL pointers
 	GLWindowPtr window;
 	try
 	{
-		window = GLFW3::makeWindow("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
+		window = AppWindowFactory::makeWindow("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
 	}
 	catch(const std::exception& e)
 	{
@@ -65,24 +66,19 @@ int main(int argc, char** argv)
 
 	// Destroy window by resetting what should be the only shared pointer to it
 	window = nullptr;
-	GLFW3::terminateBackend();
+	AppWindowFactory::terminateBackend();
 	return EXIT_SUCCESS;
 }
 
-int abortWithError(std::string message, bool terminateGLFW)
+int abortWithError(std::string message, bool terminateBackend)
 {
 	std::cerr << message;
-	if (terminateGLFW)
+	if (terminateBackend)
 	{
-		GLFW3::terminateBackend();
+		AppWindowFactory::terminateBackend();
 	}
 
 	return EXIT_FAILURE;
-}
-
-static void glfwErrorCallback(int error, const char* description)
-{
-	std::cerr << "GLFW error: 0x" << std::hex << error << ", \"" << description << "\"" << std::endl;
 }
 
 std::vector<GLSandbox*> createAllSandboxes()
