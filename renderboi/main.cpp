@@ -11,6 +11,8 @@
 #include <renderboi/examples/lighting_sandbox.hpp>
 #include <renderboi/examples/shadow_sandbox.hpp>
 
+#include <renderboi/utilities/gl_utilities.hpp>
+
 #include "project_macros.hpp"
 
 #ifdef _WIN32
@@ -55,7 +57,9 @@ int main(int argc, char** argv)
 		std::cerr << "Exception thrown during window creation:" << '\n'<< e.what() << std::endl;
 		return abortWithError("Window creation failed. Aborting...");
 	}
-	
+
+	glIgnoreDebugMessagesOfType(GL_DEBUG_TYPE_PERFORMANCE_ARB);
+
     // Instantiate and run examples
 	std::vector<GLSandbox*> examples = createAllSandboxes();
     for (auto it = examples.begin(); it != examples.end(); it++)

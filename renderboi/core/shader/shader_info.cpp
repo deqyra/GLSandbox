@@ -44,7 +44,6 @@ namespace ShaderInfo
             map["assets/shaders/phong.frag"]    = {
                 ShaderFeature::FragmentMeshMaterial,
                 ShaderFeature::FragmentBlinnPhong,
-                ShaderFeature::FragmentMeshMaterial,
                 ShaderFeature::FragmentGammaCorrection
             };
 

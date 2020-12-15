@@ -325,6 +325,8 @@ add_executable("RenderBoi"
 )   
 
 add_dependencies("RenderBoi"
+    "export_${RB_UTILITIES_LIB_NAME}_lib"
+    "export_${RB_UTILITIES_LIB_NAME}_headers"
     "export_${RB_WINDOW_LIB_NAME}_lib"
     "export_${RB_WINDOW_LIB_NAME}_headers"
     "export_${RB_EXAMPLES_LIB_NAME}_lib"
