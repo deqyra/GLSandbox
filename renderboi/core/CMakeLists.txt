@@ -7,15 +7,6 @@ file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_CORE_LIB_NAME}_headers.cmake
    )\n"
 )
 
-# Import GLAD targets
-add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/glad ${CMAKE_BINARY_DIR}/glad)
-
-# Import stb_image targets
-add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/stb_image ${CMAKE_BINARY_DIR}/stb_image)
-
-# Import GLM targets
-add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/glm ${CMAKE_BINARY_DIR}/glm)
-
 # Build core lib
 add_library(${RB_CORE_LIB_NAME} ${STATIC_OR_SHARED}
     ${RB_CORE_SOURCE_FILES}

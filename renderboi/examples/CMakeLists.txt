@@ -9,9 +9,6 @@ file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_EXAMPLES_LIB_NAME}_headers.cmake
    )\n"
 )
 
-# Import toolbox targets
-add_subdirectory(${RENDERBOI_MODULE_LOCATION}/toolbox ${CMAKE_BINARY_DIR}/renderboi.toolbox)
-
 # Build examples lib
 add_library(${RB_EXAMPLES_LIB_NAME} ${STATIC_OR_SHARED}
     ${RB_EXAMPLES_SOURCE_FILES}

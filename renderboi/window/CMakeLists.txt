@@ -36,13 +36,16 @@ add_dependencies(${RB_WINDOW_LIB_NAME}
     "${GLFW3_LIB_NAME}_source"
     "export_${GLAD_LIB_NAME}_lib"
     "export_${GLAD_LIB_NAME}_headers"
+    "export_${RB_UTILITIES_LIB_NAME}_lib"
+    "export_${RB_UTILITIES_LIB_NAME}_headers"
 )
 target_include_directories(${RB_WINDOW_LIB_NAME} PUBLIC ${EXPORT_LOCATION}/include)
 target_link_directories(${RB_WINDOW_LIB_NAME} PUBLIC ${EXPORT_LOCATION}/lib)
 target_link_libraries(${RB_WINDOW_LIB_NAME} PUBLIC ${CMAKE_DL_LIBS}
     ${GLFW3_LIB_NAME}
-    ${GLAD_LIB_NAME}
     pthread
+    ${GLAD_LIB_NAME}
+    ${RB_UTILITIES_LIB_NAME}
 )
 
 # Custom target to export window lib

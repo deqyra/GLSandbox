@@ -121,12 +121,13 @@ file(MAKE_DIRECTORY ${EXPORT_LOCATION}/lib)
 ###############################################################################
 
 set(CPPTOOLS_LIB_NAME "cpptools")
-set(GLM_LIB_NAME "glm")
 set(GLAD_LIB_NAME "glad")
 set(STB_IMAGE_LIB_NAME "stb_image")
+set(GLM_LIB_NAME "glm")
 set(GLFW3_LIB_NAME "glfw3")
-set(RB_WINDOW_LIB_NAME "renderboi.window")
+set(RB_UTILITIES_LIB_NAME "renderboi.utilities")
 set(RB_CORE_LIB_NAME "renderboi.core")
+set(RB_WINDOW_LIB_NAME "renderboi.window")
 set(RB_TOOLBOX_LIB_NAME "renderboi.toolbox")
 set(RB_EXAMPLES_LIB_NAME "renderboi.examples")
 
@@ -137,6 +138,11 @@ ExternalProject_Add(${CPPTOOLS_LIB_NAME}_source
     -DCMAKE_INSTALL_PREFIX=${EXPORT_LOCATION}
     -DCPPTOOLS_EXTERNAL_INSTALL_PREFIX=True
     -DCPPTOOLS_SKIP_TESTS=ON
+)
+
+set(RB_UTILITIES_SOURCE_FILES
+    gl_utilities.cpp
+    gl_utilities.hpp
 )
 
 set(RB_CORE_SOURCE_FILES
@@ -276,11 +282,32 @@ set(RB_EXAMPLES_SOURCE_FILES
 
 ###############################################################################
 #                                                                             #
-#                         Include direct dependencies                         #
+#                           Include subdirectories                            #
 #                                                                             #
 ###############################################################################
 
-# Build RenderBoi.Examples
+# Import GLAD targets
+add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/glad ${CMAKE_BINARY_DIR}/${GLAD_LIB_NAME})
+
+# Import stb_image targets
+add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/stb_image ${CMAKE_BINARY_DIR}/${STB_IMAGE_LIB_NAME})
+
+# Import GLM targets
+add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/glm ${CMAKE_BINARY_DIR}/${GLM_LIB_NAME})
+
+# Import RenderBoi.Utilities targets
+add_subdirectory(${RENDERBOI_MODULE_LOCATION}/utilities ${CMAKE_BINARY_DIR}/${RB_UTILITIES_LIB_NAME})
+
+# Import RenderBoi.Core targets
+add_subdirectory(${RENDERBOI_MODULE_LOCATION}/core ${CMAKE_BINARY_DIR}/${RB_CORE_LIB_NAME})
+
+# Import RenderBoi.Window targets
+add_subdirectory(${RENDERBOI_MODULE_LOCATION}/window ${CMAKE_BINARY_DIR}/${RB_WINDOW_LIB_NAME})
+
+# Import RenderBoi.Toolbox targets
+add_subdirectory(${RENDERBOI_MODULE_LOCATION}/toolbox ${CMAKE_BINARY_DIR}/${RB_TOOLBOX_LIB_NAME})
+
+# Import RenderBoi.Examples targets
 add_subdirectory(${RENDERBOI_MODULE_LOCATION}/examples ${CMAKE_BINARY_DIR}/${RB_EXAMPLES_LIB_NAME})
 
 
@@ -298,6 +325,8 @@ add_executable("RenderBoi"
 )   
 
 add_dependencies("RenderBoi"
+    "export_${RB_WINDOW_LIB_NAME}_lib"
+    "export_${RB_WINDOW_LIB_NAME}_headers"
     "export_${RB_EXAMPLES_LIB_NAME}_lib"
     "export_${RB_EXAMPLES_LIB_NAME}_headers"
 )

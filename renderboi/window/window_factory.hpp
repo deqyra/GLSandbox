@@ -50,8 +50,4 @@ class WindowFactory
         static GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug) = delete;
 };
 
-/// @brief Callback given to OpenGL, which will print out error messages from
-/// debug capable contexts.
-void APIENTRY glDebugOutput(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char* message, const void* userParam);
-
 #endif//RENDERBOI__WINDOW__WINDOW_FACTORY_HPP

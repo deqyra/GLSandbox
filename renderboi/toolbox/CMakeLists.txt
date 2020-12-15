@@ -7,12 +7,6 @@ file(WRITE ${CMAKE_BINARY_DIR}/cp_${RB_TOOLBOX_LIB_NAME}_headers.cmake
    )\n"
 )
 
-# Import core targets
-add_subdirectory(${RENDERBOI_MODULE_LOCATION}/core ${CMAKE_BINARY_DIR}/renderboi.core)
-
-# Import window targets
-add_subdirectory(${RENDERBOI_MODULE_LOCATION}/window ${CMAKE_BINARY_DIR}/renderboi.window)
-
 # Build toolbox lib
 add_library(${RB_TOOLBOX_LIB_NAME} ${STATIC_OR_SHARED}
     ${RB_TOOLBOX_SOURCE_FILES}
