@@ -14,7 +14,9 @@
 #include "shader_info.hpp"
 #include "shader_feature.hpp"
 #include "shader_stage.hpp"
+
 #include <cpptools/string_tools.hpp>
+#include <glad/gl.h>
 
 #define INFO_BUFFER_SIZE 2048
 
@@ -28,7 +30,7 @@ ShaderProgram ShaderBuilder::MinimalShaderProgram()
     return minimal;
 }
 
-ShaderProgram ShaderBuilder::buildShaderProgramFromConfig(ShaderConfig config)
+ShaderProgram ShaderBuilder::buildShaderProgramFromConfig(ShaderConfig config, bool dumpSource)
 {
     const std::vector<ShaderInfo::ShaderFeature>& features = config.getRequestedFeatures();
     std::unordered_set<ShaderInfo::ShaderStage> requestedStages;
@@ -52,7 +54,7 @@ ShaderProgram ShaderBuilder::buildShaderProgramFromConfig(ShaderConfig config)
     // Generate all shader stages
     for (auto it = requestedStages.begin(); it != requestedStages.end(); it++)
     {
-        Shader shader = buildShaderStageFromConfig(*it, config);
+        Shader shader = buildShaderStageFromConfig(*it, config, dumpSource);
         shaders.push_back(shader);
     }
 
@@ -109,7 +111,7 @@ ShaderProgram ShaderBuilder::linkShaders(std::vector<Shader> shaders)
     return ShaderProgram(programLocation, supportedFeatures);
 }
 
-Shader ShaderBuilder::buildShaderStageFromConfig(ShaderInfo::ShaderStage stage, ShaderConfig config)
+Shader ShaderBuilder::buildShaderStageFromConfig(ShaderInfo::ShaderStage stage, ShaderConfig config, bool dumpSource)
 {
     std::vector<ShaderInfo::ShaderFeature> requested = filterFeaturesByStage(config.getRequestedFeatures(), stage);
 
@@ -140,7 +142,7 @@ Shader ShaderBuilder::buildShaderStageFromConfig(ShaderInfo::ShaderStage stage, 
 	while (std::getline(file, line))
 		source += line + "\n";
 
-    return buildShaderStageFromText(stage, source, requested);
+    return buildShaderStageFromText(stage, source, requested, dumpSource);
 }
 
 Shader ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage stage, std::string filename, std::vector<ShaderInfo::ShaderFeature> supportedFeatures)
@@ -171,7 +173,7 @@ Shader ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage stage, st
     return buildShaderStageFromText(stage, source, supportedFeatures);
 }
 
-Shader ShaderBuilder::buildShaderStageFromText(ShaderInfo::ShaderStage stage, const std::string& text, std::vector<ShaderInfo::ShaderFeature> supportedFeatures)
+Shader ShaderBuilder::buildShaderStageFromText(ShaderInfo::ShaderStage stage, const std::string& text, std::vector<ShaderInfo::ShaderFeature> supportedFeatures, bool dumpSource)
 {
     // In case the shader makes use of #include directives, process them
     processIncludeDirectives(text);
@@ -199,10 +201,15 @@ Shader ShaderBuilder::buildShaderStageFromText(ShaderInfo::ShaderStage stage, co
 	if (!success)
 	{
 		glGetShaderInfoLog(location, INFO_BUFFER_SIZE, nullptr, info);
-        std::string filename = dumpSource(stage, text);
+        std::string filename = dumpShaderSource(stage, text);
 		std::cerr << "Shader compilation failed:\n" << info << '\n';
         std::cerr << "Source was dumped to " << filename << std::endl;
 		throw std::runtime_error("Shader compilation failed. See std::cerr for more info.");
+    }
+    if (dumpSource)
+    {
+        std::string filename = dumpShaderSource(stage, text);
+        std::cout << "Source was dumped to " << filename << std::endl;
 	}
 
 	return Shader(location, stage, supportedFeatures);
@@ -390,7 +397,7 @@ std::vector<ShaderInfo::ShaderFeature> ShaderBuilder::filterFeaturesByStage(cons
     return result;
 }
 
-std::string ShaderBuilder::dumpSource(ShaderInfo::ShaderStage stage, const std::string& text)
+std::string ShaderBuilder::dumpShaderSource(ShaderInfo::ShaderStage stage, const std::string& text)
 {
     static std::string dumpFolder = "output/";
     std::filesystem::create_directories(dumpFolder);
@@ -484,7 +491,7 @@ const std::unordered_map<ShaderInfo::ShaderFeature, std::string>& ShaderBuilder:
         map[ShaderInfo::ShaderFeature::VertexMVP]                   = "VERTEX_MVP";
         // map[ShaderInfo::ShaderFeature::VertexFishEye]               = "VERTEX_FISH_EYE";        // IMPLEMENT VERT LENS
         // map[ShaderInfo::ShaderFeature::GeometryShowNormals]         = "GEOMETRY_SHOW_NORMALS";  // IMPLEMENT GEOM NORMALS
-        map[ShaderInfo::ShaderFeature::FragmentFullColor]           = "FRAGMENT_FULL_COLOR";
+        map[ShaderInfo::ShaderFeature::FragmentFullLight]           = "FRAGMENT_FULL_LIGHT";
         map[ShaderInfo::ShaderFeature::FragmentDepthView]           = "FRAGMENT_DEPTH_VIEW";
         map[ShaderInfo::ShaderFeature::FragmentMeshMaterial]        = "FRAGMENT_MESH_MATERIAL";
         map[ShaderInfo::ShaderFeature::FragmentBypassVertexColor]   = "FRAGMENT_BYPASS_VERTEX_COLOR";

@@ -6,12 +6,6 @@ vec3 phong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specu
 	vec3 normal = vertOut.normal;
 	vec3 viewDirection = normalize(vertOut.fragPos);
 
-#if   defined FRAGMENT_BLINN_PHONG
-	vec3 halfwayDirection = normalize(viewDirection + lightDirection);
-#elif defined FRAGMENT_PHONG
-	vec3 reflectDirection = reflect(lightDirection, normal);
-#endif//FRAGMENT_BLINN_PHONG || FRAGMENT_PHONG
-
 	// Ambient lighting
     vec3 total = ambientLight;
 #ifdef FRAGMENT_MESH_MATERIAL
@@ -37,8 +31,10 @@ vec3 phong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specu
 #endif//FRAGMENT_MESH_MATERIAL
 
 #if   defined FRAGMENT_BLINN_PHONG
+	vec3 halfwayDirection = normalize(viewDirection + lightDirection);
 	float spec = pow(max(dot(normal, -halfwayDirection), 0.0), material.shininess);
 #elif defined FRAGMENT_PHONG
+	vec3 reflectDirection = reflect(lightDirection, normal);
 	float spec = pow(max(dot(-viewDirection, reflectDirection), 0.0), material.shininess);
 #endif//FRAGMENT_BLINN_PHONG || FRAGMENT_PHONG
 

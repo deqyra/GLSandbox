@@ -33,7 +33,7 @@ namespace ShaderInfo
         if (!runOnce)
         {
             map["assets/shaders/default.frag"]  = {
-                ShaderFeature::FragmentFullColor
+                ShaderFeature::FragmentFullLight
             };
             map["assets/shaders/depth.frag"]  = {
                 ShaderFeature::FragmentDepthView

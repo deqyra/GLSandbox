@@ -37,10 +37,14 @@ out vec4 fragColor;
 
 void main()
 {
-	vec4 color;
-#ifdef FRAGMENT_FULL_COLOR
-	color = vec4(vertOut.color, 1.f);
-#endif//FRAGMENT_FULL_COLOR
+	vec4 color = vec4(0.f);
+#ifdef FRAGMENT_FULL_LIGHT
+	color = vec4(1.f);
+	#ifdef FRAGMENT_MESH_MATERIAL
+		if (material.diffuseMapCount > 0)
+			color = vec3(texture(material.diffuseMaps[0], vertOut.texCoord));
+	#endif//FRAGMENT_MESH_MATERIAL
+#endif//FRAGMENT_FULL_LIGHT
 
 #ifdef FRAGMENT_DEPTH_VIEW
     color = vec4(vec3(linearizeDepth(gl_FragCoord.z) / far), 1.f);
@@ -93,10 +97,11 @@ void main()
 	}
 
     color = vec4(colorTotal, 1.f);
-	#ifndef FRAGMENT_BYPASS_VERTEX_COLOR
-		color *= vec4(vertOut.color, 1.f);
-	#endif//FRAGMENT_BYPASS_VERTEX_COLOR
 #endif//FRAGMENT_PHONG
+
+#ifndef FRAGMENT_BYPASS_VERTEX_COLOR
+	color *= vec4(vertOut.color, 1.f);
+#endif//FRAGMENT_BYPASS_VERTEX_COLOR
 
 #ifdef FRAGMENT_GAMMA_CORRECTION
 	fragColor = gammaCorrect(color, gamma);

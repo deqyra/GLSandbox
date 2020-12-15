@@ -42,9 +42,9 @@ void ShadowSandbox::run(GLWindowPtr window)
     lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
-    //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentFullColor);
+    //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentFullLight);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentGammaCorrection);
-    ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
+    ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig, true);
     lightingShader.setFloat("gamma", 1.7f);
 
     ShaderConfig depthConfig;

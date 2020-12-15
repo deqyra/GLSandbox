@@ -31,7 +31,7 @@ class ShaderBuilder
         /// built shader should support.
         ///
         /// @return A ShaderProgram object wrapping resources on the GPU.
-        static ShaderProgram buildShaderProgramFromConfig(ShaderConfig config);
+        static ShaderProgram buildShaderProgramFromConfig(ShaderConfig config, bool dumpSource = false);
 
         /// @brief Combine shaders and link them into a program.
         ///
@@ -60,7 +60,7 @@ class ShaderBuilder
         /// match the provided shader type will be ignored.
         ///
         /// @return A Shader object wrapping resources on the GPU.
-        static Shader buildShaderStageFromConfig(ShaderInfo::ShaderStage stage, ShaderConfig config);
+        static Shader buildShaderStageFromConfig(ShaderInfo::ShaderStage stage, ShaderConfig config, bool dumpSource = false);
 
         /// @brief Build a shader stage of the given type from the given source
         /// file and return its location on the GPU.
@@ -107,7 +107,7 @@ class ShaderBuilder
         ///
         /// @exception If any invalid #include directives are present in the 
         /// source code, the function will throw an std::runtime_error.
-        static Shader buildShaderStageFromText(ShaderInfo::ShaderStage stage, const std::string& text, std::vector<ShaderInfo::ShaderFeature> supportedFeatures);
+        static Shader buildShaderStageFromText(ShaderInfo::ShaderStage stage, const std::string& text, std::vector<ShaderInfo::ShaderFeature> supportedFeatures, bool dumpSource = false);
 
     private:
         using NamedStringToLoadStatusMap = std::unordered_map<std::string, bool>;  
@@ -184,7 +184,7 @@ class ShaderBuilder
         /// @param text Source code to dump.
         ///
         /// @return Path to the file which the source was dumped to.
-        static std::string dumpSource(ShaderInfo::ShaderStage stage, const std::string& text);
+        static std::string dumpShaderSource(ShaderInfo::ShaderStage stage, const std::string& text);
 
         /// @brief Get a string containing the appropriate GLSL version 
         /// directive.

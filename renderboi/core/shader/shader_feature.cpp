@@ -18,7 +18,7 @@ namespace ShaderInfo
             map[ShaderFeature::VertexNormalsToColor]        = ShaderStage::Vertex;
             // map[ShaderFeature::VertexFishEye]               = ShaderStage::Vertex;      // IMPLEMENT VERT LENS
             // map[ShaderFeature::GeometryShowNormals]         = ShaderStage::Geometry;    // IMPLEMENT GEOM NORMALS
-            map[ShaderFeature::FragmentFullColor]           = ShaderStage::Fragment;
+            map[ShaderFeature::FragmentFullLight]           = ShaderStage::Fragment;
             map[ShaderFeature::FragmentDepthView]           = ShaderStage::Fragment;
             map[ShaderFeature::FragmentMeshMaterial]        = ShaderStage::Fragment;
             map[ShaderFeature::FragmentBypassVertexColor]   = ShaderStage::Fragment;
@@ -51,7 +51,7 @@ namespace std
             featureNames[ShaderInfo::ShaderFeature::VertexNormalsToColor]          = "VertexNormalsToColor";
             // featureNames[ShaderInfo::ShaderFeature::VertexFishEye]                 = "VertexFishEye";       // IMPLEMENT VERT LENS
             // featureNames[ShaderInfo::ShaderFeature::GeometryShowNormals]           = "GeometryShowNormals"; // IMPLEMENT GEOM NORMALS
-            featureNames[ShaderInfo::ShaderFeature::FragmentFullColor]             = "FragmentFullColor";
+            featureNames[ShaderInfo::ShaderFeature::FragmentFullLight]             = "FragmentFullLight";
             featureNames[ShaderInfo::ShaderFeature::FragmentDepthView]             = "FragmentDepthView";
             featureNames[ShaderInfo::ShaderFeature::FragmentMeshMaterial]          = "FragmentMeshMaterial";
             featureNames[ShaderInfo::ShaderFeature::FragmentBypassVertexColor]     = "FragmentBypassVertexColor";
