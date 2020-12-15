@@ -1,8 +1,21 @@
 #include "gl_utilities.hpp"
 
 #include <iostream>
+#include <unordered_set>
 
 #include <glad/gl.h>
+
+static std::unordered_set<int> ignoredMessageTypes;
+
+void glIgnoreDebugMessagesOfType(int type)
+{
+    ignoredMessageTypes.insert(type);
+}
+
+void glStopIgnoringDebugMessages()
+{
+    ignoredMessageTypes.clear();
+}
 
 void APIENTRY glDebugCallback(
     unsigned int source,
@@ -15,6 +28,9 @@ void APIENTRY glDebugCallback(
 {
     // Ignore non-significant error/warning codes
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
+
+    // Suppress ignored messages
+    if (ignoredMessageTypes.find(type) != ignoredMessageTypes.end()) return;
 
     std::cout << "---------------" << std::endl;
     std::cout << "Debug message (" << id << "): " << message << std::endl;
