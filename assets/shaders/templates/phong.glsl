@@ -3,7 +3,6 @@
 
 vec3 phong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specularLight)
 {
-	vec3 normal = vertOut.normal;
 	vec3 viewDirection = normalize(vertOut.fragPos);
 
 	// Ambient lighting
@@ -13,11 +12,14 @@ vec3 phong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specu
 #endif//FRAGMENT_MESH_MATERIAL
 
 	// Diffuse lighting
-	float diffusionFactor = max(dot(normal, -lightDirection), 0.0);
+	float diffusionFactor = max(dot(vertOut.normal, -lightDirection), 0.0);
 	vec3 diffuseTexel = vec3(1.f);
 #ifdef FRAGMENT_MESH_MATERIAL
 	if (material.diffuseMapCount > 0)
-		diffuseTexel = vec3(texture(material.diffuseMaps[0], vertOut.texCoord));
+	{
+		vec4 sample = texture(material.diffuseMaps[0], vertOut.texCoord);
+		diffuseTexel = sample.xyz * sample.w;
+	}
 	diffuseTexel *= material.diffuse;
 #endif//FRAGMENT_MESH_MATERIAL
 	
@@ -27,16 +29,19 @@ vec3 phong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specu
 	vec3 specularTexel = vec3(1.f);
 #ifdef FRAGMENT_MESH_MATERIAL
 	if (material.specularMapCount > 0)
-		specularTexel = vec3(texture(material.specularMaps[0], vertOut.texCoord));
+	{
+		vec4 sample = texture(material.specularMaps[0], vertOut.texCoord);
+		specularTexel = sample.xyz * sample.w;
+	}
 #endif//FRAGMENT_MESH_MATERIAL
 
-#if   defined FRAGMENT_BLINN_PHONG
+#ifdef FRAGMENT_BLINN_PHONG
 	vec3 halfwayDirection = normalize(viewDirection + lightDirection);
-	float spec = pow(max(dot(normal, -halfwayDirection), 0.0), material.shininess);
-#elif defined FRAGMENT_PHONG
-	vec3 reflectDirection = reflect(lightDirection, normal);
+	float spec = pow(max(dot(vertOut.normal, -halfwayDirection), 0.0), material.shininess);
+#else
+	vec3 reflectDirection = reflect(lightDirection, vertOut.normal);
 	float spec = pow(max(dot(-viewDirection, reflectDirection), 0.0), material.shininess);
-#endif//FRAGMENT_BLINN_PHONG || FRAGMENT_PHONG
+#endif//FRAGMENT_BLINN_PHONG 
 
 	total += specularLight * material.specular * specularTexel * spec;
 

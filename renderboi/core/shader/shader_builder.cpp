@@ -41,8 +41,8 @@ ShaderProgram ShaderBuilder::buildShaderProgramFromConfig(ShaderConfig config, b
         auto jt = ShaderInfo::FeatureStages().find(*it);
         if (jt == ShaderInfo::FeatureStages().end())
         {
-            std::string s = "ShaderBuilder: cannot build shader program from config, unknown feature \"" + 
-                            std::to_string(*it) + "\" (" + std::to_string((unsigned int) *it) + ") was requested.";
+            std::string s = "ShaderBuilder: cannot build shader program from config, feature \"" + 
+                            std::to_string(*it) + "\" (" + std::to_string((unsigned int) *it) + ") from unknown stage was requested.";
             throw std::runtime_error(s.c_str());
         }
 
@@ -488,21 +488,22 @@ const std::unordered_map<ShaderInfo::ShaderFeature, std::string>& ShaderBuilder:
 
     if (!runOnce)
     {
-        map[ShaderInfo::ShaderFeature::VertexMVP]                   = "VERTEX_MVP";
-        // map[ShaderInfo::ShaderFeature::VertexFishEye]               = "VERTEX_FISH_EYE";        // IMPLEMENT VERT LENS
-        // map[ShaderInfo::ShaderFeature::GeometryShowNormals]         = "GEOMETRY_SHOW_NORMALS";  // IMPLEMENT GEOM NORMALS
-        map[ShaderInfo::ShaderFeature::FragmentFullLight]           = "FRAGMENT_FULL_LIGHT";
-        map[ShaderInfo::ShaderFeature::FragmentDepthView]           = "FRAGMENT_DEPTH_VIEW";
-        map[ShaderInfo::ShaderFeature::FragmentMeshMaterial]        = "FRAGMENT_MESH_MATERIAL";
-        map[ShaderInfo::ShaderFeature::FragmentBypassVertexColor]   = "FRAGMENT_BYPASS_VERTEX_COLOR";
-        // map[ShaderInfo::ShaderFeature::FragmentFlatShading]         = "FRAGMENT_FLAT_SHADING";  // IMPLEMENT FRAG FLAT
-        map[ShaderInfo::ShaderFeature::FragmentPhong]               = "FRAGMENT_PHONG";
-        map[ShaderInfo::ShaderFeature::FragmentBlinnPhong]          = "FRAGMENT_BLINN_PHONG";
-        map[ShaderInfo::ShaderFeature::FragmentGammaCorrection]     = "FRAGMENT_GAMMA_CORRECTION";
-        // map[ShaderInfo::ShaderFeature::FragmentOutline]             = "FRAGMENT_OUTLINE";       // IMPLEMENT FRAG OUTLINE
-        // map[ShaderInfo::ShaderFeature::FragmentCubemap]             = "FRAGMENT_CUBEMAP";       // IMPLEMENT FRAG CUBEMAP
-        // map[ShaderInfo::ShaderFeature::FragmentBlending]            = "FRAGMENT_BLENDING";      // IMPLEMENT FRAG BLENDING
-        // map[ShaderInfo::ShaderFeature::FragmentShadows]             = "FRAGMENT_SHADOWS";       // IMPLEMENT FRAG SHADOWS
+        map[ShaderInfo::ShaderFeature::VertexMVP]                       = "VERTEX_MVP";
+        // map[ShaderInfo::ShaderFeature::VertexFishEye]                   = "VERTEX_FISH_EYE";        // IMPLEMENT VERT LENS
+        // map[ShaderInfo::ShaderFeature::GeometryShowNormals]             = "GEOMETRY_SHOW_NORMALS";  // IMPLEMENT GEOM NORMALS
+        map[ShaderInfo::ShaderFeature::FragmentFullLight]               = "FRAGMENT_FULL_LIGHT";
+        map[ShaderInfo::ShaderFeature::FragmentViewDepthBuffer]         = "FRAGMENT_VIEW_DEPTH_BUFFER";
+        map[ShaderInfo::ShaderFeature::FragmentViewLightAttenuation]    = "FRAGMENT_VIEW_LIGHT_ATTENUATION";
+        map[ShaderInfo::ShaderFeature::FragmentMeshMaterial]            = "FRAGMENT_MESH_MATERIAL";
+        map[ShaderInfo::ShaderFeature::FragmentBypassVertexColor]       = "FRAGMENT_BYPASS_VERTEX_COLOR";
+        // map[ShaderInfo::ShaderFeature::FragmentFlatShading]             = "FRAGMENT_FLAT_SHADING";  // IMPLEMENT FRAG FLAT
+        map[ShaderInfo::ShaderFeature::FragmentPhong]                   = "FRAGMENT_PHONG";
+        map[ShaderInfo::ShaderFeature::FragmentBlinnPhong]              = "FRAGMENT_BLINN_PHONG";
+        map[ShaderInfo::ShaderFeature::FragmentGammaCorrection]         = "FRAGMENT_GAMMA_CORRECTION";
+        // map[ShaderInfo::ShaderFeature::FragmentOutline]                 = "FRAGMENT_OUTLINE";       // IMPLEMENT FRAG OUTLINE
+        // map[ShaderInfo::ShaderFeature::FragmentCubemap]                 = "FRAGMENT_CUBEMAP";       // IMPLEMENT FRAG CUBEMAP
+        // map[ShaderInfo::ShaderFeature::FragmentBlending]                = "FRAGMENT_BLENDING";      // IMPLEMENT FRAG BLENDING
+        // map[ShaderInfo::ShaderFeature::FragmentShadows]                 = "FRAGMENT_SHADOWS";       // IMPLEMENT FRAG SHADOWS
 
         runOnce = true;
     }

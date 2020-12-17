@@ -105,7 +105,7 @@ vec3 calculatePhong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, v
 	vec4 diffuseTexel = vec4(1.f);
 	if (material.diffuseMapCount > 0)
 		diffuseTexel = texture(material.diffuseMaps[0], vertOut.texCoord);
-	vec3 diffuseTexel3 = vec3(diffuseTexel / diffuseTexel.a);
+	vec3 diffuseTexel3 = vec3(diffuseTexel * diffuseTexel.a);
 	
 	float diffusionFactor = max(dot(normal, -lightDirection), 0.0);
 	vec3 diffuse = diffuseLight * material.diffuse * diffuseTexel3 * diffusionFactor;
@@ -114,7 +114,7 @@ vec3 calculatePhong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, v
 	vec4 specularTexel = vec4(1.f);
 	if (material.specularMapCount > 0)
 		specularTexel = texture(material.specularMaps[0], vertOut.texCoord);
-	vec3 specularTexel3 = vec3(specularTexel / specularTexel.a);
+	vec3 specularTexel3 = vec3(specularTexel * specularTexel.a);
 
 	// float spec = pow(max(dot(-viewDir, reflectDir), 0.0), material.shininess);
 	float spec = pow(max(dot(normal, -halfwayDir), 0.0), material.shininess);

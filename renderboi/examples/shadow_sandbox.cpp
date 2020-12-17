@@ -36,26 +36,26 @@ void ShadowSandbox::run(GLWindowPtr window)
 
     // Remove cursor from window
     namespace InputMode = Window::Input::Mode;
-    window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
+    //window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
     
     ShaderConfig lightConfig;
     lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
     //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentFullLight);
-    //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentGammaCorrection);
-    //ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig, true);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentGammaCorrection);
+    ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig, true);
 
-    Shader mvp = ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage::Vertex, "assets/shaders/static/mvp.vert");
-    Shader phong = ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage::Fragment, "assets/shaders/static/phong.frag");
-    ShaderProgram lightingShader = ShaderBuilder::linkShaders({mvp, phong});
+    //Shader mvp = ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage::Vertex, "assets/shaders/static/mvp.vert");
+    //Shader phong = ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage::Fragment, "assets/shaders/static/phong.frag");
+    //ShaderProgram lightingShader = ShaderBuilder::linkShaders({mvp, phong});
 
     //lightingShader.setFloat("gamma", 1.7f);
 
-    ShaderConfig depthConfig;
-    depthConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
-    depthConfig.addFeature(ShaderInfo::ShaderFeature::FragmentDepthView);
-    ShaderProgram depthShader = ShaderBuilder::buildShaderProgramFromConfig(depthConfig);
+    //ShaderConfig depthConfig;
+    //depthConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
+    //depthConfig.addFeature(ShaderInfo::ShaderFeature::FragmentViewDepthBuffer);
+    //ShaderProgram depthShader = ShaderBuilder::buildShaderProgramFromConfig(depthConfig);
 
     ScenePtr scene = Factory::makeScene();
 
@@ -124,8 +124,8 @@ void ShadowSandbox::run(GLWindowPtr window)
     CameraPtr camera = std::make_shared<Camera>(CameraParams);
     cameraObj->addComponent<CameraComponent>(camera);
 
-    depthShader.setFloat("near", camera->getNearDistance());
-    depthShader.setFloat("far", camera->getFarDistance());
+    //depthShader.setFloat("near", camera->getNearDistance());
+    //depthShader.setFloat("far", camera->getFarDistance());
 
     // Register all objects
     scene->registerObject(floorObj);

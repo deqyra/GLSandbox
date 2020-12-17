@@ -36,7 +36,7 @@ namespace ShaderInfo
                 ShaderFeature::FragmentFullLight
             };
             map["assets/shaders/depth.frag"]  = {
-                ShaderFeature::FragmentDepthView
+                ShaderFeature::FragmentViewDepthBuffer
             };
             map["assets/shaders/mvp.vert"]  = {
                 ShaderFeature::VertexMVP

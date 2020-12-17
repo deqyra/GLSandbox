@@ -165,28 +165,29 @@ namespace ShaderInfo
 
         if (!runOnce)
         {
-            map[ShaderFeature::VertexMVP]                   = {};
-            map[ShaderFeature::VertexNormalsToColor]        = {
+            map[ShaderFeature::VertexMVP]                       = {};
+            map[ShaderFeature::VertexNormalsToColor]            = {
                 ShaderFeature::VertexMVP
             };
-            // map[ShaderFeature::VertexFishEye]               = {};   // IMPLEMENT VERT LENS
-            // map[ShaderFeature::GeometryShowNormals]         = {};   // IMPLEMENT GEOM NORMALS
-            map[ShaderFeature::FragmentFullLight]           = {};
-            map[ShaderFeature::FragmentDepthView]           = {};
-            map[ShaderFeature::FragmentMeshMaterial]        = {};
-            map[ShaderFeature::FragmentBypassVertexColor]   = {};
-            map[ShaderFeature::FragmentPhong]               = {
+            // map[ShaderFeature::VertexFishEye]                   = {};   // IMPLEMENT VERT LENS
+            // map[ShaderFeature::GeometryShowNormals]             = {};   // IMPLEMENT GEOM NORMALS
+            map[ShaderFeature::FragmentFullLight]               = {};
+            map[ShaderFeature::FragmentViewDepthBuffer]         = {};
+            map[ShaderFeature::FragmentViewLightAttenuation]    = {};
+            map[ShaderFeature::FragmentMeshMaterial]            = {};
+            map[ShaderFeature::FragmentBypassVertexColor]       = {};
+            map[ShaderFeature::FragmentPhong]                   = {
                 ShaderFeature::FragmentMeshMaterial
             };
-            map[ShaderFeature::FragmentBlinnPhong]          = {
+            map[ShaderFeature::FragmentBlinnPhong]              = {
                 ShaderFeature::FragmentMeshMaterial
             };
-            // map[ShaderFeature::FragmentFlatShading]         = {};   // IMPLEMENT FRAG FLAT
-            map[ShaderFeature::FragmentGammaCorrection]     = {};
-            // map[ShaderFeature::FragmentOutline]             = {};   // IMPLEMENT FRAG OUTLINE
-            // map[ShaderFeature::FragmentCubemap]             = {};   // IMPLEMENT FRAG CUBEMAP
-            // map[ShaderFeature::FragmentBlending]            = {};   // IMPLEMENT FRAG BLENDING
-            // map[ShaderFeature::FragmentShadows]             = {};   // IMPLEMENT FRAG SHADOWS
+            // map[ShaderFeature::FragmentFlatShading]             = {};   // IMPLEMENT FRAG FLAT
+            map[ShaderFeature::FragmentGammaCorrection]         = {};
+            // map[ShaderFeature::FragmentOutline]                 = {};   // IMPLEMENT FRAG OUTLINE
+            // map[ShaderFeature::FragmentCubemap]                 = {};   // IMPLEMENT FRAG CUBEMAP
+            // map[ShaderFeature::FragmentBlending]                = {};   // IMPLEMENT FRAG BLENDING
+            // map[ShaderFeature::FragmentShadows]                 = {};   // IMPLEMENT FRAG SHADOWS
 
             runOnce = true;
         }
@@ -201,43 +202,54 @@ namespace ShaderInfo
 
         if (!runOnce)
         {
-            map[ShaderFeature::VertexMVP]                   = {};
-            map[ShaderFeature::VertexNormalsToColor]        = {};
-            // map[ShaderFeature::VertexFishEye]               = {};   // IMPLEMENT VERT LENS
-            // map[ShaderFeature::GeometryShowNormals]         = {};   // IMPLEMENT GEOM NORMALS
-            map[ShaderFeature::FragmentFullLight]           = {
-                ShaderFeature::FragmentDepthView,
+            map[ShaderFeature::VertexMVP]                       = {};
+            map[ShaderFeature::VertexNormalsToColor]            = {};
+            // map[ShaderFeature::VertexFishEye]                   = {};   // IMPLEMENT VERT LENS
+            // map[ShaderFeature::GeometryShowNormals]             = {};   // IMPLEMENT GEOM NORMALS
+            map[ShaderFeature::FragmentFullLight]               = {
+                ShaderFeature::FragmentViewDepthBuffer,
+                ShaderFeature::FragmentViewLightAttenuation,
                 ShaderFeature::FragmentPhong,
                 ShaderFeature::FragmentBlinnPhong
                 // ShaderFeature::FragmentFlatShading                  // IMPLEMENT FRAG FLAT
             };
-            map[ShaderFeature::FragmentDepthView]           = {
+            map[ShaderFeature::FragmentViewDepthBuffer]         = {
                 ShaderFeature::FragmentFullLight,
+                ShaderFeature::FragmentViewLightAttenuation,
                 ShaderFeature::FragmentPhong,
                 ShaderFeature::FragmentBlinnPhong
                 // ShaderFeature::FragmentFlatShading                  // IMPLEMENT FRAG FLAT
             };
-            map[ShaderFeature::FragmentMeshMaterial]        = {};
-            map[ShaderFeature::FragmentBypassVertexColor]   = {};
-            map[ShaderFeature::FragmentPhong]               = {
+            map[ShaderFeature::FragmentViewLightAttenuation]    = {
                 ShaderFeature::FragmentFullLight,
-                ShaderFeature::FragmentDepthView,
+                ShaderFeature::FragmentViewDepthBuffer,
+                ShaderFeature::FragmentPhong,
+                ShaderFeature::FragmentBlinnPhong
+                // ShaderFeature::FragmentFlatShading                  // IMPLEMENT FRAG FLAT
+            };
+            map[ShaderFeature::FragmentMeshMaterial]            = {};
+            map[ShaderFeature::FragmentBypassVertexColor]       = {};
+            map[ShaderFeature::FragmentPhong]                   = {
+                ShaderFeature::FragmentFullLight,
+                ShaderFeature::FragmentViewDepthBuffer,
+                ShaderFeature::FragmentViewLightAttenuation,
                 ShaderFeature::FragmentBlinnPhong
             };
-            map[ShaderFeature::FragmentBlinnPhong]          = {
+            map[ShaderFeature::FragmentBlinnPhong]              = {
                 ShaderFeature::FragmentFullLight,
-                ShaderFeature::FragmentDepthView,
+                ShaderFeature::FragmentViewDepthBuffer,
+                ShaderFeature::FragmentViewLightAttenuation,
                 ShaderFeature::FragmentPhong
             };
-            /* map[ShaderFeature::FragmentFlatShading]         = { // IMPLEMENT FRAG FLAT
+            /* map[ShaderFeature::FragmentFlatShading]            = { // IMPLEMENT FRAG FLAT
                 ShaderFeature::FragmentFullLight,
-                ShaderFeature::FragmentDepthView
+                ShaderFeature::FragmentViewDepthBuffer
             }; */
-            map[ShaderFeature::FragmentGammaCorrection]     = {};
-            // map[ShaderFeature::FragmentOutline]             = {};   // IMPLEMENT FRAG OUTLINE
-            // map[ShaderFeature::FragmentCubemap]             = {};   // IMPLEMENT FRAG CUBEMAP
-            // map[ShaderFeature::FragmentBlending]            = {};   // IMPLEMENT FRAG BLENDING
-            // map[ShaderFeature::FragmentShadows]             = {};   // IMPLEMENT FRAG SHADOWS
+            map[ShaderFeature::FragmentGammaCorrection]         = {};
+            // map[ShaderFeature::FragmentOutline]                 = {};   // IMPLEMENT FRAG OUTLINE
+            // map[ShaderFeature::FragmentCubemap]                 = {};   // IMPLEMENT FRAG CUBEMAP
+            // map[ShaderFeature::FragmentBlending]                = {};   // IMPLEMENT FRAG BLENDING
+            // map[ShaderFeature::FragmentShadows]                 = {};   // IMPLEMENT FRAG SHADOWS
 
             runOnce = true;
         }
