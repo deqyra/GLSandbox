@@ -6,7 +6,7 @@ RenderBoi:
         ☐ Use const refs where applicable (especially upon fetching values held by iterators)
         ☐ Start static member names with caps
         ☐ Add const qualifiers everywhere and constexpr qualifiers where possible
-        ☐ Move tools to external repo and update CMake to use it
+        ✔ Move tools to external repo and update CMake to use it @done(20-12-17 14:20)
         ☐ Set up continuous integration
         ✔ Better documentation @done(20-10-19 19:22)
     Core:

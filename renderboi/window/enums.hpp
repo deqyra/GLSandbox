@@ -42,7 +42,7 @@ namespace Window
         };
 
         /// @brief Collection of literals describing the keys on a keyboard.
-        enum class Key
+        enum class Key : unsigned int
         {
             Unknown,
             Space,
@@ -182,7 +182,7 @@ namespace Window
         };
 
         /// @brief Collection of literals describing the buttons on a mouse.
-        enum class MouseButton
+        enum class MouseButton : unsigned int
         {
             B1,
             B2,
@@ -199,7 +199,7 @@ namespace Window
         };
 
         /// @brief Collection of literals describing the buttons on a joystick.
-        enum class Joystick
+        enum class Joystick : unsigned int
         {
             J1,
             J2,
@@ -223,7 +223,7 @@ namespace Window
         {
             /// @brief Collection of literals describing the buttons on a modern
             /// gamepad (XBox, DualShock, etc).
-            enum class Button
+            enum class Button : unsigned int
             {
                 A,
                 B,
@@ -247,8 +247,8 @@ namespace Window
             };
 
             /// @brief Collection of literals describing the continous input 
-            /// controllers on a moder gamepad.
-            enum class Axis
+            /// controllers on a modern gamepad.
+            enum class Axis : unsigned int
             {
                 LeftX,
                 LeftY,

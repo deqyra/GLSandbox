@@ -41,6 +41,15 @@ class KeyboardMovementScript : public InputProcessingScript
         bool _sprint;
         
     public:
+        enum class Controls
+        {
+            Forward,
+            Backward,
+            Left,
+            Right,
+            Sprint
+        };
+
         /// @brief The default move speed (movement with WASD keys).
         static constexpr float DefaultMoveSpeed = 4.f;
         
@@ -90,6 +99,14 @@ class KeyboardMovementScript : public InputProcessingScript
         ///
         /// @return A raw pointer to the script instance cloned from this one.
         virtual KeyboardMovementScript* clone();
+};
+
+class KeyboardMovementScript::ControlScheme
+{
+    public:
+        ControlScheme();
+
+        ControlScheme(Window::Input::Key forward, Window::Input::Key backward, Window::Input::Key left, Window::Input::Key right);
 };
 
 
