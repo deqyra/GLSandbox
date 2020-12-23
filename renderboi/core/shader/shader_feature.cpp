@@ -71,6 +71,6 @@ namespace std
 
         auto it = featureNames.find(v);
         return (it != featureNames.end()) ?
-            it->second : "Unknown";
+            it->second : "Unknown shader feature";
     }
 }

@@ -1,14 +1,16 @@
 #ifndef RENDERBOI__TOOLBOX__CONTROLS__CONTROL_HPP
 #define RENDERBOI__TOOLBOX__CONTROLS__CONTROL_HPP
 
+#include <string>
+
 #include <renderboi/window/enums.hpp>
 
 #include <cpptools/hash_combine.hpp>
 
 enum class ControlKind : unsigned int
 {
-    Keyboard,
-    Mouse,
+    Key,
+    MouseButton,
     GamepadButton,
     GamepadAxis,
     Joystick
@@ -39,5 +41,9 @@ class ControlHash
     }
 };
 
+namespace std
+{
+    std::string to_string(const Control& control);
+}
 
 #endif//RENDERBOI__TOOLBOX__CONTROLS__CONTROL_HPP

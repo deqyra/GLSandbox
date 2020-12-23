@@ -60,6 +60,6 @@ namespace std
 
         auto it = _stageNames.find(v);
         return (it != _stageNames.end()) ?
-            it->second : "Unknown";
+            it->second : "Unknown shader stage";
     }
 }

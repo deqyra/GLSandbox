@@ -41,9 +41,15 @@ add_dependencies(${RB_WINDOW_LIB_NAME}
 )
 target_include_directories(${RB_WINDOW_LIB_NAME} PUBLIC ${EXPORT_LOCATION}/include)
 target_link_directories(${RB_WINDOW_LIB_NAME} PUBLIC ${EXPORT_LOCATION}/lib)
+
+set(THREADING_LIB "")
+if (UNIX)
+    set(THREADING_LIB "pthread")
+endif()
+
 target_link_libraries(${RB_WINDOW_LIB_NAME} PUBLIC ${CMAKE_DL_LIBS}
     ${GLFW3_LIB_NAME}
-    pthread
+    ${THREADING_LIB}
     ${GLAD_LIB_NAME}
     ${RB_UTILITIES_LIB_NAME}
 )
