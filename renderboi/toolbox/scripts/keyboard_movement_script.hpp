@@ -4,6 +4,7 @@
 #include <renderboi/core/interfaces/basis_provider.hpp>
 
 #include "../input_processing_script.hpp"
+#include "../controls/control_scheme_manager.hpp"
 
 /// @brief Provides event callbacks to manage a camera as in a FPS game.
 class KeyboardMovementScript : public InputProcessingScript
@@ -100,14 +101,5 @@ class KeyboardMovementScript : public InputProcessingScript
         /// @return A raw pointer to the script instance cloned from this one.
         virtual KeyboardMovementScript* clone();
 };
-
-class KeyboardMovementScript::ControlScheme
-{
-    public:
-        ControlScheme();
-
-        ControlScheme(Window::Input::Key forward, Window::Input::Key backward, Window::Input::Key left, Window::Input::Key right);
-};
-
 
 #endif//RENDERBOI__TOOLBOX__SCRIPTS__KEYBOARD_MOVEMENT_SCRIPT_HPP
