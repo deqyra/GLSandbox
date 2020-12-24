@@ -17,8 +17,8 @@ vec3 phong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specu
 #ifdef FRAGMENT_MESH_MATERIAL
 	if (material.diffuseMapCount > 0)
 	{
-		vec4 sample = texture(material.diffuseMaps[0], vertOut.texCoord);
-		diffuseTexel = sample.xyz * sample.w;
+		vec4 texSample = texture(material.diffuseMaps[0], vertOut.texCoord);
+		diffuseTexel = texSample.xyz * texSample.w;
 	}
 	diffuseTexel *= material.diffuse;
 #endif//FRAGMENT_MESH_MATERIAL
@@ -30,8 +30,8 @@ vec3 phong(vec3 lightDirection, vec3 ambientLight, vec3 diffuseLight, vec3 specu
 #ifdef FRAGMENT_MESH_MATERIAL
 	if (material.specularMapCount > 0)
 	{
-		vec4 sample = texture(material.specularMaps[0], vertOut.texCoord);
-		specularTexel = sample.xyz * sample.w;
+		vec4 texSample = texture(material.specularMaps[0], vertOut.texCoord);
+		specularTexel = texSample.xyz * texSample.w;
 	}
 #endif//FRAGMENT_MESH_MATERIAL
 
