@@ -236,11 +236,11 @@ void ShadowSandboxScript::processKeyboard(GLWindowPtr window, Window::Input::Key
 
     if (!_pause)
     {
-        if (key == Key::Up && (action == Action::Press || action == Action::Repeat) && (mods & Mod::Control) && _speedFactor < 10.f)
+        if (key == Key::Up && (action == Action::Press) && (mods & Mod::Control) && _speedFactor < 10.f)
         {
             _speedFactor *= 1.1f;
         }
-        else if (key == Key::Down && (action == Action::Press || action == Action::Repeat) && (mods & Mod::Control) && _speedFactor > 0.2f)
+        else if (key == Key::Down && (action == Action::Press) && (mods & Mod::Control) && _speedFactor > 0.2f)
         {
             _speedFactor /= 1.1f;
         }

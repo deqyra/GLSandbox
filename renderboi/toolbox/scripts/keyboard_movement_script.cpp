@@ -26,7 +26,7 @@ void KeyboardMovementScript::processKeyboard(GLWindowPtr window, Window::Input::
     if (key == Key::W)
     {
         // If pressed or on repeat, move forward
-        if (action == Action::Press || action == Action::Repeat)
+        if (action == Action::Press)
             _movement[IndexForward] = true;
         // If released, stop moving forward
         if (action == Action::Release)
@@ -35,7 +35,7 @@ void KeyboardMovementScript::processKeyboard(GLWindowPtr window, Window::Input::
     // S (backward)
     if (key == Key::S)
     {
-        if (action == Action::Press || action == Action::Repeat)
+        if (action == Action::Press)
             _movement[IndexBackward] = true;
         if (action == Action::Release)
             _movement[IndexBackward] = false;
@@ -43,7 +43,7 @@ void KeyboardMovementScript::processKeyboard(GLWindowPtr window, Window::Input::
     // A (left)
     if (key == Key::A)
     {
-        if (action == Action::Press || action == Action::Repeat)
+        if (action == Action::Press)
             _movement[IndexLeft] = true;
         if (action == Action::Release)
             _movement[IndexLeft] = false;
@@ -51,7 +51,7 @@ void KeyboardMovementScript::processKeyboard(GLWindowPtr window, Window::Input::
     // D (right)
     if (key == Key::D)
     {
-        if (action == Action::Press || action == Action::Repeat)
+        if (action == Action::Press)
             _movement[IndexRight] = true;
         if (action == Action::Release)
             _movement[IndexRight] = false;

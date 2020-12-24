@@ -6,6 +6,8 @@ RenderBoi:
         ☐ Use const refs where applicable (especially upon fetching values held by iterators)
         ☐ Start static member names with caps
         ☐ Add const qualifiers everywhere and constexpr qualifiers where possible
+        ☐ Investigate CRTP to eliminate vtables in large inheritance trees throughout the project
+        ☐ Remove virtual keywords where unnecessary
         ✔ Move tools to external repo and update CMake to use it @done(20-12-17 14:20)
         ☐ Set up continuous integration
         ✔ Better documentation @done(20-10-19 19:22)
@@ -90,6 +92,7 @@ RenderBoi:
         ✔ Doc @done(20-10-26 01:49)
         ✔ Allow selection of window backend with an enum and templated methods @done(20-10-26 02:12)
         ☐ Move functionality to get input action/button names (used in BasicInputManager)
+        ☐ Fully support gamepad (and maybe joysticks)
     Examples:
         ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
         ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)

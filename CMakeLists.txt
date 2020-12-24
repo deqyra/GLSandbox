@@ -21,7 +21,7 @@ endif()
 option(BUILD_STATIC_LIBS "Build libraries as static libraries" OFF)
 option(BUILD_RELEASE "Whether to build for a debug or release profile" OFF)
 
-if(${BUILD_STATIC_LIBS})
+if(${BUILD_STATIC_LIBS} OR WIN32)
     set(STATIC_OR_SHARED "STATIC")
 else()
     set(STATIC_OR_SHARED "SHARED")
@@ -222,6 +222,10 @@ set(RB_TOOLBOX_SOURCE_FILES
     input_processing_script.hpp 
     script.cpp
     script.hpp 
+    controls/action_event_receiver.hpp
+    controls/control_event_translator.hpp
+    controls/control_scheme_manager.hpp
+    controls/control.hpp
     mesh_generators/all_mesh_generators.hpp
     mesh_generators/axes_generator.cpp
     mesh_generators/axes_generator.hpp
