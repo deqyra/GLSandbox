@@ -33,12 +33,12 @@ namespace Window
         }
 
         /// @brief Collection of literals describing an action which was performed
-        /// on a key or button.
+        /// on a key or button. The repeat action is ignored altogether.
         enum class Action
         {
-            Release,
             Press,
-            Repeat
+            // Repeat,      // FIX ME IF REPEAT KEYS MUST BE HANDLED
+            Release
         };
 
         /// @brief Collection of literals describing the keys on a keyboard.

@@ -72,7 +72,7 @@ namespace std
         {
             enumNames[Window::Input::Action::Release]   = "Release";
             enumNames[Window::Input::Action::Press]     = "Press";
-            enumNames[Window::Input::Action::Repeat]    = "Repeat";
+            // enumNames[Window::Input::Action::Repeat]    = "Repeat";      // FIX ME IF REPEAT KEYS MUST BE HANDLED
 
             runOnce = true;
         }

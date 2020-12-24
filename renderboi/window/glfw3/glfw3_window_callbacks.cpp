@@ -16,6 +16,8 @@ void globalGlfwFramebufferResizeCallback(GLFWwindow* window, int width, int heig
 
 void globalGlfwKeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    if (action == GLFW_REPEAT) return;      // FIX ME IF REPEAT KEYS MUST BE HANDLED
+
     Window::Input::Key realKey = Window::GLFW3Adapter::getEnum<Window::Input::Key>(key);
     Window::Input::Action realAction = Window::GLFW3Adapter::getEnum<Window::Input::Action>(action);
     static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processKeyboard(realKey, scancode, realAction, mods);
@@ -23,6 +25,8 @@ void globalGlfwKeyboardCallback(GLFWwindow* window, int key, int scancode, int a
 
 void globalGlfwMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
+    if (action == GLFW_REPEAT) return;      // FIX ME IF REPEAT KEYS MUST BE HANDLED
+
     Window::Input::MouseButton realButton = Window::GLFW3Adapter::getEnum<Window::Input::MouseButton>(button);
     Window::Input::Action realAction = Window::GLFW3Adapter::getEnum<Window::Input::Action>(action);
     static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processMouseButton(realButton, realAction, mods);

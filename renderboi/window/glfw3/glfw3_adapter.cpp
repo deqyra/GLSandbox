@@ -74,7 +74,7 @@ namespace GLFW3Adapter
             {
                 map[GLFW_RELEASE] = Window::Input::Action::Release;
                 map[GLFW_PRESS] = Window::Input::Action::Press;
-                map[GLFW_REPEAT] = Window::Input::Action::Repeat;
+                // map[GLFW_REPEAT] = Window::Input::Action::Repeat;        // FIX ME IF REPEAT KEYS MUST BE HANDLED
 
                 runOnce = true;
             }
