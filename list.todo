@@ -6,7 +6,8 @@ RenderBoi:
         ☐ Use const refs where applicable (especially upon fetching values held by iterators)
         ☐ Start static member names with caps
         ☐ Add const qualifiers everywhere and constexpr qualifiers where possible
-        ☐ Investigate CRTP to eliminate vtables in large inheritance trees throughout the project
+        ☐ Investigate CRTP to eliminate vtables in large inheritance trees
+        ☐ Investigate CRTP to make clone methods "self-implement"
         ☐ Remove virtual keywords where unnecessary
         ✔ Move tools to external repo and update CMake to use it @done(20-12-17 14:20)
         ☐ Set up continuous integration

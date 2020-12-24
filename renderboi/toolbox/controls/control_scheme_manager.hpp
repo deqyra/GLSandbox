@@ -19,7 +19,7 @@
 ///
 /// @tparam T Class representing the action to which a control can be bound. 
 /// @tparam U Class responsible for hashing T.
-template<typename T, typename U = std::hash<T>>
+template<typename T>
 class ControlSchemeManager : public ControlBindingProvider<T>
 {
     protected:
@@ -29,7 +29,7 @@ class ControlSchemeManager : public ControlBindingProvider<T>
 
         /// @brief Structure mapping controls to the actions they are bound to
         /// (several controls can be bound to a single action).
-        std::multimap<T, Control, U> _controlsBoundToAction;
+        std::multimap<T, Control> _controlsBoundToAction;
 
         /// @brief Structure mapping actions to a control bound to them (a 
         /// control can only be bound to one action in the same scheme).
@@ -38,7 +38,7 @@ class ControlSchemeManager : public ControlBindingProvider<T>
     public:
         /// @brief The default maximum number of controls bound to a single
         /// action in the ControlSchemeManager.
-        static constexpr unsigned int DefaultMaxControlsPerAction;
+        static constexpr unsigned int DefaultMaxControlsPerAction = 4;
 
         /// @param maxControlsPerAction Maximum number of controls bound to a
         /// single action in the ControlSchemeManager.
@@ -124,11 +124,8 @@ class ControlSchemeManager : public ControlBindingProvider<T>
         std::vector<std::pair<Control, T>> getAllBoundControls();
 };
 
-template<typename T, typename U>
-constexpr unsigned int ControlSchemeManager<T, U>::DefaultMaxControlsPerAction = 4;
-
-template<typename T, typename U>
-ControlSchemeManager<T, U>::ControlSchemeManager(unsigned int maxControlsPerAction) :
+template<typename T>
+ControlSchemeManager<T>::ControlSchemeManager(unsigned int maxControlsPerAction) :
     _maxControlsPerAction(maxControlsPerAction),
     _controlsBoundToAction(),
     _actionBoundToControl()
@@ -136,10 +133,10 @@ ControlSchemeManager<T, U>::ControlSchemeManager(unsigned int maxControlsPerActi
     
 }
 
-template<typename T, typename U>
-void ControlSchemeManager<T, U>::bindControl(Control control, T action)
+template<typename T>
+void ControlSchemeManager<T>::bindControl(Control control, T action)
 {
-    unsigned int actionBindingCount = _controlsBoundToAction.count(action);
+    unsigned int actionBindingCount = (unsigned int)_controlsBoundToAction.count(action);
     bool alreadyPresent = mapContainsPair(_actionBoundToControl, {control, action});
 
     if (actionBindingCount >= _maxControlsPerAction)
@@ -149,7 +146,7 @@ void ControlSchemeManager<T, U>::bindControl(Control control, T action)
             std::string s = "ControlSchemeManager: cannot bind control " + std::to_string(control)
                         + " to action " + std::to_string(action) + ", as it already has "
                         "the max number of bindings (" + std::to_string(_maxControlsPerAction) + ").";
-            throw std::runtime_exception(s.c_str());
+            throw std::runtime_error(s.c_str());
         }
         else return;
     }
@@ -161,14 +158,14 @@ void ControlSchemeManager<T, U>::bindControl(Control control, T action)
     }
 }
 
-template<typename T, typename U>
-void ControlSchemeManager<T, U>::unbindControl(Control control)
+template<typename T>
+void ControlSchemeManager<T>::unbindControl(Control control)
 {
     if (!mapContainsPair(_actionBoundToControl, {control, action})) return;
 
     _actionBoundToControl.erase(control);
 
-    using Iter = std::unordered_multimap<T, Control, U>::iterator;
+    using Iter = std::unordered_multimap<T, Control>::iterator;
     std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
     for (Iter it = range.first; it != range.second; it++)
     {
@@ -180,12 +177,12 @@ void ControlSchemeManager<T, U>::unbindControl(Control control)
     }
 }
 
-template<typename T, typename U>
-unsigned int ControlSchemeManager<T, U>::unbindAllControlsFromAction(const T& action)
+template<typename T>
+unsigned int ControlSchemeManager<T>::unbindAllControlsFromAction(const T& action)
 {
     if (_controlsBoundToAction.count(action) == 0) return 0;
 
-    using Iter = std::unordered_multimap<T, Control, U>::iterator;
+    using Iter = std::unordered_multimap<T, Control>::iterator;
     std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
     for (Iter it = range.first; it != range.second; it++)
     {
@@ -195,14 +192,14 @@ unsigned int ControlSchemeManager<T, U>::unbindAllControlsFromAction(const T& ac
     return (unsigned int) _controlsBoundToAction.erase(action);
 }
 
-template<typename T, typename U>
-bool ControlSchemeManager<T, U>::controlIsBound(const Control& control)
+template<typename T>
+bool ControlSchemeManager<T>::controlIsBound(const Control& control)
 {
     return _actionBoundToControl.contains(control);
 }
 
-template<typename T, typename U>
-T ControlSchemeManager<T, U>::getActionBoundToControl(const Control& control)
+template<typename T>
+T ControlSchemeManager<T>::getActionBoundToControl(const Control& control)
 {
     if (!_actionBoundToControl.contains(control))
     {
@@ -213,16 +210,16 @@ T ControlSchemeManager<T, U>::getActionBoundToControl(const Control& control)
     return _actionBoundToControl.at(control);
 }
 
-template<typename T, typename U>
-bool ControlSchemeManager<T, U>::actionIsBound(const T& action)
+template<typename T>
+bool ControlSchemeManager<T>::actionIsBound(const T& action)
 {
     return _controlsBoundToAction.contains(action);
 }
 
-template<typename T, typename U>
-std::vector<Control> ControlSchemeManager<T, U>::getControlsBoundToAction(const T& action)
+template<typename T>
+std::vector<Control> ControlSchemeManager<T>::getControlsBoundToAction(const T& action)
 {
-    using Iter = std::unordered_multimap<T, Control, U>::iterator;
+    using Iter = std::multimap<T, Control>::iterator;
     std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
 
     std::vector<Control> controls;
@@ -234,8 +231,8 @@ std::vector<Control> ControlSchemeManager<T, U>::getControlsBoundToAction(const 
     return controls;
 }
 
-template<typename T, typename U>
-std::vector<std::pair<Control, T>> ControlSchemeManager<T, U>::getAllBoundControls()
+template<typename T>
+std::vector<std::pair<Control, T>> ControlSchemeManager<T>::getAllBoundControls()
 {
     std::vector<std::pair<Control, T>> boundControls;
     std::copy(_actionBoundToControl.begin(), _actionBoundToControl.end(), std::back_inserter(boundControls));
@@ -243,7 +240,7 @@ std::vector<std::pair<Control, T>> ControlSchemeManager<T, U>::getAllBoundContro
     return boundControls;
 }
 
-template<typename T, typename U>
-using ControlSchemeManagerPtr = std::shared_ptr<ControlSchemeManager<T, U>>;
+template<typename T>
+using ControlSchemeManagerPtr = std::shared_ptr<ControlSchemeManager<T>>;
 
 #endif//RENDERBOI__TOOLBOX__CONTROLS__CONTROL_SCHEME_MANAGER_HPP

@@ -7,6 +7,7 @@
 
 #include <cpptools/hash_combine.hpp>
 
+/// @brief Litterals describing the flavor of a control.
 enum class ControlKind : unsigned int
 {
     Key,
@@ -16,6 +17,7 @@ enum class ControlKind : unsigned int
     Joystick
 };
 
+/// @brief Struct describing a control as well as whence it originated.
 struct Control
 {
     ControlKind kind;
@@ -29,18 +31,28 @@ struct Control
     };
 };
 
+bool operator==(const Control& left, const Control& right);
+
+bool operator<(const Control& left, const Control& right);
+
+/// @brief Return a keyboard control initialized with the provided key.
+///
+/// @param key Litteral describing the key to assign to the control.
+///
+/// @return A keyboard control initialized with the provided key.
+Control keyboardControl(Window::Input::Key key);
+
+/// @brief Return a mouse button control initialized with the provided button.
+///
+/// @param mouseButton Litteral describing the button to assign to the control.
+///
+/// @return A mouse button control initialized with the provided buttony.
+Control mouseButtonControl(Window::Input::MouseButton mouseButton);
+
 class ControlHash
 {
-    std::size_t operator()(Control const& c) const 
-    {
-        std::size_t res = 0;
-
-        const unsigned int* data = reinterpret_cast<const unsigned int*>(&c);
-        hash_combine(res, data[0]);
-        hash_combine(res, data[1]);
-
-        return res;
-    }
+    public:
+        std::size_t operator()(Control const& c) const;
 };
 
 namespace std

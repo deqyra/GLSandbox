@@ -21,6 +21,9 @@ using Ref = FrameOfReference;
 
 #include <renderboi/toolbox/common_macros.hpp>
 #include <renderboi/toolbox/factory.hpp>
+#include <renderboi/toolbox/input_splitter.hpp>
+#include <renderboi/toolbox/controls/control_scheme_manager.hpp>
+#include <renderboi/toolbox/controls/control_event_translator.hpp>
 #include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
 #include <renderboi/toolbox/scene/scene.hpp>
 #include <renderboi/toolbox/scene/scene_renderer.hpp>
@@ -31,6 +34,8 @@ using Ref = FrameOfReference;
 #include <renderboi/toolbox/scripts/keyboard_movement_script.hpp>
 #include <renderboi/toolbox/scripts/basic_input_manager.hpp>
 #include <renderboi/toolbox/scripts/camera_aspect_ratio_script.hpp>
+
+#include <cpptools/enum_map.hpp>
 
 void LightingSandbox::run(GLWindowPtr window)
 {
@@ -48,9 +53,6 @@ void LightingSandbox::run(GLWindowPtr window)
     ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
 
     ScenePtr scene = Factory::makeScene();
-
-    // Register the scene as an input processor to the window
-    window->registerInputProcessor(scene);
 
     // BIG TORUS
     SceneObjectPtr bigTorusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Big torus", {2.f, 0.5f, 72, 48}, Materials::Emerald, lightingShader);
@@ -85,12 +87,34 @@ void LightingSandbox::run(GLWindowPtr window)
     // Add script component to camera: MouseCameraScript
     Factory::createInputProcessingScriptAndAttachToObject<MouseCameraScript>(cameraObj);
 
-    // Add script component to camera: KeyboardMovementScript
-    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
-    Factory::createInputProcessingScriptAndAttachToObject<KeyboardMovementScript>(cameraObj, cameraAsBasisProvider);
-
     // Add script component to camera: CameraAspectRatioScript
     Factory::createInputProcessingScriptAndAttachToObject<CameraAspectRatioScript>(cameraObj);
+
+    // Add script component to camera: KeyboardMovementScript
+    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
+    std::shared_ptr<KeyboardMovementScript> keyboardScript = std::make_shared<KeyboardMovementScript>(cameraAsBasisProvider);
+    ScriptPtr keyboardScriptAsBaseScript = std::static_pointer_cast<Script>(keyboardScript);
+    cameraObj->addComponent<ScriptComponent>(keyboardScriptAsBaseScript);
+
+    // Bind controls to keyboard script    
+    using Window::Input::Key;
+    ControlSchemeManagerPtr<KeyboardMovementAction> keyboardMovementControls = std::make_shared<ControlSchemeManager<KeyboardMovementAction>>();
+    keyboardMovementControls->bindControl(keyboardControl(Key::W), KeyboardMovementAction::Forward);
+    keyboardMovementControls->bindControl(keyboardControl(Key::A), KeyboardMovementAction::Left);
+    keyboardMovementControls->bindControl(keyboardControl(Key::S), KeyboardMovementAction::Backward);
+    keyboardMovementControls->bindControl(keyboardControl(Key::D), KeyboardMovementAction::Right);
+    keyboardMovementControls->bindControl(keyboardControl(Key::LeftShift), KeyboardMovementAction::Sprint);
+
+    ActionEventReceiverPtr<KeyboardMovementAction> keyboardScriptAsReceiver = std::static_pointer_cast<ActionEventReceiver<KeyboardMovementAction>>(keyboardScript);
+    ControlEventTranslatorPtr<KeyboardMovementAction> eventTranslator = std::make_shared<ControlEventTranslator<KeyboardMovementAction>>(keyboardMovementControls, keyboardScriptAsReceiver);
+
+    // Register the scene and the control translator to the splitter
+    InputSplitterPtr splitter = std::make_shared<InputSplitter>();
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(scene));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(eventTranslator));
+    
+    // Register the splitter to the window
+    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
 
     const glm::vec3 X = Transform::X;
     const glm::vec3 Y = Transform::Y;

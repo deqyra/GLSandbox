@@ -46,7 +46,7 @@ endif()
 #                                                                             #
 ###############################################################################
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 if(UNIX)
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
@@ -220,12 +220,15 @@ set(RB_TOOLBOX_SOURCE_FILES
     mesh_generator.hpp
     input_processing_script.cpp
     input_processing_script.hpp 
+    input_splitter.cpp
+    input_splitter.hpp 
     script.cpp
     script.hpp 
     controls/action_event_receiver.hpp
     controls/control_event_translator.hpp
     controls/control_scheme_manager.hpp
     controls/control.hpp
+    controls/control.cpp
     mesh_generators/all_mesh_generators.hpp
     mesh_generators/axes_generator.cpp
     mesh_generators/axes_generator.hpp

@@ -5,6 +5,8 @@
 #include <renderboi/core/frame_of_reference.hpp>
 using Ref = FrameOfReference;
 
+#include <cpptools/enum_map.hpp>
+
 KeyboardMovementScript::KeyboardMovementScript(BasisProviderPtr basisProvider, float speed, float sprintMultiplier) :
     _basisProvider(basisProvider),
     _moveSpeed(speed),
@@ -13,66 +15,6 @@ KeyboardMovementScript::KeyboardMovementScript(BasisProviderPtr basisProvider, f
     _sprint(false)
 {
     if (!basisProvider) throw std::runtime_error("KeyboardMovementScript: cannot construct from a null FrontProviderPtr.");
-}
-
-void KeyboardMovementScript::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
-{
-    using Key = Window::Input::Key;
-    using Action = Window::Input::Action;
-    using Mod = Window::Input::Modifier;
-
-    // Enable or disable directional movement flags depending on key input
-    // W (forward)
-    if (key == Key::W)
-    {
-        // If pressed or on repeat, move forward
-        if (action == Action::Press)
-            _movement[IndexForward] = true;
-        // If released, stop moving forward
-        if (action == Action::Release)
-            _movement[IndexForward] = false;
-    }
-    // S (backward)
-    if (key == Key::S)
-    {
-        if (action == Action::Press)
-            _movement[IndexBackward] = true;
-        if (action == Action::Release)
-            _movement[IndexBackward] = false;
-    }
-    // A (left)
-    if (key == Key::A)
-    {
-        if (action == Action::Press)
-            _movement[IndexLeft] = true;
-        if (action == Action::Release)
-            _movement[IndexLeft] = false;
-    }
-    // D (right)
-    if (key == Key::D)
-    {
-        if (action == Action::Press)
-            _movement[IndexRight] = true;
-        if (action == Action::Release)
-            _movement[IndexRight] = false;
-    }
-    // For any key event, update sprint mode depending on Shift key status
-    if (mods & Mod::Shift)
-        _sprint = true;
-    else
-        _sprint = false;
-
-    // Cancel directions if opposite
-    if (_movement[IndexForward] && _movement[IndexBackward])
-    {
-        _movement[IndexForward] = false;
-        _movement[IndexBackward] = false;
-    }
-    if (_movement[IndexLeft] && _movement[IndexRight])
-    {
-        _movement[IndexLeft] = false;
-        _movement[IndexRight] = false;
-    }
 }
 
 void KeyboardMovementScript::update(float timeElapsed)
@@ -113,4 +55,92 @@ void KeyboardMovementScript::setSceneObject(SceneObjectPtr sceneObject)
 KeyboardMovementScript* KeyboardMovementScript::clone()
 {
     return new KeyboardMovementScript(_basisProvider, _moveSpeed, _sprintMultiplier);
+}
+
+void KeyboardMovementScript::triggerAction(const KeyboardMovementAction& action)
+{
+    switch (action)
+    {
+        case KeyboardMovementAction::Forward:
+            _movement[IndexForward] = true;
+            break;
+        case KeyboardMovementAction::Backward:
+            _movement[IndexBackward] = true;
+            break;
+        case KeyboardMovementAction::Left:
+            _movement[IndexLeft] = true;
+            break;
+        case KeyboardMovementAction::Right:
+            _movement[IndexRight] = true;
+            break;
+        case KeyboardMovementAction::Sprint:
+            _sprint = true;
+            break;
+    }
+
+    cancelOppositeDirections();
+}
+
+void KeyboardMovementScript::stopAction(const KeyboardMovementAction& action)
+{
+    switch (action)
+    {
+        case KeyboardMovementAction::Forward:
+            _movement[IndexForward] = false;
+            break;
+        case KeyboardMovementAction::Backward:
+            _movement[IndexBackward] = false;
+            break;
+        case KeyboardMovementAction::Left:
+            _movement[IndexLeft] = false;
+            break;
+        case KeyboardMovementAction::Right:
+            _movement[IndexRight] = false;
+            break;
+        case KeyboardMovementAction::Sprint:
+            _sprint = false;
+            break;
+    }
+
+    cancelOppositeDirections();
+}
+
+void KeyboardMovementScript::cancelOppositeDirections()
+{
+    // Cancel directions if opposite
+    if (_movement[IndexForward] && _movement[IndexBackward])
+    {
+        _movement[IndexForward] = false;
+        _movement[IndexBackward] = false;
+    }
+    if (_movement[IndexLeft] && _movement[IndexRight])
+    {
+        _movement[IndexLeft] = false;
+        _movement[IndexRight] = false;
+    }
+}
+
+namespace std
+{
+    string to_string(const KeyboardMovementAction& action)
+    {
+        static bool runOnce = false;
+        static unordered_enum_map<KeyboardMovementAction, std::string> enumNames;
+
+        if (!runOnce)
+        {
+            enumNames[KeyboardMovementAction::Forward]   = "Forward";
+            enumNames[KeyboardMovementAction::Backward]  = "Backward";
+            enumNames[KeyboardMovementAction::Left]      = "Left";
+            enumNames[KeyboardMovementAction::Right]     = "Right";
+            enumNames[KeyboardMovementAction::Sprint]    = "Sprint";
+
+            runOnce = true;
+        }
+
+        auto it = enumNames.find(action);
+        if (it != enumNames.end()) return it->second;
+
+        return "Unknown";
+    }
 }

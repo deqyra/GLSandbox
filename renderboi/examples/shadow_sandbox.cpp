@@ -10,8 +10,12 @@
 #include <renderboi/core/texture_2d.hpp>
 #include <renderboi/core/pixel_space.hpp>
 #include <renderboi/core/shader/shader.hpp>
+#include <renderboi/core/lights/point_light.hpp>
 
 #include <renderboi/toolbox/factory.hpp>
+#include <renderboi/toolbox/input_splitter.hpp>
+#include <renderboi/toolbox/controls/control_scheme_manager.hpp>
+#include <renderboi/toolbox/controls/control_event_translator.hpp>
 #include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
 #include <renderboi/toolbox/mesh_generators/plane_generator.hpp>
 #include <renderboi/toolbox/mesh_generators/torus_generator.hpp>
@@ -26,6 +30,8 @@
 #include <renderboi/toolbox/scripts/keyboard_movement_script.hpp>
 #include <renderboi/toolbox/scripts/camera_aspect_ratio_script.hpp>
 
+#include <cpptools/enum_map.hpp>
+
 using Ref = FrameOfReference;
 
 void ShadowSandbox::run(GLWindowPtr window)
@@ -37,7 +43,15 @@ void ShadowSandbox::run(GLWindowPtr window)
     // Remove cursor from window
     namespace InputMode = Window::Input::Mode;
     //window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
-    
+
+
+
+    ////////////////////////////
+    ///                      ///
+    ///   Generate shaders   ///
+    ///                      ///
+    ////////////////////////////
+
     ShaderConfig lightConfig;
     lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
@@ -56,11 +70,16 @@ void ShadowSandbox::run(GLWindowPtr window)
     //depthConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
     //depthConfig.addFeature(ShaderInfo::ShaderFeature::FragmentViewDepthBuffer);
     //ShaderProgram depthShader = ShaderBuilder::buildShaderProgramFromConfig(depthConfig);
+    
+
+
+    /////////////////////////////////////////////
+    ///                                       ///
+    ///   Create scene, instantiate objects   ///
+    ///                                       ///
+    /////////////////////////////////////////////
 
     ScenePtr scene = Factory::makeScene();
-
-    // Register the scene as an input processor to the window
-    window->registerInputProcessor(scene);
 
     PlaneGenerator::Parameters planeParameters = {
         PlaneTileSize,      // tileSizeX
@@ -135,21 +154,58 @@ void ShadowSandbox::run(GLWindowPtr window)
     scene->registerObject(lightObj);
     scene->registerObject(cameraObj);
 
+
+
+    /////////////////////////////////////
+    ///                               ///
+    ///   Add and configure scripts   ///
+    ///                               ///
+    /////////////////////////////////////
+
     // Add script component to camera: MouseCameraScript
     Factory::createInputProcessingScriptAndAttachToObject<MouseCameraScript>(cameraObj);
 
-    // Add script component to camera: KeyboardMovementScript
-    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
-    Factory::createInputProcessingScriptAndAttachToObject<KeyboardMovementScript>(cameraObj, cameraAsBasisProvider);
-
     // Add script component to camera: CameraAspectRatioScript
     Factory::createInputProcessingScriptAndAttachToObject<CameraAspectRatioScript>(cameraObj);
+
+    // Add script component to camera: KeyboardMovementScript
+    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
+    std::shared_ptr<KeyboardMovementScript> keyboardScript = std::make_shared<KeyboardMovementScript>(cameraAsBasisProvider);
+    ScriptPtr keyboardScriptAsBaseScript = std::static_pointer_cast<Script>(keyboardScript);
+    cameraObj->addComponent<ScriptComponent>(keyboardScriptAsBaseScript);
+
+    // Bind controls to keyboard script    
+    using Window::Input::Key;
+    ControlSchemeManagerPtr<KeyboardMovementAction> keyboardMovementControls = std::make_shared<ControlSchemeManager<KeyboardMovementAction>>();
+    keyboardMovementControls->bindControl(keyboardControl(Key::W), KeyboardMovementAction::Forward);
+    keyboardMovementControls->bindControl(keyboardControl(Key::A), KeyboardMovementAction::Left);
+    keyboardMovementControls->bindControl(keyboardControl(Key::S), KeyboardMovementAction::Backward);
+    keyboardMovementControls->bindControl(keyboardControl(Key::D), KeyboardMovementAction::Right);
+    keyboardMovementControls->bindControl(keyboardControl(Key::LeftShift), KeyboardMovementAction::Sprint);
+
+    ActionEventReceiverPtr<KeyboardMovementAction> keyboardScriptAsReceiver = std::static_pointer_cast<ActionEventReceiver<KeyboardMovementAction>>(keyboardScript);
+    ControlEventTranslatorPtr<KeyboardMovementAction> eventTranslator = std::make_shared<ControlEventTranslator<KeyboardMovementAction>>(keyboardMovementControls, keyboardScriptAsReceiver);
+
+    // Register the scene and the control translator to the splitter
+    InputSplitterPtr splitter = std::make_shared<InputSplitter>();
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(scene));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(eventTranslator));
+    
+    // Register the splitter to the window
+    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
+
+
+
+    ///////////////////////////////
+    ///                         ///
+    ///   Move objects around   ///
+    ///                         ///
+    ///////////////////////////////
 
     const glm::vec3 X = Transform::X;
     const glm::vec3 Y = Transform::Y;
     const glm::vec3 Z = Transform::Z;
 
-    // Move objects around
     floorObj->transform.rotateBy<Ref::World>(glm::radians(-90.f), X);
     floorObj->transform.translateBy<Ref::World>({0.f, 0.f, WallSize});
     yzWallObj->transform.rotateBy<Ref::World>(glm::radians(90.f), Y);
@@ -160,21 +216,38 @@ void ShadowSandbox::run(GLWindowPtr window)
     cameraObj->transform.setPosition<Ref::World>(StartingCameraPosition);
     cameraObj->transform.rotateBy<Ref::Parent>(glm::radians(180.f), Y);
 
+
+
+    ///////////////////////////////////////////////
+    ///                                         ///
+    ///   Add other scripts, set up rendering   ///
+    ///                                         ///
+    ///////////////////////////////////////////////
+
     // MOVEMENT SCRIPT
     std::shared_ptr<ShadowSandboxScript> movementScript = std::make_shared<ShadowSandboxScript>(lightObj, torusObj);
-    std::shared_ptr<InputProcessingScript> ipMovementScript = std::static_pointer_cast<InputProcessingScript>(movementScript);
-    scene->registerInputProcessingScript(ipMovementScript);
+    std::shared_ptr<InputProcessingScript> ipBaseMovementScript = std::static_pointer_cast<InputProcessingScript>(movementScript);
+    scene->registerScript(ipBaseMovementScript);
     
     // WINDOW SCRIPT
     std::shared_ptr<BasicInputManager> windowScript = std::make_shared<BasicInputManager>();
-    std::shared_ptr<InputProcessingScript> ipWindowScript = std::static_pointer_cast<InputProcessingScript>(windowScript);
-    scene->registerInputProcessingScript(ipWindowScript);
+    std::shared_ptr<InputProcessingScript> ipBaseWindowScript = std::static_pointer_cast<InputProcessingScript>(windowScript);
+    scene->registerInputProcessingScript(ipBaseWindowScript);
 
     SceneRenderer sceneRenderer;
 
     glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
+
+
+
+    //////////////////////////
+    ///                    ///
+    ///   Rendering loop   ///
+    ///                    ///
+    //////////////////////////
+
     while (!window->shouldClose())
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
@@ -189,6 +262,14 @@ void ShadowSandbox::run(GLWindowPtr window)
         window->pollEvents();
     }
     window->setShouldClose(false);
+
+
+
+    ////////////////////
+    ///              ///
+    ///   Clean up   ///
+    ///              ///
+    ////////////////////
 
     Factory::destroyScene(scene);
 

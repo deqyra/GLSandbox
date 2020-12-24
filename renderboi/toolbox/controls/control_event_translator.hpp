@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iterator>
 #include <map>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -134,10 +135,13 @@ void ControlEventTranslator<T>::translateAndNotify(const Control& control, Windo
 }
 
 template<typename T>
-void importControlBindingsIntoMap(ControlBindingProviderPtr<T> bindingProvider, std::multimap<Control, T>& destination)
+void ControlEventTranslator<T>::importControlBindingsIntoMap(ControlBindingProviderPtr<T> bindingProvider, std::multimap<Control, T>& destination)
 {
     std::vector<std::pair<Control, T>> bindings = bindingProvider->getAllBoundControls();
     std::copy(bindings.begin(), bindings.end(), std::inserter(destination, destination.begin()));
 }
+
+template<typename T>
+using ControlEventTranslatorPtr = std::shared_ptr<ControlEventTranslator<T>>;
 
 #endif//RENDERBOI__TOOLBOX__CONTROLS__CONTROL_EVENT_TRANSLATOR_HPP
