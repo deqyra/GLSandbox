@@ -2,6 +2,8 @@
 #define RENDERBOI__TOOLBOX__CONTROLS__CONTROL_SCHEME_MANAGER_HPP
 
 #include <functional>
+#include <map>
+#include <memory>
 #include <stdexcept>
 #include <unordered_map>
 #include <utility>
@@ -10,6 +12,7 @@
 #include <cpptools/map_tools.hpp>
 
 #include "control.hpp"
+#include "control_binding_provider.hpp"
 
 /// @brief Given an enum of actions, this class allows easy management of
 /// controls bound to these actions.
@@ -17,7 +20,7 @@
 /// @tparam T Class representing the action to which a control can be bound. 
 /// @tparam U Class responsible for hashing T.
 template<typename T, typename U = std::hash<T>>
-class ControlSchemeManager
+class ControlSchemeManager : public ControlBindingProvider<T>
 {
     protected:
         /// @brief Maximum number of controls bound to a single action in the
@@ -26,7 +29,7 @@ class ControlSchemeManager
 
         /// @brief Structure mapping controls to the actions they are bound to
         /// (several controls can be bound to a single action).
-        std::unordered_multimap<T, Control, U> _controlsBoundToAction;
+        std::multimap<T, Control, U> _controlsBoundToAction;
 
         /// @brief Structure mapping actions to a control bound to them (a 
         /// control can only be bound to one action in the same scheme).
@@ -55,6 +58,27 @@ class ControlSchemeManager
         /// would exceed the max number of bindings per action as defined at 
         /// construction, then the function will throw an std::runtime_error.
         void bindControl(Control control, T action);
+
+        /// @brief Unbind a provided control in the control scheme.
+        ///
+        /// @param control Structure of litterals describing the control to
+        /// unbind.
+        void unbindControl(Control control);
+
+        /// @brief Unbind all controls from a provided action in the control
+        /// scheme.
+        ///
+        /// @param action Object describing the action to unbind controls
+        /// from.
+        ///
+        /// @return The amount of controls that were unbound.
+        unsigned int unbindAllControlsFromAction(const T& action);
+
+        /////////////////////////////////////////////////////////
+        ///                                                   ///
+        /// Methods overridden from ControlBindingProvider<T> ///
+        ///                                                   ///
+        /////////////////////////////////////////////////////////
 
         /// @brief Tells whether or not a control is bound to an action in this 
         /// control scheme.
@@ -98,21 +122,6 @@ class ControlSchemeManager
         ///
         /// @return The array of all controls bound to an action.
         std::vector<std::pair<Control, T>> getAllBoundControls();
-
-        /// @brief Unbind a provided control in the control scheme.
-        ///
-        /// @param control Structure of litterals describing the control to
-        /// unbind.
-        void unbindControl(Control control);
-
-        /// @brief Unbind all controls from a provided action in the control
-        /// scheme.
-        ///
-        /// @param action Object describing the action to unbind controls
-        /// from.
-        ///
-        /// @return The amount of controls that were unbound.
-        unsigned int unbindAllControlsFromAction(const T& action);
 };
 
 template<typename T, typename U>
@@ -150,6 +159,40 @@ void ControlSchemeManager<T, U>::bindControl(Control control, T action)
         _actionBoundToControl.insert({control, action});
         _controlsBoundToAction.insert({action, control});
     }
+}
+
+template<typename T, typename U>
+void ControlSchemeManager<T, U>::unbindControl(Control control)
+{
+    if (!mapContainsPair(_actionBoundToControl, {control, action})) return;
+
+    _actionBoundToControl.erase(control);
+
+    using Iter = std::unordered_multimap<T, Control, U>::iterator;
+    std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
+    for (Iter it = range.first; it != range.second; it++)
+    {
+        if (it->second == control)
+        {
+            _controlsBoundToAction.erase(it);
+            return;
+        }
+    }
+}
+
+template<typename T, typename U>
+unsigned int ControlSchemeManager<T, U>::unbindAllControlsFromAction(const T& action)
+{
+    if (_controlsBoundToAction.count(action) == 0) return 0;
+
+    using Iter = std::unordered_multimap<T, Control, U>::iterator;
+    std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
+    for (Iter it = range.first; it != range.second; it++)
+    {
+        _actionBoundToControl.erase(it->second);
+    }
+
+    return (unsigned int) _controlsBoundToAction.erase(action);
 }
 
 template<typename T, typename U>
@@ -201,37 +244,6 @@ std::vector<std::pair<Control, T>> ControlSchemeManager<T, U>::getAllBoundContro
 }
 
 template<typename T, typename U>
-void ControlSchemeManager<T, U>::unbindControl(Control control)
-{
-    if (!mapContainsPair(_actionBoundToControl, {control, action})) return;
-
-    _actionBoundToControl.erase(control);
-
-    using Iter = std::unordered_multimap<T, Control, U>::iterator;
-    std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
-    for (Iter it = range.first; it != range.second; it++)
-    {
-        if (it->second == control)
-        {
-            _controlsBoundToAction.erase(it);
-            return;
-        }
-    }
-}
-
-template<typename T, typename U>
-unsigned int ControlSchemeManager<T, U>::unbindAllControlsFromAction(const T& action)
-{
-    if (_controlsBoundToAction.count(action) == 0) return 0;
-
-    using Iter = std::unordered_multimap<T, Control, U>::iterator;
-    std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
-    for (Iter it = range.first; it != range.second; it++)
-    {
-        _actionBoundToControl.erase(it->second);
-    }
-
-    return (unsigned int) _controlsBoundToAction.erase(action);
-}
+using ControlSchemeManagerPtr = std::shared_ptr<ControlSchemeManager<T, U>>;
 
 #endif//RENDERBOI__TOOLBOX__CONTROLS__CONTROL_SCHEME_MANAGER_HPP
