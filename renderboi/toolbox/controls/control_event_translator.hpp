@@ -13,7 +13,7 @@
 
 #include "control.hpp"
 #include "control_binding_provider.hpp"
-#include "action_event_receiver.hpp"
+#include "../interfaces/action_event_receiver.hpp"
 
 /// @brief Class to be plugged in directly into the window. Will receive and
 /// filter control events, translate them into actions if appropriate, and
