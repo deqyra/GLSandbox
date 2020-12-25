@@ -33,6 +33,7 @@ ShaderProgram::ShaderProgram(const ShaderProgram& other)
 {
     // Copy the location, program key, increase refcount
     _location = other._location;
+    _supportedFeatures = other._supportedFeatures;
     _locationRefCounts[_location]++;
 }
 
@@ -43,6 +44,7 @@ ShaderProgram& ShaderProgram::operator=(const ShaderProgram& other)
 
     // Copy the location, program key, increase refcount
     _location = other._location;
+    _supportedFeatures = other._supportedFeatures;
     _locationRefCounts[_location]++;
 
     return *this;

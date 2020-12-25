@@ -31,7 +31,7 @@ class ShaderProgram
 
         /// @brief Array of literals describing features which the shader 
         /// program supports.
-        const std::vector<ShaderInfo::ShaderFeature> _supportedFeatures;
+        std::vector<ShaderInfo::ShaderFeature> _supportedFeatures;
 
         using ProgramToUniformLocationMap = std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>>;
         /// @brief Structure mapping uniform locations against their name, and
