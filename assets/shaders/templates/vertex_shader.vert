@@ -1,11 +1,9 @@
 #include </interface_blocks/vertex_attributes>
 
-#ifdef VERTEX_MVP
 #include </interface_blocks/vertex_out>
 out VertexOut vertOut;
 
 #include </uniform_blocks/matrices>
-#endif//VERTEX_MVP
 
 void main()
 {

@@ -146,11 +146,4 @@ void main()
 #else
 	fragColor = color;
 #endif//FRAGMENT_GAMMA_CORRECT
-
-	vec3 color2 = vec3(0.f);
-	color2 = vec3(attenuate(lights.point[0].constant,
-						lights.point[0].linear,
-						lights.point[0].quadratic,
-						length(vertOut.fragPos - lights.point[0].position)));
-	fragColor = vec4(color2, 1.f);
 }
