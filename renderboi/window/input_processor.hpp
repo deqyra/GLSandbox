@@ -1,8 +1,9 @@
 #ifndef RENDERBOI__WINDOW__INPUT_PROCESSOR_HPP
 #define RENDERBOI__WINDOW__INPUT_PROCESSOR_HPP
 
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "enums.hpp"
 
@@ -18,6 +19,20 @@ class InputProcessor
         static unsigned int _count;
 
     public:
+        /// @brief Collection of litterals describing the different event types
+        /// handled by an InputProcessor.
+        enum class EventType
+        {
+            FramebufferResize,
+            Keyboard,
+            MouseButton,
+            MouseCursor
+        };
+
+        /// @brief Array listing all of the litterals defined by the EventType
+        /// enum.
+        static const std::vector<EventType> EventTypeList;
+
         InputProcessor();
 
         /// @brief Callback for a framebuffer resize event.

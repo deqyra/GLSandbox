@@ -4,8 +4,34 @@
 
 #include <renderboi/window/enums.hpp>
 
+Control::Control(Window::Input::Key key) :
+    kind(ControlKind::Key),
+    key(key)
+{
+
+}
+
+Control::Control(Window::Input::MouseButton mouseButton) :
+    kind(ControlKind::MouseButton),
+    mouseButton(mouseButton)
+{
+
+}
+
+bool Control::operator==(const Control& other)
+{
+    return ::operator==(*this, other);
+}
+
+bool Control::operator<(const Control& other)
+{
+    return ::operator<(*this, other);
+}
+
 bool operator==(const Control& left, const Control& right)
 {
+    // Safe only because the Control struct is made up of enums which are all 
+    // based on the unsigned int data types
     const unsigned int* dataLeft = reinterpret_cast<const unsigned int*>(&left);
     const unsigned int* dataRight = reinterpret_cast<const unsigned int*>(&right);
 
@@ -17,24 +43,8 @@ bool operator<(const Control& left, const Control& right)
     const unsigned int* dataLeft = reinterpret_cast<const unsigned int*>(&left);
     const unsigned int* dataRight = reinterpret_cast<const unsigned int*>(&right);
 
-    return (dataLeft[0] < dataRight[0]) || (dataLeft[1] < dataRight[1]);
-}
-
-
-Control keyboardControl(Window::Input::Key key)
-{
-    return {
-        .kind = ControlKind::Key,
-        .key = key
-    };
-}
-
-Control mouseButtonControl(Window::Input::MouseButton mouseButton)
-{
-    return {
-        .kind = ControlKind::MouseButton,
-        .mouseButton = mouseButton
-    };
+    return   (dataLeft[0] <  dataRight[0]) || 
+            ((dataLeft[0] == dataRight[0]) && (dataLeft[1] < dataRight[1]));
 }
 
 std::size_t ControlHash::operator()(Control const& c) const
@@ -66,5 +76,10 @@ namespace std
                 return std::to_string(control.joystick);
         }
         return "Unknown control";
+    }
+
+    bool less<Control>::operator()(const Control& left, const Control& right) const
+    {
+        return left < right;
     }
 }

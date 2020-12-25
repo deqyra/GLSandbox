@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 
+#include <renderboi/window/gl_window.hpp>
 #include <renderboi/window/input_processor.hpp>
 
 #include "control.hpp"
@@ -34,7 +35,14 @@ class ControlEventTranslator : public InputProcessor
 
         /// @brief Translate a given control into action(s) and forward those to
         /// the listener.
-        void translateAndNotify(const Control& control, Window::Input::Action action);
+        ///
+        /// @param control Structure of litterals describing the control which 
+        /// just processed.
+        /// @param action Object describing the action that was performed on the
+        /// control.
+        /// @param window Pointer to the window on which the control was
+        /// captured.
+        void translateAndNotify(const Control& control, Window::Input::Action action, GLWindowPtr window);
 
         /// @brief Copies controls from a control binding provider into a multimap.
         ///
@@ -93,27 +101,21 @@ ControlEventTranslator<T>::ControlEventTranslator(ControlBindingProviderPtr<T> b
 template<typename T>
 void ControlEventTranslator<T>::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
 {
-    Control triggeredControl = {
-        .kind = ControlKind::Key,
-        .key = key
-    };
+    Control triggeredControl = Control(key);
 
-    translateAndNotify(triggeredControl, action);
+    translateAndNotify(triggeredControl, action, window);
 }
 
 template<typename T>
 void ControlEventTranslator<T>::processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods)
 {
-    Control triggeredControl = {
-        .kind = ControlKind::MouseButton,
-        .mouseButton = button
-    };
+    Control triggeredControl = Control(button);
 
-    translateAndNotify(triggeredControl, action);
+    translateAndNotify(triggeredControl, action, window);
 }
 
 template<typename T>
-void ControlEventTranslator<T>::translateAndNotify(const Control& control, Window::Input::Action action)
+void ControlEventTranslator<T>::translateAndNotify(const Control& control, Window::Input::Action action, GLWindowPtr window)
 {
     using Iter = std::multimap<Control, T>::iterator;
     std::pair<Iter, Iter> range = _controlBindings.equal_range(control);
@@ -122,14 +124,14 @@ void ControlEventTranslator<T>::translateAndNotify(const Control& control, Windo
     {
         for (Iter it = range.first; it != range.second; it++)
         {
-            _listener->stopAction(it->second);
+            _listener->stopAction(window, it->second);
         }
     }
     else // (action == Window::Input::Action::Press)
     {
         for (Iter it = range.first; it != range.second; it++)
         {
-            _listener->triggerAction(it->second);
+            _listener->triggerAction(window, it->second);
         }
     }    
 }

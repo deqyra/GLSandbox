@@ -218,6 +218,8 @@ set(RB_TOOLBOX_SOURCE_FILES
     factory.cpp
     factory.hpp
     mesh_generator.hpp
+    input_logger.cpp
+    input_logger.hpp
     input_processing_script.cpp
     input_processing_script.hpp 
     input_splitter.cpp
@@ -265,8 +267,8 @@ set(RB_TOOLBOX_SOURCE_FILES
     scene/components/mesh_component.hpp 
     scene/components/script_component.cpp
     scene/components/script_component.hpp 
-    scripts/basic_input_manager.cpp
-    scripts/basic_input_manager.hpp 
+    scripts/basic_window_manager.cpp
+    scripts/basic_window_manager.hpp 
     scripts/mouse_camera_script.cpp
     scripts/mouse_camera_script.hpp 
     scripts/camera_aspect_ratio_script.cpp

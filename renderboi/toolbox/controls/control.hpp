@@ -29,25 +29,22 @@ struct Control
         Window::Input::Gamepad::Axis gamepadAxis;
         Window::Input::Joystick joystick;
     };
+
+    /// @param key Litteral describing the key to assign to the control.
+    Control(Window::Input::Key key);
+
+    /// @param mouseButton Litteral describing the mouse button to assign to the
+    /// control.
+    Control(Window::Input::MouseButton mouseButton);
+
+    bool operator==(const Control& other);
+
+    bool operator<(const Control& other);
 };
 
 bool operator==(const Control& left, const Control& right);
 
 bool operator<(const Control& left, const Control& right);
-
-/// @brief Return a keyboard control initialized with the provided key.
-///
-/// @param key Litteral describing the key to assign to the control.
-///
-/// @return A keyboard control initialized with the provided key.
-Control keyboardControl(Window::Input::Key key);
-
-/// @brief Return a mouse button control initialized with the provided button.
-///
-/// @param mouseButton Litteral describing the button to assign to the control.
-///
-/// @return A mouse button control initialized with the provided buttony.
-Control mouseButtonControl(Window::Input::MouseButton mouseButton);
 
 class ControlHash
 {
@@ -57,7 +54,14 @@ class ControlHash
 
 namespace std
 {
-    std::string to_string(const Control& control);
+    string to_string(const Control& control);
+
+    template<>
+    class less<Control>
+    {
+        public:
+            bool operator()(const Control& left, const Control& right) const;
+    };
 }
 
 #endif//RENDERBOI__TOOLBOX__CONTROLS__CONTROL_HPP
