@@ -270,7 +270,7 @@ namespace std
         }
 
         auto it = specialNames.find(mouseButton);
-        if (it != enumNames.end()) return it->second;
+        if (it != specialNames.end()) return it->second;
 
         it = enumNames.find(mouseButton);
         if (it != enumNames.end()) return it->second;
