@@ -110,12 +110,12 @@ class KeyboardMovementScript : public Script, public ActionEventReceiver<Keyboar
         /// @brief Start the processing for an action.
         ///
         /// @param action Object describing the action to start processing.
-        void triggerAction(const KeyboardMovementAction& action);
+        void triggerAction(GLWindowPtr window, const KeyboardMovementAction& action);
 
         /// @brief Stop the processing for an action.
         ///
         /// @param action Object describing the action to stop processing.
-        void stopAction(const KeyboardMovementAction& action);
+        void stopAction(GLWindowPtr window, const KeyboardMovementAction& action);
 };
 
 namespace std

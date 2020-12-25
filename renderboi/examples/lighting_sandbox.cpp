@@ -32,7 +32,7 @@ using Ref = FrameOfReference;
 #include <renderboi/toolbox/scene/components/all_components.hpp>
 #include <renderboi/toolbox/scripts/mouse_camera_script.hpp>
 #include <renderboi/toolbox/scripts/keyboard_movement_script.hpp>
-#include <renderboi/toolbox/scripts/basic_input_manager.hpp>
+#include <renderboi/toolbox/scripts/basic_window_manager.hpp>
 #include <renderboi/toolbox/scripts/camera_aspect_ratio_script.hpp>
 
 #include <cpptools/enum_map.hpp>
@@ -99,11 +99,11 @@ void LightingSandbox::run(GLWindowPtr window)
     // Bind controls to keyboard script    
     using Window::Input::Key;
     ControlSchemeManagerPtr<KeyboardMovementAction> keyboardMovementControls = std::make_shared<ControlSchemeManager<KeyboardMovementAction>>();
-    keyboardMovementControls->bindControl(keyboardControl(Key::W), KeyboardMovementAction::Forward);
-    keyboardMovementControls->bindControl(keyboardControl(Key::A), KeyboardMovementAction::Left);
-    keyboardMovementControls->bindControl(keyboardControl(Key::S), KeyboardMovementAction::Backward);
-    keyboardMovementControls->bindControl(keyboardControl(Key::D), KeyboardMovementAction::Right);
-    keyboardMovementControls->bindControl(keyboardControl(Key::LeftShift), KeyboardMovementAction::Sprint);
+    keyboardMovementControls->bindControl(Control(Key::W), KeyboardMovementAction::Forward);
+    keyboardMovementControls->bindControl(Control(Key::A), KeyboardMovementAction::Left);
+    keyboardMovementControls->bindControl(Control(Key::S), KeyboardMovementAction::Backward);
+    keyboardMovementControls->bindControl(Control(Key::D), KeyboardMovementAction::Right);
+    keyboardMovementControls->bindControl(Control(Key::LeftShift), KeyboardMovementAction::Sprint);
 
     ActionEventReceiverPtr<KeyboardMovementAction> keyboardScriptAsReceiver = std::static_pointer_cast<ActionEventReceiver<KeyboardMovementAction>>(keyboardScript);
     ControlEventTranslatorPtr<KeyboardMovementAction> eventTranslator = std::make_shared<ControlEventTranslator<KeyboardMovementAction>>(keyboardMovementControls, keyboardScriptAsReceiver);
@@ -136,7 +136,7 @@ void LightingSandbox::run(GLWindowPtr window)
     scene->registerInputProcessingScript(ipRotationScript);
     
     // WINDOW SCRIPT
-    std::shared_ptr<BasicInputManager> windowScript = std::make_shared<BasicInputManager>();
+    std::shared_ptr<BasicWindowManager> windowScript = std::make_shared<BasicWindowManager>();
     std::shared_ptr<InputProcessingScript> ipWindowScript = std::static_pointer_cast<InputProcessingScript>(windowScript);
     scene->registerInputProcessingScript(ipWindowScript);
 

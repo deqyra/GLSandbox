@@ -57,7 +57,7 @@ KeyboardMovementScript* KeyboardMovementScript::clone()
     return new KeyboardMovementScript(_basisProvider, _moveSpeed, _sprintMultiplier);
 }
 
-void KeyboardMovementScript::triggerAction(const KeyboardMovementAction& action)
+void KeyboardMovementScript::triggerAction(GLWindowPtr window, const KeyboardMovementAction& action)
 {
     switch (action)
     {
@@ -81,7 +81,7 @@ void KeyboardMovementScript::triggerAction(const KeyboardMovementAction& action)
     cancelOppositeDirections();
 }
 
-void KeyboardMovementScript::stopAction(const KeyboardMovementAction& action)
+void KeyboardMovementScript::stopAction(GLWindowPtr window, const KeyboardMovementAction& action)
 {
     switch (action)
     {
