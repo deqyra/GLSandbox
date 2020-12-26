@@ -21,19 +21,21 @@ using Ref = FrameOfReference;
 
 #include <renderboi/toolbox/common_macros.hpp>
 #include <renderboi/toolbox/factory.hpp>
+#include <renderboi/toolbox/input_logger.hpp>
 #include <renderboi/toolbox/input_splitter.hpp>
 #include <renderboi/toolbox/controls/control_scheme_manager.hpp>
 #include <renderboi/toolbox/controls/control_event_translator.hpp>
+#include <renderboi/toolbox/controls/controlled_entity_manager.hpp>
 #include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
 #include <renderboi/toolbox/scene/scene.hpp>
 #include <renderboi/toolbox/scene/scene_renderer.hpp>
 #include <renderboi/toolbox/scene/scene_object.hpp>
 #include <renderboi/toolbox/scene/component_type.hpp>
 #include <renderboi/toolbox/scene/components/all_components.hpp>
-#include <renderboi/toolbox/scripts/mouse_camera_script.hpp>
-#include <renderboi/toolbox/scripts/keyboard_movement_script.hpp>
-#include <renderboi/toolbox/scripts/basic_window_manager.hpp>
-#include <renderboi/toolbox/scripts/camera_aspect_ratio_script.hpp>
+#include <renderboi/toolbox/runnables/mouse_camera_manager.hpp>
+#include <renderboi/toolbox/runnables/keyboard_movement_script.hpp>
+#include <renderboi/toolbox/runnables/basic_window_manager.hpp>
+#include <renderboi/toolbox/runnables/camera_aspect_ratio_manager.hpp>
 
 #include <cpptools/enum_map.hpp>
 
@@ -49,6 +51,7 @@ void LightingSandbox::run(GLWindowPtr window)
     
     ShaderConfig lightConfig;
     lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
     ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
 
@@ -84,29 +87,42 @@ void LightingSandbox::run(GLWindowPtr window)
     scene->registerObject(tetrahedronObj, smallTorusObj->id);
     scene->registerObject(cameraObj);
 
-    // Add script component to camera: MouseCameraScript
-    Factory::createInputProcessingScriptAndAttachToObject<MouseCameraScript>(cameraObj);
+    // Link camera to MouseCameraManager
+    std::shared_ptr<MouseCameraManager> cameraManager = std::make_shared<MouseCameraManager>(camera);
 
-    // Add script component to camera: CameraAspectRatioScript
-    Factory::createInputProcessingScriptAndAttachToObject<CameraAspectRatioScript>(cameraObj);
+    // Link camera to CameraAspectRatioManager
+    std::shared_ptr<CameraAspectRatioManager> cameraAspectRatioManager = std::make_shared<CameraAspectRatioManager>(camera);
 
+    // Attach object movement script to scene
+    std::shared_ptr<LightingSandboxScript> rotationScript = std::make_shared<LightingSandboxScript>(cubeObj, bigTorusObj, smallTorusObj, tetrahedronObj, cameraObj, light, LightBaseRange);
+    scene->registerScript(std::static_pointer_cast<Script>(rotationScript));
+    
     // Add script component to camera: KeyboardMovementScript
-    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
-    std::shared_ptr<KeyboardMovementScript> keyboardScript = std::make_shared<KeyboardMovementScript>(cameraAsBasisProvider);
-    ScriptPtr keyboardScriptAsBaseScript = std::static_pointer_cast<Script>(keyboardScript);
-    cameraObj->addComponent<ScriptComponent>(keyboardScriptAsBaseScript);
+    ControlledEntityManager<KeyboardMovementScript> keyboardScriptManager(std::static_pointer_cast<BasisProvider>(camera));
+    cameraObj->addComponent<ScriptComponent>(std::static_pointer_cast<Script>(keyboardScriptManager.getEntity()));
 
-    // Bind controls to keyboard script    
-    using Window::Input::Key;
-    ControlSchemeManagerPtr<KeyboardMovementAction> keyboardMovementControls = std::make_shared<ControlSchemeManager<KeyboardMovementAction>>();
-    keyboardMovementControls->bindControl(Control(Key::W), KeyboardMovementAction::Forward);
-    keyboardMovementControls->bindControl(Control(Key::A), KeyboardMovementAction::Left);
-    keyboardMovementControls->bindControl(Control(Key::S), KeyboardMovementAction::Backward);
-    keyboardMovementControls->bindControl(Control(Key::D), KeyboardMovementAction::Right);
-    keyboardMovementControls->bindControl(Control(Key::LeftShift), KeyboardMovementAction::Sprint);
+    // Window script
+    ControlledEntityManager<BasicWindowManager> windowManager;
 
-    ActionEventReceiverPtr<KeyboardMovementAction> keyboardScriptAsReceiver = std::static_pointer_cast<ActionEventReceiver<KeyboardMovementAction>>(keyboardScript);
-    ControlEventTranslatorPtr<KeyboardMovementAction> eventTranslator = std::make_shared<ControlEventTranslator<KeyboardMovementAction>>(keyboardMovementControls, keyboardScriptAsReceiver);
+    // Instantiate an input logger
+    InputLoggerPtr logger = std::make_shared<InputLogger>();
+
+    // Register the scene and the control translator to the splitter
+    InputSplitterPtr splitter = std::make_shared<InputSplitter>();
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraManager));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraAspectRatioManager));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(rotationScript));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(keyboardScriptManager.getEventTranslator()));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEntity()));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEventTranslator()));
+    
+    // Register the splitter to the window
+    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
+
+
+    // Register the splitter to the window
+    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
 
     const glm::vec3 X = Transform::X;
     const glm::vec3 Y = Transform::Y;
@@ -121,23 +137,6 @@ void LightingSandbox::run(GLWindowPtr window)
     tetrahedronObj->transform.rotateBy<Ref::Parent>(glm::radians(90.f), Z);
     cameraObj->transform.setPosition<Ref::World>(StartingCameraPosition);
     cameraObj->transform.rotateBy<Ref::Parent>(glm::radians(180.f), Y);
-    
-    // ROTATION SCRIPT
-    std::shared_ptr<LightingSandboxScript> rotationScript = std::make_shared<LightingSandboxScript>(cubeObj, bigTorusObj, smallTorusObj, tetrahedronObj, cameraObj, light, LightBaseRange);
-    std::shared_ptr<InputProcessingScript> ipRotationScript = std::static_pointer_cast<InputProcessingScript>(rotationScript);
-    scene->registerInputProcessingScript(ipRotationScript);
-    
-    // WINDOW SCRIPT
-    std::shared_ptr<BasicWindowManager> windowScript = std::make_shared<BasicWindowManager>();
-
-    // Register the scene and the control translator to the splitter
-    InputSplitterPtr splitter = std::make_shared<InputSplitter>();
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(scene));
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(eventTranslator));
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowScript));
-    
-    // Register the splitter to the window
-    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
 
     SceneRenderer sceneRenderer;
 

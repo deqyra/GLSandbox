@@ -6,14 +6,16 @@
 
 #include "gl_sandbox.hpp"
 
-#include <cpptools/sine_generator.hpp>
+#include <renderboi/core/camera.hpp>
+#include <renderboi/core/lights/point_light.hpp>
 
 #include <renderboi/window/gl_window.hpp>
 #include <renderboi/window/input_processor.hpp>
-#include <renderboi/core/camera.hpp>
-#include <renderboi/core/lights/point_light.hpp>
-#include <renderboi/toolbox/input_processing_script.hpp>
+
+#include <renderboi/toolbox/script.hpp>
 #include <renderboi/toolbox/scene/scene_object.hpp>
+
+#include <cpptools/sine_generator.hpp>
 
 // Display lit moving objects
 class LightingSandbox : public GLSandbox
@@ -31,7 +33,7 @@ class LightingSandbox : public GLSandbox
 };
 
 // Handle object movement in the scene displayed by LightingSandbox
-class LightingSandboxScript : public InputProcessingScript
+class LightingSandboxScript : public InputProcessor, public Script
 {
     private:
         /// @brief Pointer to the cube of the LightingSandbox.

@@ -25,10 +25,10 @@
 #include <renderboi/toolbox/scene/components/camera_component.hpp>
 #include <renderboi/toolbox/scene/components/light_component.hpp>
 #include <renderboi/toolbox/scene/components/mesh_component.hpp>
-#include <renderboi/toolbox/scripts/basic_window_manager.hpp>
-#include <renderboi/toolbox/scripts/mouse_camera_script.hpp>
-#include <renderboi/toolbox/scripts/keyboard_movement_script.hpp>
-#include <renderboi/toolbox/scripts/camera_aspect_ratio_script.hpp>
+#include <renderboi/toolbox/runnables/basic_window_manager.hpp>
+#include <renderboi/toolbox/runnables/camera_aspect_ratio_manager.hpp>
+#include <renderboi/toolbox/runnables/mouse_camera_manager.hpp>
+#include <renderboi/toolbox/runnables/keyboard_movement_script.hpp>
 
 #include <cpptools/enum_map.hpp>
 
@@ -54,17 +54,15 @@ void ShadowSandbox::run(GLWindowPtr window)
 
     ShaderConfig lightConfig;
     lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
+    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentFullLight);
+    ShaderProgram fullLightShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
+
+    lightConfig.removeFeature(ShaderInfo::ShaderFeature::FragmentFullLight);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
     //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentFullLight);
     lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentGammaCorrection);
-    ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
-
-    //Shader mvp = ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage::Vertex, "assets/shaders/static/mvp.vert");
-    //Shader phong = ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage::Fragment, "assets/shaders/static/phong.frag");
-    //ShaderProgram lightingShader = ShaderBuilder::linkShaders({mvp, phong});
-
-    //lightingShader.setFloat("gamma", 1.7f);
+    ShaderProgram blinnPhongShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
 
     //ShaderConfig depthConfig;
     //depthConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
@@ -105,7 +103,7 @@ void ShadowSandbox::run(GLWindowPtr window)
     );
     Texture2D floorTex = Texture2D("assets/textures/wood.png", PixelSpace::sRGB);
     floorMaterial.pushDiffuseMap(floorTex);
-    SceneObjectPtr floorObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("Floor", planeParameters, floorMaterial, lightingShader);
+    SceneObjectPtr floorObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("Floor", planeParameters, floorMaterial, blinnPhongShader);
 
     // WALLS
     Material wallMaterial = Material(
@@ -118,10 +116,10 @@ void ShadowSandbox::run(GLWindowPtr window)
     wallMaterial.pushDiffuseMap(wallTex);
 
     // XY wall
-    SceneObjectPtr xyWallObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("XY wall", planeParameters, wallMaterial, lightingShader);
+    SceneObjectPtr xyWallObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("XY wall", planeParameters, wallMaterial, blinnPhongShader);
 
     // YZ wall
-    SceneObjectPtr yzWallObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("YZ wall", planeParameters, wallMaterial, lightingShader);
+    SceneObjectPtr yzWallObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("YZ wall", planeParameters, wallMaterial, blinnPhongShader);
 
     TorusGenerator::Parameters torusParameters = {
         4.f,    // toroidalRadius
@@ -131,10 +129,10 @@ void ShadowSandbox::run(GLWindowPtr window)
     };
 
     // TORUS
-    SceneObjectPtr torusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Torus", torusParameters, Materials::Default, lightingShader);
+    SceneObjectPtr torusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Torus", torusParameters, Materials::Default, blinnPhongShader);
 
     // LIGHT
-    SceneObjectPtr lightObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Materials::Default, lightingShader);
+    SceneObjectPtr lightObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Materials::Default, fullLightShader);
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>(LightBaseRange);
     lightObj->addComponent<LightComponent>(light);
 
@@ -153,24 +151,6 @@ void ShadowSandbox::run(GLWindowPtr window)
     scene->registerObject(torusObj);
     scene->registerObject(lightObj);
     scene->registerObject(cameraObj);
-
-
-
-    /////////////////////////////////////
-    ///                               ///
-    ///   Add and configure scripts   ///
-    ///                               ///
-    /////////////////////////////////////
-
-    // Add script component to camera: MouseCameraScript
-    Factory::createInputProcessingScriptAndAttachToObject<MouseCameraScript>(cameraObj);
-
-    // Add script component to camera: CameraAspectRatioScript
-    Factory::createInputProcessingScriptAndAttachToObject<CameraAspectRatioScript>(cameraObj);
-
-    // Add script component to camera: KeyboardMovementScript
-    ControlledEntityManager<KeyboardMovementScript> keyboardScriptManager(std::static_pointer_cast<BasisProvider>(camera));
-    cameraObj->addComponent<ScriptComponent>(std::static_pointer_cast<Script>(keyboardScriptManager.getEntity()));
 
 
 
@@ -196,18 +176,27 @@ void ShadowSandbox::run(GLWindowPtr window)
 
 
 
-    ///////////////////////////////////////////////
-    ///                                         ///
-    ///   Add other scripts, set up rendering   ///
-    ///                                         ///
-    ///////////////////////////////////////////////
+    /////////////////////////////////////
+    ///                               ///
+    ///   Add and configure scripts   ///
+    ///                               ///
+    /////////////////////////////////////
 
-    // OBJECT MOVEMENT SCRIPT
+    // Link camera to MouseCameraManager
+    std::shared_ptr<MouseCameraManager> cameraManager = std::make_shared<MouseCameraManager>(camera);
+
+    // Link camera to CameraAspectRatioManager
+    std::shared_ptr<CameraAspectRatioManager> cameraAspectRatioManager = std::make_shared<CameraAspectRatioManager>(camera);
+
+    // Attach object movement script to scene
     std::shared_ptr<ShadowSandboxScript> movementScript = std::make_shared<ShadowSandboxScript>(lightObj, torusObj);
-    std::shared_ptr<InputProcessingScript> ipBaseMovementScript = std::static_pointer_cast<InputProcessingScript>(movementScript);
-    scene->registerScript(ipBaseMovementScript);
+    scene->registerScript(std::static_pointer_cast<Script>(movementScript));
     
-    // WINDOW SCRIPT
+    // Add script component to camera: KeyboardMovementScript
+    ControlledEntityManager<KeyboardMovementScript> keyboardScriptManager(std::static_pointer_cast<BasisProvider>(camera));
+    cameraObj->addComponent<ScriptComponent>(std::static_pointer_cast<Script>(keyboardScriptManager.getEntity()));
+
+    // Window script
     ControlledEntityManager<BasicWindowManager> windowManager;
 
     // Instantiate an input logger
@@ -216,19 +205,15 @@ void ShadowSandbox::run(GLWindowPtr window)
     // Register the scene and the control translator to the splitter
     InputSplitterPtr splitter = std::make_shared<InputSplitter>();
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraManager));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraAspectRatioManager));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(movementScript));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(keyboardScriptManager.getEventTranslator()));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEntity()));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEventTranslator()));
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(scene));
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(keyboardScriptManager.getEventTranslator()));
     
     // Register the splitter to the window
     window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
-
-    SceneRenderer sceneRenderer;
-
-    glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_STENCIL_TEST);
 
 
 
@@ -237,6 +222,12 @@ void ShadowSandbox::run(GLWindowPtr window)
     ///   Rendering loop   ///
     ///                    ///
     //////////////////////////
+
+    SceneRenderer sceneRenderer;
+
+    glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
 
     while (!window->shouldClose())
     {
@@ -273,7 +264,7 @@ void ShadowSandbox::run(GLWindowPtr window)
 ShadowSandboxScript::ShadowSandboxScript(SceneObjectPtr lightObj, SceneObjectPtr torusObj) :
     _lightObj(lightObj),
     _torusObj(torusObj),
-    _lightStartingPos(lightObj->transform.getPosition()),
+    _lightStartingPos(lightObj->getWorldTransform().getPosition()),
     _pause(false),
     _speedFactor(2.f),
     _sine(LightMovementFrequency)

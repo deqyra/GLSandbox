@@ -7,10 +7,13 @@
 
 #include <cpptools/sine_generator.hpp>
 
-#include <renderboi/window/gl_window.hpp>
 #include <renderboi/core/camera.hpp>
-#include <renderboi/toolbox/input_processing_script.hpp>
+
+#include <renderboi/toolbox/script.hpp>
 #include <renderboi/toolbox/scene/scene_object.hpp>
+
+#include <renderboi/window/gl_window.hpp>
+#include <renderboi/window/input_processor.hpp>
 
 class ShadowSandbox : public GLSandbox
 {
@@ -27,7 +30,7 @@ class ShadowSandbox : public GLSandbox
         virtual void run(GLWindowPtr window);
 };
 
-class ShadowSandboxScript : public InputProcessingScript
+class ShadowSandboxScript : public Script, public InputProcessor
 {
     private:
         /// @brief Pointer to the torus object to animate over time.
