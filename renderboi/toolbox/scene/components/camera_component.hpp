@@ -27,7 +27,7 @@ class CameraComponent : public Component
         /// constructor will throw a std::runtime_error.
         CameraComponent(SceneObjectPtr sceneObject, CameraPtr camera);
 
-        virtual ~CameraComponent();
+        ~CameraComponent();
 
         /// @brief Get a pointer to the camera used by the component.
         ///
@@ -46,7 +46,7 @@ class CameraComponent : public Component
         /// of the camera.
         ///
         /// @return The view matrix provided by the camera.
-        virtual glm::mat4 getViewMatrix();
+        glm::mat4 getViewMatrix();
 
         /// @brief Get the view space coordinates of a position given in world 
         /// space coordinates.
@@ -54,17 +54,17 @@ class CameraComponent : public Component
         /// @param worldPosition The position whose coordinates to transform.
         ///
         /// @return View space coordinates of the provided world position.
-        virtual glm::vec3 worldPositionToViewSpace(glm::vec3 worldPosition);
+        glm::vec3 worldPositionToViewSpace(glm::vec3 worldPosition);
 
         /// @brief Get the projection matrix of the camera.
         ///
         /// @return The projection matrix provided by the camera.
-        virtual glm::mat4 getProjectionMatrix();
+        glm::mat4 getProjectionMatrix();
 
         /// @brief Get the view-projection matrix of the camera.
         ///
         /// @return The view-projection matrix provided by the camera.
-        virtual glm::mat4 getViewProjectionMatrix();
+        glm::mat4 getViewProjectionMatrix();
 
         /////////////////////////////////////////
         ///                                   ///
@@ -81,7 +81,7 @@ class CameraComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        virtual CameraComponent* clone(SceneObjectPtr newParent);
+        CameraComponent* clone(SceneObjectPtr newParent);
 };
 
 template<>

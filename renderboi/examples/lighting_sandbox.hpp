@@ -35,7 +35,7 @@ class LightingSandbox : public GLSandbox
         /// @brief Run something in the provided GL window.
 		///
 		/// @param window Pointer to the window to run stuff in.
-        virtual void run(GLWindowPtr window);
+        void run(GLWindowPtr window);
 };
 
 // Handle object movement in the scene displayed by LightingSandbox
@@ -93,14 +93,14 @@ class LightingSandboxScript : public InputProcessor, public Script
         ///
         /// @param timeElapsed How much time passed (in seconds) since the last
         /// update.
-        virtual void update(float timeElapsed);
+        void update(float timeElapsed);
 
         /// @brief Get a raw pointer to a new script instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
         /// @return A raw pointer to the script instance cloned from this one.
-        virtual LightingSandboxScript* clone();
+        LightingSandboxScript* clone();
 
         //////////////////////////////////////////////
         ///                                        ///
@@ -119,7 +119,7 @@ class LightingSandboxScript : public InputProcessor, public Script
         /// the key which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the key event (Ctrl, Shift, etc).
-        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
+        void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
 };
 
 #endif//RENDERBOI__EXAMPLES__LIGHTING_EXAMPLE_HPP

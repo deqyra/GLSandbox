@@ -63,7 +63,7 @@ class MeshComponent : public Component
         /// will throw a std::runtime_error.
         MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material, ShaderProgram shader);
 
-        virtual ~MeshComponent();
+        ~MeshComponent();
 
         /// @brief Get a pointer to the mesh used by the component.
         ///
@@ -113,7 +113,7 @@ class MeshComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        virtual MeshComponent* clone(SceneObjectPtr newParent);
+        MeshComponent* clone(SceneObjectPtr newParent);
 };
 
 template<>

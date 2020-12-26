@@ -26,7 +26,7 @@ class LightComponent : public Component
         /// std::runtime_error.
         LightComponent(SceneObjectPtr sceneObject, LightPtr light);
 
-        virtual ~LightComponent();
+        ~LightComponent();
 
         /// @brief Get a pointer to the light used by the component.
         ///
@@ -56,7 +56,7 @@ class LightComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        virtual LightComponent* clone(SceneObjectPtr newParent);
+        LightComponent* clone(SceneObjectPtr newParent);
 };
 
 template<>

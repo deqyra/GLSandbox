@@ -25,7 +25,7 @@ class ScriptComponent : public Component
         void detachScript();
 
         /// @brief Release the parent scene object pointer.
-        virtual void releaseSceneObject();
+        void releaseSceneObject();
 
     public:
         /// @param sceneObject Pointer to the scene object which will be parent
@@ -38,7 +38,7 @@ class ScriptComponent : public Component
         /// std::runtime_error.
         ScriptComponent(SceneObjectPtr sceneObject, ScriptPtr script);
 
-        virtual ~ScriptComponent();
+        ~ScriptComponent();
 
         /// @brief Get a pointer to the script used by the component.
         ///
@@ -68,7 +68,7 @@ class ScriptComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        virtual ScriptComponent* clone(SceneObjectPtr newParent);
+        ScriptComponent* clone(SceneObjectPtr newParent);
 };
 
 template<>

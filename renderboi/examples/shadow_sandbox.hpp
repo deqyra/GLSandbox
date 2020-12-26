@@ -35,7 +35,7 @@ class ShadowSandbox : public GLSandbox
         /// @brief Run something in the provided GL window.
 		///
 		/// @param window Pointer to the window to run stuff in.
-        virtual void run(GLWindowPtr window);
+        void run(GLWindowPtr window);
 };
 
 class ShadowSandboxScript : public Script, public InputProcessor
@@ -77,14 +77,14 @@ class ShadowSandboxScript : public Script, public InputProcessor
         ///
         /// @param timeElapsed How much time passed (in seconds) since the last
         /// update.
-        virtual void update(float timeElapsed);
+        void update(float timeElapsed);
 
         /// @brief Get a raw pointer to a new script instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
         /// @return A raw pointer to the script instance cloned from this one.
-        virtual ShadowSandboxScript* clone();
+        ShadowSandboxScript* clone();
 
         //////////////////////////////////////////////
         ///                                        ///
@@ -103,7 +103,7 @@ class ShadowSandboxScript : public Script, public InputProcessor
         /// the key which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the key event (Ctrl, Shift, etc).
-        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
+        void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
 
 };
 

@@ -42,7 +42,7 @@ class AxesGenerator : public MeshGenerator
         /// return it.
         ///
         /// @return A pointer to the mesh containing the generated vertices.
-        virtual MeshPtr generatePtr();
+        MeshPtr generatePtr();
 };
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATORS__AXES_GENERATOR_HPP

@@ -34,7 +34,7 @@ class CameraAspectRatioManager : public InputProcessor
         /// triggered.
         /// @param width New width (in pixels) of the framebuffer.
         /// @param height New height (in pixels) of the framebuffer.
-        virtual void processFramebufferResize(GLWindowPtr window, int width, int height);
+        void processFramebufferResize(GLWindowPtr window, int width, int height);
 };
 
 #endif//RENDERBOI__TOOLBOX__RUNNABLES__CAMERA_ASPECT_RATIO_MANAGER_HPP

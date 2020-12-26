@@ -56,7 +56,7 @@ class MouseCameraManager : public InputProcessor
         /// triggered.
         /// @param xpos X coordinate of the new position of the mouse.
         /// @param ypos Y coordinate of the new position of the mouse.
-        virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
+        void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
 };
 
 #endif//RENDERBOI__TOOLBOX__RUNNABLES__MOUSE_CAMERA_SCRIPT_HPP

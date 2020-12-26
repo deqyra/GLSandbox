@@ -59,12 +59,12 @@ class MatrixUBO : public UniformBufferObject
         /// @brief Get the binding point of the UBO on the GPU.
         ///
         /// @return The binding point of the UBO on the GPU.
-        virtual unsigned int getBindingPoint();
+        unsigned int getBindingPoint();
 
         /// @brief Get the size the UBO takes in GPU memory.
         ///
         /// @return The amount of GPU memory occupied by the UBO, in bytes.
-        virtual unsigned int getSize();
+        unsigned int getSize();
 };
 
 #endif//RENDERBOI__CORE__UBO__MATRIX_UBO_HPP
