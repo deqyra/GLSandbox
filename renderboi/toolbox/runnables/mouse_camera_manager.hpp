@@ -1,18 +1,18 @@
-#ifndef RENDERBOI__TOOLBOX__SCRIPTS__MOUSE_CAMERA_SCRIPT_HPP
-#define RENDERBOI__TOOLBOX__SCRIPTS__MOUSE_CAMERA_SCRIPT_HPP
+#ifndef RENDERBOI__TOOLBOX__RUNNABLES__MOUSE_CAMERA_SCRIPT_HPP
+#define RENDERBOI__TOOLBOX__RUNNABLES__MOUSE_CAMERA_SCRIPT_HPP
 
 #include <renderboi/core/camera.hpp>
 
-#include "../input_processing_script.hpp"
+#include <renderboi/window/input_processor.hpp>
 
 /// @brief Provides event callbacks to manage a camera as in a FPS game. This 
 /// script must be attached to an object which has a camera component, otherwise
 /// an std::runtime_error will be thrown upon attaching.
-class MouseCameraScript : public InputProcessingScript
+class MouseCameraManager : public InputProcessor
 {
     private:
-        MouseCameraScript(const MouseCameraScript& other) = delete;
-        MouseCameraScript& operator=(const MouseCameraScript& other) = delete;
+        MouseCameraManager(const MouseCameraManager& other) = delete;
+        MouseCameraManager& operator=(const MouseCameraManager& other) = delete;
 
         /// @brief Pointer to the camera controlled by the script.
         CameraPtr _camera;
@@ -40,8 +40,9 @@ class MouseCameraScript : public InputProcessingScript
         /// @brief The default mouse sensitivity.
         static constexpr float DefaultLookSensitivity = 0.1f;
 
+        /// @param camera Pointer to the camera whose orientation to manage.
         /// @param sensitivity The amplitude of the rotation induced by mouse movement.
-        MouseCameraScript(float sensitivity = DefaultLookSensitivity);
+        MouseCameraManager(CameraPtr camera, float sensitivity = DefaultLookSensitivity);
 
         /// @brief Callback for a mouse cursor event.
         ///
@@ -50,24 +51,6 @@ class MouseCameraScript : public InputProcessingScript
         /// @param xpos X coordinate of the new position of the mouse.
         /// @param ypos Y coordinate of the new position of the mouse.
         virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
-
-        /// @brief Set the scene object which the camera script is attached to.
-        /// Will also attempt to retrieve a camera from the scene object.
-        ///
-        /// @param sceneObject Pointer to the scene object the script should be 
-        /// attached to.
-        ///
-        /// @exception If the provided pointer is null, or if the scene object 
-        /// has no camera component, this function will throw a 
-        /// std::runtime_error.
-        virtual void setSceneObject(SceneObjectPtr sceneObject);
-
-        /// @brief Get a raw pointer to a new camera script instance cloned 
-        /// from this one. Ownership and responsibility for the allocated 
-        /// resources are fully transferred to the caller.
-        ///
-        /// @return A raw pointer to the script instance cloned from this one.
-        virtual MouseCameraScript* clone();
 };
 
-#endif//RENDERBOI__TOOLBOX__SCRIPTS__MOUSE_CAMERA_SCRIPT_HPP
+#endif//RENDERBOI__TOOLBOX__RUNNABLES__MOUSE_CAMERA_SCRIPT_HPP

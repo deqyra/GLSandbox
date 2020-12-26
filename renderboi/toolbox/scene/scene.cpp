@@ -10,24 +10,20 @@
 #include <glm/glm.hpp>
 
 #include <cpptools/tree.hpp>
-#include <renderboi/window/input_processor.hpp>
 
 #include "../factory.hpp"
 #include "../script.hpp"
-#include "../input_processing_script.hpp"
 #include "scene_object.hpp"
 
 // As this->shared_from_this cannot be called until the Scene is fully constructed, the object graph is initialized with a null shared pointer,
 // hence why this->init needs to be called immediately thereafter in order to properly initialize the root node with a shared pointer to this.
 Scene::Scene() :
-    InputProcessor(),
     _objects(SceneObjectPtr()),
     _transforms(Transform()),
     _updateMarkers(false),
     _outdatedTransformNodes(0),
     _objectMetadata(),
     _scripts(),
-    _inputProcessors(),
     _lastTime(std::chrono::system_clock::now())
 {
     
@@ -267,85 +263,6 @@ void Scene::triggerUpdate()
         it->second->update((float)(delta.count()));
     }
 }
-
-void Scene::registerInputProcessor(InputProcessorPtr inputProcessor)
-{
-    if (inputProcessor == nullptr)
-    {
-        std::string s = "Scene: provided nullptr for input processor registration.";
-        throw std::runtime_error(s.c_str());
-    }
-    _inputProcessors[inputProcessor->id] = inputProcessor;
-}
-
-void Scene::detachInputProcessor(unsigned int id)
-{
-    _inputProcessors.erase(id);
-}
-
-void Scene::registerInputProcessingScript(InputProcessingScriptPtr script)
-{
-    if (script == nullptr)
-    {
-        std::string s = "Scene: provided nullptr for input processing script registration.";
-        throw std::runtime_error(s.c_str());
-    }
-    
-    // Register the input processing script both as a script and an input processor
-    ScriptPtr baseScriptPtr = std::static_pointer_cast<Script>(script);
-    InputProcessorPtr baseIpPtr = std::static_pointer_cast<InputProcessor>(script);
-    registerScript(baseScriptPtr);
-    registerInputProcessor(baseIpPtr);
-}
-
-void Scene::detachInputProcessingScript(InputProcessingScriptPtr script)
-{
-    if (script == nullptr)
-    {
-        std::string s = "Scene: provided nullptr for input processing script deletion.";
-        throw std::runtime_error(s.c_str());
-    }
-
-    _scripts.erase(script->Script::id);
-    _inputProcessors.erase(script->InputProcessor::id);
-}
-
-void Scene::processFramebufferResize(GLWindowPtr window, int width, int height)
-{
-    // Forward framebuffer resize event to all input processors
-    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
-    {
-        it->second->processFramebufferResize(window, width, height);
-    }
-}
-
-void Scene::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
-{
-    // Forward keyboard event to all input processors
-    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
-    {
-        it->second->processKeyboard(window, key, scancode, action, mods);
-    }
-}
-
-void Scene::processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods)
-{
-    // Forward mouse button event to all input processors
-    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
-    {
-        it->second->processMouseButton(window, button, action, mods);
-    }
-}
-
-void Scene::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
-{
-    // Forward mouse cursor event to all input processors
-    for (auto it = _inputProcessors.begin(); it != _inputProcessors.end(); it++)
-    {
-        it->second->processMouseCursor(window, xpos, ypos);
-    }
-}
-
 void Scene::init()
 {
     ObjectTree::NodePtr objectRootNode = _objects.getRoot();
@@ -386,7 +303,6 @@ void Scene::terminate()
     // Clear metadata, scripts, inputProcessors
     _objectMetadata.clear();
     _scripts.clear();
-    _inputProcessors.clear();
 }
 
 void Scene::objectTransformModified(const unsigned int& id)
@@ -468,7 +384,7 @@ void Scene::performObjectRegistration(SceneObjectPtr object, SceneObjectMetadata
     unsigned int updateNodeId = _updateMarkers.addNode(false, parentMeta.updateNodeId);
 
     // Hook up the notification receiver of the scene with the notifier of the object transform
-    static std::function<void(const unsigned int&)> callback = [this](const unsigned int& id)
+    std::function<void(const unsigned int&)> callback = [this](const unsigned int& id)
     {
         this->objectTransformModified(id);
     };

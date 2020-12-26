@@ -31,10 +31,11 @@ class ControlledEntityManager
         std::shared_ptr<ControlEventTranslator<typename T::ActionType>> _translator;
 
     public:
-        /// @tparam ArgTypes Types of the argument to forward to the constructor
-        /// of the managed entity.
+        /// @tparam ArgTypes Types of the arguments to forward to the 
+        /// constructor of the managed entity.
         ///
-        /// @param args 
+        /// @param args Arguments to forward to the constructor of the managed 
+        /// entity.
         template<typename... ArgTypes>
         ControlledEntityManager(ArgTypes&&... args) :
             _entity(std::make_shared<T>(std::forward<ArgTypes>(args)...)),
@@ -62,6 +63,11 @@ class ControlledEntityManager
             return _schemeManager;
         }
 
+        /// @brief Get a pointer to the control event translator of the managed
+        /// entity.
+        ///
+        /// @return A pointer to the control event translator of the managed 
+        /// entity.
         std::shared_ptr<ControlEventTranslator<typename T::ActionType>> getEventTranslator()
         {
             return _translator;

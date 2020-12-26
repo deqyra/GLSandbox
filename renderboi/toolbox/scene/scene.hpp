@@ -13,10 +13,8 @@
 #include <glm/glm.hpp>
 
 #include <cpptools/tree.hpp>
-#include <renderboi/window/input_processor.hpp>
 
 #include "../script.hpp"
-#include "../input_processing_script.hpp"
 #include "scene_object.hpp"
 #include "scene_object_metadata.hpp"
 
@@ -25,7 +23,7 @@ class Factory;
 /// @brief A scene containing 3D objects organised in a tree structure. Handles
 /// self-updating scripts and processes input from the application. Use Factory
 /// to instantiate and terminate.
-class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
+class Scene : public std::enable_shared_from_this<Scene>
 {
     public:
         using ObjectTree = Tree<SceneObjectPtr>;
@@ -53,9 +51,6 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
 
         /// @brief Map script IDs to script pointers.
         std::unordered_map<unsigned int, ScriptPtr> _scripts;
-
-        /// @brief Map input processor IDs to input processor pointers.
-        std::unordered_map<unsigned int, InputProcessorPtr> _inputProcessors;
 
         /// @brief Last time a scene update was triggered.
         std::chrono::time_point<std::chrono::system_clock> _lastTime;
@@ -324,84 +319,6 @@ class Scene : public InputProcessor, public std::enable_shared_from_this<Scene>
         /// @brief Trigger a scene update, which will send an update signal to 
         /// all registered scripts.
         void triggerUpdate();
-
-        /// @brief Register an input processor in the scene. Input events 
-        /// received by the scene will then be forwarded to the input processor.
-        ///
-        /// @param inputProcessor Pointer to the input processor to register in
-        /// the scene.
-        ///
-        /// @exception If the provided input processor pointer is null, the 
-        /// function will throw a std::runtime_error.
-        void registerInputProcessor(InputProcessorPtr inputProcessor);
-
-        /// @brief Detach an input processor from the scene so that it no longer
-        /// receives forwarded input from it.
-        ///
-        /// @param id ID of the input processor to detach from the scene.
-        void detachInputProcessor(unsigned int id);
-
-        /// @brief Register an input processing script in the scene. The script
-        /// will receive both update signals and forwarded input from the scene.
-        ///
-        /// @param script Pointer to the script to register in the scene.
-        ///
-        /// @exception If the provided script pointer is null, the function will
-        /// throw a std::runtime_error.
-        void registerInputProcessingScript(InputProcessingScriptPtr script);
-
-        /// @brief Detach a script from the scene so that it no longer receives 
-        /// update signals nor forwarded input from it.
-        ///
-        /// @param script Pointer to the script to detach from the scene.
-        ///
-        /// @exception If the provided script pointer is null, the function will
-        /// throw a std::runtime_error.
-        void detachInputProcessingScript(InputProcessingScriptPtr script);
-
-        // The Scene itself is an input processor, and should be registered to the GL window as such.
-        // Following methods forward all input events to registered input processors.
-
-        /// @brief Callback for a framebuffer resize event.
-        ///
-        /// @param window Pointer to the GLWindow in which the event was
-        /// triggered.
-        /// @param width New width (in pixels) of the framebuffer.
-        /// @param height New height (in pixels) of the framebuffer.
-        virtual void processFramebufferResize(GLWindowPtr window, int width, int height);
-
-        /// @brief Callback for a keyboard event.
-        ///
-        /// @param window Pointer to the GLWindow in which the event was
-        /// triggered.
-        /// @param key Literal describing which key triggered the event.
-        /// @param scancode Scancode of the key which triggered the event. 
-        /// Platform-dependent, but consistent over time.
-        /// @param action Literal describing what action was performed on
-        /// the key which triggered the event.
-        /// @param mods Bit field describing which modifiers were enabled 
-        /// during the key event (Ctrl, Shift, etc).
-        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
-
-        /// @brief Callback for a mouse button event.
-        ///
-        /// @param window Pointer to the GLWindow in which the event was
-        /// triggered.
-        /// @param button Literal describing which button triggered the
-        /// event.
-        /// @param action Literal describing what action was performed on
-        /// the button which triggered the event.
-        /// @param mods Bit field describing which modifiers were enabled 
-        /// during the button event (Ctrl, Shift, etc).
-        virtual void processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods);
-
-        /// @brief Callback for a mouse cursor event.
-        ///
-        /// @param window Pointer to the GLWindow in which the event was
-        /// triggered.
-        /// @param xpos X coordinate of the new position of the mouse.
-        /// @param ypos Y coordinate of the new position of the mouse.
-        virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
 
         /// @brief Get pointers to all scene objects which have a certain 
         /// component.

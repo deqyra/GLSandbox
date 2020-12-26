@@ -4,7 +4,6 @@
 
 #include "scene/scene.hpp"
 #include "scene/scene_object.hpp"
-#include "scene/components/input_processing_script_component.hpp"
 
 
 ScenePtr Factory::makeScene()
