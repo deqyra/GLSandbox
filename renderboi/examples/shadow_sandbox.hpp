@@ -26,7 +26,15 @@ class ShadowSandbox : public GLSandbox
         static constexpr float WallSize = PlaneTileCount * PlaneTileSize;
         static constexpr glm::vec3 LightPosition = {WallSize / 2.f, WallSize / 2.f, WallSize / 2.f};
 
-        // Run the scene in the provided GL window
+        /////////////////////////////////////////
+        ///                                   ///
+        /// Methods overridden from GLSandbox ///
+        ///                                   ///
+        /////////////////////////////////////////
+
+        /// @brief Run something in the provided GL window.
+		///
+		/// @param window Pointer to the window to run stuff in.
         virtual void run(GLWindowPtr window);
 };
 
@@ -59,13 +67,44 @@ class ShadowSandboxScript : public Script, public InputProcessor
 
         ShadowSandboxScript(SceneObjectPtr lightObj, SceneObjectPtr torusObj);
 
-        /// @brief Update the transforms of the different scene objects.
+        //////////////////////////////////////
+        ///                                ///
+        /// Methods overridden from Script ///
+        ///                                ///
+        //////////////////////////////////////
+
+        /// @brief Make the script run and do its things.
+        ///
+        /// @param timeElapsed How much time passed (in seconds) since the last
+        /// update.
         virtual void update(float timeElapsed);
-        
-        /// @brief Process keyboard input.
+
+        /// @brief Get a raw pointer to a new script instance cloned 
+        /// from this one. Ownership and responsibility for the allocated 
+        /// resources are fully transferred to the caller.
+        ///
+        /// @return A raw pointer to the script instance cloned from this one.
+        virtual ShadowSandboxScript* clone();
+
+        //////////////////////////////////////////////
+        ///                                        ///
+        /// Methods overridden from InputProcessor ///
+        ///                                        ///
+        //////////////////////////////////////////////
+
+        /// @brief Callback for a keyboard event.
+        ///
+        /// @param window Pointer to the GLWindow in which the event was
+        /// triggered.
+        /// @param key Literal describing which key triggered the event.
+        /// @param scancode Scancode of the key which triggered the event. 
+        /// Platform-dependent, but consistent over time.
+        /// @param action Literal describing what action was performed on
+        /// the key which triggered the event.
+        /// @param mods Bit field describing which modifiers were enabled 
+        /// during the key event (Ctrl, Shift, etc).
         virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
 
-        virtual ShadowSandboxScript* clone();
 };
 
 #endif//RENDERBOI__EXAMPLES__SHADOW_SANDBOX_HPP

@@ -41,6 +41,12 @@ class LightComponent : public Component
         /// throw a std::runtime_error.
         void setLight(LightPtr light);
 
+        /////////////////////////////////////////
+        ///                                   ///
+        /// Methods overridden from Component ///
+        ///                                   ///
+        /////////////////////////////////////////
+
         /// @brief Get a raw pointer to a new component instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.

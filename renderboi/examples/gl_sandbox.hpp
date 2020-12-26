@@ -5,11 +5,13 @@
 
 #include <renderboi/window/gl_window.hpp>
 
-// Abstract class to run any 3D scene in a GLFW window
+/// @brief Abstract class to run any 3D scene in a GL window.
 class GLSandbox
 {
 	public:
-        // Run something in the provided GLFW window
+        /// @brief Run something in the provided GL window.
+		///
+		/// @param window Pointer to the window to run stuff in.
 		virtual void run(GLWindowPtr window) = 0;
 };
 

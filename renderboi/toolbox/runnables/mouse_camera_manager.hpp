@@ -44,6 +44,12 @@ class MouseCameraManager : public InputProcessor
         /// @param sensitivity The amplitude of the rotation induced by mouse movement.
         MouseCameraManager(CameraPtr camera, float sensitivity = DefaultLookSensitivity);
 
+        //////////////////////////////////////////////
+        ///                                        ///
+        /// Methods overridden from InputProcessor ///
+        ///                                        ///
+        //////////////////////////////////////////////
+
         /// @brief Callback for a mouse cursor event.
         ///
         /// @param window Pointer to the GLWindow in which the event was

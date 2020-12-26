@@ -22,6 +22,12 @@ class CameraAspectRatioManager : public InputProcessor
         /// @param camera Pointer to the camera whose aspect ratio to manage.
         CameraAspectRatioManager(CameraPtr camera);
 
+        //////////////////////////////////////////////
+        ///                                        ///
+        /// Methods overridden from InputProcessor ///
+        ///                                        ///
+        //////////////////////////////////////////////
+
         /// @brief Callback for a framebuffer resize event.
         ///
         /// @param window Pointer to the GLWindow in which the event was

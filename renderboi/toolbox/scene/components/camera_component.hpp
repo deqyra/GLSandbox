@@ -66,6 +66,12 @@ class CameraComponent : public Component
         /// @return The view-projection matrix provided by the camera.
         virtual glm::mat4 getViewProjectionMatrix();
 
+        /////////////////////////////////////////
+        ///                                   ///
+        /// Methods overridden from Component ///
+        ///                                   ///
+        /////////////////////////////////////////
+
         /// @brief Get a raw pointer to a new component instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.

@@ -56,17 +56,23 @@ class PointLight : public Light
         /// @brief Quadratic term of the light attenuation computation.
         float quadratic;
 
+        /// @brief Recompute light attenuation factors according to a new range.
+        ///
+        /// @param range New desired range of the light.
+        void setRange(float range);
+
+        /////////////////////////////////////
+        ///                               ///
+        /// Methods overridden from Light ///
+        ///                               ///
+        /////////////////////////////////////
+
         /// @brief Get a raw pointer to a new point light instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
         /// @return A raw pointer to the light instance cloned from this one.
         PointLight* clone();
-
-        /// @brief Recompute light attenuation factors according to a new range.
-        ///
-        /// @param range New desired range of the light.
-        void setRange(float range);
 };
 
 #endif//POINT_LIGHT_HPP

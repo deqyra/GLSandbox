@@ -69,21 +69,6 @@ void Camera::processZoom(float scrollOffset)
         _zoomFactor = 45.0f;
 }
 
-glm::vec3 Camera::forward()
-{
-    return _forward;
-}
-
-glm::vec3 Camera::left()
-{
-    return _left;
-}
-
-glm::vec3 Camera::up()
-{
-    return _up;
-}
-
 Transform Camera::getParentTransform()
 {
     return _parentTransform;
@@ -188,4 +173,19 @@ void Camera::updateProjectionMatrix()
 {
     _projectionMatrix = glm::perspective(_verticalFov, _aspectRatio, _nearDistance, _farDistance);
     _projectionMatrixOutdated = false;
+}
+
+glm::vec3 Camera::forward() const
+{
+    return _forward;
+}
+
+glm::vec3 Camera::left() const
+{
+    return _left;
+}
+
+glm::vec3 Camera::up() const
+{
+    return _up;
 }

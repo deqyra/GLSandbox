@@ -10,6 +10,10 @@
 // To be attached to a GLFWwindow object, providing event callback functionality through a custom InputProcessor
 class GLFW3Window : public GLWindow
 {
+    private:
+        /// @brief Pointer to the managed GLFW window.
+        GLFWwindow* _w;
+
     public:
         /// @param window Raw pointer to the GLFW window struct.
         /// @param title Title to give the window.
@@ -20,6 +24,12 @@ class GLFW3Window : public GLWindow
         ///
         /// @return A raw pointer to the managed window.
         GLFWwindow* getWindow();
+
+        ////////////////////////////////////////
+        ///                                  ///
+        /// Methods overridden from GLWindow ///
+        ///                                  ///
+        ////////////////////////////////////////
 
         /// @brief Whether the window was flagged for closing.
         ///
@@ -59,10 +69,6 @@ class GLFW3Window : public GLWindow
         /// @param x [Output parameter] The X coordinate of the cursor.
         /// @param y [Output parameter] The Y coordinate of the cursor.
         virtual void getCursorPos(double* x, double* y);
-
-    private:
-        /// @brief Pointer to the managed GLFW window.
-        GLFWwindow* _w;
 };
 
 using GLFW3WindowPtr = std::shared_ptr<GLFW3Window>;

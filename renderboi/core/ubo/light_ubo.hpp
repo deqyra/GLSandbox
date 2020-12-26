@@ -60,16 +60,6 @@ class LightUBO : public UniformBufferObject
 
         LightUBO();
 
-        /// @brief Get the binding point of the UBO on the GPU.
-        ///
-        /// @return The binding point of the UBO on the GPU.
-        virtual unsigned int getBindingPoint();
-
-        /// @brief Get the size the UBO takes in GPU memory.
-        ///
-        /// @return The amount of GPU memory occupied by the UBO, in bytes.
-        virtual unsigned int getSize();
-
         /// @brief Set a point light in the UBO.
         ///
         /// @param index The index of the point light to set in the UBO.
@@ -104,6 +94,22 @@ class LightUBO : public UniformBufferObject
         ///
         /// @param count The number of directional lights in the UBO.
         void setDirectionalCount(unsigned int count);
+
+        //////////////////////////////////////////////////
+        ///                                            ///
+        /// Methods overridden from UniformBufferObjet ///
+        ///                                            ///
+        //////////////////////////////////////////////////
+
+        /// @brief Get the binding point of the UBO on the GPU.
+        ///
+        /// @return The binding point of the UBO on the GPU.
+        virtual unsigned int getBindingPoint();
+
+        /// @brief Get the size the UBO takes in GPU memory.
+        ///
+        /// @return The amount of GPU memory occupied by the UBO, in bytes.
+        virtual unsigned int getSize();
 };
 
 #endif//LIGHT_UBO_HPP

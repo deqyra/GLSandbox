@@ -102,6 +102,17 @@ class ObjectTransform : public Transform
         /// be attached to.
         void setSceneObject(SceneObjectPtr sceneObj);
 
+        /// @brief Retrieve the notifier attached to this transform.
+        ///
+        /// @brief The notifier attached to this transform.
+        TransformNotifier& getNotifier();
+
+        /////////////////////////////////////////
+        ///                                   ///
+        /// Methods overridden from Transform ///
+        ///                                   ///
+        /////////////////////////////////////////
+
         /// @brief Set the position of the object.
         ///
         /// @tparam Ref Literal describing the frame of reference in which the
@@ -217,12 +228,6 @@ class ObjectTransform : public Transform
         ///
         /// @return The resulting transform.
         Transform compoundFrom(const ObjectTransform& other) const;
-
-        /// @brief Retrieve the notifier attached to this transform.
-        ///
-        /// @brief The notifier attached to this transform.
-        TransformNotifier& getNotifier();
-
 };
 
 #endif//RENDERBOI__TOOLBOX__OBJECT_TRANSFORM_HPP

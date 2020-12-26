@@ -9,6 +9,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "frame_of_reference.hpp"
+#include "interfaces/basis_provider.hpp"
 
 /* ╔════════════╗
  * ║   README   ║
@@ -48,7 +49,7 @@
 /// @brief Manages the 3D-space properties of an object: position, orientation
 /// and scale. Refer to the README section at the top of the .hpp file for more
 /// info.
-class Transform
+class Transform : public BasisProvider
 {
     protected:
         /// @brief 3D position of the object.
@@ -212,21 +213,6 @@ class Transform
         /// @return The new scale of the object relative to its parent.
         glm::vec3 scaleBy(glm::vec3 other);
 
-        /// @brief Get the local X vector of the object in world coordinates.
-        ///
-        /// @return The local X vector of the object, in world coordinates.
-        glm::vec3 left() const;
-
-        /// @brief Get the local Y vector of the object in world coordinates.
-        ///
-        /// @return The local Y vector of the object, in world coordinates.
-        glm::vec3 up() const;
-
-        /// @brief Get the local Z vector of the object in world coordinates.
-        ///
-        /// @return The local Z vector of the object, in world coordinates.
-        glm::vec3 forward() const;
-
         /// @brief Apply this transform on top of another one.
         ///
         /// @param other The transform on top of which this one should be 
@@ -250,6 +236,27 @@ class Transform
         ///
         /// @return The model matrix corresponding to the transform.
         glm::mat4 getModelMatrix() const;
+
+        /////////////////////////////////////////////
+        ///                                       ///
+        /// Methods overridden from BasisProvider ///
+        ///                                       ///
+        /////////////////////////////////////////////
+
+        /// @brief Get the local X vector of the object in world coordinates.
+        ///
+        /// @return The local X vector of the object, in world coordinates.
+        glm::vec3 left() const;
+
+        /// @brief Get the local Y vector of the object in world coordinates.
+        ///
+        /// @return The local Y vector of the object, in world coordinates.
+        glm::vec3 up() const;
+
+        /// @brief Get the local Z vector of the object in world coordinates.
+        ///
+        /// @return The local Z vector of the object, in world coordinates.
+        glm::vec3 forward() const;
 };
 
 #endif//RENDERBOI__CORE__TRANSFORM_HPP

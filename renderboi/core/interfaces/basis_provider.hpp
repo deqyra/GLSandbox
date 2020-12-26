@@ -8,9 +8,9 @@
 class BasisProvider
 {
     public:
-        virtual glm::vec3 left() = 0;
-        virtual glm::vec3 up() = 0;
-        virtual glm::vec3 forward() = 0;
+        virtual glm::vec3 left() const = 0;
+        virtual glm::vec3 up() const = 0;
+        virtual glm::vec3 forward() const = 0;
 };
 
 using BasisProviderPtr = std::shared_ptr<BasisProvider>;

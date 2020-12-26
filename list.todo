@@ -41,7 +41,7 @@ RenderBoi:
             ✔ Implement transformations relative to different frames of reference @done(20-10-10 12:50)
             ✔ Implement `Transform::compoundFrom(const Transform& other)` @done(20-10-13 13:49)
             ☐ Fix all scaling issues in `ObjectTransform`
-            ☐ Add frames of reference for `rotateBy(glm::quat)` and `scaleBy(glm::vec3)`
+            ☐ Add frames of reference for everything that doesn't have it
         VertexDataManager:
             ☐ A VertexDataManager holds actual vertex data and takes care of memory management
             ☐ Meshes now only keep handles to vertex content held in a VertexDataManager

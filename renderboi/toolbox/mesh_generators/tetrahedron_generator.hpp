@@ -43,15 +43,21 @@ class TetrahedronGenerator : public MeshGenerator
 
         /// @param parameters Parameters of the vertex generation.
         TetrahedronGenerator(Parameters parameters);
+        
+        /// @brief Parameters of the vertex generation.
+        Parameters parameters;
+
+        /////////////////////////////////////////////
+        ///                                       ///
+        /// Methods overridden from MeshGenerator ///
+        ///                                       ///
+        /////////////////////////////////////////////
 
         /// @brief Generate the vertex data, put it in a new mesh object and 
         /// return it.
         ///
         /// @return A pointer to the mesh containing the generated vertices.
         virtual MeshPtr generatePtr();
-        
-        /// @brief Parameters of the vertex generation.
-        Parameters parameters;
 };
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATORS__TETRAHEDRON_GENERATOR_HPP

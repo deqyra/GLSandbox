@@ -105,21 +105,6 @@ class Camera : public BasisProvider
         /// @param scrollOffset How much the camera was zoomed in or out.
         void processZoom(float scrollOffset);
 
-        /// @brief Get the facing direction of the camera.
-        ///
-        /// @return The direction the camera is facing.
-        glm::vec3 forward();
-
-        /// @brief Get the direction to the left of the camera.
-        ///
-        /// @return The direction to the left of the camera.
-        glm::vec3 left();
-
-        /// @brief Get the upwards direction of the camera.
-        ///
-        /// @return The upwards direction of the camera.
-        glm::vec3 up();
-
         /// @brief Get the world transform of the parent of the camera.
         ///
         /// @return The world transform of the parent of the camera.
@@ -200,6 +185,27 @@ class Camera : public BasisProvider
         ///
         /// @return The view-projection matrix of the camera.
         glm::mat4 getViewProjectionMatrix(glm::vec3 viewPoint);
+
+        /////////////////////////////////////////////
+        ///                                       ///
+        /// Methods overridden from BasisProvider ///
+        ///                                       ///
+        /////////////////////////////////////////////
+
+        /// @brief Get the facing direction of the camera.
+        ///
+        /// @return The direction the camera is facing.
+        glm::vec3 forward() const;
+
+        /// @brief Get the direction to the left of the camera.
+        ///
+        /// @return The direction to the left of the camera.
+        glm::vec3 left() const;
+
+        /// @brief Get the upwards direction of the camera.
+        ///
+        /// @return The upwards direction of the camera.
+        glm::vec3 up() const;
 };
 
 using CameraPtr = std::shared_ptr<Camera>;

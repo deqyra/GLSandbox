@@ -337,37 +337,6 @@ glm::vec3 Transform::scaleBy(glm::vec3 other)
     return _scale;
 }
 
-glm::vec3 Transform::left() const
-{
-    if (_localVectorsOutdated)
-    {
-        updateLocalVectors();
-    }
-
-    return _left;
-}
-
-glm::vec3 Transform::up() const
-{
-    if (_localVectorsOutdated)
-    {
-        updateLocalVectors();
-    }
-
-    return _up;
-}
-
-glm::vec3 Transform::forward() const
-{
-    if (_localVectorsOutdated)
-    {
-        updateLocalVectors();
-    }
-
-    return _forward;
-}
-
-
 glm::mat4 Transform::getModelMatrix() const
 {
     if (_matrixOutdated)
@@ -451,4 +420,34 @@ void Transform::updateMatrix() const
     _modelMatrix[3] = glm::vec4(_position, 1.f);
 
     _matrixOutdated = false;
+}
+
+glm::vec3 Transform::left() const
+{
+    if (_localVectorsOutdated)
+    {
+        updateLocalVectors();
+    }
+
+    return _left;
+}
+
+glm::vec3 Transform::up() const
+{
+    if (_localVectorsOutdated)
+    {
+        updateLocalVectors();
+    }
+
+    return _up;
+}
+
+glm::vec3 Transform::forward() const
+{
+    if (_localVectorsOutdated)
+    {
+        updateLocalVectors();
+    }
+
+    return _forward;
 }

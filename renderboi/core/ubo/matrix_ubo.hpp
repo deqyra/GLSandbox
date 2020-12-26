@@ -24,16 +24,6 @@ class MatrixUBO : public UniformBufferObject
     public:
         MatrixUBO();
 
-        /// @brief Get the binding point of the UBO on the GPU.
-        ///
-        /// @return The binding point of the UBO on the GPU.
-        virtual unsigned int getBindingPoint();
-
-        /// @brief Get the size the UBO takes in GPU memory.
-        ///
-        /// @return The amount of GPU memory occupied by the UBO, in bytes.
-        virtual unsigned int getSize();
-
         /// @brief Set the model matrix in the UBO.
         ///
         /// @param model The model matrix to set in the UBO.
@@ -59,6 +49,22 @@ class MatrixUBO : public UniformBufferObject
         /// rows will be sent to the GPU as vec4's, and the last element of 
         /// those will be ignored.
         void setNormal(glm::mat4 normal);
+
+        //////////////////////////////////////////////////
+        ///                                            ///
+        /// Methods overridden from UniformBufferObjet ///
+        ///                                            ///
+        //////////////////////////////////////////////////
+
+        /// @brief Get the binding point of the UBO on the GPU.
+        ///
+        /// @return The binding point of the UBO on the GPU.
+        virtual unsigned int getBindingPoint();
+
+        /// @brief Get the size the UBO takes in GPU memory.
+        ///
+        /// @return The amount of GPU memory occupied by the UBO, in bytes.
+        virtual unsigned int getSize();
 };
 
 #endif//RENDERBOI__CORE__UBO__MATRIX_UBO_HPP

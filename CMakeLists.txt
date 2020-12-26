@@ -220,8 +220,6 @@ set(RB_TOOLBOX_SOURCE_FILES
     mesh_generator.hpp
     input_logger.cpp
     input_logger.hpp
-    input_processing_script.cpp
-    input_processing_script.hpp 
     input_splitter.cpp
     input_splitter.hpp 
     script.cpp
@@ -261,24 +259,20 @@ set(RB_TOOLBOX_SOURCE_FILES
     scene/components/all_components.hpp 
     scene/components/camera_component.cpp
     scene/components/camera_component.hpp 
-    scene/components/input_processing_script_component.cpp
-    scene/components/input_processing_script_component.hpp 
     scene/components/light_component.cpp
     scene/components/light_component.hpp 
     scene/components/mesh_component.cpp
     scene/components/mesh_component.hpp 
     scene/components/script_component.cpp
     scene/components/script_component.hpp 
-    scripts/basic_window_manager.cpp
-    scripts/basic_window_manager.hpp 
-    scripts/mouse_camera_script.cpp
-    scripts/mouse_camera_script.hpp 
-    scripts/camera_aspect_ratio_script.cpp
-    scripts/camera_aspect_ratio_script.hpp 
-    scripts/keyboard_movement_script.cpp
-    scripts/keyboard_movement_script.hpp 
-    scripts/lambda_script.cpp
-    scripts/lambda_script.hpp 
+    runnables/basic_window_manager.cpp
+    runnables/basic_window_manager.hpp 
+    runnables/camera_aspect_ratio_manager.cpp
+    runnables/camera_aspect_ratio_manager.hpp 
+    runnables/keyboard_movement_script.cpp
+    runnables/keyboard_movement_script.hpp 
+    runnables/mouse_camera_manager.cpp
+    runnables/mouse_camera_manager.hpp 
 )
 
 set(RB_EXAMPLES_SOURCE_FILES
