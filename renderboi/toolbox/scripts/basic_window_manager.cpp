@@ -8,6 +8,8 @@
 #include <renderboi/window/gl_window.hpp>
 #include <renderboi/window/enums.hpp>
 
+#include <cpptools/enum_map.hpp>
+
 BasicWindowManager::BasicWindowManager()
 {
 
@@ -40,4 +42,42 @@ void BasicWindowManager::stopAction(GLWindowPtr window, const BasicWindowManager
 void BasicWindowManager::processFramebufferResize(GLWindowPtr window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+ControlSchemeManagerPtr<BasicWindowManagerAction> BasicWindowManager::getDefaultControlScheme()
+{
+    using Window::Input::Key;
+    ControlSchemeManagerPtr<BasicWindowManagerAction> schemeManager = std::make_shared<ControlSchemeManager<BasicWindowManagerAction>>();
+
+    schemeManager->bindControl(Control(Key::Escape), BasicWindowManagerAction::Terminate);
+    schemeManager->bindControl(Control(Key::Space), BasicWindowManagerAction::Terminate);
+    schemeManager->bindControl(Control(Key::F1), BasicWindowManagerAction::PolygonFill);
+    schemeManager->bindControl(Control(Key::F2), BasicWindowManagerAction::PolygonLine);
+    schemeManager->bindControl(Control(Key::F3), BasicWindowManagerAction::PolygonPoint);
+
+    return schemeManager;
+}
+
+namespace std
+{
+    string to_string(const BasicWindowManagerAction& action)
+    {
+        static bool runOnce = false;
+        static unordered_enum_map<BasicWindowManagerAction, std::string> enumNames;
+
+        if (!runOnce)
+        {
+            enumNames[BasicWindowManagerAction::Terminate]      = "Terminate";
+            enumNames[BasicWindowManagerAction::PolygonFill]    = "PolygonFill";
+            enumNames[BasicWindowManagerAction::PolygonLine]    = "PolygonLine";
+            enumNames[BasicWindowManagerAction::PolygonPoint]   = "PolygonPoint";
+
+            runOnce = true;
+        }
+
+        auto it = enumNames.find(action);
+        if (it != enumNames.end()) return it->second;
+
+        return "Unknown";
+    }
 }

@@ -108,14 +108,6 @@ void LightingSandbox::run(GLWindowPtr window)
     ActionEventReceiverPtr<KeyboardMovementAction> keyboardScriptAsReceiver = std::static_pointer_cast<ActionEventReceiver<KeyboardMovementAction>>(keyboardScript);
     ControlEventTranslatorPtr<KeyboardMovementAction> eventTranslator = std::make_shared<ControlEventTranslator<KeyboardMovementAction>>(keyboardMovementControls, keyboardScriptAsReceiver);
 
-    // Register the scene and the control translator to the splitter
-    InputSplitterPtr splitter = std::make_shared<InputSplitter>();
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(scene));
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(eventTranslator));
-    
-    // Register the splitter to the window
-    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
-
     const glm::vec3 X = Transform::X;
     const glm::vec3 Y = Transform::Y;
     const glm::vec3 Z = Transform::Z;
@@ -137,8 +129,15 @@ void LightingSandbox::run(GLWindowPtr window)
     
     // WINDOW SCRIPT
     std::shared_ptr<BasicWindowManager> windowScript = std::make_shared<BasicWindowManager>();
-    std::shared_ptr<InputProcessingScript> ipWindowScript = std::static_pointer_cast<InputProcessingScript>(windowScript);
-    scene->registerInputProcessingScript(ipWindowScript);
+
+    // Register the scene and the control translator to the splitter
+    InputSplitterPtr splitter = std::make_shared<InputSplitter>();
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(scene));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(eventTranslator));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowScript));
+    
+    // Register the splitter to the window
+    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
 
     SceneRenderer sceneRenderer;
 

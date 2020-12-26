@@ -3,7 +3,9 @@
 
 #include <renderboi/window/input_processor.hpp>
 
-#include "../controls/action_event_receiver.hpp"
+#include "../controls/control_scheme_manager.hpp"
+#include "../interfaces/action_event_receiver.hpp"
+#include "../interfaces/default_control_scheme_provider.hpp"
 
 enum class BasicWindowManagerAction
 {
@@ -14,13 +16,17 @@ enum class BasicWindowManagerAction
 };
 
 /// @brief Provides event callbacks associated with basic window management.
-class BasicWindowManager : public ActionEventReceiver<BasicWindowManagerAction>, public InputProcessor
+class BasicWindowManager :  public InputProcessor,
+                            public ActionEventReceiver<BasicWindowManagerAction>,
+                            public DefaultControlSchemeProvider<BasicWindowManagerAction>
 {
     private:
         BasicWindowManager(const BasicWindowManager& other) = delete;
         BasicWindowManager& operator=(const BasicWindowManager& other) = delete;
 
     public:
+        using ActionType = BasicWindowManagerAction;
+
         BasicWindowManager();
 
         /////////////////////////////////////////////////////////////////////////////
@@ -53,6 +59,22 @@ class BasicWindowManager : public ActionEventReceiver<BasicWindowManagerAction>,
         /// @param height New height (in pixels) of the framebuffer.
         void processFramebufferResize(GLWindowPtr window, int width, int height);
 
+        ////////////////////////////////////////////////////////////////////////////////////
+        ///                                                                              ///
+        /// Methods overridden from DefaultControlSchemeProvider<KeyboardMovementAction> ///
+        ///                                                                              ///
+        ////////////////////////////////////////////////////////////////////////////////////
+
+        /// @brief Get the default control scheme for the keyboard movement
+        /// script.
+        ///
+        /// @return The default control scheme for the keyboard movement script.
+        ControlSchemeManagerPtr<BasicWindowManagerAction> getDefaultControlScheme();
 };
+
+namespace std
+{
+    string to_string(const BasicWindowManagerAction& action);
+}
 
 #endif//RENDERBOI__TOOLBOX__SCRIPTS__BASIC_INPUT_MANAGER_HPP

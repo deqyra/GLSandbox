@@ -5,6 +5,8 @@
 #include <renderboi/core/frame_of_reference.hpp>
 using Ref = FrameOfReference;
 
+#include <renderboi/window/enums.hpp>
+
 #include <cpptools/enum_map.hpp>
 
 KeyboardMovementScript::KeyboardMovementScript(BasisProviderPtr basisProvider, float speed, float sprintMultiplier) :
@@ -103,6 +105,20 @@ void KeyboardMovementScript::stopAction(GLWindowPtr window, const KeyboardMoveme
     }
 
     cancelOppositeDirections();
+}
+
+ControlSchemeManagerPtr<KeyboardMovementAction> KeyboardMovementScript::getDefaultControlScheme()
+{
+    using Window::Input::Key;
+    ControlSchemeManagerPtr<KeyboardMovementAction> schemeManager = std::make_shared<ControlSchemeManager<KeyboardMovementAction>>();
+
+    schemeManager->bindControl(Control(Key::W), KeyboardMovementAction::Forward);
+    schemeManager->bindControl(Control(Key::A), KeyboardMovementAction::Left);
+    schemeManager->bindControl(Control(Key::S), KeyboardMovementAction::Backward);
+    schemeManager->bindControl(Control(Key::D), KeyboardMovementAction::Right);
+    schemeManager->bindControl(Control(Key::LeftShift), KeyboardMovementAction::Sprint);
+
+    return schemeManager;
 }
 
 void KeyboardMovementScript::cancelOppositeDirections()

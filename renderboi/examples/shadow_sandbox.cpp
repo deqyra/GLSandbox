@@ -15,8 +15,7 @@
 #include <renderboi/toolbox/factory.hpp>
 #include <renderboi/toolbox/input_splitter.hpp>
 #include <renderboi/toolbox/input_logger.hpp>
-#include <renderboi/toolbox/controls/control_scheme_manager.hpp>
-#include <renderboi/toolbox/controls/control_event_translator.hpp>
+#include <renderboi/toolbox/controls/controlled_entity_manager.hpp>
 #include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
 #include <renderboi/toolbox/mesh_generators/plane_generator.hpp>
 #include <renderboi/toolbox/mesh_generators/torus_generator.hpp>
@@ -170,34 +169,8 @@ void ShadowSandbox::run(GLWindowPtr window)
     Factory::createInputProcessingScriptAndAttachToObject<CameraAspectRatioScript>(cameraObj);
 
     // Add script component to camera: KeyboardMovementScript
-    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
-    std::shared_ptr<KeyboardMovementScript> keyboardScript = std::make_shared<KeyboardMovementScript>(cameraAsBasisProvider);
-    ScriptPtr keyboardScriptAsBaseScript = std::static_pointer_cast<Script>(keyboardScript);
-    cameraObj->addComponent<ScriptComponent>(keyboardScriptAsBaseScript);
-
-    // Bind controls to keyboard script    
-    using Window::Input::Key;
-    ControlSchemeManagerPtr<KeyboardMovementAction> keyboardMovementControls = std::make_shared<ControlSchemeManager<KeyboardMovementAction>>();
-    keyboardMovementControls->bindControl(Control(Key::W), KeyboardMovementAction::Forward);
-    keyboardMovementControls->bindControl(Control(Key::A), KeyboardMovementAction::Left);
-    keyboardMovementControls->bindControl(Control(Key::S), KeyboardMovementAction::Backward);
-    keyboardMovementControls->bindControl(Control(Key::D), KeyboardMovementAction::Right);
-    keyboardMovementControls->bindControl(Control(Key::LeftShift), KeyboardMovementAction::Sprint);
-
-    ActionEventReceiverPtr<KeyboardMovementAction> keyboardScriptAsReceiver = std::static_pointer_cast<ActionEventReceiver<KeyboardMovementAction>>(keyboardScript);
-    ControlEventTranslatorPtr<KeyboardMovementAction> eventTranslator = std::make_shared<ControlEventTranslator<KeyboardMovementAction>>(keyboardMovementControls, keyboardScriptAsReceiver);
-
-    // Instantiate an input logger
-    InputLoggerPtr logger = std::make_shared<InputLogger>();
-
-    // Register the scene and the control translator to the splitter
-    InputSplitterPtr splitter = std::make_shared<InputSplitter>();
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(scene));
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(eventTranslator));
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));
-    
-    // Register the splitter to the window
-    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
+    ControlledEntityManager<KeyboardMovementScript> keyboardScriptManager(std::static_pointer_cast<BasisProvider>(camera));
+    cameraObj->addComponent<ScriptComponent>(std::static_pointer_cast<Script>(keyboardScriptManager.getEntity()));
 
 
 
@@ -229,15 +202,27 @@ void ShadowSandbox::run(GLWindowPtr window)
     ///                                         ///
     ///////////////////////////////////////////////
 
-    // MOVEMENT SCRIPT
+    // OBJECT MOVEMENT SCRIPT
     std::shared_ptr<ShadowSandboxScript> movementScript = std::make_shared<ShadowSandboxScript>(lightObj, torusObj);
     std::shared_ptr<InputProcessingScript> ipBaseMovementScript = std::static_pointer_cast<InputProcessingScript>(movementScript);
     scene->registerScript(ipBaseMovementScript);
     
     // WINDOW SCRIPT
-    std::shared_ptr<BasicWindowManager> windowScript = std::make_shared<BasicWindowManager>();
-    std::shared_ptr<InputProcessingScript> ipBaseWindowScript = std::static_pointer_cast<InputProcessingScript>(windowScript);
-    scene->registerInputProcessingScript(ipBaseWindowScript);
+    ControlledEntityManager<BasicWindowManager> windowManager;
+
+    // Instantiate an input logger
+    InputLoggerPtr logger = std::make_shared<InputLogger>();
+
+    // Register the scene and the control translator to the splitter
+    InputSplitterPtr splitter = std::make_shared<InputSplitter>();
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEntity()));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEventTranslator()));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(scene));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(keyboardScriptManager.getEventTranslator()));
+    
+    // Register the splitter to the window
+    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
 
     SceneRenderer sceneRenderer;
 
@@ -276,6 +261,7 @@ void ShadowSandbox::run(GLWindowPtr window)
     ///              ///
     ////////////////////
 
+    splitter->detachAllInputProcessors();
     Factory::destroyScene(scene);
 
     // Reset everything back to how it was

@@ -226,11 +226,13 @@ set(RB_TOOLBOX_SOURCE_FILES
     input_splitter.hpp 
     script.cpp
     script.hpp 
-    controls/action_event_receiver.hpp
+    controls/control.cpp
+    controls/control.hpp
     controls/control_event_translator.hpp
     controls/control_scheme_manager.hpp
-    controls/control.hpp
-    controls/control.cpp
+    controls/controlled_entity_manager.hpp
+    interfaces/action_event_receiver.hpp
+    interfaces/default_control_scheme_provider.hpp
     mesh_generators/all_mesh_generators.hpp
     mesh_generators/axes_generator.cpp
     mesh_generators/axes_generator.hpp

@@ -5,8 +5,10 @@
 
 #include <renderboi/core/interfaces/basis_provider.hpp>
 
-#include "../input_processing_script.hpp"
-#include "../controls/action_event_receiver.hpp"
+#include "../script.hpp"
+#include "../controls/control_scheme_manager.hpp"
+#include "../interfaces/action_event_receiver.hpp"
+#include "../interfaces/default_control_scheme_provider.hpp"
 
 /// @brief Litterals describing the actions which can be performed by the
 /// KeyboardMovementScript
@@ -20,7 +22,9 @@ enum class KeyboardMovementAction
 };
 
 /// @brief Provides event callbacks to manage a camera as in a FPS game.
-class KeyboardMovementScript : public Script, public ActionEventReceiver<KeyboardMovementAction>
+class KeyboardMovementScript :  public Script,
+                                public ActionEventReceiver<KeyboardMovementAction>,
+                                public DefaultControlSchemeProvider<KeyboardMovementAction>
 {
     private:
         /// @brief Index of a bool array which flags a forward keypress.
@@ -58,6 +62,8 @@ class KeyboardMovementScript : public Script, public ActionEventReceiver<Keyboar
         void cancelOppositeDirections();
         
     public:
+        using ActionType = KeyboardMovementAction;
+
         /// @brief The default move speed (movement with WASD keys).
         static constexpr float DefaultMoveSpeed = 4.f;
         
@@ -116,6 +122,18 @@ class KeyboardMovementScript : public Script, public ActionEventReceiver<Keyboar
         ///
         /// @param action Object describing the action to stop processing.
         void stopAction(GLWindowPtr window, const KeyboardMovementAction& action);
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        ///                                                                              ///
+        /// Methods overridden from DefaultControlSchemeProvider<KeyboardMovementAction> ///
+        ///                                                                              ///
+        ////////////////////////////////////////////////////////////////////////////////////
+
+        /// @brief Get the default control scheme for the keyboard movement
+        /// script.
+        ///
+        /// @return The default control scheme for the keyboard movement script.
+        ControlSchemeManagerPtr<KeyboardMovementAction> getDefaultControlScheme();
 };
 
 namespace std
