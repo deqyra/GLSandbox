@@ -60,20 +60,20 @@ std::size_t ControlHash::operator()(Control const& c) const
 
 namespace std
 {
-    std::string to_string(const Control& control)
+    string to_string(const Control& control)
     {
         switch(control.kind)
         {
             case ControlKind::Key:
-                return std::to_string(control.key);
+                return to_string(control.key);
             case ControlKind::MouseButton:
-                return std::to_string(control.mouseButton);
+                return to_string(control.mouseButton);
             case ControlKind::GamepadButton:
-                return std::to_string(control.gamepadButton);
+                return to_string(control.gamepadButton);
             case ControlKind::GamepadAxis:
-                return std::to_string(control.gamepadAxis);
+                return to_string(control.gamepadAxis);
             case ControlKind::Joystick:
-                return std::to_string(control.joystick);
+                return to_string(control.joystick);
         }
         return "Unknown control";
     }

@@ -8,7 +8,7 @@ RenderBoi:
         ☐ Add const qualifiers everywhere and constexpr qualifiers where possible
         ☐ Investigate CRTP to eliminate vtables in large inheritance trees
         ☐ Investigate CRTP to make clone methods "self-implement"
-        ☐ Remove virtual keywords where unnecessary
+        ✔ Remove virtual keywords where unnecessary @done(20-12-26 15:02)
         ✔ Move tools to external repo and update CMake to use it @done(20-12-17 14:20)
         ☐ Set up continuous integration
         ✔ Better documentation @done(20-10-19 19:22)
@@ -65,8 +65,6 @@ RenderBoi:
         Factory:
             ✔ Method to attach camera and scripts to scene object@done(20-10-26 02:40)
             ☐ Forwarding methods to ShaderBuilder
-        Input model:
-            ☐ Think about breaking input processor interface apart for performance
         InputSplitter:
             ☐ Async dispatch of events
         Scene:
@@ -101,6 +99,9 @@ RenderBoi:
         ✔ Allow selection of window backend with an enum and templated methods @done(20-10-26 02:12)
         ✔ Move functionality to get input action/button names (used in BasicInputManager) @done(20-12-25 16:00)
         ☐ Fully support gamepad (and maybe joysticks)
+        InputProcessor:
+            ☐ Think about breaking the interface apart for performance
+        ☐ Implement an input poll rate limiter
     Examples:
         ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
         ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)

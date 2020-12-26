@@ -115,7 +115,7 @@ namespace ShaderInfo
 
 namespace std
 {
-    std::string to_string(ShaderInfo::ShaderFeature v);
+    string to_string(ShaderInfo::ShaderFeature v);
 }
 
 #endif//RENDERBOI__CORE__SHADER__SHADER_FEATURE_HPP

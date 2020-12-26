@@ -19,10 +19,10 @@ bool any(Window::Input::Modifier value)
 
 namespace std
 {
-    std::string to_string(const Window::Input::Mode::Target& target)
+    string to_string(const Window::Input::Mode::Target& target)
     {
         static bool runOnce = false;
-        static std::unordered_enum_map<Window::Input::Mode::Target, std::string> enumNames;
+        static unordered_enum_map<Window::Input::Mode::Target, string> enumNames;
 
         if (!runOnce)
         {
@@ -41,10 +41,10 @@ namespace std
         return "Unknown window input mode target";
     }
 
-    std::string to_string(const Window::Input::Mode::Value& value)
+    string to_string(const Window::Input::Mode::Value& value)
     {
         static bool runOnce = false;
-        static std::unordered_enum_map<Window::Input::Mode::Value, std::string> enumNames;
+        static unordered_enum_map<Window::Input::Mode::Value, string> enumNames;
 
         if (!runOnce)
         {
@@ -63,10 +63,10 @@ namespace std
         return "Unknown window input mode value";
     }
 
-    std::string to_string(const Window::Input::Action& action)
+    string to_string(const Window::Input::Action& action)
     {
         static bool runOnce = false;
-        static std::unordered_enum_map<Window::Input::Action, std::string> enumNames;
+        static unordered_enum_map<Window::Input::Action, string> enumNames;
 
         if (!runOnce)
         {
@@ -83,10 +83,10 @@ namespace std
         return "Unknown input action";
     }
 
-    std::string to_string(const Window::Input::Key& key)
+    string to_string(const Window::Input::Key& key)
     {
         static bool runOnce = false;
-        static std::unordered_enum_map<Window::Input::Key, std::string> enumNames;
+        static unordered_enum_map<Window::Input::Key, string> enumNames;
 
         if (!runOnce)
         {
@@ -221,10 +221,10 @@ namespace std
         return "Unknown keyboard key";
     }
 
-    std::string to_string(const Window::Input::Modifier& mod)
+    string to_string(const Window::Input::Modifier& mod)
     {
         static bool runOnce = false;
-        static std::unordered_enum_map<Window::Input::Modifier, std::string> enumNames;
+        static unordered_enum_map<Window::Input::Modifier, string> enumNames;
 
         if (!runOnce)
         {
@@ -245,11 +245,11 @@ namespace std
         return "Unknown keyboard modifier";
     }
 
-    std::string to_string(const Window::Input::MouseButton& mouseButton)
+    string to_string(const Window::Input::MouseButton& mouseButton)
     {
         static bool runOnce = false;
-        static std::unordered_map<Window::Input::MouseButton, std::string> enumNames;
-        static std::unordered_map<Window::Input::MouseButton, std::string> specialNames;
+        static unordered_map<Window::Input::MouseButton, string> enumNames;
+        static unordered_map<Window::Input::MouseButton, string> specialNames;
 
         if (!runOnce)
         {
@@ -278,10 +278,10 @@ namespace std
         return "Unknown mouse button";
     }
 
-    std::string to_string(const Window::Input::Joystick& joystick)
+    string to_string(const Window::Input::Joystick& joystick)
     {
         static bool runOnce = false;
-        static std::unordered_map<Window::Input::Joystick, std::string> enumNames;
+        static unordered_map<Window::Input::Joystick, string> enumNames;
 
         if (!runOnce)
         {
@@ -311,10 +311,10 @@ namespace std
         return "Unknown joystick";
     }
 
-    std::string to_string(const Window::Input::Gamepad::Button& gamepadButton)
+    string to_string(const Window::Input::Gamepad::Button& gamepadButton)
     {
         static bool runOnce = false;
-        static std::unordered_map<Window::Input::Gamepad::Button, std::string> enumNames;
+        static unordered_map<Window::Input::Gamepad::Button, string> enumNames;
 
         if (!runOnce)
         {
@@ -343,10 +343,10 @@ namespace std
         return "Unknown gamepad button";
     }
 
-    std::string to_string(const Window::Input::Gamepad::Axis& gamepadAxis)
+    string to_string(const Window::Input::Gamepad::Axis& gamepadAxis)
     {
         static bool runOnce = false;
-        static std::unordered_map<Window::Input::Gamepad::Axis, std::string> enumNames;
+        static unordered_map<Window::Input::Gamepad::Axis, string> enumNames;
 
         if (!runOnce)
         {

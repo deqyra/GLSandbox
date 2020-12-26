@@ -41,10 +41,10 @@ namespace ShaderInfo
 
 namespace std
 {
-    std::string to_string(ShaderInfo::ShaderFeature v)
+    string to_string(ShaderInfo::ShaderFeature v)
     {
         static bool runOnce = false;
-        static std::unordered_map<ShaderInfo::ShaderFeature, std::string> featureNames;
+        static unordered_map<ShaderInfo::ShaderFeature, string> featureNames;
 
         if (!runOnce)
         {

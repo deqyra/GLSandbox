@@ -44,10 +44,10 @@ namespace ShaderInfo
 
 namespace std
 {
-    std::string to_string(ShaderInfo::ShaderStage v)
+    string to_string(ShaderInfo::ShaderStage v)
     {
         static bool runOnce = false;
-        static std::unordered_map<ShaderInfo::ShaderStage, std::string> _stageNames;
+        static unordered_map<ShaderInfo::ShaderStage, string> _stageNames;
 
         if (!runOnce)
         {

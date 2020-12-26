@@ -34,6 +34,6 @@ namespace ShaderInfo
 
 namespace std
 {
-    std::string to_string(ShaderInfo::ShaderStage v);
+    string to_string(ShaderInfo::ShaderStage v);
 }
 #endif//RENDERBOI__CORE__SHADER__SHADER_STAGE_HPP

@@ -29,9 +29,4 @@ namespace ShaderInfo
     const FilenameToSupportedFeatureMap& FeaturesSupportedByFile();
 }
 
-namespace std
-{
-    std::string to_string(ShaderInfo::ShaderFeature v);
-}
-
 #endif//RENDERBOI__CORE__SHADER_INFO_HPP
