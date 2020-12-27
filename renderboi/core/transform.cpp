@@ -31,7 +31,7 @@ Transform::Transform() :
 
 }
 
-Transform::Transform(glm::vec3 position, glm::quat rotation, glm::vec3 scale) :
+Transform::Transform(const glm::vec3 position, const glm::quat rotation, const glm::vec3 scale) :
     _position(position),
     _rotation(glm::normalize(rotation)),
     _scale(scale),
@@ -51,7 +51,7 @@ glm::vec3 Transform::getPosition() const
 }
 
 template<>
-glm::vec3 Transform::translateBy<Ref::World>(glm::vec3 other)
+glm::vec3 Transform::translateBy<Ref::World>(const glm::vec3& other)
 {
     // Translate the current position
     _position += other;
@@ -62,13 +62,13 @@ glm::vec3 Transform::translateBy<Ref::World>(glm::vec3 other)
 }
 
 template<>
-glm::vec3 Transform::translateBy<Ref::Parent>(glm::vec3 other)
+glm::vec3 Transform::translateBy<Ref::Parent>(const glm::vec3& other)
 {
     return translateBy<Ref::World>(other);
 }
 
 template<>
-glm::vec3 Transform::translateBy<Ref::Self>(glm::vec3 other)
+glm::vec3 Transform::translateBy<Ref::Self>(const glm::vec3& other)
 {
     if (_localVectorsOutdated) updateLocalVectors();
 
@@ -102,7 +102,7 @@ glm::vec3 Transform::setPosition<Ref::Self>(glm::vec3 position)
 }
 
 template<>
-glm::quat Transform::rotateBy<Ref::World>(float radAngle, glm::vec3 axis)
+glm::quat Transform::rotateBy<Ref::World>(const float radAngle, const glm::vec3& axis)
 {
     // Compute quaternion associated with wanted rotation
     glm::quat newRotation = glm::normalize(glm::angleAxis(radAngle, axis));
@@ -114,13 +114,13 @@ glm::quat Transform::rotateBy<Ref::World>(float radAngle, glm::vec3 axis)
 }
 
 template<>
-glm::quat Transform::rotateBy<Ref::Parent>(float radAngle, glm::vec3 axis)
+glm::quat Transform::rotateBy<Ref::Parent>(const float radAngle, const glm::vec3& axis)
 {
     return rotateBy<Ref::World>(radAngle, axis);
 }
 
 template<>
-glm::quat Transform::rotateBy<Ref::Self>(float radAngle, glm::vec3 axis)
+glm::quat Transform::rotateBy<Ref::Self>(const float radAngle, const glm::vec3& axis)
 {
     if (_localVectorsOutdated) updateLocalVectors();
     // Recalculate provided axis relative to the world
@@ -131,7 +131,7 @@ glm::quat Transform::rotateBy<Ref::Self>(float radAngle, glm::vec3 axis)
 }
 
 template<>
-glm::vec3 Transform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+glm::vec3 Transform::orbit<Ref::World>(const float radAngle, const glm::vec3& axis, const glm::vec3& center, const bool selfRotate)
 {
     // Orbit around the axis and center
     glm::vec3 tmpPos = _position - center;
@@ -155,13 +155,13 @@ glm::vec3 Transform::orbit<Ref::World>(float radAngle, glm::vec3 axis, glm::vec3
 }
 
 template<>
-glm::vec3 Transform::orbit<Ref::Parent>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+glm::vec3 Transform::orbit<Ref::Parent>(float radAngle, const glm::vec3& axis, const glm::vec3& center, const bool selfRotate)
 {
     return orbit<Ref::World>(radAngle, axis, center, selfRotate);
 }
 
 template<>
-glm::vec3 Transform::orbit<Ref::Self>(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate)
+glm::vec3 Transform::orbit<Ref::Self>(float radAngle, const glm::vec3& axis, const glm::vec3& center, const bool selfRotate)
 {
     if (_localVectorsOutdated) updateLocalVectors();
 
@@ -208,7 +208,7 @@ glm::quat Transform::setRotation<Ref::Self>(glm::quat rotation)
 // This function does not need to be templated with a frame of reference for its arguments:
 // A rotation in one frame of reference will be encoded by the exact same quaternion in any other frame of reference.
 // Thus, rotating by a quaternion is independant of any and all frames of references.
-glm::quat Transform::rotateBy(glm::quat other)
+glm::quat Transform::rotateBy(const glm::quat& other)
 {
     // Rotate the object
     _rotation = glm::normalize(other * _rotation);
@@ -220,7 +220,7 @@ glm::quat Transform::rotateBy(glm::quat other)
 }
 
 template<>
-glm::quat Transform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConstraint)
+glm::quat Transform::lookAt<Ref::World>(const glm::vec3& target, glm::vec3 yConstraint)
 {
     // Local vectors are going to be needed so update them
     if (_localVectorsOutdated) updateLocalVectors();
@@ -279,13 +279,13 @@ glm::quat Transform::lookAt<Ref::World>(glm::vec3 target, glm::vec3 yConstraint)
 }
 
 template<>
-glm::quat Transform::lookAt<Ref::Parent>(glm::vec3 target, glm::vec3 yConstraint)
+glm::quat Transform::lookAt<Ref::Parent>(const glm::vec3& target, glm::vec3 yConstraint)
 {
     return lookAt<Ref::World>(target, yConstraint);
 }
 
 template<>
-glm::quat Transform::lookAt<Ref::Self>(glm::vec3 target, glm::vec3 yConstraint)
+glm::quat Transform::lookAt<Ref::Self>(const glm::vec3& target, glm::vec3 yConstraint)
 {
     if (_localVectorsOutdated) updateLocalVectors();
     // Recalculate provided parameters relative to the world
@@ -325,7 +325,7 @@ void Transform::setScale<Ref::Self>(glm::vec3 scale)
     scaleBy(scale);
 }
 
-glm::vec3 Transform::scaleBy(glm::vec3 other)
+glm::vec3 Transform::scaleBy(const glm::vec3& other)
 {
     // Scale the object
     _scale.x *= other.x;

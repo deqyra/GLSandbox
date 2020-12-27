@@ -1,49 +1,70 @@
 #include "spot_light.hpp"
 #include "tools.hpp"
 
-SpotLight::SpotLight(glm::vec3 direction) :
+SpotLight::SpotLight(const glm::vec3 direction) :
     SpotLight(direction, DefaultRange)
 {
 
 }
 
-SpotLight::SpotLight(glm::vec3 direction, float range) :
+SpotLight::SpotLight(const glm::vec3 direction, const float range) :
     SpotLight(direction, glm::vec3(1.f), glm::vec3(1.f), glm::vec3(1.f), range)
 {
 
 }
 
-SpotLight::SpotLight(glm::vec3 direction, float innerCutoff, float outerCutoff) :
+SpotLight::SpotLight(const glm::vec3 direction, const float innerCutoff, const float outerCutoff) :
 	SpotLight(direction, glm::vec3(1.f), glm::vec3(1.f), glm::vec3(1.f), innerCutoff, outerCutoff)
 {
 
 }
 
-SpotLight::SpotLight(glm::vec3 direction, float range, float innerCutoff, float outerCutoff) :
+SpotLight::SpotLight(const glm::vec3 direction, const float range, const float innerCutoff, const float outerCutoff) :
 	SpotLight(direction, glm::vec3(1.f), glm::vec3(1.f), glm::vec3(1.f), range, innerCutoff, outerCutoff)
 {
 
 }
 
-SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) :
+SpotLight::SpotLight(const glm::vec3 direction, const glm::vec3 ambient, const glm::vec3 diffuse, const glm::vec3 specular) :
 	SpotLight(direction, ambient, diffuse, specular, DefaultRange, DefaultInnerCutoff, DefaultOuterCutoff)
 {
 
 }
 
-SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float range) :
+SpotLight::SpotLight(
+    const glm::vec3 direction,
+    const glm::vec3 ambient,
+    const glm::vec3 diffuse,
+    const glm::vec3 specular,
+    const float range
+) :
 	SpotLight(direction, ambient, diffuse, specular, range, DefaultInnerCutoff, DefaultOuterCutoff)
 {
 
 }
 
-SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float innerCutoff, float outerCutoff) : 
+SpotLight::SpotLight(
+    const glm::vec3 direction,
+    const glm::vec3 ambient,
+    const glm::vec3 diffuse,
+    const glm::vec3 specular,
+    const float innerCutoff,
+    const float outerCutoff
+) : 
 	SpotLight(direction, ambient, diffuse, specular, DefaultRange, innerCutoff, outerCutoff)
 {
 
 }
 
-SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float range, float innerCutoff, float outerCutoff) :
+SpotLight::SpotLight(
+    const glm::vec3 direction,
+    const glm::vec3 ambient,
+    const glm::vec3 diffuse,
+    const glm::vec3 specular,
+    const float range,
+    const float innerCutoff,
+    const float outerCutoff
+) :
     Light(LightType::SpotLight),
     ambient(ambient),
     diffuse(diffuse),
@@ -54,7 +75,17 @@ SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, 
     attenuationFromRange(range, constant, linear, quadratic);
 }
 
-SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic, float innerCutoff, float outerCutoff) :
+SpotLight::SpotLight(
+    const glm::vec3 direction,
+    const glm::vec3 ambient,
+    const glm::vec3 diffuse,
+    const glm::vec3 specular,
+    const float constant,
+    const float linear,
+    const float quadratic,
+    const float innerCutoff,
+    const float outerCutoff
+) :
     Light(LightType::SpotLight),
     ambient(ambient),
     diffuse(diffuse),
@@ -68,12 +99,12 @@ SpotLight::SpotLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, 
 
 }
 
-SpotLight* SpotLight::clone()
+SpotLight* SpotLight::clone() const
 {
     return new SpotLight(direction, ambient, diffuse, specular, constant, linear, quadratic, innerCutoff, outerCutoff);
 }
 
-void SpotLight::setRange(float range)
+void SpotLight::setRange(const float range)
 {
     attenuationFromRange(range, constant, linear, quadratic);
 }

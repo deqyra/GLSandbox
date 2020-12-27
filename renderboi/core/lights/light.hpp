@@ -8,30 +8,30 @@
 /// @brief Abstract light.
 class Light
 {
-    private:
-        Light() = delete;
+private:
+    Light() = delete;
 
-        /// @brief Keeps track of how many instances were created (used as a
-        /// unique ID system).
-        static unsigned int _count;
+    /// @brief Keeps track of how many instances were created (used as a unique
+    /// ID system).
+    static unsigned int _count;
 
-    protected:
-        /// @param type Literal describing which type the light will be.
-        Light(LightType type);
+protected:
+    /// @param type Literal describing which type the light will be.
+    Light(const LightType type);
 
-    public:
-        /// @brief ID of the light instance.
-        const unsigned int id;
+public:
+    /// @brief ID of the light instance.
+    const unsigned int id;
 
-        /// @brief Type of the light instance.
-        const LightType lightType;
+    /// @brief Type of the light instance.
+    const LightType lightType;
 
-        /// @brief Get a raw pointer to a new light instance cloned from this
-        /// one. Ownership and responsibility for the allocated resources are 
-        /// fully transferred to the caller.
-        ///
-        /// @return A raw pointer to the light instance cloned from this one.
-        virtual Light* clone() = 0;
+    /// @brief Get a raw pointer to a new light instance cloned from this one.
+    /// Ownership and responsibility for the allocated resources are fully
+    /// transferred to the caller.
+    ///
+    /// @return A raw pointer to the light instance cloned from this one.
+    virtual Light* clone() const = 0;
 };
 
 using LightPtr = std::shared_ptr<Light>;

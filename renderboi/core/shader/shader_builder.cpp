@@ -11,7 +11,6 @@
 #include <numeric>
 #include <sstream>
 
-#include "shader_info.hpp"
 #include "shader_feature.hpp"
 #include "shader_stage.hpp"
 
@@ -20,33 +19,33 @@
 
 #define INFO_BUFFER_SIZE 2048
 
-ShaderBuilder::NamedStringToLoadStatusMap ShaderBuilder::_namedStringLoadStatus = ShaderBuilder::NamedStringToLoadStatusMap();
-const unsigned int ShaderBuilder::shadingLanguageVersion = 420;
-const std::string ShaderBuilder::shadingLanguageProfile = "core";
+std::unordered_map<std::string, bool> ShaderBuilder::_namedStringLoadStatus = std::unordered_map<std::string, bool>();
 
 ShaderProgram ShaderBuilder::MinimalShaderProgram()
 {
-    static ShaderProgram minimal = buildShaderProgramFromConfig(ShaderConfig::MinimalConfig());
-    return minimal;
+    static ShaderProgram Minimal = BuildShaderProgramFromConfig(ShaderConfig::MinimalConfig());
+    return Minimal;
 }
 
-ShaderProgram ShaderBuilder::buildShaderProgramFromConfig(ShaderConfig config, bool dumpSource)
+ShaderProgram ShaderBuilder::BuildShaderProgramFromConfig(const ShaderConfig& config, const bool dumpSource)
 {
-    const std::vector<ShaderInfo::ShaderFeature>& features = config.getRequestedFeatures();
-    std::unordered_set<ShaderInfo::ShaderStage> requestedStages;
+    const std::vector<ShaderFeature>& Features = config.getRequestedFeatures();
+    std::unordered_set<ShaderStage> requestedStages;
 
     // Find out which shader stage were requested in the features
-    for (auto it = features.begin(); it != features.end(); it++)
+    for (auto it = Features.begin(); it != Features.end(); it++)
     {
-        auto jt = ShaderInfo::FeatureStages().find(*it);
-        if (jt == ShaderInfo::FeatureStages().end())
+        auto jt = FeatureStages().find(*it);
+        if (jt == FeatureStages().end())
         {
-            std::string s = "ShaderBuilder: cannot build shader program from config, feature \"" + 
-                            std::to_string(*it) + "\" (" + std::to_string((unsigned int) *it) + ") from unknown stage was requested.";
+            const std::string s = "ShaderBuilder: cannot build shader program from config, feature "
+                "\"" + std::to_string(*it) + "\" (" + std::to_string((unsigned int) *it) + ") "
+                "from unknown stage was requested.";
+
             throw std::runtime_error(s.c_str());
         }
 
-        ShaderInfo::ShaderStage stage = jt->second;
+        const ShaderStage stage = jt->second;
         requestedStages.insert(stage);
     }
 
@@ -54,71 +53,70 @@ ShaderProgram ShaderBuilder::buildShaderProgramFromConfig(ShaderConfig config, b
     // Generate all shader stages
     for (auto it = requestedStages.begin(); it != requestedStages.end(); it++)
     {
-        Shader shader = buildShaderStageFromConfig(*it, config, dumpSource);
+        const Shader shader = BuildShaderStageFromConfig(*it, config, dumpSource);
         shaders.push_back(shader);
     }
 
     // Link them together and return
-    return linkShaders(shaders);
+    return LinkShaders(shaders);
 }
 
-ShaderProgram ShaderBuilder::linkShaders(std::vector<Shader> shaders)
+ShaderProgram ShaderBuilder::LinkShaders(const std::vector<Shader>& shaders)
 {
-    std::unordered_set<ShaderInfo::ShaderStage> stageCount;
+    std::unordered_set<ShaderStage> presentStages;
     std::vector<unsigned int> locations;
 
     // Check if there is no more than one shader per stage
     for (auto it = shaders.begin(); it != shaders.end(); it++)
     {
-        ShaderInfo::ShaderStage stage = it->stage();
-        auto jt = stageCount.find(stage);
-        if (jt == stageCount.end())
+        ShaderStage stage = it->stage();
+        auto jt = presentStages.find(stage);
+        if (jt == presentStages.end())
         {
-            stageCount.insert(stage);
-            // Store locations aside
+            presentStages.insert(stage);
             locations.push_back(it->location());
         }
         else
         {
-            std::string s = "ShaderBuilder: cannot link shaders, several objects were provided for stage \"" + std::to_string(stage) + "\".";
+            const std::string s = "ShaderBuilder: cannot link shaders, several objects were provided for stage \""
+                + std::to_string(stage) + "\".";
+
             throw std::runtime_error(s.c_str());
         }        
     }
 
     // Check if there is at least a vertex shader and a fragment shader
-    if (stageCount.find(ShaderInfo::ShaderStage::Vertex) == stageCount.end())
+    if (presentStages.find(ShaderStage::Vertex) == presentStages.end())
     {
-        std::string s = "ShaderBuilder: cannot link shaders, a vertex shader is required but none was provided.";
-        throw std::runtime_error(s.c_str());
+        throw std::runtime_error("ShaderBuilder: cannot link shaders, a vertex shader is required but none was provided.");
     }
-    if (stageCount.find(ShaderInfo::ShaderStage::Fragment) == stageCount.end())
+    if (presentStages.find(ShaderStage::Fragment) == presentStages.end())
     {
-        std::string s = "ShaderBuilder: cannot link shaders, a fragment shader is required but none was provided.";
-        throw std::runtime_error(s.c_str());
+        throw std::runtime_error("ShaderBuilder: cannot link shaders, a fragment shader is required but none was provided.");
     }
 
     // Do the linking
-    unsigned int programLocation = makeShaderProgram(locations);
+    const unsigned int programLocation = _MakeShaderProgram(locations);
     if (!programLocation)
     {
-        throw std::runtime_error("ShaderBuilder: the provided shaders could not be linked together. More info was printed at std::cerr.");
+        throw std::runtime_error("ShaderBuilder: the provided shaders could not be linked together. See std::cerr.");
     }
 
     // Aggregate supported features
-    std::vector<ShaderInfo::ShaderFeature> supportedFeatures = aggregateShaderFeatures(shaders);
+    const std::vector<ShaderFeature> supportedFeatures = _AggregateShaderFeatures(shaders);
 
     // Return the shader instance
     return ShaderProgram(programLocation, supportedFeatures);
 }
 
-Shader ShaderBuilder::buildShaderStageFromConfig(ShaderInfo::ShaderStage stage, ShaderConfig config, bool dumpSource)
+Shader ShaderBuilder::BuildShaderStageFromConfig(const ShaderStage stage, const ShaderConfig& config, const bool dumpSource)
 {
-    std::vector<ShaderInfo::ShaderFeature> requested = filterFeaturesByStage(config.getRequestedFeatures(), stage);
+    const std::vector<ShaderFeature> requested = _FilterFeaturesByStage(config.getRequestedFeatures(), stage);
 
-    auto it = StageTemplatePaths().find(stage);
-    if (it == StageTemplatePaths().end())
+    auto it = _StageTemplatePaths().find(stage);
+    if (it == _StageTemplatePaths().end())
     {
-        std::string s = "ShaderBuilder: cannot find template path for stage \"" + std::to_string(stage) + "\" (" + std::to_string((unsigned int)(stage)) + ").";
+        const std::string s = "ShaderBuilder: cannot find template path for stage \"" + std::to_string(stage) + "\".";
         throw std::runtime_error(s.c_str());
     }
 
@@ -127,32 +125,36 @@ Shader ShaderBuilder::buildShaderStageFromConfig(ShaderInfo::ShaderStage stage, 
 
 	if (!file.is_open())
     {
-		std::string s = "ShaderBuilder: Shader template \"" + it->second + "\" could not be found.";
+		const std::string s = "ShaderBuilder: Shader template \"" + it->second + "\" could not be found.";
         throw std::runtime_error(s.c_str());
     }
 
-	std::string source;
-    // Add directives for version and extension usage, and define macros for requested features
-    source += GenerateVersionDirective()
-            + GenerateExtensionDirectives()
-            + GenerateDefineDirectives(requested);
+    // Add directives for version and extension usage, and define macros for
+    // requested features
+	std::string source = _GenerateVersionDirective()
+        + _GenerateExtensionDirectives()
+        + _GenerateDefineDirectives(requested);
 
     // Add all file contents
 	std::string line;
 	while (std::getline(file, line))
 		source += line + "\n";
 
-    return buildShaderStageFromText(stage, source, requested, dumpSource);
+    return BuildShaderStageFromText(stage, source, requested, dumpSource);
 }
 
-Shader ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage stage, std::string filename, std::vector<ShaderInfo::ShaderFeature> supportedFeatures)
+Shader ShaderBuilder::BuildShaderStageFromFile(
+    const ShaderStage stage,
+    const std::string& filename,
+    const std::vector<ShaderFeature>& supportedFeatures
+)
 {
 	// Open input file 
 	std::ifstream file(filename);
 
 	if (!file.is_open())
     {
-		std::string s = "ShaderBuilder: Shader source \"" + filename + "\" could not be found.";
+		const std::string s = "ShaderBuilder: Shader source \"" + filename + "\" could not be found.";
         throw std::runtime_error(s.c_str());
     }
 
@@ -165,32 +167,37 @@ Shader ShaderBuilder::buildShaderStageFromFile(ShaderInfo::ShaderStage stage, st
     // If no info was provided about supported features, try to find some
     if (!supportedFeatures.size())
     {
-        auto it = ShaderInfo::FeaturesSupportedByFile().find(filename);
-        if (it != ShaderInfo::FeaturesSupportedByFile().end())
-            supportedFeatures = it->second;
+        auto it = _FeaturesSupportedByFile().find(filename);
+        if (it != _FeaturesSupportedByFile().end())
+            return BuildShaderStageFromText(stage, source, it->second);
     }
 
-    return buildShaderStageFromText(stage, source, supportedFeatures);
+    return BuildShaderStageFromText(stage, source, supportedFeatures);
 }
 
-Shader ShaderBuilder::buildShaderStageFromText(ShaderInfo::ShaderStage stage, const std::string& text, std::vector<ShaderInfo::ShaderFeature> supportedFeatures, bool dumpSource)
+Shader ShaderBuilder::BuildShaderStageFromText(
+    const ShaderStage stage,
+    const std::string& text,
+    const std::vector<ShaderFeature>& supportedFeatures,
+    const bool dumpSource)
 {
     // In case the shader makes use of #include directives, process them
-    processIncludeDirectives(text);
+    _ProcessIncludeDirectives(text);
 
     // Get GL macro corresponding to requested shader stage
-    auto it = ShaderInfo::StageMacros().find(stage);
-    if (it == ShaderInfo::StageMacros().end())
+    auto it = _ShaderStageMacros().find(stage);
+    if (it == _ShaderStageMacros().end())
     {
-        std::string s = "ShaderBuilder: Unknown requested shader stage \"" + std::to_string(stage) + "\" (" + std::to_string((unsigned int) stage) + ").";
+        const std::string s = "ShaderBuilder: Unknown requested shader stage \"" + std::to_string(stage) + "\" "
+            "(" + std::to_string((unsigned int) stage) + ").";
+
         throw std::runtime_error(s.c_str());
     }
-    unsigned int shaderType = ShaderInfo::StageMacros().at(stage);
+    const unsigned int shaderType = _ShaderStageMacros().at(stage);
 
 	// Compile into shader
 	const char* source = text.c_str();
-	unsigned int location;
-	location = glCreateShader(shaderType);
+	const unsigned int location = glCreateShader(shaderType);
 	glShaderSource(location, 1, &source, nullptr);
 	glCompileShaderIncludeARB(location, 0, nullptr, nullptr);
 
@@ -201,14 +208,16 @@ Shader ShaderBuilder::buildShaderStageFromText(ShaderInfo::ShaderStage stage, co
 	if (!success)
 	{
 		glGetShaderInfoLog(location, INFO_BUFFER_SIZE, nullptr, info);
-        std::string filename = dumpShaderSource(stage, text);
+        const std::string filename = _DumpShaderSource(stage, text);
 		std::cerr << "Shader compilation failed:\n" << info << '\n';
         std::cerr << "Source was dumped to " << filename << std::endl;
-		throw std::runtime_error("Shader compilation failed. See std::cerr for more info.");
+
+		throw std::runtime_error("ShaderBuilder: Shader compilation failed. See std::cerr for more info.");
     }
+
     if (dumpSource)
     {
-        std::string filename = dumpShaderSource(stage, text);
+        const std::string filename = _DumpShaderSource(stage, text);
         std::cout << "Source was dumped to " << filename << std::endl;
 	}
 
@@ -216,9 +225,10 @@ Shader ShaderBuilder::buildShaderStageFromText(ShaderInfo::ShaderStage stage, co
 }
 
 // There must be `count` arguments after `count`, all of type `unsigned int`.
-unsigned int ShaderBuilder::makeShaderProgram(std::vector<unsigned int> locations)
+unsigned int
+ShaderBuilder::_MakeShaderProgram(const std::vector<unsigned int>& locations)
 {
-	unsigned int program = glCreateProgram();
+	const unsigned int program = glCreateProgram();
 
 	for (auto it = locations.begin(); it != locations.end(); it++)
 	{
@@ -232,7 +242,8 @@ unsigned int ShaderBuilder::makeShaderProgram(std::vector<unsigned int> location
 	int success;
 	char info[INFO_BUFFER_SIZE];
 	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success) {
+	if (!success)
+    {
 		glGetProgramInfoLog(program, INFO_BUFFER_SIZE, NULL, info);
 		std::cerr << "Shader linking failed:\n" << info << std::endl;
 		return 0;
@@ -241,70 +252,59 @@ unsigned int ShaderBuilder::makeShaderProgram(std::vector<unsigned int> location
 	return program;
 }
 
-void ShaderBuilder::processIncludeDirectives(const std::string& text)
+void ShaderBuilder::_ProcessIncludeDirectives(const std::string& text)
 {
-    std::unordered_set<std::string> includeDirectives = findIncludeDirectivesInSource(text, true);
+    std::unordered_set<std::string> includeDirectives = _FindIncludeDirectivesInSource(text, true);
     
     for (auto it = includeDirectives.begin(); it != includeDirectives.end(); it++)
     {
         // Find whether the named string for the requested include directive is loaded
         auto jt = _namedStringLoadStatus.find(*it);
-        // If loaded already, skip
         if (jt != _namedStringLoadStatus.end() && jt->second == true) continue;
 
         // Find the source file needed to create the requested named string
-        auto kt = ShaderInfo::IncludeFilenames().find(*it);
-        // If info about the requested include cannot be found, throw
-        if (kt == ShaderInfo::IncludeFilenames().end())
+        auto kt = _IncludeFilenames().find(*it);
+        if (kt == _IncludeFilenames().end())
         {
-            std::string s = "Shader: Info about include directive <" + *it + "> cannot be found.";
+            const std::string s = "ShaderBuilder: Info about include directive "
+                "<" + *it + "> cannot be found.";
+
             throw std::runtime_error(s.c_str());
         }
 
-        // Otherwise, create the named string
-        makeNamedString(kt->first, kt->second);
+        _MakeNamedString(kt->first, kt->second);
     }
 }
 
-std::unordered_set<std::string> ShaderBuilder::findIncludeDirectivesInSource(std::string text, bool recursive)
+std::unordered_set<std::string> ShaderBuilder::_FindIncludeDirectivesInSource(std::string text, const bool recursive)
 {
-    static const std::string includeStringStart = "#include";
+    static const std::string IncludeStringStart = "#include";
     std::unordered_set<std::string> includeDirectives;
 
-    // Remove comments from source
     StringTools::stripComments(text);
-    // Find include directives
-    size_t offset = text.find(includeStringStart, 0);
+
+    size_t offset = text.find(IncludeStringStart, 0);
     while (offset != std::string::npos)
     {
-        // Find the last EOL before the current include directive position
         size_t lastEol = text.find_last_of('\n', offset);
         if (lastEol == std::string::npos) lastEol = 0;
-        // Get the substring from the last EOL to the current directive position
-        std::string before = text.substr(lastEol, offset - lastEol);
-        // If there are non whitespace chars before the include directive, skip
+
+        const std::string before = text.substr(lastEol, offset - lastEol);
         if (!StringTools::stringIsWhitespace(before)) continue;
 
-        // Add size of the directive head to the offset
-        offset += includeStringStart.size();
-        // Find the next EOL
-        size_t eol = text.find('\n', offset);
+        offset += IncludeStringStart.size();
+        const size_t eol = text.find('\n', offset);
 
         // Length of the string starting after the directive head,
-        // going down to the next EOL, or end of the string altogether.
-        size_t len = std::string::npos;
-        if (eol != std::string::npos)
-        {
-            len = eol - offset;
-        }
+        // going down to the next EOL, or end of the string altogether
+        const size_t len = (eol != std::string::npos) ?
+            eol - offset :
+            std::string::npos;
 
-        // Get the string after the directive head until the next EOL
         std::string includeArgument = text.substr(offset, len);
-        // Remove all leading or trailing whitespace
         StringTools::trim(includeArgument);
 
-        // Check delimiter consistency
-        char firstDelimiter = includeArgument[0];
+        const char firstDelimiter = includeArgument[0];
         char secondDelimiter = 0;
         switch (firstDelimiter)
         {
@@ -312,42 +312,42 @@ std::unordered_set<std::string> ShaderBuilder::findIncludeDirectivesInSource(std
             case '"': secondDelimiter = '"'; break;
         }
 
-        // If the last delimiter doesn't match the first, throw
         if (secondDelimiter == 0 || secondDelimiter != includeArgument.back())
         {
-            throw std::runtime_error("Badly formatted #include directive: argument \"" + includeArgument + "\" is illegal.");
+            const std::string s = "Badly formatted #include directive: argument \"" + includeArgument + "\" is illegal.";
+            throw std::runtime_error(s.c_str());
         }
 
         // Strip delimiting chars
-        std::string filename = includeArgument.substr(1, includeArgument.size() - 2);
+        includeArgument = includeArgument.substr(1, includeArgument.size() - 2);
 
-        // If any delimiting chars are left in the string after stripping, that makes the argument illegal
-        if ((filename.find(secondDelimiter) != std::string::npos) || (filename.find(firstDelimiter) != std::string::npos))
+        if ((includeArgument.find(secondDelimiter) != std::string::npos) ||
+            (includeArgument.find(firstDelimiter) != std::string::npos))
         {
-            throw std::runtime_error("Badly formatted #include directive: argument \"" + filename + "\" is illegal.");
+            const std::string s = "Badly formatted #include directive: argument \"" + includeArgument + "\" is illegal.";
+            throw std::runtime_error(s.c_str());
         }
-        includeDirectives.insert(filename);
+        includeDirectives.insert(includeArgument);
 
-        offset = text.find(includeStringStart, offset);
+        offset = text.find(IncludeStringStart, offset);
     }
 
     if (recursive)
     {
-        // Process potential include directives in all files found to be included
         for (auto it = includeDirectives.begin(); it != includeDirectives.end(); it++)
         {
             // Retrieve filename for include directive
-            auto jt = ShaderInfo::IncludeFilenames().find(*it);
-            if (jt == ShaderInfo::IncludeFilenames().end())
+            auto jt = _IncludeFilenames().find(*it);
+            if (jt == _IncludeFilenames().end())
             {
-                std::string s = "ShaderBuilder: missing info about include directive \"" + *it + "\", cannot recursively find include filenames.";
+                const std::string s = "ShaderBuilder: missing info about include directive \"" + *it + "\", "
+                    "cannot recursively find include directives.";
+
                 throw std::runtime_error(s.c_str());
             }
 
-            // Read file
-            std::string all = StringTools::readFileIntoString(jt->second);
-            // Process include contained in it
-            std::unordered_set<std::string> newIncludeDirectives = findIncludeDirectivesInSource(all, true);
+            const std::string all = StringTools::readFileIntoString(jt->second);
+            std::unordered_set<std::string> newIncludeDirectives = _FindIncludeDirectivesInSource(all, true);
 
             // Add them all to the current include directives
             includeDirectives.merge(newIncludeDirectives);
@@ -357,50 +357,50 @@ std::unordered_set<std::string> ShaderBuilder::findIncludeDirectivesInSource(std
     return includeDirectives;
 }
 
-void ShaderBuilder::makeNamedString(std::string name, std::string sourceFilename)
+void ShaderBuilder::_MakeNamedString(const std::string& name, const std::string& sourceFilename)
 {
     std::string all = StringTools::readFileIntoString(sourceFilename);
 	const char* source = all.c_str();
 
-    // Create the named string
     glNamedStringARB(GL_SHADER_INCLUDE_ARB, -1, name.c_str(), -1, source);
 
-    // Update load status
     _namedStringLoadStatus[name] = true;
 }
 
-std::vector<ShaderInfo::ShaderFeature> ShaderBuilder::aggregateShaderFeatures(const std::vector<Shader>& shaders)
+std::vector<ShaderFeature> ShaderBuilder::_AggregateShaderFeatures(const std::vector<Shader>& shaders)
 {
-    std::vector<ShaderInfo::ShaderFeature> supportedFeatures;
+    std::vector<ShaderFeature> supportedFeatures;
     for (auto it = shaders.begin(); it != shaders.end(); it++)
     {
-        const std::vector<ShaderInfo::ShaderFeature>& features = it->getSupportedFeatures();
+        const std::vector<ShaderFeature>& features = it->getSupportedFeatures();
         std::copy(features.begin(), features.end(), std::back_inserter(supportedFeatures));
     }
 
     return supportedFeatures;
 }
 
-std::vector<ShaderInfo::ShaderFeature> ShaderBuilder::filterFeaturesByStage(const std::vector<ShaderInfo::ShaderFeature>& features, ShaderInfo::ShaderStage stage)
+std::vector<ShaderFeature> ShaderBuilder::_FilterFeaturesByStage(
+    const std::vector<ShaderFeature>& features,
+    const ShaderStage stage
+)
 {
-    std::vector<ShaderInfo::ShaderFeature> result;
+    std::vector<ShaderFeature> result;
 
-    std::function<bool(ShaderInfo::ShaderFeature)> filter = [stage](ShaderInfo::ShaderFeature v) -> bool
+    std::function<bool(ShaderFeature)> filter = [stage](ShaderFeature v) -> bool
     {
-        auto it = ShaderInfo::FeatureStages().find(v);
-        if (it == ShaderInfo::FeatureStages().end()) return false;
+        auto it = FeatureStages().find(v);
+        if (it == FeatureStages().end()) return false;
         return it->second == stage;
     };
 
     std::copy_if(features.begin(), features.end(), std::inserter(result, result.begin()), filter);
-
     return result;
 }
 
-std::string ShaderBuilder::dumpShaderSource(ShaderInfo::ShaderStage stage, const std::string& text)
+std::string ShaderBuilder::_DumpShaderSource(ShaderStage stage, const std::string& text)
 {
-    static std::string dumpFolder = "output/";
-    std::filesystem::create_directories(dumpFolder);
+    static const std::string DumpFolder = "output/";
+    std::filesystem::create_directories(DumpFolder);
 
     std::time_t t = std::time(nullptr);
     std::tm tm = {};
@@ -413,8 +413,8 @@ std::string ShaderBuilder::dumpShaderSource(ShaderInfo::ShaderStage stage, const
     std::stringstream ss;
     ss << std::put_time(&tm, "%d-%m-%Y-%H-%M-%S");
 
-    const ShaderInfo::ShaderStageFileExtensionMap& fileExtensions = ShaderInfo::StageFileExtensions();
-    std::string filename = dumpFolder + std::to_string(stage) + "_shader_dump_" + ss.str() + '.' + fileExtensions.at(stage);
+    const std::unordered_map<ShaderStage, std::string>& fileExtensions = _StageFileExtensions();
+    const std::string filename = DumpFolder + std::to_string(stage) + "_shader_dump_" + ss.str() + '.' + fileExtensions.at(stage);
 
     std::ofstream file;
     file.open(filename, std::ios::out);
@@ -424,36 +424,41 @@ std::string ShaderBuilder::dumpShaderSource(ShaderInfo::ShaderStage stage, const
     return std::filesystem::absolute(filename).string();
 }
 
-const std::string& ShaderBuilder::GenerateVersionDirective()
+const std::string& ShaderBuilder::_GenerateVersionDirective()
 {
-    static std::string s = "#version " + std::to_string(shadingLanguageVersion) + " " + shadingLanguageProfile + "\n";
+    static const std::string s = "#version " + std::to_string(ShadingLanguageVersion) + " " + ShadingLanguageProfile + "\n";
     return s;
 }
 
-const std::string& ShaderBuilder::GenerateExtensionDirectives()
+const std::string& ShaderBuilder::_GenerateExtensionDirectives()
 {
     static bool runOnce = false;
-    static std::string s = "";
+    static std::string s;
 
     if (!runOnce)
     {
-        std::function<std::string(std::string, std::pair<std::string, std::string>)> addDirective = [](std::string aggregate, std::pair<std::string, std::string> tuplet) -> std::string
+        std::function<std::string(std::string, std::pair<std::string, std::string>)>
+        addDirective = [](std::string aggregate, std::pair<std::string, std::string> tuplet) -> std::string
         {
-            return aggregate + "#extension " + tuplet.first + " : " + tuplet.second + "\n";
+            return aggregate + 
+                "#extension " + tuplet.first + " : " + tuplet.second + "\n";
         };
 
-        const std::unordered_map<std::string, std::string>& extensions = ShadingLanguageExtensions(); 
+        const std::unordered_map<std::string, std::string>& extensions = _ShadingLanguageExtensions(); 
         s = std::accumulate(extensions.cbegin(), extensions.cend(), (std::string)(""), addDirective);
+
         runOnce = true;
     }
 
     return s;
 }
 
-const std::unordered_map<std::string, std::string>& ShaderBuilder::ShadingLanguageExtensions()
+const std::unordered_map<std::string, std::string>&
+ShaderBuilder::_ShadingLanguageExtensions()
 {
     static bool runOnce = false;
     static std::unordered_map<std::string, std::string> map;
+
     if (!runOnce)
     {
         map["GL_ARB_shading_language_include"] = "require";
@@ -464,16 +469,17 @@ const std::unordered_map<std::string, std::string>& ShaderBuilder::ShadingLangua
     return map;
 }
 
-const std::unordered_map<ShaderInfo::ShaderStage, std::string>& ShaderBuilder::StageTemplatePaths()
+const std::unordered_map<ShaderStage, std::string>&
+ShaderBuilder::_StageTemplatePaths()
 {
     static bool runOnce = false;
-    static std::unordered_map<ShaderInfo::ShaderStage, std::string> map;
+    static std::unordered_map<ShaderStage, std::string> map;
 
     if (!runOnce)
     {
-        map[ShaderInfo::ShaderStage::Vertex]    = "assets/shaders/templates/vertex_shader.vert";
-        map[ShaderInfo::ShaderStage::Geometry]  = "assets/shaders/templates/geometry_shader.geom";
-        map[ShaderInfo::ShaderStage::Fragment]  = "assets/shaders/templates/fragment_shader.frag";
+        map[ShaderStage::Vertex]    = "assets/shaders/templates/vertex_shader.vert";
+        map[ShaderStage::Geometry]  = "assets/shaders/templates/geometry_shader.geom";
+        map[ShaderStage::Fragment]  = "assets/shaders/templates/fragment_shader.frag";
 
         runOnce = true;
     }
@@ -481,29 +487,30 @@ const std::unordered_map<ShaderInfo::ShaderStage, std::string>& ShaderBuilder::S
     return map;
 }
 
-const std::unordered_map<ShaderInfo::ShaderFeature, std::string>& ShaderBuilder::FeatureDefineMacros()
+const std::unordered_map<ShaderFeature, std::string>&
+ShaderBuilder::_FeatureDefineMacros()
 {
     static bool runOnce = false;
-    static std::unordered_map<ShaderInfo::ShaderFeature, std::string> map;
+    static std::unordered_map<ShaderFeature, std::string> map;
 
     if (!runOnce)
     {
-        map[ShaderInfo::ShaderFeature::VertexMVP]                       = "VERTEX_MVP";
-        // map[ShaderInfo::ShaderFeature::VertexFishEye]                   = "VERTEX_FISH_EYE";        // IMPLEMENT VERT LENS
-        // map[ShaderInfo::ShaderFeature::GeometryShowNormals]             = "GEOMETRY_SHOW_NORMALS";  // IMPLEMENT GEOM NORMALS
-        map[ShaderInfo::ShaderFeature::FragmentFullLight]               = "FRAGMENT_FULL_LIGHT";
-        map[ShaderInfo::ShaderFeature::FragmentViewDepthBuffer]         = "FRAGMENT_VIEW_DEPTH_BUFFER";
-        map[ShaderInfo::ShaderFeature::FragmentViewLightAttenuation]    = "FRAGMENT_VIEW_LIGHT_ATTENUATION";
-        map[ShaderInfo::ShaderFeature::FragmentMeshMaterial]            = "FRAGMENT_MESH_MATERIAL";
-        map[ShaderInfo::ShaderFeature::FragmentBypassVertexColor]       = "FRAGMENT_BYPASS_VERTEX_COLOR";
-        // map[ShaderInfo::ShaderFeature::FragmentFlatShading]             = "FRAGMENT_FLAT_SHADING";  // IMPLEMENT FRAG FLAT
-        map[ShaderInfo::ShaderFeature::FragmentPhong]                   = "FRAGMENT_PHONG";
-        map[ShaderInfo::ShaderFeature::FragmentBlinnPhong]              = "FRAGMENT_BLINN_PHONG";
-        map[ShaderInfo::ShaderFeature::FragmentGammaCorrection]         = "FRAGMENT_GAMMA_CORRECTION";
-        // map[ShaderInfo::ShaderFeature::FragmentOutline]                 = "FRAGMENT_OUTLINE";       // IMPLEMENT FRAG OUTLINE
-        // map[ShaderInfo::ShaderFeature::FragmentCubemap]                 = "FRAGMENT_CUBEMAP";       // IMPLEMENT FRAG CUBEMAP
-        // map[ShaderInfo::ShaderFeature::FragmentBlending]                = "FRAGMENT_BLENDING";      // IMPLEMENT FRAG BLENDING
-        // map[ShaderInfo::ShaderFeature::FragmentShadows]                 = "FRAGMENT_SHADOWS";       // IMPLEMENT FRAG SHADOWS
+        map[ShaderFeature::VertexMVP]                       = "VERTEX_MVP";
+        // map[ShaderFeature::VertexFishEye]                   = "VERTEX_FISH_EYE";        // IMPLEMENT VERT LENS
+        // map[ShaderFeature::GeometryShowNormals]             = "GEOMETRY_SHOW_NORMALS";  // IMPLEMENT GEOM NORMALS
+        map[ShaderFeature::FragmentFullLight]               = "FRAGMENT_FULL_LIGHT";
+        map[ShaderFeature::FragmentViewDepthBuffer]         = "FRAGMENT_VIEW_DEPTH_BUFFER";
+        map[ShaderFeature::FragmentViewLightAttenuation]    = "FRAGMENT_VIEW_LIGHT_ATTENUATION";
+        map[ShaderFeature::FragmentMeshMaterial]            = "FRAGMENT_MESH_MATERIAL";
+        map[ShaderFeature::FragmentBypassVertexColor]       = "FRAGMENT_BYPASS_VERTEX_COLOR";
+        // map[ShaderFeature::FragmentFlatShading]             = "FRAGMENT_FLAT_SHADING";  // IMPLEMENT FRAG FLAT
+        map[ShaderFeature::FragmentPhong]                   = "FRAGMENT_PHONG";
+        map[ShaderFeature::FragmentBlinnPhong]              = "FRAGMENT_BLINN_PHONG";
+        map[ShaderFeature::FragmentGammaCorrection]         = "FRAGMENT_GAMMA_CORRECTION";
+        // map[ShaderFeature::FragmentOutline]                 = "FRAGMENT_OUTLINE";       // IMPLEMENT FRAG OUTLINE
+        // map[ShaderFeature::FragmentCubemap]                 = "FRAGMENT_CUBEMAP";       // IMPLEMENT FRAG CUBEMAP
+        // map[ShaderFeature::FragmentBlending]                = "FRAGMENT_BLENDING";      // IMPLEMENT FRAG BLENDING
+        // map[ShaderFeature::FragmentShadows]                 = "FRAGMENT_SHADOWS";       // IMPLEMENT FRAG SHADOWS
 
         runOnce = true;
     }
@@ -511,20 +518,120 @@ const std::unordered_map<ShaderInfo::ShaderFeature, std::string>& ShaderBuilder:
     return map;
 }
 
-std::string ShaderBuilder::GenerateDefineDirectives(const std::vector<ShaderInfo::ShaderFeature>& features)
+const std::unordered_map<std::string, std::string>&
+ShaderBuilder::_IncludeFilenames()
 {
-    static const std::unordered_map<ShaderInfo::ShaderFeature, std::string>& defineMacros = FeatureDefineMacros();
+    static bool runOnce = false;
+    static std::unordered_map<std::string, std::string> map;
 
-    std::function<std::string(std::string, ShaderInfo::ShaderFeature)> addDirective = [](std::string aggregate, ShaderInfo::ShaderFeature feature) -> std::string
+    if (!runOnce)
+    {
+        map["/functional_blocks/gamma_correction"]  = "assets/shaders/functional_blocks/gamma_correction.glsl";
+        map["/functional_blocks/light_attenuation"] = "assets/shaders/functional_blocks/light_attenuation.glsl";
+        map["/interface_blocks/light_types"]        = "assets/shaders/interface_blocks/light_types.glsl";
+        map["/interface_blocks/vertex_attributes"]  = "assets/shaders/interface_blocks/vertex_attributes.glsl";
+        map["/interface_blocks/vertex_out"]         = "assets/shaders/interface_blocks/vertex_out.glsl";
+        map["/templates/phong"]                     = "assets/shaders/templates/phong.glsl";
+        map["/uniform_blocks/lights"]               = "assets/shaders/uniform_blocks/lights.glsl";
+        map["/uniform_blocks/material"]             = "assets/shaders/uniform_blocks/material.glsl";
+        map["/uniform_blocks/matrices"]             = "assets/shaders/uniform_blocks/matrices.glsl";
+
+        runOnce = true;
+    }
+
+    return map;
+}
+
+const std::unordered_map<std::string, std::vector<ShaderFeature>>&
+ShaderBuilder::_FeaturesSupportedByFile()
+{
+    static bool runOnce = false;
+    static std::unordered_map<std::string, std::vector<ShaderFeature>> map;
+
+    if (!runOnce)
+    {
+        map["assets/shaders/default.frag"]  = {
+            ShaderFeature::FragmentFullLight
+        };
+        map["assets/shaders/depth.frag"]  = {
+            ShaderFeature::FragmentViewDepthBuffer
+        };
+        map["assets/shaders/mvp.vert"]  = {
+            ShaderFeature::VertexMVP
+        };
+        map["assets/shaders/phong.frag"]    = {
+            ShaderFeature::FragmentMeshMaterial,
+            ShaderFeature::FragmentBlinnPhong,
+            ShaderFeature::FragmentGammaCorrection
+        };
+
+        runOnce = true;
+    }
+
+    return map;
+}
+
+const std::unordered_map<ShaderStage, unsigned int>&
+ShaderBuilder::_ShaderStageMacros()
+{
+    static bool runOnce = false;
+    static std::unordered_map<ShaderStage, unsigned int> map;
+
+    if (!runOnce)
+    {
+        map[ShaderStage::Vertex]    = GL_VERTEX_SHADER;
+        map[ShaderStage::Geometry]  = GL_GEOMETRY_SHADER;
+        map[ShaderStage::Fragment]  = GL_FRAGMENT_SHADER;
+
+        runOnce = true;
+    }
+
+    return map;
+}
+
+const std::unordered_map<ShaderStage, std::string>&
+ShaderBuilder::_StageFileExtensions()
+{
+    static bool runOnce = false;
+    static std::unordered_map<ShaderStage, std::string> map;
+
+    if (!runOnce)
+    {
+        map[ShaderStage::Vertex]    = "vert";
+        map[ShaderStage::Geometry]  = "geom";
+        map[ShaderStage::Fragment]  = "frag";
+
+        runOnce = true;
+    }
+
+    return map;
+}
+
+std::string
+ShaderBuilder::_GenerateDefineDirectives(const std::vector<ShaderFeature>& features)
+{
+    static const std::unordered_map<ShaderFeature, std::string>&
+    defineMacros = _FeatureDefineMacros();
+
+    std::function<std::string(std::string, ShaderFeature)>
+    addDirective = [](std::string aggregate, ShaderFeature feature) -> std::string
     {
         auto it = defineMacros.find(feature);
         if (it == defineMacros.cend())
         {
-            std::string s = "ShaderBuilder: cannot generate #define directive for feature \"" + std::to_string(feature) + "\" (" + std::to_string((unsigned int)(feature)) + ").";
+            std::string s = "ShaderBuilder: cannot generate #define directive "
+                "for feature \"" + std::to_string(feature) + "\" "
+                "(" + std::to_string((unsigned int)(feature)) + ").";
+
             throw std::runtime_error(s.c_str());
         }
         return aggregate + "#define " + it->second + "\n";
     };
 
-    return std::accumulate(features.cbegin(), features.cend(), (std::string)(""), addDirective);
+    return std::accumulate(
+        features.cbegin(),
+        features.cend(),
+        (std::string)(""),
+        addDirective
+    );
 }

@@ -23,7 +23,11 @@ Camera::Camera(const Camera& other) :
 
 }
 
-Camera::Camera(CameraParameters cameraParameters, ProjectionParameters projectionParameters, Transform parentTransform) :
+Camera::Camera(
+    const CameraParameters cameraParameters,
+    const ProjectionParameters projectionParameters,
+    const Transform parentTransform
+) :
     _forward(glm::vec3(0.f, 0.f, -1.f)),
     _left(glm::vec3(-1.f, 0.f, 0.f)),
     _up(glm::vec3(0.f, 1.f, 0.f)),
@@ -39,10 +43,10 @@ Camera::Camera(CameraParameters cameraParameters, ProjectionParameters projectio
 {
     // Update vectors according to parameters and parent transform
     setParentTransform(parentTransform);
-    updateProjectionMatrix();
+    _updateProjectionMatrix();
 }
 
-void Camera::processRotation(float yawOffset, float pitchOffset)
+void Camera::processRotation(const float yawOffset, const float pitchOffset)
 {
     _yaw += yawOffset;
     if (_yaw > 180.f)  _yaw -= 360.f;
@@ -55,10 +59,10 @@ void Camera::processRotation(float yawOffset, float pitchOffset)
     if (_pitch < -89.0f)
         _pitch = -89.0f;
 
-    updateVectors();
+    _updateVectors();
 }
 
-void Camera::processZoom(float scrollOffset)
+void Camera::processZoom(const float scrollOffset)
 {
     // Not used
     if (_zoomFactor >= 1.0f && _zoomFactor <= 45.0f)
@@ -69,91 +73,86 @@ void Camera::processZoom(float scrollOffset)
         _zoomFactor = 45.0f;
 }
 
-Transform Camera::getParentTransform()
+Transform Camera::getParentTransform() const
 {
     return _parentTransform;
 }
 
-void Camera::setParentTransform(Transform parentTransform)
+void Camera::setParentTransform(const Transform& parentTransform)
 {
     _parentTransform = parentTransform;
 
-    updateVectors();
+    _updateVectors();
 }
 
-void Camera::setProjectionMatrix(glm::mat4 projection)
-{
-    _projectionMatrix = projection;
-}
-
-glm::mat4 Camera::getViewMatrix()
+glm::mat4 Camera::getViewMatrix() const
 {
     return glm::lookAt(_parentTransform.getPosition(), _parentTransform.getPosition() + _forward, _up);
 }
 
-glm::vec3 Camera::worldPositionToViewSpace(glm::vec3 worldPosition)
+glm::vec3 Camera::worldPositionToViewSpace(const glm::vec3& worldPosition)
 {
     glm::vec4 transformedPosition = getViewMatrix() * glm::vec4(worldPosition, 1.f);
     return glm::vec3(transformedPosition);
 }
 
-float Camera::getAspectRatio()
+float Camera::getAspectRatio() const
 {
     return _aspectRatio;
 }
 
-void Camera::setAspectRatio(float aspectRatio)
+void Camera::setAspectRatio(const float aspectRatio)
 {
     _aspectRatio = aspectRatio;
     _projectionMatrixOutdated = true;
 }
 
-float Camera::getVerticalFov()
+float Camera::getVerticalFov() const
 {
     return _verticalFov;
 }
 
-void Camera::setVerticalFov(float verticalFov)
+void Camera::setVerticalFov(const float verticalFov)
 {
     _verticalFov = verticalFov;
     _projectionMatrixOutdated = true;
 }
 
-float Camera::getNearDistance()
+float Camera::getNearDistance() const
 {
     return _nearDistance;
 }
 
-void Camera::setNearDistance(float nearDistance)
+void Camera::setNearDistance(const float nearDistance)
 {
     _nearDistance = nearDistance;
     _projectionMatrixOutdated = true;
 }
 
-float Camera::getFarDistance()
+float Camera::getFarDistance() const
 {
     return _farDistance;
 }
 
-void Camera::setFarDistance(float farDistance)
+void Camera::setFarDistance(const float farDistance)
 {
     _farDistance = farDistance;
     _projectionMatrixOutdated = true;
 }
 
-glm::mat4 Camera::getProjectionMatrix()
+glm::mat4 Camera::getProjectionMatrix() const
 {
-    if (_projectionMatrixOutdated) updateProjectionMatrix();
+    if (_projectionMatrixOutdated) _updateProjectionMatrix();
 
     return _projectionMatrix;
 }
 
-glm::mat4 Camera::getViewProjectionMatrix(glm::vec3 viewPoint)
+glm::mat4 Camera::getViewProjectionMatrix() const
 {
     return getProjectionMatrix() * getViewMatrix();
 }
 
-void Camera::updateVectors()
+void Camera::_updateVectors() const
 {
     glm::vec3 forward;
     // Compute new front based on yaw and pitch
@@ -169,7 +168,7 @@ void Camera::updateVectors()
     _up = glm::normalize(glm::cross(_forward, _left));
 }
 
-void Camera::updateProjectionMatrix()
+void Camera::_updateProjectionMatrix() const
 {
     _projectionMatrix = glm::perspective(_verticalFov, _aspectRatio, _nearDistance, _farDistance);
     _projectionMatrixOutdated = false;

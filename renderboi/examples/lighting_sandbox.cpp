@@ -50,10 +50,10 @@ void LightingSandbox::run(GLWindowPtr window)
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
     
     ShaderConfig lightConfig;
-    lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
-    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
-    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
-    ShaderProgram lightingShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
+    lightConfig.addFeature(ShaderFeature::VertexMVP);
+    lightConfig.addFeature(ShaderFeature::FragmentMeshMaterial);
+    lightConfig.addFeature(ShaderFeature::FragmentBlinnPhong);
+    ShaderProgram lightingShader = ShaderBuilder::BuildShaderProgramFromConfig(lightConfig);
 
     ScenePtr scene = Factory::makeScene();
 

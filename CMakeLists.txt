@@ -164,8 +164,6 @@ set(RB_CORE_SOURCE_FILES
     shader/shader_config.hpp
     shader/shader_feature.cpp
     shader/shader_feature.hpp
-    shader/shader_info.cpp
-    shader/shader_info.hpp
     shader/shader_program.cpp
     shader/shader_program.hpp
     shader/shader_stage.cpp
@@ -184,9 +182,6 @@ set(RB_CORE_SOURCE_FILES
     lights/spot_light.hpp 
     lights/tools.cpp
     lights/tools.hpp 
-    ubo/ubo_info.hpp 
-    ubo/uniform_buffer_object.cpp
-    ubo/uniform_buffer_object.hpp 
     ubo/light_ubo.cpp
     ubo/light_ubo.hpp 
     ubo/matrix_ubo.cpp

@@ -9,10 +9,12 @@ enum class FrameOfReference
     /// @brief Indicates that arguments are provided relative to the frame of 
     /// reference of the object on which the function is called.
     Self,
+
     /// @brief Indicates that arguments are provided relative to the frame of 
     /// reference of the parent object of the object on which the function is 
     /// called.
     Parent,
+    
     /// @brief Indicates that arguments are provided relative to the global 
     /// frame of reference.
     World

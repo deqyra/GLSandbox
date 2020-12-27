@@ -5,9 +5,9 @@
 
 #include <glad/gl.h>
 
-Shader::LocationToRefCountMap Shader::_locationRefCounts = Shader::LocationToRefCountMap();
+std::unordered_map<unsigned int, unsigned int> Shader::_locationRefCounts = std::unordered_map<unsigned int, unsigned int>();
 
-Shader::Shader(unsigned int location, ShaderInfo::ShaderStage stage, std::vector<ShaderInfo::ShaderFeature> supportedFeatures) :
+Shader::Shader(unsigned int location, ShaderStage stage, const std::vector<ShaderFeature> supportedFeatures) :
     _location(location),
     _stage(stage),
     _supportedFeatures(supportedFeatures)
@@ -34,7 +34,7 @@ Shader::Shader(const Shader& other) :
 Shader& Shader::operator=(const Shader& other)
 {
     // Let go of content currently in place
-    cleanup();
+    _cleanup();
 
     // Copy the location, program key, increase refcount
     _location = other._location;
@@ -47,10 +47,10 @@ Shader& Shader::operator=(const Shader& other)
 Shader::~Shader()
 {
     // Let go of content currently in place
-    cleanup();
+    _cleanup();
 }
 
-void Shader::cleanup()
+void Shader::_cleanup()
 {
     // Decrease the ref count
     unsigned int count = --_locationRefCounts[_location];
@@ -66,19 +66,23 @@ unsigned int Shader::location() const
     return _location;
 }
 
-ShaderInfo::ShaderStage Shader::stage() const
+ShaderStage Shader::stage() const
 {
     return _stage;
 }
 
-const std::vector<ShaderInfo::ShaderFeature>& Shader::getSupportedFeatures() const
+const std::vector<ShaderFeature>& Shader::getSupportedFeatures() const
 {
     return _supportedFeatures;
 }
 
-bool Shader::supports(ShaderInfo::ShaderFeature feature) const
+bool Shader::supports(const ShaderFeature feature) const
 {
-    auto it = std::find(_supportedFeatures.begin(), _supportedFeatures.end(), feature);
+    auto it = std::find(
+        _supportedFeatures.begin(),
+        _supportedFeatures.end(),
+        feature
+    );
 
     return it != _supportedFeatures.end();
 }

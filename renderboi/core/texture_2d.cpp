@@ -11,7 +11,7 @@
 std::unordered_map<unsigned int, unsigned int> Texture2D::_locationRefCounts = std::unordered_map<unsigned int, unsigned int>();
 std::unordered_map<std::string , unsigned int> Texture2D::_pathsToIds  = std::unordered_map<std::string, unsigned int>();
 
-Texture2D::Texture2D(std::string filename, PixelSpace space) :
+Texture2D::Texture2D(const std::string& filename, const PixelSpace space) :
     _path(filename)
 {
     auto it = _pathsToIds.find(filename);
@@ -26,7 +26,7 @@ Texture2D::Texture2D(std::string filename, PixelSpace space) :
     else
     {
         // Load the image
-        _location = loadTextureFromFile(filename, space);
+        _location = _LoadTextureFromFile(filename, space);
         // Map the new texture location to image filename and set a refcount
         _pathsToIds[filename] = _location;
         _locationRefCounts[_location] = 1;
@@ -44,7 +44,7 @@ Texture2D::Texture2D(const Texture2D& other) :
 Texture2D& Texture2D::operator=(const Texture2D& other)
 {
     // Let go of the content currently in place
-    cleanup();
+    _cleanup();
 
     // Copy the filename, location, and increase the ref count
     _location = other._location;
@@ -57,10 +57,10 @@ Texture2D& Texture2D::operator=(const Texture2D& other)
 Texture2D::~Texture2D()
 {
     // Let go of the content currently in place
-    cleanup();
+    _cleanup();
 }
 
-void Texture2D::cleanup()
+void Texture2D::_cleanup()
 {
     // Decrease the ref count
     unsigned int count = --_locationRefCounts[_location];
@@ -74,7 +74,7 @@ void Texture2D::cleanup()
     };
 }
 
-unsigned int Texture2D::loadTextureFromFile(const std::string filename, PixelSpace space)
+unsigned int Texture2D::_LoadTextureFromFile(const std::string& filename, const PixelSpace space)
 {
     // Create a texture resource on the GPU
     unsigned int location;
@@ -123,17 +123,17 @@ unsigned int Texture2D::loadTextureFromFile(const std::string filename, PixelSpa
     return location;
 }
 
-unsigned int Texture2D::location()
+unsigned int Texture2D::location() const
 {
     return _location;
 }
 
-void Texture2D::bind()
+void Texture2D::bind() const
 {
     glBindTexture(GL_TEXTURE_2D, _location);
 }
 
-void Texture2D::bind(unsigned int unit)
+void Texture2D::bind(unsigned int unit) const
 {
     unsigned int realUnit = GL_TEXTURE0 + unit;
     if (realUnit > MaxTextureUnit)

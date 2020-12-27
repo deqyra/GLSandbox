@@ -8,13 +8,15 @@
 #include <string>
 #include <unordered_map>
 
-#include "shader_info.hpp"
-#include "../ubo/ubo_info.hpp"
+#include "shader_feature.hpp"
 
-ShaderProgram::ProgramToUniformLocationMap ShaderProgram::_uniformLocations = ShaderProgram::ProgramToUniformLocationMap();
-ShaderProgram::LocationToRefCountMap ShaderProgram::_locationRefCounts = ShaderProgram::LocationToRefCountMap();
+std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>>
+ShaderProgram::_uniformLocations = std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>>();
 
-ShaderProgram::ShaderProgram(unsigned int location, std::vector<ShaderInfo::ShaderFeature> supportedFeatures) :
+std::unordered_map<unsigned int, unsigned int>
+ShaderProgram::_locationRefCounts = std::unordered_map<unsigned int, unsigned int>();
+
+ShaderProgram::ShaderProgram(const unsigned int location, const std::vector<ShaderFeature> supportedFeatures) :
     _location(location),
     _supportedFeatures(supportedFeatures)
 {
@@ -40,7 +42,7 @@ ShaderProgram::ShaderProgram(const ShaderProgram& other)
 ShaderProgram& ShaderProgram::operator=(const ShaderProgram& other)
 {
     // Let go of content currently in place
-    cleanup();
+    _cleanup();
 
     // Copy the location, program key, increase refcount
     _location = other._location;
@@ -53,10 +55,10 @@ ShaderProgram& ShaderProgram::operator=(const ShaderProgram& other)
 ShaderProgram::~ShaderProgram()
 {
     // Let go of content currently in place
-    cleanup();
+    _cleanup();
 }
 
-void ShaderProgram::cleanup()
+void ShaderProgram::_cleanup()
 {
     // Decrease the ref count
     unsigned int count = --_locationRefCounts[_location];
@@ -106,38 +108,42 @@ unsigned int ShaderProgram::getUniformLocation(const std::string& name) const
     // Otherwise, print a warning message
     else
     {
-        std::cerr << "ShaderProgram: attempt to get location of uniform \"" << name << "\","
-        " which does not exist in shader program with location \"" << _location << "\"" << std::endl;
+        std::cerr << "ShaderProgram: attempt to get location of uniform \"" << name << "\", "
+            "which does not exist in shader program with location \"" << _location << "\"" << std::endl;
     }
     
     return location;
 }
 
-void ShaderProgram::setBool(const std::string& name, bool value)
+void ShaderProgram::setBool(const std::string& name, const bool value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
     glProgramUniform1i(_location, uniformLocation, (int)value);
 }
 
-void ShaderProgram::setInt(const std::string& name, int value)
+void ShaderProgram::setInt(const std::string& name, const int value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
     glProgramUniform1i(_location, uniformLocation, value);
 }
 
-void ShaderProgram::setUint(const std::string& name, unsigned int value)
+void ShaderProgram::setUint(const std::string& name, const unsigned int value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
     glProgramUniform1ui(_location, uniformLocation, value);
 }
 
-void ShaderProgram::setFloat(const std::string& name, float value)
+void ShaderProgram::setFloat(const std::string& name, const float value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
     glProgramUniform1f(_location, uniformLocation, value);
 }
 
-void ShaderProgram::setMat3f(const std::string& name, glm::mat3 value, bool transpose)
+void ShaderProgram::setMat3f(
+    const std::string& name,
+    const glm::mat3& value,
+    const bool transpose
+)
 {
     unsigned int transposition = GL_FALSE;
     if (transpose)
@@ -149,7 +155,11 @@ void ShaderProgram::setMat3f(const std::string& name, glm::mat3 value, bool tran
     glProgramUniformMatrix3fv(_location, uniformLocation, 1, transposition, glm::value_ptr(value));
 }
 
-void ShaderProgram::setMat4f(const std::string& name, glm::mat4 value, bool transpose)
+void ShaderProgram::setMat4f(
+    const std::string& name,
+    const glm::mat4& value,
+    const bool transpose
+)
 {
     unsigned int transposition = GL_FALSE;
     if (transpose)
@@ -161,13 +171,13 @@ void ShaderProgram::setMat4f(const std::string& name, glm::mat4 value, bool tran
     glProgramUniformMatrix4fv(_location, uniformLocation, 1, transposition, glm::value_ptr(value));
 }
 
-void ShaderProgram::setVec3f(const std::string& name, glm::vec3 value)
+void ShaderProgram::setVec3f(const std::string& name, const glm::vec3& value)
 {
     unsigned int uniformLocation = getUniformLocation(name);
     glProgramUniform3fv(_location, uniformLocation, 1, glm::value_ptr(value));
 }
 
-void ShaderProgram::setMaterial(const std::string& name, Material value)
+void ShaderProgram::setMaterial(const std::string& name, const Material& value)
 {
     setVec3f(name + ".ambient", value.ambient);
     setVec3f(name + ".diffuse", value.diffuse);
@@ -193,14 +203,18 @@ void ShaderProgram::setMaterial(const std::string& name, Material value)
     setUint(name + ".specularMapCount", count);
 }
 
-const std::vector<ShaderInfo::ShaderFeature>& ShaderProgram::getSupportedFeatures() const
+const std::vector<ShaderFeature>& ShaderProgram::getSupportedFeatures() const
 {
     return _supportedFeatures;
 }
 
-bool ShaderProgram::supports(ShaderInfo::ShaderFeature feature) const
+bool ShaderProgram::supports(const ShaderFeature feature) const
 {
-    auto it = std::find(_supportedFeatures.begin(), _supportedFeatures.end(), feature);
+    auto it = std::find(
+        _supportedFeatures.begin(),
+        _supportedFeatures.end(),
+        feature
+    );
 
     return it != _supportedFeatures.end();
 }

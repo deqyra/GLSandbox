@@ -5,55 +5,18 @@
 
 #include <glad/gl.h>
 
-namespace ShaderInfo
-{
-    const ShaderStageToGLMacroMap& StageMacros()
-    {
-        static bool runOnce = false;
-        static ShaderStageToGLMacroMap map;
-
-        if (!runOnce)
-        {
-            map[ShaderStage::Vertex]    = GL_VERTEX_SHADER;
-            map[ShaderStage::Geometry]  = GL_GEOMETRY_SHADER;
-            map[ShaderStage::Fragment]  = GL_FRAGMENT_SHADER;
-
-            runOnce = true;
-        }
-
-        return map;
-    }
-
-    const ShaderStageFileExtensionMap& StageFileExtensions()
-    {
-        static bool runOnce = false;
-        static ShaderStageFileExtensionMap map;
-
-        if (!runOnce)
-        {
-            map[ShaderStage::Vertex]    = "vert";
-            map[ShaderStage::Geometry]  = "geom";
-            map[ShaderStage::Fragment]  = "frag";
-
-            runOnce = true;
-        }
-
-        return map;
-    }
-}
-
 namespace std
 {
-    string to_string(ShaderInfo::ShaderStage v)
+    string to_string(const ShaderStage v)
     {
         static bool runOnce = false;
-        static unordered_map<ShaderInfo::ShaderStage, string> _stageNames;
+        static unordered_map<ShaderStage, string> _stageNames;
 
         if (!runOnce)
         {
-            _stageNames[ShaderInfo::ShaderStage::Vertex]    = "Vertex";
-            _stageNames[ShaderInfo::ShaderStage::Geometry]  = "Geometry";
-            _stageNames[ShaderInfo::ShaderStage::Fragment]  = "Fragment";
+            _stageNames[ShaderStage::Vertex]    = "Vertex";
+            _stageNames[ShaderStage::Geometry]  = "Geometry";
+            _stageNames[ShaderStage::Fragment]  = "Fragment";
 
             runOnce = true;
         }

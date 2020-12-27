@@ -19,7 +19,13 @@ Mesh::Mesh(unsigned int drawMode, std::vector<Vertex> vertices, std::vector<unsi
 
 }
 
-Mesh::Mesh(unsigned int drawMode, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> primitiveSizes, std::vector<void*> primitiveOffsets) :
+Mesh::Mesh(
+    unsigned int drawMode,
+    const std::vector<Vertex> vertices,
+    const std::vector<unsigned int> indices,
+    const std::vector<unsigned int> primitiveSizes,
+    const std::vector<void*> primitiveOffsets
+) :
     _drawMode(drawMode),
     _vertices(vertices),
     _indices(indices),
@@ -36,7 +42,7 @@ Mesh::Mesh(unsigned int drawMode, std::vector<Vertex> vertices, std::vector<unsi
     }
 
     // Setup resources on the GPU
-    setupBuffers();
+    _setupBuffers();
 
     // Create refcounts to resources if non existing, increase it otherwise
     if (_arrayRefCount.find(_vao) != _arrayRefCount.end())
@@ -74,7 +80,7 @@ Mesh& Mesh::operator=(const Mesh& other)
 {
     // Free current resources
 
-    cleanup();
+    _cleanup();
     // Copy everything
     _vertices = other._vertices;
     _indices = other._indices;
@@ -94,10 +100,10 @@ Mesh& Mesh::operator=(const Mesh& other)
 Mesh::~Mesh()
 {
     // Free current resources
-    cleanup();
+    _cleanup();
 }
 
-void Mesh::cleanup()
+void Mesh::_cleanup()
 {
     // Update all refcounts and delete resources on the GPU if appropriate
     unsigned int count = --_arrayRefCount[_vao];
@@ -119,7 +125,7 @@ void Mesh::cleanup()
     }
 }
 
-void Mesh::setupBuffers()
+void Mesh::_setupBuffers()
 {
     // Generate arrays and buffers on the GPU
     glGenVertexArrays(1, &_vao);
@@ -142,12 +148,15 @@ void Mesh::setupBuffers()
     // Vertex positions
     glEnableVertexAttribArray(0);	
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+
     // Vertex colors
     glEnableVertexAttribArray(1);	
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+
     // Vertex normals
     glEnableVertexAttribArray(2);	
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+    
     // Vertex texture coords
     glEnableVertexAttribArray(3);	
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));

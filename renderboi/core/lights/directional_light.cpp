@@ -1,12 +1,17 @@
 #include "directional_light.hpp"
 
-DirectionalLight::DirectionalLight(glm::vec3 direction) :
+DirectionalLight::DirectionalLight(const glm::vec3 direction) :
     DirectionalLight(direction, glm::vec3(1.f), glm::vec3(1.f), glm::vec3(1.f))
 {
 
 }
 
-DirectionalLight::DirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) :
+DirectionalLight::DirectionalLight(
+    const glm::vec3 direction,
+    const glm::vec3 ambient,
+    const glm::vec3 diffuse,
+    const glm::vec3 specular
+) :
     Light(LightType::DirectionalLight),
     direction(direction),
     ambient(ambient),
@@ -16,7 +21,7 @@ DirectionalLight::DirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::
 
 }
 
-DirectionalLight* DirectionalLight::clone()
+DirectionalLight* DirectionalLight::clone() const
 {
     return new DirectionalLight(direction, ambient, diffuse, specular);
 }

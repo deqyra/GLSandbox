@@ -3,8 +3,6 @@
 
 #include <glm/glm.hpp>
 
-#include "uniform_buffer_object.hpp"
-
 /* UNIFORM BLOCK LAYOUT
  * ====================
  *
@@ -19,52 +17,46 @@
 
 /// @brief Manager for a UBO resource on the GPU, meants for vertex 
 /// transformation matrices.
-class MatrixUBO : public UniformBufferObject
+class MatrixUBO
 {
-    public:
-        MatrixUBO();
+private:
+    /// @brief The location (binding point) of the UBO on the GPU.
+    unsigned int _location;
 
-        /// @brief Set the model matrix in the UBO.
-        ///
-        /// @param model The model matrix to set in the UBO.
-        void setModel(glm::mat4 model);
+public:
+    /// @brief The total size, in bytes, of the UBO in the GPU memory.
+    static constexpr unsigned int Size         = 240;
+    
+    /// @brief The total size, in bytes, of the UBO in the GPU memory.
+    static constexpr unsigned int BindingPoint = 0;
+    
+    MatrixUBO();
 
-        /// @brief Set the view matrix in the UBO.
-        ///
-        /// @param view The view matrix to set in the UBO.
-        void setView(glm::mat4 view);
+    /// @brief Set the model matrix in the UBO.
+    ///
+    /// @param model The model matrix to set in the UBO.
+    void setModel(const glm::mat4& model);
 
-        /// @brief Set the projection matrix in the UBO.
-        ///
-        /// @param projection The projection matrix to set in the UBO.
-        void setProjection(glm::mat4 projection);
+    /// @brief Set the view matrix in the UBO.
+    ///
+    /// @param view The view matrix to set in the UBO.
+    void setView(const glm::mat4& view);
 
-        /// @brief Set the normal matrix in the UBO.
-        ///
-        /// @param normal The normal matrix to set in the UBO. The normal
-        /// restoration matrix is supposed to be a 3x3 matrix, but a mat3 will
-        /// be aligned to an array of vec4's on the GPU. Since the calculation  
-        /// of the normal matrix is performed using 4x4 matrices anyway, the 
-        /// result can be directly passed in as a mat4: only the first three 
-        /// rows will be sent to the GPU as vec4's, and the last element of 
-        /// those will be ignored.
-        void setNormal(glm::mat4 normal);
+    /// @brief Set the projection matrix in the UBO.
+    ///
+    /// @param projection The projection matrix to set in the UBO.
+    void setProjection(const glm::mat4& projection);
 
-        //////////////////////////////////////////////////
-        ///                                            ///
-        /// Methods overridden from UniformBufferObjet ///
-        ///                                            ///
-        //////////////////////////////////////////////////
-
-        /// @brief Get the binding point of the UBO on the GPU.
-        ///
-        /// @return The binding point of the UBO on the GPU.
-        unsigned int getBindingPoint();
-
-        /// @brief Get the size the UBO takes in GPU memory.
-        ///
-        /// @return The amount of GPU memory occupied by the UBO, in bytes.
-        unsigned int getSize();
+    /// @brief Set the normal matrix in the UBO.
+    ///
+    /// @param normal The normal matrix to set in the UBO. The normal
+    /// restoration matrix is supposed to be a 3x3 matrix, but a mat3 will
+    /// be aligned to an array of vec4's on the GPU. Since the calculation  
+    /// of the normal matrix is performed using 4x4 matrices anyway, the 
+    /// result can be directly passed in as a mat4: only the first three 
+    /// rows will be sent to the GPU as vec4's, and the last element of 
+    /// those will be ignored.
+    void setNormal(const glm::mat4& normal);
 };
 
 #endif//RENDERBOI__CORE__UBO__MATRIX_UBO_HPP

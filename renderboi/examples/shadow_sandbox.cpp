@@ -53,21 +53,21 @@ void ShadowSandbox::run(GLWindowPtr window)
     ////////////////////////////
 
     ShaderConfig lightConfig;
-    lightConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
-    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentFullLight);
-    ShaderProgram fullLightShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
+    lightConfig.addFeature(ShaderFeature::VertexMVP);
+    lightConfig.addFeature(ShaderFeature::FragmentFullLight);
+    ShaderProgram fullLightShader = ShaderBuilder::BuildShaderProgramFromConfig(lightConfig);
 
-    lightConfig.removeFeature(ShaderInfo::ShaderFeature::FragmentFullLight);
-    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentMeshMaterial);
-    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentBlinnPhong);
-    //lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentFullLight);
-    lightConfig.addFeature(ShaderInfo::ShaderFeature::FragmentGammaCorrection);
-    ShaderProgram blinnPhongShader = ShaderBuilder::buildShaderProgramFromConfig(lightConfig);
+    lightConfig.removeFeature(ShaderFeature::FragmentFullLight);
+    lightConfig.addFeature(ShaderFeature::FragmentMeshMaterial);
+    lightConfig.addFeature(ShaderFeature::FragmentBlinnPhong);
+    //lightConfig.addFeature(ShaderFeature::FragmentFullLight);
+    lightConfig.addFeature(ShaderFeature::FragmentGammaCorrection);
+    ShaderProgram blinnPhongShader = ShaderBuilder::BuildShaderProgramFromConfig(lightConfig);
 
     //ShaderConfig depthConfig;
-    //depthConfig.addFeature(ShaderInfo::ShaderFeature::VertexMVP);
-    //depthConfig.addFeature(ShaderInfo::ShaderFeature::FragmentViewDepthBuffer);
-    //ShaderProgram depthShader = ShaderBuilder::buildShaderProgramFromConfig(depthConfig);
+    //depthConfig.addFeature(ShaderFeature::VertexMVP);
+    //depthConfig.addFeature(ShaderFeature::FragmentViewDepthBuffer);
+    //ShaderProgram depthShader = ShaderBuilder::BuildShaderProgramFromConfig(depthConfig);
     
 
 

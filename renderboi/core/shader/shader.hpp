@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "shader_info.hpp"
 #include "shader_feature.hpp"
 #include "shader_stage.hpp"
 
@@ -21,25 +20,24 @@ class Shader
         /// for.
         /// @param supportedFeatures Array of literals describing features which
         /// the shader program supports.
-        Shader(unsigned int location, ShaderInfo::ShaderStage stage, std::vector<ShaderInfo::ShaderFeature> supportedFeatures);
+        Shader(const unsigned int location, const ShaderStage stage, const std::vector<ShaderFeature> supportedFeatures);
 
         /// @brief The location of the shader resource on the GPU.
         unsigned int _location;
 
         /// @brief Literal describing which shader stage this object is for.
-        ShaderInfo::ShaderStage _stage;
+        ShaderStage _stage;
 
         /// @brief Array of literals describing features which the shader 
         /// program supports.
-        std::vector<ShaderInfo::ShaderFeature> _supportedFeatures;
+        std::vector<ShaderFeature> _supportedFeatures;
 
-        using LocationToRefCountMap = std::unordered_map<unsigned int, unsigned int>;
         /// @brief Structure mapping how many shader instances are referencing a
         /// shader resource on the GPU.
-        static LocationToRefCountMap _locationRefCounts;
+        static std::unordered_map<unsigned int, unsigned int> _locationRefCounts;
 
         /// @brief Free resources upon destroying an instance.
-        void cleanup();
+        void _cleanup();
 
     public:
         Shader(const Shader& other);
@@ -56,20 +54,20 @@ class Shader
         /// @brief Get the shader stage of this shader object.
         ///
         /// @return Literal describing the shader stage of this shader object.
-        ShaderInfo::ShaderStage stage() const;
+        ShaderStage stage() const;
 
         /// @brief Get the features which this shader object supports.
         ///
         /// @return A const reference to an array of literals describing which 
         /// features the shader object supports.
-        const std::vector<ShaderInfo::ShaderFeature>& getSupportedFeatures() const;
+        const std::vector<ShaderFeature>& getSupportedFeatures() const;
 
         /// @brief Tells whether this shader supports a certain feature.
         ///
         /// @param feature Literal describing the feature to check on.
         ///
         /// @return Whether or not the feature is supported.
-        bool supports(ShaderInfo::ShaderFeature feature) const;
+        bool supports(const ShaderFeature feature) const;
 };
 
 #endif//RENDERBOI__CORE__SHADER__SHADER_HPP

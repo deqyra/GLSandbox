@@ -54,7 +54,7 @@ glm::mat4 CameraComponent::getProjectionMatrix()
 glm::mat4 CameraComponent::getViewProjectionMatrix()
 {
     glm::vec3 worldPosition = _sceneObject->getWorldTransform().getPosition();
-    return _camera->getViewProjectionMatrix(worldPosition);
+    return _camera->getViewProjectionMatrix();
 }
 
 CameraComponent* CameraComponent::clone(SceneObjectPtr newParent)

@@ -10,6 +10,6 @@
 /// light attenuation.
 /// @param[out] constantFactor Will receive the constant component of the
 /// light attenuation.
-void attenuationFromRange(float range, float& quadraticFactor, float& linearFactor, float& constantFactor);
+void attenuationFromRange(const float range, float& quadraticFactor, float& linearFactor, float& constantFactor);
 
 #endif//RENDERBOI__CORE__LIGHTS__TOOLS_HPP

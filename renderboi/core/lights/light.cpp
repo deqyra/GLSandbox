@@ -2,7 +2,7 @@
 
 unsigned int Light::_count = 0;
 
-Light::Light(LightType type) :
+Light::Light(const LightType type) :
     id(_count++),
     lightType(type)
 {

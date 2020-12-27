@@ -54,30 +54,39 @@ class Transform : public BasisProvider
     protected:
         /// @brief 3D position of the object.
         glm::vec3 _position;
+
         /// @brief Quaternion representing the rotation of the object.
         glm::quat _rotation;
+
         /// @brief 3D scale of the object.
         glm::vec3 _scale;
 
         /// @brief Local X axis of the object in world coordinates.
         mutable glm::vec3 _left;
+
         /// @brief Local Y axis of the object in world coordinates.
         mutable glm::vec3 _up;
+
         /// @brief Local Z axis of the object in world coordinates.
         mutable glm::vec3 _forward;
 
         /// @brief Whether the local vectors no longer reflects the transform
         /// parameters.
         mutable bool _localVectorsOutdated;
+
         /// @brief Update the local vectors so that they reflect the transform
         /// parameters.
         void updateLocalVectors() const;
 
         /// @brief Model matrix of the object.
         mutable glm::mat4 _modelMatrix;
-        /// @brief Whether the model matrix no longer reflects the transform parameters.
+
+        /// @brief Whether the model matrix no longer reflects the transform 
+        ///parameters.
         mutable bool _matrixOutdated;
-        /// @brief Update the model matrix of the object so that it reflects the transform parameters.
+
+        /// @brief Update the model matrix of the object so that it reflects the
+        /// transform parameters.
         void updateMatrix() const;
 
     public:
@@ -98,7 +107,7 @@ class Transform : public BasisProvider
         /// @param position Base position of the transform.
         /// @param rotation Base orientation of the transform.
         /// @param scale Base scale of the transform.
-        Transform(glm::vec3 position, glm::quat rotation, glm::vec3 scale);
+        Transform(const glm::vec3 position, const glm::quat rotation, const glm::vec3 scale);
 
         /// @brief Get the position of the object.
         ///
@@ -114,7 +123,7 @@ class Transform : public BasisProvider
         ///
         /// @return The new position of the object relative to its parent.
         template<FrameOfReference Ref>
-        glm::vec3 setPosition(glm::vec3 position);
+        glm::vec3 setPosition(const glm::vec3 position);
 
         /// @brief Translate the position of the object by a 3D vector.
         ///
@@ -125,7 +134,7 @@ class Transform : public BasisProvider
         ///
         /// @return The new position of the object relative to its parent.
         template<FrameOfReference Ref>
-        glm::vec3 translateBy(glm::vec3 other);
+        glm::vec3 translateBy(const glm::vec3& other);
 
         /// @brief Orbit the object around an axis and center.
         ///
@@ -137,7 +146,7 @@ class Transform : public BasisProvider
         ///
         /// @return The new position of the object relative to its parent.
         template<FrameOfReference Ref>
-        glm::vec3 orbit(float radAngle, glm::vec3 axis, glm::vec3 center, bool selfRotate = false);
+        glm::vec3 orbit(const float radAngle, const glm::vec3& axis, const glm::vec3& center, bool selfRotate = false);
 
         /// @brief Get the rotation of the object.
         ///
@@ -160,7 +169,7 @@ class Transform : public BasisProvider
         /// @param rotation The quaternion by which to rotate the object.
         ///
         /// @return The new rotation of the object relative to its parent.
-        glm::quat rotateBy(glm::quat other);
+        glm::quat rotateBy(const glm::quat& other);
 
         /// @brief Rotate the object around an axis.
         ///
@@ -172,7 +181,7 @@ class Transform : public BasisProvider
         ///
         /// @return The new rotation of the object relative to its parent.
         template<FrameOfReference Ref>
-        glm::quat rotateBy(float radAngle, glm::vec3 axis);
+        glm::quat rotateBy(const float radAngle, const glm::vec3& axis);
 
         /// @brief Rotate the object so that its front (local Z axis) is 
         /// directed towards the target position.
@@ -187,7 +196,7 @@ class Transform : public BasisProvider
         ///
         /// @return The new rotation of the object relative to its parent.
         template<FrameOfReference Ref>
-        glm::quat lookAt(glm::vec3 target, glm::vec3 yConstraint);
+        glm::quat lookAt(const glm::vec3& target, glm::vec3 yConstraint);
 
         /// @brief Get the scale of the object.
         ///
@@ -211,7 +220,7 @@ class Transform : public BasisProvider
         /// Y and Z axes.
         ///
         /// @return The new scale of the object relative to its parent.
-        glm::vec3 scaleBy(glm::vec3 other);
+        glm::vec3 scaleBy(const glm::vec3& other);
 
         /// @brief Apply this transform on top of another one.
         ///

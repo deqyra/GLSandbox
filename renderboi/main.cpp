@@ -22,7 +22,7 @@
 #include <renderboi/window/glfw3/glfw3_window_factory.hpp>
 #include <renderboi/window/glfw3/glfw3_window_callbacks.hpp>
 static constexpr WindowBackend UsedBackend = WindowBackend::GLFW3;
-static const void* UsedErrorCallback = (void*)(&globalGlfwErrorCallback);
+static constexpr void* UsedErrorCallback = (void*)(&globalGlfwErrorCallback);
 using AppWindowFactory = WindowFactory<UsedBackend>;
 
 // Halt the execution with a clean exit

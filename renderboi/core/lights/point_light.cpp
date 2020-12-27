@@ -8,7 +8,7 @@ PointLight::PointLight(float range) :
 
 }
 
-PointLight::PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float range) :
+PointLight::PointLight(const glm::vec3 ambient, const glm::vec3 diffuse, const glm::vec3 specular, const float range) :
     Light(LightType::PointLight),
     ambient(ambient),
     diffuse(diffuse),
@@ -17,7 +17,14 @@ PointLight::PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
     attenuationFromRange(range, constant, linear, quadratic);
 }
 
-PointLight::PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic) :
+PointLight::PointLight(
+    const glm::vec3 ambient,
+    const glm::vec3 diffuse,
+    const glm::vec3 specular,
+    const float constant,
+    const float linear,
+    const float quadratic
+) :
     Light(LightType::PointLight),
     ambient(ambient),
     diffuse(diffuse),
@@ -29,12 +36,13 @@ PointLight::PointLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
 
 }
 
-PointLight* PointLight::clone()
-{
-    return new PointLight(ambient, diffuse, specular, constant, linear, quadratic);
-}
-
 void PointLight::setRange(float range)
 {
     attenuationFromRange(range, constant, linear, quadratic);
+}
+
+PointLight* PointLight::clone() const
+{
+    return new PointLight(ambient, diffuse, specular,
+                          constant, linear, quadratic);
 }
