@@ -92,7 +92,7 @@ public:
     ///
     /// @param timeElapsed How much time passed (in seconds) since the last
     /// update.
-    void update(float timeElapsed);
+    void update(float timeElapsed) override;
 
     /// @brief Set the scene object which the camera script is attached to.
     /// Will also attempt to retrieve a camera from the scene object.
@@ -102,14 +102,14 @@ public:
     ///
     /// @exception If the provided pointer is null, this function will throw
     /// a std::runtime_error.
-    void setSceneObject(const SceneObjectPtr sceneObject);
+    void setSceneObject(const SceneObjectPtr sceneObject) override;
 
     /// @brief Get a raw pointer to a new keyboard script instance cloned 
     /// from this one. Ownership and responsibility for the allocated 
     /// resources are fully transferred to the caller.
     ///
     /// @return A raw pointer to the script instance cloned from this one.
-    KeyboardMovementScript* clone() const;
+    KeyboardMovementScript* clone() const override;
 
     ///////////////////////////////////////////////////////////////////////////
     ///                                                                     ///
@@ -120,12 +120,12 @@ public:
     /// @brief Start the processing for an action.
     ///
     /// @param action Object describing the action to start processing.
-    void triggerAction(const GLWindowPtr window, const KeyboardMovementAction& action);
+    void triggerAction(const GLWindowPtr window, const KeyboardMovementAction& action) override;
 
     /// @brief Stop the processing for an action.
     ///
     /// @param action Object describing the action to stop processing.
-    void stopAction(const GLWindowPtr window, const KeyboardMovementAction& action);
+    void stopAction(const GLWindowPtr window, const KeyboardMovementAction& action) override;
 
     ////////////////////////////////////////////////////////////////////////////////////
     ///                                                                              ///
@@ -137,7 +137,7 @@ public:
     /// script.
     ///
     /// @return The default control scheme for the keyboard movement script.
-    ControlSchemeManagerPtr<KeyboardMovementAction> getDefaultControlScheme() const;
+    ControlSchemeManagerPtr<KeyboardMovementAction> getDefaultControlScheme() const override;
 };
 
 namespace std

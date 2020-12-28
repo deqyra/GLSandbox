@@ -38,12 +38,12 @@ public:
     /// @brief Start the processing for an action.
     ///
     /// @param action Object describing the action to start processing.
-    void triggerAction(const GLWindowPtr window, const BasicWindowManagerAction& action);
+    void triggerAction(const GLWindowPtr window, const BasicWindowManagerAction& action) override;
 
     /// @brief Stop the processing for an action.
     ///
     /// @param action Object describing the action to stop processing.
-    void stopAction(const GLWindowPtr window, const BasicWindowManagerAction& action);
+    void stopAction(const GLWindowPtr window, const BasicWindowManagerAction& action) override;
 
     //////////////////////////////////////////////
     ///                                        ///
@@ -57,7 +57,7 @@ public:
     /// triggered.
     /// @param width New width (in pixels) of the framebuffer.
     /// @param height New height (in pixels) of the framebuffer.
-    void processFramebufferResize(const GLWindowPtr window, const int width, const int height);
+    void processFramebufferResize(const GLWindowPtr window, const int width, const int height) override;
 
     ////////////////////////////////////////////////////////////////////////////////////
     ///                                                                              ///
@@ -69,7 +69,7 @@ public:
     /// script.
     ///
     /// @return The default control scheme for the keyboard movement script.
-    ControlSchemeManagerPtr<BasicWindowManagerAction> getDefaultControlScheme() const;
+    ControlSchemeManagerPtr<BasicWindowManagerAction> getDefaultControlScheme() const override;
 };
 
 namespace std

@@ -113,7 +113,7 @@ class MeshComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        MeshComponent* clone(const SceneObjectPtr newParent) const;
+        MeshComponent* clone(const SceneObjectPtr newParent) const override;
 };
 
 template<>

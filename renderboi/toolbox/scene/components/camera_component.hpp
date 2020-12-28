@@ -81,7 +81,7 @@ class CameraComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        CameraComponent* clone(const SceneObjectPtr newParent) const;
+        CameraComponent* clone(const SceneObjectPtr newParent) const override;
 };
 
 template<>

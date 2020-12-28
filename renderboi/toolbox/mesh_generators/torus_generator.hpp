@@ -70,7 +70,7 @@ public:
     /// return it.
     ///
     /// @return A pointer to the mesh containing the generated vertices.
-    MeshPtr generatePtr() const;
+    MeshPtr generatePtr() const override;
 };
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATORS__TORUS_GENERATOR_HPP

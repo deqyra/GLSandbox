@@ -42,7 +42,7 @@ public:
     /// fully transferred to the caller.
     ///
     /// @return A raw pointer to the light instance cloned from this one.
-    DirectionalLight* clone() const;
+    DirectionalLight* clone() const override;
 };
 
 #endif//DIRECTIONAL_LIGHT_HPP

@@ -88,7 +88,7 @@ public:
     /// binding to check.
     ///
     /// @return Whether or not the provided control is bound.
-    bool controlIsBound(const Control& control);
+    bool controlIsBound(const Control& control) override;
 
     /// @brief Returns the action bound to the provided control.
     ///
@@ -99,7 +99,7 @@ public:
     ///
     /// @exception If the provided control is not bound in this control 
     /// scheme, the function will throw an std::runtime_error.
-    T getActionBoundToControl(const Control& control);
+    T getActionBoundToControl(const Control& control) override;
 
     /// @brief Tells whether or not an action has a control bound to it in 
     /// this control scheme.
@@ -107,7 +107,7 @@ public:
     /// @param action Object describing the action whose bindings to check.
     ///
     /// @return Whether or not the provided action has a binding.
-    bool actionIsBound(const T& action);
+    bool actionIsBound(const T& action) override;
 
     /// @brief Returns the array of controls which are bound to the provided
     /// action.
@@ -116,13 +116,13 @@ public:
     /// be retrieved.
     ///
     /// @return The array of controls bound to the provided action.
-    std::vector<Control> getControlsBoundToAction(const T& action);
+    std::vector<Control> getControlsBoundToAction(const T& action) override;
 
     /// @brief Returns the array of all controls which are bound to an 
     /// action, paired with the action they are bound to.
     ///
     /// @return The array of all controls bound to an action.
-    std::vector<std::pair<Control, T>> getAllBoundControls();
+    std::vector<std::pair<Control, T>> getAllBoundControls() override;
 };
 
 template<typename T>

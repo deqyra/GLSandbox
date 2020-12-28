@@ -181,7 +181,7 @@ public:
     /// resources are fully transferred to the caller.
     ///
     /// @return A raw pointer to the light instance cloned from this one.
-    SpotLight* clone() const;
+    SpotLight* clone() const override;
 };
 
 #endif//RENDERBOI__CORE__LIGHTS__SPOT_LIGHT_HPP

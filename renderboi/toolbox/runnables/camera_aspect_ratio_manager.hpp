@@ -34,7 +34,7 @@ public:
     /// triggered.
     /// @param width New width (in pixels) of the framebuffer.
     /// @param height New height (in pixels) of the framebuffer.
-    void processFramebufferResize(const GLWindowPtr window, const int width, const int height);
+    void processFramebufferResize(const GLWindowPtr window, const int width, const int height) override;
 };
 
 #endif//RENDERBOI__TOOLBOX__RUNNABLES__CAMERA_ASPECT_RATIO_MANAGER_HPP

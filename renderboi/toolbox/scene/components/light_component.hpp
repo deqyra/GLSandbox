@@ -55,7 +55,7 @@ class LightComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        LightComponent* clone(const SceneObjectPtr newParent) const;
+        LightComponent* clone(const SceneObjectPtr newParent) const override;
 };
 
 template<>

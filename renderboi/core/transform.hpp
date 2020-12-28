@@ -255,17 +255,17 @@ class Transform : public BasisProvider
         /// @brief Get the local X vector of the object in world coordinates.
         ///
         /// @return The local X vector of the object, in world coordinates.
-        glm::vec3 left() const;
+        glm::vec3 left() const override;
 
         /// @brief Get the local Y vector of the object in world coordinates.
         ///
         /// @return The local Y vector of the object, in world coordinates.
-        glm::vec3 up() const;
+        glm::vec3 up() const override;
 
         /// @brief Get the local Z vector of the object in world coordinates.
         ///
         /// @return The local Z vector of the object, in world coordinates.
-        glm::vec3 forward() const;
+        glm::vec3 forward() const override;
 };
 
 #endif//RENDERBOI__CORE__TRANSFORM_HPP

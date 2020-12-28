@@ -225,6 +225,7 @@ set(RB_TOOLBOX_SOURCE_FILES
     controls/control_scheme_manager.hpp
     controls/controlled_entity_manager.hpp
     interfaces/action_event_receiver.hpp
+    interfaces/control_binding_provider.hpp
     interfaces/default_control_scheme_provider.hpp
     mesh_generators/all_mesh_generators.hpp
     mesh_generators/axes_generator.cpp

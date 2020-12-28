@@ -68,7 +68,7 @@ class ScriptComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        ScriptComponent* clone(const SceneObjectPtr newParent) const;
+        ScriptComponent* clone(const SceneObjectPtr newParent) const override;
 };
 
 template<>

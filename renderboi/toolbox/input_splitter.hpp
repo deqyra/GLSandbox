@@ -48,7 +48,7 @@ public:
     /// triggered.
     /// @param width New width (in pixels) of the framebuffer.
     /// @param height New height (in pixels) of the framebuffer.
-    void processFramebufferResize(const GLWindowPtr window, const int width, const int height);
+    void processFramebufferResize(const GLWindowPtr window, const int width, const int height) override;
 
     /// @brief Callback for a keyboard event.
     ///
@@ -67,7 +67,7 @@ public:
         const int scancode,
         const Window::Input::Action action,
         const int mods
-    );
+    ) override;
 
     /// @brief Callback for a mouse button event.
     ///
@@ -84,7 +84,7 @@ public:
         const Window::Input::MouseButton button,
         const Window::Input::Action action,
         const int mods
-    );
+    ) override;
 
     /// @brief Callback for a mouse cursor event.
     ///
@@ -92,7 +92,7 @@ public:
     /// triggered.
     /// @param xpos X coordinate of the new position of the mouse.
     /// @param ypos Y coordinate of the new position of the mouse.
-    void processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos);
+    void processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos) override;
 };
 
 using InputSplitterPtr = std::shared_ptr<InputSplitter>;

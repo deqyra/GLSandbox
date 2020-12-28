@@ -194,17 +194,17 @@ public:
     /// @brief Get the facing direction of the camera.
     ///
     /// @return The direction the camera is facing.
-    glm::vec3 forward() const;
+    glm::vec3 forward() const override;
 
     /// @brief Get the direction to the left of the camera.
     ///
     /// @return The direction to the left of the camera.
-    glm::vec3 left() const;
+    glm::vec3 left() const override;
 
     /// @brief Get the upwards direction of the camera.
     ///
     /// @return The upwards direction of the camera.
-    glm::vec3 up() const;
+    glm::vec3 up() const override;
 };
 
 using CameraPtr = std::shared_ptr<Camera>;

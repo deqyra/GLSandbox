@@ -79,7 +79,7 @@ public:
     /// resources are fully transferred to the caller.
     ///
     /// @return A raw pointer to the light instance cloned from this one.
-    PointLight* clone() const;
+    PointLight* clone() const override;
 };
 
 #endif//POINT_LIGHT_HPP

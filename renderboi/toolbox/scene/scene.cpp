@@ -227,7 +227,7 @@ std::vector<SceneObjectPtr> Scene::getAllObjects(const bool mustBeEnabled) const
 
     for (auto it = _objectMetadata.begin(); it != _objectMetadata.end(); it++)
     {
-        const SceneObjectMetadata meta = it->second;
+        const SceneObjectMetadata& meta = it->second;
         const ObjectTree::NodePtr node = _objects[meta.objectNodeId];
         if (!mustBeEnabled || node->value->enabled) result.push_back(node->value);
     }
@@ -290,7 +290,7 @@ void Scene::_terminate()
     // Remove scene references in all scene objects
     for (auto it = _objectMetadata.begin(); it != _objectMetadata.end(); it++)
     {
-        const SceneObjectMetadata meta = it->second;
+        const SceneObjectMetadata& meta = it->second;
         _objects[meta.id]->value->setScene(nullptr);
         _objects[meta.id]->value->transform.getNotifier().deleteSubscriber(meta.transformSubscriberId);
     }
@@ -321,7 +321,7 @@ void Scene::_markForUpdate(const unsigned int id)
 {
     auto it = _objectMetadata.find(id);
     // Retrieve object metadata
-    const SceneObjectMetadata meta = it->second;
+    const SceneObjectMetadata& meta = it->second;
     const BoolTree::NodePtr updateNode = _updateMarkers[meta.updateNodeId];
     // Set the marker to true
     if (!updateNode->value)
@@ -434,7 +434,7 @@ std::vector<unsigned int> Scene::_findLongestOutdatedParentChain(const unsigned 
 {
     auto it = _objectMetadata.find(id);
     // Retrieve the object node ID, the node pointer as well as its parent chain
-    const SceneObjectMetadata meta = it->second;
+    const SceneObjectMetadata& meta = it->second;
     const ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
     const std::vector<ObjectTree::NodePtr> parentChain = objectNode->getParentChain();
 
@@ -478,7 +478,7 @@ void Scene::_worldTransformCascadeUpdate(const unsigned int id) const
 {
     auto it = _objectMetadata.find(id);
     // Retrieve node metadata
-    const SceneObjectMetadata meta = it->second;
+    const SceneObjectMetadata& meta = it->second;
 
     // Get object node pointer
     const ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
@@ -495,7 +495,7 @@ void Scene::_worldTransformCascadeUpdate(const unsigned int id) const
 void Scene::_worldTransformUpdateNoCascade(const unsigned int id) const
 {
     auto it = _objectMetadata.find(id);
-    const SceneObjectMetadata meta = it->second;
+    const SceneObjectMetadata& meta = it->second;
 
     // Get object node pointer as well as the parent transform node pointer
     const ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];

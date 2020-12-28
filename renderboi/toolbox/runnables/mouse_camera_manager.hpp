@@ -56,7 +56,7 @@ public:
     /// triggered.
     /// @param xpos X coordinate of the new position of the mouse.
     /// @param ypos Y coordinate of the new position of the mouse.
-    void processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos);
+    void processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos) override;
 };
 
 #endif//RENDERBOI__TOOLBOX__RUNNABLES__MOUSE_CAMERA_SCRIPT_HPP

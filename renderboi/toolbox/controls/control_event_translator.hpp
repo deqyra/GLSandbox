@@ -83,7 +83,7 @@ public:
         const int scancode, 
         const Window::Input::Action action, 
         const int mods
-    );
+    ) override;
 
     /// @brief Callback for a mouse button event.
     ///
@@ -100,7 +100,7 @@ public:
         const Window::Input::MouseButton button, 
         const Window::Input::Action action, 
         const int mods
-    );
+    ) override;
 };
 
 template<typename T>
