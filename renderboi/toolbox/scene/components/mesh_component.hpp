@@ -33,7 +33,7 @@ class MeshComponent : public Component
         ///
         /// @exception If the provided mesh pointer is null, the constructor
         /// will throw a std::runtime_error.
-        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh);
+        MeshComponent(const SceneObjectPtr sceneObject, const MeshPtr mesh);
 
         /// @param sceneObject Pointer to the scene object which will be parent
         /// to this component.
@@ -42,7 +42,7 @@ class MeshComponent : public Component
         ///
         /// @exception If the provided mesh pointer is null, the constructor
         /// will throw a std::runtime_error.
-        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material);
+        MeshComponent(const SceneObjectPtr sceneObject, const MeshPtr mesh, const Material material);
 
         /// @param sceneObject Pointer to the scene object which will be parent
         /// to this component.
@@ -51,7 +51,7 @@ class MeshComponent : public Component
         ///
         /// @exception If the provided mesh pointer is null, the constructor
         /// will throw a std::runtime_error.
-        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, ShaderProgram shader);
+        MeshComponent(const SceneObjectPtr sceneObject, const MeshPtr mesh, const ShaderProgram shader);
 
         /// @param sceneObject Pointer to the scene object which will be parent
         /// to this component.
@@ -61,14 +61,14 @@ class MeshComponent : public Component
         ///
         /// @exception If the provided mesh pointer is null, the constructor
         /// will throw a std::runtime_error.
-        MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material, ShaderProgram shader);
+        MeshComponent(const SceneObjectPtr sceneObject, const MeshPtr mesh, const Material material, const ShaderProgram shader);
 
         ~MeshComponent();
 
         /// @brief Get a pointer to the mesh used by the component.
         ///
         /// @return A pointer to the mesh used by the component.
-        MeshPtr getMesh();
+        MeshPtr getMesh() const;
 
         /// @brief Set the mesh used by the component.
         ///
@@ -76,27 +76,27 @@ class MeshComponent : public Component
         ///
         /// @exception If the provided mesh pointer is null, the function will
         /// throw a std::runtime_error.
-        void setMesh(MeshPtr mesh);
+        void setMesh(const MeshPtr mesh);
 
         /// @brief Get the material used by the component.
         ///
         /// @return The material used by the component.
-        Material getMaterial();
+        Material getMaterial() const;
 
         /// @brief Set the material used by the component.
         ///
         /// @param material The new material to be used by the component.
-        void setMaterial(Material material);
+        void setMaterial(const Material material);
 
         /// @brief Get the shader used by the component.
         ///
         /// @return The shader used by the component.
-        ShaderProgram getShader();
+        ShaderProgram getShader() const;
 
         /// @brief Set the shader used by the component.
         ///
         /// @param shader The new shader to be used by the component.
-        void setShader(ShaderProgram shader);
+        void setShader(const ShaderProgram shader);
 
         /////////////////////////////////////////
         ///                                   ///
@@ -113,7 +113,7 @@ class MeshComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        MeshComponent* clone(SceneObjectPtr newParent);
+        MeshComponent* clone(const SceneObjectPtr newParent) const;
 };
 
 template<>

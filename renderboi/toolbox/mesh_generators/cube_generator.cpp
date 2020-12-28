@@ -33,7 +33,7 @@ CubeGenerator::CubeGenerator(Parameters parameters) :
     
 }
 
-MeshPtr CubeGenerator::generatePtr()
+MeshPtr CubeGenerator::generatePtr() const
 {
     float len = glm::sqrt(2 * parameters.size * parameters.size);
 

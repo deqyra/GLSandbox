@@ -6,10 +6,10 @@
 #include "glfw3/glfw3_adapter.hpp"
 #include "input_processor.hpp"
 
-InputProcessorPtr GLWindow::_defaultInputProcessor = std::make_shared<InputProcessor>();
+const InputProcessorPtr GLWindow::_DefaultInputProcessor = std::make_shared<InputProcessor>();
 
 GLWindow::GLWindow(std::string title) :
-    _inputProcessor(_defaultInputProcessor),
+    _inputProcessor(_DefaultInputProcessor),
     _title(title)
 {
 
@@ -20,29 +20,38 @@ GLWindow::~GLWindow()
 
 }
 
-void GLWindow::processFramebufferResize(int width, int height)
+void GLWindow::processFramebufferResize(const int width, const int height)
 {
     _inputProcessor->processFramebufferResize(shared_from_this(), width, height);
     _width = width;
     _height = height;
 }
 
-void GLWindow::processKeyboard(Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
+void GLWindow::processKeyboard(
+    const Window::Input::Key key,
+    const int scancode,
+    const Window::Input::Action action,
+    const int mods
+)
 {
     _inputProcessor->processKeyboard(shared_from_this(), key, scancode, action, mods);
 }
 
-void GLWindow::processMouseButton(Window::Input::MouseButton button, Window::Input::Action action, int mods)
+void GLWindow::processMouseButton(
+    const Window::Input::MouseButton button,
+    const Window::Input::Action action,
+    const int mods
+)
 {
     _inputProcessor->processMouseButton(shared_from_this(), button, action, mods);
 }
 
-void GLWindow::processMouseCursor(double xpos, double ypos)
+void GLWindow::processMouseCursor(const double xpos, const double ypos)
 {
     _inputProcessor->processMouseCursor(shared_from_this(), xpos, ypos);
 }
 
-void GLWindow::registerInputProcessor(InputProcessorPtr inputProcessor)
+void GLWindow::registerInputProcessor(const InputProcessorPtr inputProcessor)
 {
     if (!_inputProcessor)
     {
@@ -54,10 +63,10 @@ void GLWindow::registerInputProcessor(InputProcessorPtr inputProcessor)
 
 void GLWindow::detachInputProcessor()
 {
-    _inputProcessor = _defaultInputProcessor;
+    _inputProcessor = _DefaultInputProcessor;
 }
 
-std::string GLWindow::getTitle()
+std::string GLWindow::getTitle() const
 {
     return _title;
 }

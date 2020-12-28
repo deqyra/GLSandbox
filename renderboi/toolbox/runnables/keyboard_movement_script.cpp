@@ -9,7 +9,11 @@ using Ref = FrameOfReference;
 
 #include <cpptools/enum_map.hpp>
 
-KeyboardMovementScript::KeyboardMovementScript(BasisProviderPtr basisProvider, float speed, float sprintMultiplier) :
+KeyboardMovementScript::KeyboardMovementScript(
+    const BasisProviderPtr basisProvider,
+    const float speed,
+    const float sprintMultiplier
+) :
     _basisProvider(basisProvider),
     _moveSpeed(speed),
     _sprintMultiplier(sprintMultiplier),
@@ -30,20 +34,20 @@ void KeyboardMovementScript::update(float timeElapsed)
     glm::vec3 position = _sceneObject->transform.getPosition();
 
     // Depending on which directional flags were raised, compute new position
-    if (_movement[IndexForward])
+    if (_movement[_IndexForward])
         position += _basisProvider->forward() * velocity;
-    if (_movement[IndexBackward])
+    if (_movement[_IndexBackward])
         position -= _basisProvider->forward() * velocity;
-    if (_movement[IndexLeft])
+    if (_movement[_IndexLeft])
         position += _basisProvider->left() * velocity;
-    if (_movement[IndexRight])
+    if (_movement[_IndexRight])
         position -= _basisProvider->left() * velocity;
 
     // Update parent position
     _sceneObject->transform.setPosition<Ref::Parent>(position);
 }
 
-void KeyboardMovementScript::setSceneObject(SceneObjectPtr sceneObject)
+void KeyboardMovementScript::setSceneObject(const SceneObjectPtr sceneObject)
 {
     if (!sceneObject)
     {
@@ -54,26 +58,26 @@ void KeyboardMovementScript::setSceneObject(SceneObjectPtr sceneObject)
     _sceneObject = sceneObject;
 }
 
-KeyboardMovementScript* KeyboardMovementScript::clone()
+KeyboardMovementScript* KeyboardMovementScript::clone() const
 {
     return new KeyboardMovementScript(_basisProvider, _moveSpeed, _sprintMultiplier);
 }
 
-void KeyboardMovementScript::triggerAction(GLWindowPtr window, const KeyboardMovementAction& action)
+void KeyboardMovementScript::triggerAction(const GLWindowPtr window, const KeyboardMovementAction& action)
 {
     switch (action)
     {
         case KeyboardMovementAction::Forward:
-            _movement[IndexForward] = true;
+            _movement[_IndexForward] = true;
             break;
         case KeyboardMovementAction::Backward:
-            _movement[IndexBackward] = true;
+            _movement[_IndexBackward] = true;
             break;
         case KeyboardMovementAction::Left:
-            _movement[IndexLeft] = true;
+            _movement[_IndexLeft] = true;
             break;
         case KeyboardMovementAction::Right:
-            _movement[IndexRight] = true;
+            _movement[_IndexRight] = true;
             break;
         case KeyboardMovementAction::Sprint:
             _sprint = true;
@@ -83,21 +87,21 @@ void KeyboardMovementScript::triggerAction(GLWindowPtr window, const KeyboardMov
     cancelOppositeDirections();
 }
 
-void KeyboardMovementScript::stopAction(GLWindowPtr window, const KeyboardMovementAction& action)
+void KeyboardMovementScript::stopAction(const GLWindowPtr window, const KeyboardMovementAction& action)
 {
     switch (action)
     {
         case KeyboardMovementAction::Forward:
-            _movement[IndexForward] = false;
+            _movement[_IndexForward] = false;
             break;
         case KeyboardMovementAction::Backward:
-            _movement[IndexBackward] = false;
+            _movement[_IndexBackward] = false;
             break;
         case KeyboardMovementAction::Left:
-            _movement[IndexLeft] = false;
+            _movement[_IndexLeft] = false;
             break;
         case KeyboardMovementAction::Right:
-            _movement[IndexRight] = false;
+            _movement[_IndexRight] = false;
             break;
         case KeyboardMovementAction::Sprint:
             _sprint = false;
@@ -107,11 +111,12 @@ void KeyboardMovementScript::stopAction(GLWindowPtr window, const KeyboardMoveme
     cancelOppositeDirections();
 }
 
-ControlSchemeManagerPtr<KeyboardMovementAction> KeyboardMovementScript::getDefaultControlScheme()
+ControlSchemeManagerPtr<KeyboardMovementAction> KeyboardMovementScript::getDefaultControlScheme() const
 {
-    using Window::Input::Key;
-    ControlSchemeManagerPtr<KeyboardMovementAction> schemeManager = std::make_shared<ControlSchemeManager<KeyboardMovementAction>>();
+    ControlSchemeManagerPtr<KeyboardMovementAction>
+    schemeManager = std::make_shared<ControlSchemeManager<KeyboardMovementAction>>();
 
+    using Window::Input::Key;
     schemeManager->bindControl(Control(Key::W), KeyboardMovementAction::Forward);
     schemeManager->bindControl(Control(Key::A), KeyboardMovementAction::Left);
     schemeManager->bindControl(Control(Key::S), KeyboardMovementAction::Backward);
@@ -124,15 +129,15 @@ ControlSchemeManagerPtr<KeyboardMovementAction> KeyboardMovementScript::getDefau
 void KeyboardMovementScript::cancelOppositeDirections()
 {
     // Cancel directions if opposite
-    if (_movement[IndexForward] && _movement[IndexBackward])
+    if (_movement[_IndexForward] && _movement[_IndexBackward])
     {
-        _movement[IndexForward] = false;
-        _movement[IndexBackward] = false;
+        _movement[_IndexForward] = false;
+        _movement[_IndexBackward] = false;
     }
-    if (_movement[IndexLeft] && _movement[IndexRight])
+    if (_movement[_IndexLeft] && _movement[_IndexRight])
     {
-        _movement[IndexLeft] = false;
-        _movement[IndexRight] = false;
+        _movement[_IndexLeft] = false;
+        _movement[_IndexRight] = false;
     }
 }
 

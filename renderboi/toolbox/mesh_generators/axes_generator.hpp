@@ -9,40 +9,40 @@
 /// respectively colored red, green and blue.
 class AxesGenerator : public MeshGenerator
 {
-    public:
-        /// @brief Default length the axes will have.
-        static constexpr float DefaultAxisLength = 1.f;
+public:
+    /// @brief Default length the axes will have.
+    static constexpr float DefaultAxisLength = 1.f;
 
-        /// @brief Struct packing together the parameters of the vertex
-        /// generation.
-        struct Parameters
-        {
-            /// @brief Length the axes will have.
-            float axisLength;
-        };
+    /// @brief Struct packing together the parameters of the vertex
+    /// generation.
+    struct Parameters
+    {
+        /// @brief Length the axes will have.
+        float axisLength;
+    };
 
-        AxesGenerator();
+    AxesGenerator();
 
-        /// @param length Length the axes will have.
-        AxesGenerator(float length);
+    /// @param length Length the axes will have.
+    AxesGenerator(float length);
 
-        /// @param parameters Parameters of the vertex generation.
-        AxesGenerator(Parameters parameters);
-        
-        /// @brief Parameters of the vertex generation.
-        Parameters parameters;
+    /// @param parameters Parameters of the vertex generation.
+    AxesGenerator(Parameters parameters);
+    
+    /// @brief Parameters of the vertex generation.
+    Parameters parameters;
 
-        /////////////////////////////////////////////
-        ///                                       ///
-        /// Methods overridden from MeshGenerator ///
-        ///                                       ///
-        /////////////////////////////////////////////
+    /////////////////////////////////////////////
+    ///                                       ///
+    /// Methods overridden from MeshGenerator ///
+    ///                                       ///
+    /////////////////////////////////////////////
 
-        /// @brief Generate the vertex data, put it in a new mesh object and 
-        /// return it.
-        ///
-        /// @return A pointer to the mesh containing the generated vertices.
-        MeshPtr generatePtr();
+    /// @brief Generate the vertex data, put it in a new mesh object and 
+    /// return it.
+    ///
+    /// @return A pointer to the mesh containing the generated vertices.
+    MeshPtr generatePtr() const;
 };
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATORS__AXES_GENERATOR_HPP

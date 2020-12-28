@@ -3,25 +3,30 @@
 #include <renderboi/core/materials.hpp>
 #include <renderboi/core/shader/shader_builder.hpp>
 
-MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh) :
+MeshComponent::MeshComponent(const SceneObjectPtr sceneObject, const MeshPtr mesh) :
     MeshComponent(sceneObject, mesh, Materials::Default, ShaderBuilder::MinimalShaderProgram())
 {
 
 }
 
-MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material) :
+MeshComponent::MeshComponent(const SceneObjectPtr sceneObject, const MeshPtr mesh, const Material material) :
     MeshComponent(sceneObject, mesh, material, ShaderBuilder::MinimalShaderProgram())
 {
 
 }
 
-MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, ShaderProgram shader) :
+MeshComponent::MeshComponent(const SceneObjectPtr sceneObject, const MeshPtr mesh, const ShaderProgram shader) :
     MeshComponent(sceneObject, mesh, Materials::Default, shader)
 {
 
 }
 
-MeshComponent::MeshComponent(SceneObjectPtr sceneObject, MeshPtr mesh, Material material, ShaderProgram shader) :
+MeshComponent::MeshComponent(
+    const SceneObjectPtr sceneObject,
+    const MeshPtr mesh,
+    const Material material,
+    const ShaderProgram shader
+) :
     Component(ComponentType::Mesh, sceneObject),
     _mesh(mesh),
     _material(material),
@@ -38,7 +43,7 @@ MeshComponent::~MeshComponent()
 
 }
 
-MeshPtr MeshComponent::getMesh()
+MeshPtr MeshComponent::getMesh() const
 {
     return _mesh;
 }
@@ -53,27 +58,27 @@ void MeshComponent::setMesh(MeshPtr mesh)
     _mesh = mesh;
 }
 
-Material MeshComponent::getMaterial()
+Material MeshComponent::getMaterial() const
 {
     return _material;
 }
 
-void MeshComponent::setMaterial(Material material)
+void MeshComponent::setMaterial(const Material material)
 {
     _material = material;
 }
 
-ShaderProgram MeshComponent::getShader()
+ShaderProgram MeshComponent::getShader() const
 {
     return _shader;
 }
 
-void MeshComponent::setShader(ShaderProgram shader)
+void MeshComponent::setShader(const ShaderProgram shader)
 {
     _shader = shader;
 }
 
-MeshComponent* MeshComponent::clone(SceneObjectPtr newParent)
+MeshComponent* MeshComponent::clone(const SceneObjectPtr newParent) const
 {
     // By the time this shared pointer is destroyed (end of scope), responsibility will already have been shared with the cloned MeshComponent
     MeshPtr clonedMesh = std::make_shared<Mesh>(*_mesh);

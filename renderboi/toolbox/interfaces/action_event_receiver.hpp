@@ -12,20 +12,20 @@
 template<typename T>
 class ActionEventReceiver
 {
-    public:
-        /// @brief Start the processing for an action.
-        ///
-        /// @param window Pointer to the window on which the action should be
-        /// started.
-        /// @param action Object describing the action to start processing.
-        virtual void triggerAction(GLWindowPtr window, const T& action) = 0;
+public:
+    /// @brief Start the processing for an action.
+    ///
+    /// @param window Pointer to the window on which the action should be
+    /// started.
+    /// @param action Object describing the action to start processing.
+    virtual void triggerAction(const GLWindowPtr window, const T& action) = 0;
 
-        /// @brief Stop the processing for an action.
-        ///
-        /// @param window Pointer to the window on which the action should be
-        /// stopped.
-        /// @param action Object describing the action to stop processing.
-        virtual void stopAction(GLWindowPtr window, const T& action) = 0;
+    /// @brief Stop the processing for an action.
+    ///
+    /// @param window Pointer to the window on which the action should be
+    /// stopped.
+    /// @param action Object describing the action to stop processing.
+    virtual void stopAction(const GLWindowPtr window, const T& action) = 0;
 };
 
 template<typename T>

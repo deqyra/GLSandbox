@@ -30,7 +30,7 @@ void InputLogger::setEventLoggingStatus(InputProcessor::EventType eventType, boo
     _loggingStatus[eventType] = enable;
 }
 
-void InputLogger::processFramebufferResize(GLWindowPtr window, int width, int height)
+void InputLogger::processFramebufferResize(const GLWindowPtr window, const int width, const int height)
 {
     if (!_loggingStatus[InputProcessor::EventType::FramebufferResize]) return;
 
@@ -38,7 +38,13 @@ void InputLogger::processFramebufferResize(GLWindowPtr window, int width, int he
                      "New dimensions: w=" << width << ";h=" << height << ".\n" << std::endl;
 }
 
-void InputLogger::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
+void InputLogger::processKeyboard(
+    const GLWindowPtr window, 
+    const Window::Input::Key key, 
+    const int scancode, 
+    const Window::Input::Action action,
+    const int mods
+)
 {
     if (!_loggingStatus[InputProcessor::EventType::Keyboard]) return;
 
@@ -50,7 +56,12 @@ void InputLogger::processKeyboard(GLWindowPtr window, Window::Input::Key key, in
                      "Mod flags: " << bits << "\n" << std::endl;
 }
 
-void InputLogger::processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods)
+void InputLogger::processMouseButton(
+    const GLWindowPtr window, 
+    const Window::Input::MouseButton button, 
+    const Window::Input::Action action, 
+    const int mods
+)
 {
     if (!_loggingStatus[InputProcessor::EventType::MouseButton]) return;
 
@@ -62,7 +73,7 @@ void InputLogger::processMouseButton(GLWindowPtr window, Window::Input::MouseBut
                      "Mod flags: " << bits << "\n" << std::endl;
 }
 
-void InputLogger::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
+void InputLogger::processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos)
 {
     if (!_loggingStatus[InputProcessor::EventType::MouseCursor]) return;
 

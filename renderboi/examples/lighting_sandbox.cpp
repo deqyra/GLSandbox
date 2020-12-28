@@ -39,7 +39,7 @@ using Ref = FrameOfReference;
 
 #include <cpptools/enum_map.hpp>
 
-void LightingSandbox::run(GLWindowPtr window)
+void LightingSandbox::run(const GLWindowPtr window)
 {
     // Update window title
     std::string title = window->getTitle();
@@ -204,7 +204,7 @@ void LightingSandboxScript::update(float timeElapsed)
     }
 }
 
-void LightingSandboxScript::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
+void LightingSandboxScript::processKeyboard(const GLWindowPtr window, const Window::Input::Key key, const int scancode, const Window::Input::Action action, const int mods)
 {
     using Key = Window::Input::Key;
     using Action = Window::Input::Action;
@@ -228,7 +228,7 @@ void LightingSandboxScript::processKeyboard(GLWindowPtr window, Window::Input::K
     }
 }
 
-LightingSandboxScript* LightingSandboxScript::clone()
+LightingSandboxScript* LightingSandboxScript::clone() const
 {
     return nullptr;
 }

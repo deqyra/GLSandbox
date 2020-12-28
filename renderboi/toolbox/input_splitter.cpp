@@ -30,7 +30,7 @@ void InputSplitter::detachAllInputProcessors()
     _subscribers.clear();
 }
 
-void InputSplitter::processFramebufferResize(GLWindowPtr window, int width, int height)
+void InputSplitter::processFramebufferResize(const GLWindowPtr window, const int width, const int height)
 {
     for (auto it = _subscribers.begin(); it != _subscribers.end(); it++)
     {
@@ -38,7 +38,13 @@ void InputSplitter::processFramebufferResize(GLWindowPtr window, int width, int 
     }
 }
 
-void InputSplitter::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
+void InputSplitter::processKeyboard(
+    const GLWindowPtr window, 
+    const Window::Input::Key key, 
+    const int scancode, 
+    const Window::Input::Action action, 
+    const int mods
+)
 {
     for (auto it = _subscribers.begin(); it != _subscribers.end(); it++)
     {
@@ -46,7 +52,12 @@ void InputSplitter::processKeyboard(GLWindowPtr window, Window::Input::Key key, 
     }
 }
 
-void InputSplitter::processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods)
+void InputSplitter::processMouseButton(
+    const GLWindowPtr window, 
+    const Window::Input::MouseButton button, 
+    const Window::Input::Action action, 
+    const int mods
+)
 {
     for (auto it = _subscribers.begin(); it != _subscribers.end(); it++)
     {
@@ -54,7 +65,7 @@ void InputSplitter::processMouseButton(GLWindowPtr window, Window::Input::MouseB
     }
 }
 
-void InputSplitter::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
+void InputSplitter::processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos)
 {
     for (auto it = _subscribers.begin(); it != _subscribers.end(); it++)
     {

@@ -47,7 +47,15 @@ class WindowFactory
         /// std::runtime_error. If a debug capable context was requested but the 
         /// environment does not support GL_ARB_debug_output, the function will 
         /// throw a std::runtime_error.
-        static GLWindowPtr makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug) = delete;
+        static GLWindowPtr makeWindow(
+            std::string title,
+            int width,
+            int height,
+            int glVersionMajor,
+            int glVersionMinor,
+            Window::OpenGLProfile glProfile,
+            bool debug
+        ) = delete;
 };
 
 #endif//RENDERBOI__WINDOW__WINDOW_FACTORY_HPP

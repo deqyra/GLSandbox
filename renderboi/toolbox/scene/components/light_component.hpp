@@ -24,22 +24,21 @@ class LightComponent : public Component
         /// @exception If the passed scene object pointer is null, or if the 
         /// passed light pointer is null, the function will throw a 
         /// std::runtime_error.
-        LightComponent(SceneObjectPtr sceneObject, LightPtr light);
+        LightComponent(const SceneObjectPtr sceneObject, const LightPtr light);
 
         ~LightComponent();
 
         /// @brief Get a pointer to the light used by the component.
         ///
         /// @return A pointer to the light used by the component.
-        LightPtr getLight();
-
+        LightPtr getLight() const;
         /// @brief Set the light used by the component.
         ///
         /// @param light Pointer to the light which the component should use.
         ///
         /// @exception If the passed light pointer is null, the function will
         /// throw a std::runtime_error.
-        void setLight(LightPtr light);
+        void setLight(const LightPtr light);
 
         /////////////////////////////////////////
         ///                                   ///
@@ -56,7 +55,7 @@ class LightComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        LightComponent* clone(SceneObjectPtr newParent);
+        LightComponent* clone(const SceneObjectPtr newParent) const;
 };
 
 template<>

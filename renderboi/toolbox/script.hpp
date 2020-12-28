@@ -36,20 +36,20 @@ class Script
         /// @brief Get a pointer to the parent scene object, if any.
         ///
         /// @return A pointer to the parent scene object, or nullptr.
-        virtual SceneObjectPtr getSceneObject();
+        virtual SceneObjectPtr getSceneObject() const;
 
         /// @brief Set the parent scene object of the script.
         ///
         /// @param object A pointer to scene object which should be parent to 
         /// the script (can be nullptr).
-        virtual void setSceneObject(SceneObjectPtr object);
+        virtual void setSceneObject(const SceneObjectPtr object);
 
         /// @brief Get a raw pointer to a new script instance cloned 
         /// from this one. Ownership and responsibility for the allocated 
         /// resources are fully transferred to the caller.
         ///
         /// @return A raw pointer to the script instance cloned from this one.
-        virtual Script* clone() = 0;
+        virtual Script* clone() const = 0;
 
         /// @brief Unique ID of the script.
         const unsigned int id;

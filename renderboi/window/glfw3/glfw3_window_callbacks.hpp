@@ -13,7 +13,7 @@
 /// place.
 /// @param width New width (in pixels) of the framebuffer.
 /// @param height New height (in pixels) of the framebuffer.
-void globalGlfwFramebufferResizeCallback(GLFWwindow* window, int width, int height);
+void globalGlfwFramebufferResizeCallback(GLFWwindow* window, const int width, const int height);
 
 /// @brief Callback for a keyboard event. Will get the GLWindow instance
 /// corresponding to the window which received the event, from its user pointer,
@@ -28,7 +28,7 @@ void globalGlfwFramebufferResizeCallback(GLFWwindow* window, int width, int heig
 /// the key which triggered the event.
 /// @param mods Bit field describing which modifiers were enabled 
 /// during the key event (Ctrl, Shift, etc).
-void globalGlfwKeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void globalGlfwKeyboardCallback(GLFWwindow* window, const int key, const int scancode, const int action, const int mods);
 
 /// @brief Callback for a mouse button event. Will get the GLWindow instance
 /// corresponding to the window which received the event, from its user pointer,
@@ -42,7 +42,7 @@ void globalGlfwKeyboardCallback(GLFWwindow* window, int key, int scancode, int a
 /// the button which triggered the event.
 /// @param mods Bit field describing which modifiers were enabled 
 /// during the button event (Ctrl, Shift, etc).
-void globalGlfwMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+void globalGlfwMouseButtonCallback(GLFWwindow* window, const int button, const int action, const int mods);
 
 /// @brief Callback for a mouse cursor event. Will get the GLWindow instance
 /// corresponding to the window which received the event, from its user pointer,
@@ -52,13 +52,13 @@ void globalGlfwMouseButtonCallback(GLFWwindow* window, int button, int action, i
 /// place.
 /// @param xpos X coordinate of the new position of the mouse.
 /// @param ypos Y coordinate of the new position of the mouse.
-void globalGlfwMouseCursorCallback(GLFWwindow* window, double xpos, double ypos);
+void globalGlfwMouseCursorCallback(GLFWwindow* window, const double xpos, const double ypos);
 
 /// @brief Callback for error-reporting by GLFW.
 ///
 /// @param error Code of an error which just occurred.
 /// @param description C-string containing a description of the error which just
 /// occurred.
-void globalGlfwErrorCallback(int error, const char* description);
+void globalGlfwErrorCallback(const int error, const char* description);
 
 #endif//RENDERBOI__WINDOW__GLFW_WINDOW_CALLBACKS_HPP

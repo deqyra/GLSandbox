@@ -2,7 +2,7 @@
 
 #include "../scene.hpp"
 
-ScriptComponent::ScriptComponent(SceneObjectPtr sceneObject, ScriptPtr script) :
+ScriptComponent::ScriptComponent(const SceneObjectPtr sceneObject, const ScriptPtr script) :
     Component(ComponentType::Script, sceneObject),
     _script(script)
 {
@@ -20,12 +20,12 @@ ScriptComponent::~ScriptComponent()
     releaseSceneObject();
 }
 
-ScriptPtr ScriptComponent::getScript()
+ScriptPtr ScriptComponent::getScript() const
 {
     return _script;
 }
 
-void ScriptComponent::setScript(ScriptPtr script)
+void ScriptComponent::setScript(const ScriptPtr script)
 {
     if (!script)
     {
@@ -35,7 +35,7 @@ void ScriptComponent::setScript(ScriptPtr script)
     _script = script;
 }
 
-ScriptComponent* ScriptComponent::clone(SceneObjectPtr newParent)
+ScriptComponent* ScriptComponent::clone(const SceneObjectPtr newParent) const
 {
     ScriptPtr clonedScript = ScriptPtr(_script->clone());
     ScriptComponent* clonedComponent = new ScriptComponent(newParent, clonedScript);

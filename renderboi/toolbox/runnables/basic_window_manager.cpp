@@ -15,7 +15,7 @@ BasicWindowManager::BasicWindowManager()
 
 }
 
-void BasicWindowManager::triggerAction(GLWindowPtr window, const BasicWindowManagerAction& action)
+void BasicWindowManager::triggerAction(const GLWindowPtr window, const BasicWindowManagerAction& action)
 {
     switch (action)
     {
@@ -34,21 +34,22 @@ void BasicWindowManager::triggerAction(GLWindowPtr window, const BasicWindowMana
     }
 }
 
-void BasicWindowManager::stopAction(GLWindowPtr window, const BasicWindowManagerAction& action)
+void BasicWindowManager::stopAction(const GLWindowPtr window, const BasicWindowManagerAction& action)
 {
 
 }
 
-void BasicWindowManager::processFramebufferResize(GLWindowPtr window, int width, int height)
+void BasicWindowManager::processFramebufferResize(const GLWindowPtr window, const int width, const int height)
 {
     glViewport(0, 0, width, height);
 }
 
-ControlSchemeManagerPtr<BasicWindowManagerAction> BasicWindowManager::getDefaultControlScheme()
+ControlSchemeManagerPtr<BasicWindowManagerAction> BasicWindowManager::getDefaultControlScheme() const
 {
-    using Window::Input::Key;
-    ControlSchemeManagerPtr<BasicWindowManagerAction> schemeManager = std::make_shared<ControlSchemeManager<BasicWindowManagerAction>>();
+    ControlSchemeManagerPtr<BasicWindowManagerAction>
+    schemeManager = std::make_shared<ControlSchemeManager<BasicWindowManagerAction>>();
 
+    using Window::Input::Key;
     schemeManager->bindControl(Control(Key::Escape), BasicWindowManagerAction::Terminate);
     schemeManager->bindControl(Control(Key::Space), BasicWindowManagerAction::Terminate);
     schemeManager->bindControl(Control(Key::F1), BasicWindowManagerAction::PolygonFill);

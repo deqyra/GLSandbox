@@ -17,7 +17,7 @@ GLFW3Window::~GLFW3Window()
     glfwDestroyWindow(_w);
 }
 
-bool GLFW3Window::shouldClose()
+bool GLFW3Window::shouldClose() const
 {
     return glfwWindowShouldClose(_w);
 }
@@ -32,7 +32,7 @@ void GLFW3Window::swapBuffers()
     glfwSwapBuffers(_w);
 }
 
-void GLFW3Window::pollEvents()
+void GLFW3Window::pollEvents() const
 {
     glfwPollEvents();
 }
@@ -50,12 +50,12 @@ void GLFW3Window::setTitle(std::string title)
     glfwSetWindowTitle(_w, _title.c_str());
 }
 
-void GLFW3Window::getCursorPos(double* x, double* y)
+void GLFW3Window::getCursorPos(double* x, double* y) const
 {
     glfwGetCursorPos(_w, x, y);
 }
 
-float GLFW3Window::getAspectRatio()
+float GLFW3Window::getAspectRatio() const
 {
     return (float)_width / (float)_height;
 }

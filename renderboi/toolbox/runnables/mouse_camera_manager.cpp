@@ -3,7 +3,7 @@
 #include <renderboi/core/frame_of_reference.hpp>
 using Ref = FrameOfReference;
 
-MouseCameraManager::MouseCameraManager(CameraPtr camera, float sensitivity) :
+MouseCameraManager::MouseCameraManager(const CameraPtr camera, const float sensitivity) :
     _camera(camera),
     _lookSensitivity(sensitivity),
     _lastMouseX(0),
@@ -13,7 +13,7 @@ MouseCameraManager::MouseCameraManager(CameraPtr camera, float sensitivity) :
 
 }
 
-void MouseCameraManager::processMouseCursor(GLWindowPtr window, double xpos, double ypos)
+void MouseCameraManager::processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos)
 {
     // If the mouse was never updated before, record its position and skip this update
     if (!_mouseWasUpdatedOnce)
@@ -26,9 +26,9 @@ void MouseCameraManager::processMouseCursor(GLWindowPtr window, double xpos, dou
     // This is to avoid a huge mouse jump upon entering the window with the mouse
 
     // Compute offsets
-    float yawOffset = (float)(xpos - _lastMouseX) * _lookSensitivity;
+    const float yawOffset = (float)(xpos - _lastMouseX) * _lookSensitivity;
     // Y offset reversed since y-coordinates range from bottom to top
-    float pitchOffset = (float)(_lastMouseY - ypos) * _lookSensitivity;
+    const float pitchOffset = (float)(_lastMouseY - ypos) * _lookSensitivity;
 
     _camera->processRotation(yawOffset, pitchOffset);
     // Record mouse position

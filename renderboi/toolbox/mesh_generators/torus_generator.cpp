@@ -31,9 +31,9 @@ TorusGenerator::TorusGenerator(Parameters parameters) :
 
 }
 
-MeshPtr TorusGenerator::generatePtr()
+MeshPtr TorusGenerator::generatePtr() const
 {
-    Parameters& p(parameters);
+    const Parameters& p(parameters);
 
     unsigned int nVertex = (unsigned int)(p.toroidalVertexRes * p.poloidalVertexRes);
     std::vector<Vertex> vertices = std::vector<Vertex>(nVertex);

@@ -30,12 +30,12 @@ void SceneObject::init()
     transform.setSceneObject(shared_from_this());
 }
 
-Transform SceneObject::getWorldTransform()
+Transform SceneObject::getWorldTransform() const
 {
     return _scene->getWorldTransform(id);
 }
 
-ScenePtr SceneObject::getScene()
+ScenePtr SceneObject::getScene() const
 {
     return _scene;
 }
@@ -45,7 +45,7 @@ void SceneObject::setScene(ScenePtr scene)
     _scene = scene;
 }
 
-SceneObjectPtr SceneObject::clone()
+SceneObjectPtr SceneObject::clone() const
 {
     SceneObjectPtr clonedObject = std::make_shared<SceneObject>();
     clonedObject->enabled = enabled;
@@ -59,7 +59,7 @@ SceneObjectPtr SceneObject::clone()
     return clonedObject;
 }
 
-std::vector<ComponentPtr> SceneObject::getAllComponents()
+std::vector<ComponentPtr> SceneObject::getAllComponents() const
 {
     std::vector<ComponentPtr> components;
     components.reserve(_components.size());

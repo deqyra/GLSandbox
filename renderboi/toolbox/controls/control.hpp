@@ -31,11 +31,11 @@ struct Control
     };
 
     /// @param key Litteral describing the key to assign to the control.
-    Control(Window::Input::Key key);
+    Control(const Window::Input::Key key);
 
     /// @param mouseButton Litteral describing the mouse button to assign to the
     /// control.
-    Control(Window::Input::MouseButton mouseButton);
+    Control(const Window::Input::MouseButton mouseButton);
 
     bool operator==(const Control& other);
 

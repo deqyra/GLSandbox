@@ -35,7 +35,7 @@ class LightingSandbox : public GLSandbox
         /// @brief Run something in the provided GL window.
 		///
 		/// @param window Pointer to the window to run stuff in.
-        void run(GLWindowPtr window);
+        void run(const GLWindowPtr window);
 };
 
 // Handle object movement in the scene displayed by LightingSandbox
@@ -100,7 +100,7 @@ class LightingSandboxScript : public InputProcessor, public Script
         /// resources are fully transferred to the caller.
         ///
         /// @return A raw pointer to the script instance cloned from this one.
-        LightingSandboxScript* clone();
+        LightingSandboxScript* clone() const;
 
         //////////////////////////////////////////////
         ///                                        ///
@@ -119,7 +119,7 @@ class LightingSandboxScript : public InputProcessor, public Script
         /// the key which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the key event (Ctrl, Shift, etc).
-        void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
+        void processKeyboard(const GLWindowPtr window, const Window::Input::Key key, const int scancode, const Window::Input::Action action, const int mods);
 };
 
 #endif//RENDERBOI__EXAMPLES__LIGHTING_EXAMPLE_HPP

@@ -41,7 +41,7 @@ class InputProcessor
         /// triggered.
         /// @param width New width (in pixels) of the framebuffer.
         /// @param height New height (in pixels) of the framebuffer.
-        virtual void processFramebufferResize(GLWindowPtr window, int width, int height);
+        virtual void processFramebufferResize(const GLWindowPtr window, const int width, const int height);
 
         /// @brief Callback for a keyboard event.
         ///
@@ -54,7 +54,13 @@ class InputProcessor
         /// the key which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the key event (Ctrl, Shift, etc).
-        virtual void processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods);
+        virtual void processKeyboard(
+            const GLWindowPtr window,
+            const Window::Input::Key key,
+            const int scancode,
+            const Window::Input::Action action,
+            const int mods
+        );
 
         /// @brief Callback for a mouse button event.
         ///
@@ -66,7 +72,12 @@ class InputProcessor
         /// the button which triggered the event.
         /// @param mods Bit field describing which modifiers were enabled 
         /// during the button event (Ctrl, Shift, etc).
-        virtual void processMouseButton(GLWindowPtr window, Window::Input::MouseButton button, Window::Input::Action action, int mods);
+        virtual void processMouseButton(
+            const GLWindowPtr window,
+            const Window::Input::MouseButton button,
+            const Window::Input::Action action,
+            const int mods
+        );
 
         /// @brief Callback for a mouse cursor event.
         ///
@@ -74,7 +85,7 @@ class InputProcessor
         /// triggered.
         /// @param xpos X coordinate of the new position of the mouse.
         /// @param ypos Y coordinate of the new position of the mouse.
-        virtual void processMouseCursor(GLWindowPtr window, double xpos, double ypos);
+        virtual void processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos);
 
         /// @brief Unique ID of the input processor.
         const unsigned int id;

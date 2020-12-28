@@ -27,7 +27,7 @@ AxesGenerator::AxesGenerator(Parameters parameters) :
 
 }
 
-MeshPtr AxesGenerator::generatePtr()
+MeshPtr AxesGenerator::generatePtr() const
 {
     float len = parameters.axisLength;
 

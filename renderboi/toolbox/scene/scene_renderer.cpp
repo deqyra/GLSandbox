@@ -21,7 +21,7 @@
 #include "components/light_component.hpp"
 #include "components/camera_component.hpp"
 
-SceneRenderer::SceneRenderer(unsigned int framerateLimit) :
+SceneRenderer::SceneRenderer(const unsigned int framerateLimit) :
     _matrixUbo(),
     _lightUbo(),
     _frameIntervalUs((int64_t)(1000000.f/framerateLimit)),
@@ -30,14 +30,14 @@ SceneRenderer::SceneRenderer(unsigned int framerateLimit) :
 
 }
 
-void SceneRenderer::renderScene(ScenePtr scene)
+void SceneRenderer::renderScene(const ScenePtr scene) const
 {
     scene->updateAllTransforms();
 
     // Get pointers to meshes, lights, and the scene camera
-    std::vector<SceneObjectPtr> meshObjects = scene->getObjectsWithComponent<MeshComponent>();
-    std::vector<SceneObjectPtr> lightObjects = scene->getObjectsWithComponent<LightComponent>();
-    std::vector<SceneObjectPtr> cameraObjects = scene->getObjectsWithComponent<CameraComponent>();
+    const std::vector<SceneObjectPtr> meshObjects = scene->getObjectsWithComponent<MeshComponent>();
+    const std::vector<SceneObjectPtr> lightObjects = scene->getObjectsWithComponent<LightComponent>();
+    const std::vector<SceneObjectPtr> cameraObjects = scene->getObjectsWithComponent<CameraComponent>();
 
     if (cameraObjects.size() == 0)
     {
@@ -46,16 +46,17 @@ void SceneRenderer::renderScene(ScenePtr scene)
     }
     if (cameraObjects.size() > 1)
     {
-        std::cout << "SceneRenderer: More than one camera in provided scene, the first one will be used for rendering." << std::endl;
+        std::cout << "SceneRenderer: More than one camera in provided scene, "
+            "the first one will be used for rendering." << std::endl;
     }
 
     // Get the actual camera
-    SceneObjectPtr cameraObj = cameraObjects[0];
-    std::shared_ptr<CameraComponent> cameraComp = cameraObj->getComponent<CameraComponent>();
+    const SceneObjectPtr cameraObj = cameraObjects[0];
+    const std::shared_ptr<CameraComponent> cameraComp = cameraObj->getComponent<CameraComponent>();
 
     // Set up matrices in their UBO
-    glm::mat4 view = cameraComp->getViewMatrix();
-    glm::mat4 projection = cameraComp->getProjectionMatrix();
+    const glm::mat4 view = cameraComp->getViewMatrix();
+    const glm::mat4 projection = cameraComp->getProjectionMatrix();
     _matrixUbo.setView(view);
     _matrixUbo.setProjection(projection);
 
@@ -74,27 +75,29 @@ void SceneRenderer::renderScene(ScenePtr scene)
     sendLightData(lights, worldTransforms, view);
 
     // Compute time elapsed between frames and limit framerate if necessary
-    std::chrono::time_point<std::chrono::system_clock> newTimestamp = std::chrono::system_clock::now();
-    std::chrono::duration<double> duration = newTimestamp - _lastTimestamp;
+    const std::chrono::time_point<std::chrono::system_clock> newTimestamp = std::chrono::system_clock::now();
+    const std::chrono::duration<double> duration = newTimestamp - _lastTimestamp;
     _lastTimestamp = newTimestamp;
-    int64_t gap = _frameIntervalUs - std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+    const int64_t gap = _frameIntervalUs - std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
     std::this_thread::sleep_for(std::chrono::microseconds(gap));
 
     for (auto it = meshObjects.begin(); it != meshObjects.end(); it++)
     {
-        // Get the mesh component
-        SceneObjectPtr meshObj = *it;
         // Draw the mesh
-        drawMesh(meshObj, cameraComp->getViewMatrix());
+        drawMesh(*it, cameraComp->getViewMatrix());
     }
 }
 
-void SceneRenderer::setFramerateLimit(unsigned int framerateLimit)
+void SceneRenderer::setFramerateLimit(const unsigned int framerateLimit)
 {
     _frameIntervalUs = (int64_t)(1000000.f / framerateLimit);
 }
 
-void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Transform>& worldTransforms, glm::mat4 view)
+void SceneRenderer::sendLightData(
+    const std::vector<LightPtr>& lights,
+    const std::vector<Transform>& worldTransforms,
+    const glm::mat4& view
+) const
 {
     // Light counts need to be kept track of
     unsigned int pLightIndex = 0;
@@ -152,22 +155,23 @@ void SceneRenderer::sendLightData(std::vector<LightPtr>& lights, std::vector<Tra
                 break;
         }
     }
+
     // Set light counts
     _lightUbo.setPointCount(pLightIndex);
     _lightUbo.setSpotCount(sLightIndex);
     _lightUbo.setDirectionalCount(dLightIndex);
 }
 
-void SceneRenderer::drawMesh(SceneObjectPtr meshObject, glm::mat4 viewMatrix)
+void SceneRenderer::drawMesh(const SceneObjectPtr meshObject, const glm::mat4& viewMatrix) const
 {
-    Transform objectTransform = meshObject->getWorldTransform();
-    glm::mat4 modelMatrix = objectTransform.getModelMatrix();
+    const Transform objectTransform = meshObject->getWorldTransform();
+    const glm::mat4 modelMatrix = objectTransform.getModelMatrix();
 
     // Detect non uniform scaling: compute the dot product of the world scale
     // of the object and a uniform scale along all three axes. If the dot 
     // product is not 1, then the object has non-uniform scaling.
-    glm::vec3 scaling = glm::normalize(objectTransform.getScale());
-    float dot = glm::dot(scaling, glm::normalize(glm::vec3(1.f, 1.f, 1.f)));
+    const glm::vec3 scaling = glm::normalize(objectTransform.getScale());
+    const float dot = glm::dot(scaling, glm::normalize(glm::vec3(1.f, 1.f, 1.f)));
 
     // Compute normal matrix
     glm::mat4 normalMatrix = viewMatrix * modelMatrix;
@@ -181,11 +185,11 @@ void SceneRenderer::drawMesh(SceneObjectPtr meshObject, glm::mat4 viewMatrix)
     _matrixUbo.setModel(modelMatrix);
     _matrixUbo.setNormal(normalMatrix);
 
-    std::shared_ptr<MeshComponent> meshComponent = meshObject->getComponent<MeshComponent>();
+    const std::shared_ptr<MeshComponent> meshComponent = meshObject->getComponent<MeshComponent>();
     
     // Set up shader and material
+    const Material material = meshComponent->getMaterial();
     ShaderProgram shader = meshComponent->getShader();
-    Material material = meshComponent->getMaterial();
     shader.use();
     material.bindTextures();
 

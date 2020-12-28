@@ -9,12 +9,12 @@
 
 #include <iostream>
 
-void globalGlfwFramebufferResizeCallback(GLFWwindow* window, int width, int height)
+void globalGlfwFramebufferResizeCallback(GLFWwindow* window, const int width, const int height)
 {
     static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processFramebufferResize(width, height);
 }
 
-void globalGlfwKeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void globalGlfwKeyboardCallback(GLFWwindow* window, const int key, const int scancode, const int action, const int mods)
 {
     if (action == GLFW_REPEAT) return;      // FIX ME IF REPEAT KEYS MUST BE HANDLED
 
@@ -23,7 +23,7 @@ void globalGlfwKeyboardCallback(GLFWwindow* window, int key, int scancode, int a
     static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processKeyboard(realKey, scancode, realAction, mods);
 }
 
-void globalGlfwMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void globalGlfwMouseButtonCallback(GLFWwindow* window, const int button, const int action, const int mods)
 {
     if (action == GLFW_REPEAT) return;      // FIX ME IF REPEAT KEYS MUST BE HANDLED
 
@@ -32,12 +32,12 @@ void globalGlfwMouseButtonCallback(GLFWwindow* window, int button, int action, i
     static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processMouseButton(realButton, realAction, mods);
 }
 
-void globalGlfwMouseCursorCallback(GLFWwindow* window, double xpos, double ypos)
+void globalGlfwMouseCursorCallback(GLFWwindow* window, const double xpos, const double ypos)
 {
     static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processMouseCursor(xpos, ypos);
 }
 
-void globalGlfwErrorCallback(int error, const char* description)
+void globalGlfwErrorCallback(const int error, const char* description)
 {
 	std::cerr << "GLFW error: 0x" << std::hex << error << ", \"" << description << "\"" << std::endl;
 }

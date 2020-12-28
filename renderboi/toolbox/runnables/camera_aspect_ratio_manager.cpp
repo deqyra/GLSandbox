@@ -1,12 +1,12 @@
 #include "camera_aspect_ratio_manager.hpp"
 
-CameraAspectRatioManager::CameraAspectRatioManager(CameraPtr camera) :
+CameraAspectRatioManager::CameraAspectRatioManager(const CameraPtr camera) :
     _camera(camera)
 {
 
 }
 
-void CameraAspectRatioManager::processFramebufferResize(GLWindowPtr window, int width, int height)
+void CameraAspectRatioManager::processFramebufferResize(const GLWindowPtr window, const int width, const int height)
 {
     _camera->setAspectRatio((float)width / (float)height);
 }

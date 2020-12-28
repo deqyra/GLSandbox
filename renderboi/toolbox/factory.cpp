@@ -9,13 +9,13 @@
 ScenePtr Factory::makeScene()
 {
     ScenePtr scene = std::make_shared<Scene>();
-    scene->init();
+    scene->_init();
     return scene;
 }
 
 void Factory::destroyScene(ScenePtr& scene)
 {
-    scene->terminate();
+    scene->_terminate();
     scene.reset();
 }
 

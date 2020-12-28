@@ -33,7 +33,7 @@ TetrahedronGenerator::TetrahedronGenerator(Parameters parameters) :
     
 }
 
-MeshPtr TetrahedronGenerator::generatePtr()
+MeshPtr TetrahedronGenerator::generatePtr() const
 {
     const unsigned int nVertices = 12;
 

@@ -12,9 +12,7 @@ enum class ComponentType
     /// @brief Literal representing a CameraComponent.
     Camera,
     /// @brief Literal representing a ScriptComponent.
-    Script,
-    /// @brief Literal representing a InputProcessingScriptComponent.
-    InputProcessingScript
+    Script
 };
 
 // New literals representing new classes derived from Component must be added here

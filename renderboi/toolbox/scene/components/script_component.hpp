@@ -36,14 +36,14 @@ class ScriptComponent : public Component
         /// @exception If the passed scene object pointer is null, or if the 
         /// passed script pointer is null, the function will throw a 
         /// std::runtime_error.
-        ScriptComponent(SceneObjectPtr sceneObject, ScriptPtr script);
+        ScriptComponent(const SceneObjectPtr sceneObject, const ScriptPtr script);
 
         ~ScriptComponent();
 
         /// @brief Get a pointer to the script used by the component.
         ///
         /// @return Pointer to the script used by the component.
-        ScriptPtr getScript();
+        ScriptPtr getScript() const;
 
         /// @brief Set the script used by the component.
         ///
@@ -51,7 +51,7 @@ class ScriptComponent : public Component
         ///
         /// @exception If the passed script pointer is null, the function will
         /// throw a std::runtime_error.
-        void setScript(ScriptPtr script);
+        void setScript(const ScriptPtr script);
 
         /////////////////////////////////////////
         ///                                   ///
@@ -68,7 +68,7 @@ class ScriptComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        ScriptComponent* clone(SceneObjectPtr newParent);
+        ScriptComponent* clone(const SceneObjectPtr newParent) const;
 };
 
 template<>

@@ -6,7 +6,7 @@
 #include "scene_object.hpp"
 #include "component_type.hpp"
 
-Component::Component(ComponentType type, SceneObjectPtr sceneObject) :
+Component::Component(const ComponentType type, const SceneObjectPtr sceneObject) :
     type(type),
     _sceneObject(sceneObject)
 {
@@ -26,7 +26,7 @@ Component::~Component()
     releaseSceneObject();
 }
 
-SceneObjectPtr Component::getSceneObject()
+SceneObjectPtr Component::getSceneObject() const
 {
     return _sceneObject;
 }

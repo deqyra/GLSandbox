@@ -4,7 +4,7 @@
 
 #include "../scene_object.hpp"
 
-LightComponent::LightComponent(SceneObjectPtr sceneObject, LightPtr light) :
+LightComponent::LightComponent(const SceneObjectPtr sceneObject, const LightPtr light) :
     Component(ComponentType::Light, sceneObject),
     _light(light)
 {
@@ -19,12 +19,12 @@ LightComponent::~LightComponent()
 
 }
 
-LightPtr LightComponent::getLight()
+LightPtr LightComponent::getLight() const
 {
     return _light;
 }
 
-void LightComponent::setLight(LightPtr light)
+void LightComponent::setLight(const LightPtr light)
 {
     if (!light)
     {
@@ -34,7 +34,7 @@ void LightComponent::setLight(LightPtr light)
     _light = light;
 }
 
-LightComponent* LightComponent::clone(SceneObjectPtr newParent)
+LightComponent* LightComponent::clone(const SceneObjectPtr newParent) const
 {
     LightPtr clonedLight = LightPtr(_light->clone());
     return new LightComponent(newParent, clonedLight);

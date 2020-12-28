@@ -12,7 +12,7 @@ class GLSandbox
         /// @brief Run something in the provided GL window.
 		///
 		/// @param window Pointer to the window to run stuff in.
-		virtual void run(GLWindowPtr window) = 0;
+		virtual void run(const GLWindowPtr window) = 0;
 };
 
 #endif//RENDERBOI__EXAMPLES__GL_SANDBOX_HPP

@@ -4,14 +4,14 @@
 
 #include <renderboi/window/enums.hpp>
 
-Control::Control(Window::Input::Key key) :
+Control::Control(const Window::Input::Key key) :
     kind(ControlKind::Key),
     key(key)
 {
 
 }
 
-Control::Control(Window::Input::MouseButton mouseButton) :
+Control::Control(const Window::Input::MouseButton mouseButton) :
     kind(ControlKind::MouseButton),
     mouseButton(mouseButton)
 {

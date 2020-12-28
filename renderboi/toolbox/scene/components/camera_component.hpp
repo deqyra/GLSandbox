@@ -25,14 +25,14 @@ class CameraComponent : public Component
         ///
         /// @exception If the provided scene object pointer is null, the 
         /// constructor will throw a std::runtime_error.
-        CameraComponent(SceneObjectPtr sceneObject, CameraPtr camera);
+        CameraComponent(const SceneObjectPtr sceneObject, const CameraPtr camera);
 
         ~CameraComponent();
 
         /// @brief Get a pointer to the camera used by the component.
         ///
         /// @return A pointer to the camera used by the component.
-        CameraPtr getCamera();
+        CameraPtr getCamera() const;
 
         /// @brief Set the camera used by the component.
         ///
@@ -40,13 +40,13 @@ class CameraComponent : public Component
         ///
         /// @exception If the passed camera pointer is null, the function will
         /// throw a std::runtime_error.
-        void setCamera(CameraPtr camera);
+        void setCamera(const CameraPtr camera);
 
         /// @brief Get the view matrix corresponding to the position and facing
         /// of the camera.
         ///
         /// @return The view matrix provided by the camera.
-        glm::mat4 getViewMatrix();
+        glm::mat4 getViewMatrix() const;
 
         /// @brief Get the view space coordinates of a position given in world 
         /// space coordinates.
@@ -54,17 +54,17 @@ class CameraComponent : public Component
         /// @param worldPosition The position whose coordinates to transform.
         ///
         /// @return View space coordinates of the provided world position.
-        glm::vec3 worldPositionToViewSpace(glm::vec3 worldPosition);
+        glm::vec3 worldPositionToViewSpace(const glm::vec3 worldPosition) const;
 
         /// @brief Get the projection matrix of the camera.
         ///
         /// @return The projection matrix provided by the camera.
-        glm::mat4 getProjectionMatrix();
+        glm::mat4 getProjectionMatrix() const;
 
         /// @brief Get the view-projection matrix of the camera.
         ///
         /// @return The view-projection matrix provided by the camera.
-        glm::mat4 getViewProjectionMatrix();
+        glm::mat4 getViewProjectionMatrix() const;
 
         /////////////////////////////////////////
         ///                                   ///
@@ -81,7 +81,7 @@ class CameraComponent : public Component
         ///
         /// @return A raw pointer to the component instance cloned from this 
         /// one.
-        CameraComponent* clone(SceneObjectPtr newParent);
+        CameraComponent* clone(const SceneObjectPtr newParent) const;
 };
 
 template<>

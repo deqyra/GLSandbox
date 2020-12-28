@@ -34,7 +34,7 @@
 
 using Ref = FrameOfReference;
 
-void ShadowSandbox::run(GLWindowPtr window)
+void ShadowSandbox::run(const GLWindowPtr window)
 {
     // Update window title
     std::string title = window->getTitle();
@@ -291,7 +291,7 @@ void ShadowSandboxScript::update(float timeElapsed)
     }
 }
 
-void ShadowSandboxScript::processKeyboard(GLWindowPtr window, Window::Input::Key key, int scancode, Window::Input::Action action, int mods)
+void ShadowSandboxScript::processKeyboard(const GLWindowPtr window, const Window::Input::Key key, const int scancode, const Window::Input::Action action, const int mods)
 {
     using Key = Window::Input::Key;
     using Action = Window::Input::Action;
@@ -318,7 +318,7 @@ void ShadowSandboxScript::processKeyboard(GLWindowPtr window, Window::Input::Key
     }
 }
 
-ShadowSandboxScript* ShadowSandboxScript::clone()
+ShadowSandboxScript* ShadowSandboxScript::clone() const
 {
     return nullptr;
 }

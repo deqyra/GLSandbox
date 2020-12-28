@@ -20,56 +20,56 @@ class BasicWindowManager :  public InputProcessor,
                             public ActionEventReceiver<BasicWindowManagerAction>,
                             public DefaultControlSchemeProvider<BasicWindowManagerAction>
 {
-    private:
-        BasicWindowManager(const BasicWindowManager& other) = delete;
-        BasicWindowManager& operator=(const BasicWindowManager& other) = delete;
+private:
+    BasicWindowManager(const BasicWindowManager& other) = delete;
+    BasicWindowManager& operator=(const BasicWindowManager& other) = delete;
 
-    public:
-        using ActionType = BasicWindowManagerAction;
+public:
+    using ActionType = BasicWindowManagerAction;
 
-        BasicWindowManager();
+    BasicWindowManager();
 
-        /////////////////////////////////////////////////////////////////////////////
-        ///                                                                       ///
-        /// Methods overridden from ActionEventReceiver<BasicWindowManagerAction> ///
-        ///                                                                       ///
-        /////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
+    ///                                                                       ///
+    /// Methods overridden from ActionEventReceiver<BasicWindowManagerAction> ///
+    ///                                                                       ///
+    /////////////////////////////////////////////////////////////////////////////
 
-        /// @brief Start the processing for an action.
-        ///
-        /// @param action Object describing the action to start processing.
-        void triggerAction(GLWindowPtr window, const BasicWindowManagerAction& action);
+    /// @brief Start the processing for an action.
+    ///
+    /// @param action Object describing the action to start processing.
+    void triggerAction(const GLWindowPtr window, const BasicWindowManagerAction& action);
 
-        /// @brief Stop the processing for an action.
-        ///
-        /// @param action Object describing the action to stop processing.
-        void stopAction(GLWindowPtr window, const BasicWindowManagerAction& action);
+    /// @brief Stop the processing for an action.
+    ///
+    /// @param action Object describing the action to stop processing.
+    void stopAction(const GLWindowPtr window, const BasicWindowManagerAction& action);
 
-        //////////////////////////////////////////////
-        ///                                        ///
-        /// Methods overridden from InputProcessor ///
-        ///                                        ///
-        //////////////////////////////////////////////
+    //////////////////////////////////////////////
+    ///                                        ///
+    /// Methods overridden from InputProcessor ///
+    ///                                        ///
+    //////////////////////////////////////////////
 
-        /// @brief Callback for a framebuffer resize event.
-        ///
-        /// @param window Pointer to the GLWindow in which the event was
-        /// triggered.
-        /// @param width New width (in pixels) of the framebuffer.
-        /// @param height New height (in pixels) of the framebuffer.
-        void processFramebufferResize(GLWindowPtr window, int width, int height);
+    /// @brief Callback for a framebuffer resize event.
+    ///
+    /// @param window Pointer to the GLWindow in which the event was
+    /// triggered.
+    /// @param width New width (in pixels) of the framebuffer.
+    /// @param height New height (in pixels) of the framebuffer.
+    void processFramebufferResize(const GLWindowPtr window, const int width, const int height);
 
-        ////////////////////////////////////////////////////////////////////////////////////
-        ///                                                                              ///
-        /// Methods overridden from DefaultControlSchemeProvider<KeyboardMovementAction> ///
-        ///                                                                              ///
-        ////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
+    ///                                                                              ///
+    /// Methods overridden from DefaultControlSchemeProvider<KeyboardMovementAction> ///
+    ///                                                                              ///
+    ////////////////////////////////////////////////////////////////////////////////////
 
-        /// @brief Get the default control scheme for the keyboard movement
-        /// script.
-        ///
-        /// @return The default control scheme for the keyboard movement script.
-        ControlSchemeManagerPtr<BasicWindowManagerAction> getDefaultControlScheme();
+    /// @brief Get the default control scheme for the keyboard movement
+    /// script.
+    ///
+    /// @return The default control scheme for the keyboard movement script.
+    ControlSchemeManagerPtr<BasicWindowManagerAction> getDefaultControlScheme() const;
 };
 
 namespace std

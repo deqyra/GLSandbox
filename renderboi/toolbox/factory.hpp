@@ -59,7 +59,11 @@ class Factory
         ///
         /// @return Pointer to the instantiated scene object.
         template<MeshType T>
-        static SceneObjectPtr makeSceneObjectWithMesh(typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat = Material(), ShaderProgram shader = ShaderBuilder::MinimalShaderProgram());
+        static SceneObjectPtr makeSceneObjectWithMesh(
+            typename TypeToGenMapping<T>::GenType::Parameters parameters,
+            Material mat = Material(),
+            ShaderProgram shader = ShaderBuilder::MinimalShaderProgram()
+        );
 
         /// @brief Instantiate and initiliaze a scene object, generate a mesh,
         /// and attach it to the scene object within a mesh component.
@@ -73,7 +77,12 @@ class Factory
         ///
         /// @return Pointer to the instantiated scene object.
         template<MeshType T>
-        static SceneObjectPtr makeSceneObjectWithMesh(std::string name, typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat = Materials::Default, ShaderProgram shader = ShaderBuilder::MinimalShaderProgram());
+        static SceneObjectPtr makeSceneObjectWithMesh(
+            std::string name,
+            typename TypeToGenMapping<T>::GenType::Parameters parameters,
+            Material mat = Materials::Default,
+            ShaderProgram shader = ShaderBuilder::MinimalShaderProgram()
+        );
 
         /// @brief Create a script of any type and attach it to a scene object.
         ///
@@ -103,13 +112,22 @@ MeshPtr Factory::makeMesh(typename TypeToGenMapping<T>::GenType::Parameters para
 }
 
 template<MeshType T>
-SceneObjectPtr Factory::makeSceneObjectWithMesh(typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat, ShaderProgram shader)
+SceneObjectPtr Factory::makeSceneObjectWithMesh(
+    typename TypeToGenMapping<T>::GenType::Parameters parameters,
+    Material mat,
+    ShaderProgram shader
+)
 {
     return makeSceneObjectWithMesh("", parameters, mat, shader);
 }
 
 template<MeshType T>
-SceneObjectPtr Factory::makeSceneObjectWithMesh(std::string name, typename TypeToGenMapping<T>::GenType::Parameters parameters, Material mat, ShaderProgram shader)
+SceneObjectPtr Factory::makeSceneObjectWithMesh(
+    std::string name,
+    typename TypeToGenMapping<T>::GenType::Parameters parameters,
+    Material mat,
+    ShaderProgram shader
+)
 {
     MeshPtr mesh = Factory::makeMesh<T>(parameters);
     SceneObjectPtr obj = Factory::makeSceneObject(name);
