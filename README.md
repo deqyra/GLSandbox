@@ -27,7 +27,12 @@ on your setup, please file an issue with details so I can have a look at it.
 * Original development environments:
   * Windows 10 / Nvidia GeForce GTX 1650 Ti
   * Arch Linux (kernel 5.6.15) / GNOME with Wayland (EGL backend) / Nvidia GeForce GT630M
-* See this [sort of a diagram][diag1] as well as this [class diagram][diag2] to get a basic understanding of how everything works. **WARNING**: those are getting seriously outdated!
+* Here are links to some UML diagrams giving a good overview of how everything works:
+  * [Package diagram][pkg_diag]
+  * [Core class diagram][core_diag]
+  * [Window class diagram][window_diag]
+  * [Toolbox class diagram][toolbox_diag]
+  * [StarUML file][mdj]
 
 ## Current features
 
@@ -69,6 +74,9 @@ on your setup, please file an issue with details so I can have a look at it.
 See file [`list.todo`][todo] for a more concise view of what is likely to be worked on at present.
 
 [video]: https://streamable.com/vrq3u8
-[diag1]: https://github.com/deqyra/RenderBoi/blob/master/system_diagram.png
-[diag2]: https://github.com/deqyra/RenderBoi/blob/master/class_diagram.png
+[pkg_diag]: https://github.com/deqyra/RenderBoi/blob/master/uml/package_diagram.png
+[core_diag]: https://github.com/deqyra/RenderBoi/blob/master/uml/core_class_diagram.png
+[window_diag]: https://github.com/deqyra/RenderBoi/blob/master/uml/window_class_diagram.png
+[toolbox_diag]: https://github.com/deqyra/RenderBoi/blob/master/uml/toolbox_class_diagram.png
+[mdj]: https://github.com/deqyra/RenderBoi/blob/GL15-shader-improvements/uml/RenderBoi%20model.mdj
 [todo]:  https://github.com/deqyra/RenderBoi/blob/master/list.todo
