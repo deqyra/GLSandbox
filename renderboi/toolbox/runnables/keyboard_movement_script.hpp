@@ -53,7 +53,7 @@ private:
     float _sprintMultiplier;
     
     /// @brief Directional movement flags.
-    bool _movement[4];
+    bool _movementFlags[4];
 
     /// @brief Sprint flag.
     bool _sprint;

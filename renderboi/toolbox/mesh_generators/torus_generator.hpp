@@ -3,7 +3,7 @@
 
 #include <renderboi/core/mesh.hpp>
 
-#include "../mesh_generator.hpp"
+#include "../interfaces/mesh_generator.hpp"
 
 /// @brief Generates the vertex data for a torus.
 class TorusGenerator : public MeshGenerator
@@ -70,7 +70,7 @@ public:
     /// return it.
     ///
     /// @return A pointer to the mesh containing the generated vertices.
-    MeshPtr generatePtr() const override;
+    MeshPtr generateMesh() const override;
 };
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATORS__TORUS_GENERATOR_HPP

@@ -34,9 +34,6 @@ private:
     /// as a unique ID system).
     static unsigned int _count;
 
-    /// @brief Name of the object in the scene.
-    const std::string _name;
-
     /// @brief Components making up this scene object.
     std::vector<ComponentPtr> _components;
 
@@ -131,6 +128,9 @@ public:
 
     /// @brief The 3D transform of this object.
     ObjectTransform transform;
+
+    /// @brief Name of the object in the scene.
+    const std::string _name;
 };
 
 template<class T, class... ArgTypes>

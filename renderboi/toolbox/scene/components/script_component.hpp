@@ -19,13 +19,13 @@ class ScriptComponent : public Component
 
         /// @brief Register script to the scene which the parent scene object
         /// belongs to.
-        void registerScript();
+        void _registerScript();
 
         /// @brief Detach script from the scene it is registered at.
-        void detachScript();
+        void _detachScript();
 
         /// @brief Release the parent scene object pointer.
-        void releaseSceneObject();
+        void _releaseSceneObject();
 
     public:
         /// @param sceneObject Pointer to the scene object which will be parent

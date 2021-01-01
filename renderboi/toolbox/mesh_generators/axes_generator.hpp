@@ -3,7 +3,7 @@
 
 #include <renderboi/core/mesh.hpp>
 
-#include "../mesh_generator.hpp"
+#include "../interfaces/mesh_generator.hpp"
 
 /// @brief Generates vertices for the three regular X, Y and Z axes,
 /// respectively colored red, green and blue.
@@ -42,7 +42,7 @@ public:
     /// return it.
     ///
     /// @return A pointer to the mesh containing the generated vertices.
-    MeshPtr generatePtr() const override;
+    MeshPtr generateMesh() const override;
 };
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATORS__AXES_GENERATOR_HPP

@@ -6,7 +6,7 @@ CameraAspectRatioManager::CameraAspectRatioManager(const CameraPtr camera) :
 
 }
 
-void CameraAspectRatioManager::processFramebufferResize(const GLWindowPtr window, const int width, const int height)
+void CameraAspectRatioManager::processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height)
 {
     _camera->setAspectRatio((float)width / (float)height);
 }

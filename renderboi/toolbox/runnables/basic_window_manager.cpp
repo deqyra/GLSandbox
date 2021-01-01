@@ -39,7 +39,7 @@ void BasicWindowManager::stopAction(const GLWindowPtr window, const BasicWindowM
 
 }
 
-void BasicWindowManager::processFramebufferResize(const GLWindowPtr window, const int width, const int height)
+void BasicWindowManager::processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height)
 {
     glViewport(0, 0, width, height);
 }

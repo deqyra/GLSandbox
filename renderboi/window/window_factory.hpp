@@ -18,16 +18,16 @@ class WindowFactory
         using ErrorCallbackSignature = void(void);
 
         /// @brief Initialize the window backend in use.
-        static int initializeBackend() = delete;
+        static int InitializeBackend() = delete;
 
         /// @brief Terminate the window backend in use.
-        static void terminateBackend() = delete;
+        static void TerminateBackend() = delete;
 
         /// @brief Set the error callback for created windows.
         ///
         /// @param callback Function pointer to the callback to use for error
         /// reporting.
-        static void setErrorCallback(const void* callback) = delete;
+        static void SetErrorCallback(const void* callback) = delete;
 
         /// @brief Create an OpenGL context within a window, bind callbacks and 
         /// initialize OpenGL function pointers.
@@ -47,7 +47,7 @@ class WindowFactory
         /// std::runtime_error. If a debug capable context was requested but the 
         /// environment does not support GL_ARB_debug_output, the function will 
         /// throw a std::runtime_error.
-        static GLWindowPtr makeWindow(
+        static GLWindowPtr MakeWindow(
             std::string title,
             int width,
             int height,

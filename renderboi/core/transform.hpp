@@ -76,7 +76,7 @@ class Transform : public BasisProvider
 
         /// @brief Update the local vectors so that they reflect the transform
         /// parameters.
-        void updateLocalVectors() const;
+        void _updateLocalVectors() const;
 
         /// @brief Model matrix of the object.
         mutable glm::mat4 _modelMatrix;
@@ -87,7 +87,7 @@ class Transform : public BasisProvider
 
         /// @brief Update the model matrix of the object so that it reflects the
         /// transform parameters.
-        void updateMatrix() const;
+        void _updateMatrix() const;
 
     public:
         /// @brief Coordinates of the null vector.

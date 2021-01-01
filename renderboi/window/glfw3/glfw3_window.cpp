@@ -9,7 +9,7 @@ GLFW3Window::GLFW3Window(GLFWwindow* window, std::string title) :
     GLWindow(title),
     _w(window)
 {
-    glfwGetFramebufferSize(_w, &_width, &_height);
+    glfwGetFramebufferSize(_w, (int*)&_width, (int*)&_height);
 }
 
 GLFW3Window::~GLFW3Window()
@@ -50,9 +50,9 @@ void GLFW3Window::setTitle(std::string title)
     glfwSetWindowTitle(_w, _title.c_str());
 }
 
-void GLFW3Window::getCursorPos(double* x, double* y) const
+void GLFW3Window::getCursorPos(double& x, double& y) const
 {
-    glfwGetCursorPos(_w, x, y);
+    glfwGetCursorPos(_w, &x, &y);
 }
 
 float GLFW3Window::getAspectRatio() const

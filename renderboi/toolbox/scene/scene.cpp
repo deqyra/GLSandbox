@@ -43,7 +43,7 @@ SceneObjectPtr Scene::newObject(const std::string name)
     const ObjectTree::NodePtr node = _objects.getRoot();
     const unsigned int rootId = node->value->id;
 
-    const SceneObjectPtr object = Factory::makeSceneObject(name);
+    const SceneObjectPtr object = Factory::MakeSceneObject(name);
 
     _performObjectRegistration(object, _objectMetadata[rootId]);
 
@@ -52,7 +52,7 @@ SceneObjectPtr Scene::newObject(const std::string name)
 
 SceneObjectPtr Scene::newObject(const unsigned int parentId)
 {
-    const SceneObjectPtr object = Factory::makeSceneObject();
+    const SceneObjectPtr object = Factory::MakeSceneObject();
     const SceneObjectMetadata meta = _findObjectMetaOrThrow(parentId);
  
     _performObjectRegistration(object, meta);
@@ -62,7 +62,7 @@ SceneObjectPtr Scene::newObject(const unsigned int parentId)
 
 SceneObjectPtr Scene::newObject(const std::string name, const unsigned int parentId)
 {
-    const SceneObjectPtr object = Factory::makeSceneObject(name);
+    const SceneObjectPtr object = Factory::MakeSceneObject(name);
     const SceneObjectMetadata meta = _findObjectMetaOrThrow(parentId);
  
     _performObjectRegistration(object, meta);
@@ -170,7 +170,7 @@ void Scene::updateAllTransforms()
         for(auto it = childNodes.begin(); it != childNodes.end(); it++)
         {
             SceneObjectPtr object = (*it)->value;
-            worldTransformDFSUpdate(object->id);
+            _worldTransformDFSUpdate(object->id);
         }
 
         _outdatedTransformNodes = 0;
@@ -407,7 +407,7 @@ void Scene::_performObjectRegistration(const SceneObjectPtr object, const SceneO
     _objectMetadata[meta.id] = meta;
 }
 
-void Scene::worldTransformDFSUpdate(const unsigned int startingId) const
+void Scene::_worldTransformDFSUpdate(const unsigned int startingId) const
 {
     const SceneObjectMetadata meta = _objectMetadata.at(startingId);
 
@@ -425,7 +425,7 @@ void Scene::worldTransformDFSUpdate(const unsigned int startingId) const
         for (auto it = children.begin(); it != children.end(); it++)
         {
             SceneObjectPtr child = (*it)->value;
-            worldTransformDFSUpdate(child->id);
+            _worldTransformDFSUpdate(child->id);
         }
     }
 }

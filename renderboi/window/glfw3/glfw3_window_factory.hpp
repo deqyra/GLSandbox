@@ -15,13 +15,13 @@ class WindowFactory<WindowBackend::GLFW3>
     public:
         using ErrorCallbackSignature = GLFWerrorfun;
 
-        static int initializeBackend();
+        static int InitializeBackend();
 
-        static void terminateBackend();
+        static void TerminateBackend();
 
-        static void setErrorCallback(const void* callback);
+        static void SetErrorCallback(const void* callback);
 
-        static GLWindowPtr makeWindow(
+        static GLWindowPtr MakeWindow(
             std::string title,
             int width,
             int height,

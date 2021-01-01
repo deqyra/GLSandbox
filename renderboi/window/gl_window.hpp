@@ -114,7 +114,7 @@ public:
     ///
     /// @param x [Output parameter] The X coordinate of the cursor.
     /// @param y [Output parameter] The Y coordinate of the cursor.
-    virtual void getCursorPos(double* x, double* y) const = 0;
+    virtual void getCursorPos(double& x, double& y) const = 0;
 
 protected:
     /// @brief Default input processor of all windows.
@@ -128,10 +128,10 @@ protected:
     std::string _title;
 
     /// @brief Width of the window.
-    int _width;
+    unsigned int _width;
 
     /// @brief Height of the window.
-    int _height;
+    unsigned int _height;
 };
 
 using GLWindowPtr = std::shared_ptr<GLWindow>;

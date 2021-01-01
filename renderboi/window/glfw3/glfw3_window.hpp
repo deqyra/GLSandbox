@@ -68,7 +68,7 @@ class GLFW3Window : public GLWindow
         ///
         /// @param x [Output parameter] The X coordinate of the cursor.
         /// @param y [Output parameter] The Y coordinate of the cursor.
-        void getCursorPos(double* x, double* y) const override;
+        void getCursorPos(double& x, double& y) const override;
 };
 
 using GLFW3WindowPtr = std::shared_ptr<GLFW3Window>;

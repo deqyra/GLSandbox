@@ -17,7 +17,7 @@ KeyboardMovementScript::KeyboardMovementScript(
     _basisProvider(basisProvider),
     _moveSpeed(speed),
     _sprintMultiplier(sprintMultiplier),
-    _movement{ false },
+    _movementFlags{ false },
     _sprint(false)
 {
     if (!basisProvider) throw std::runtime_error("KeyboardMovementScript: cannot construct from a null FrontProviderPtr.");
@@ -34,13 +34,13 @@ void KeyboardMovementScript::update(float timeElapsed)
     glm::vec3 position = _sceneObject->transform.getPosition();
 
     // Depending on which directional flags were raised, compute new position
-    if (_movement[_IndexForward])
+    if (_movementFlags[_IndexForward])
         position += _basisProvider->forward() * velocity;
-    if (_movement[_IndexBackward])
+    if (_movementFlags[_IndexBackward])
         position -= _basisProvider->forward() * velocity;
-    if (_movement[_IndexLeft])
+    if (_movementFlags[_IndexLeft])
         position += _basisProvider->left() * velocity;
-    if (_movement[_IndexRight])
+    if (_movementFlags[_IndexRight])
         position -= _basisProvider->left() * velocity;
 
     // Update parent position
@@ -68,16 +68,16 @@ void KeyboardMovementScript::triggerAction(const GLWindowPtr window, const Keybo
     switch (action)
     {
         case KeyboardMovementAction::Forward:
-            _movement[_IndexForward] = true;
+            _movementFlags[_IndexForward] = true;
             break;
         case KeyboardMovementAction::Backward:
-            _movement[_IndexBackward] = true;
+            _movementFlags[_IndexBackward] = true;
             break;
         case KeyboardMovementAction::Left:
-            _movement[_IndexLeft] = true;
+            _movementFlags[_IndexLeft] = true;
             break;
         case KeyboardMovementAction::Right:
-            _movement[_IndexRight] = true;
+            _movementFlags[_IndexRight] = true;
             break;
         case KeyboardMovementAction::Sprint:
             _sprint = true;
@@ -92,16 +92,16 @@ void KeyboardMovementScript::stopAction(const GLWindowPtr window, const Keyboard
     switch (action)
     {
         case KeyboardMovementAction::Forward:
-            _movement[_IndexForward] = false;
+            _movementFlags[_IndexForward] = false;
             break;
         case KeyboardMovementAction::Backward:
-            _movement[_IndexBackward] = false;
+            _movementFlags[_IndexBackward] = false;
             break;
         case KeyboardMovementAction::Left:
-            _movement[_IndexLeft] = false;
+            _movementFlags[_IndexLeft] = false;
             break;
         case KeyboardMovementAction::Right:
-            _movement[_IndexRight] = false;
+            _movementFlags[_IndexRight] = false;
             break;
         case KeyboardMovementAction::Sprint:
             _sprint = false;
@@ -129,15 +129,15 @@ ControlSchemeManagerPtr<KeyboardMovementAction> KeyboardMovementScript::getDefau
 void KeyboardMovementScript::cancelOppositeDirections()
 {
     // Cancel directions if opposite
-    if (_movement[_IndexForward] && _movement[_IndexBackward])
+    if (_movementFlags[_IndexForward] && _movementFlags[_IndexBackward])
     {
-        _movement[_IndexForward] = false;
-        _movement[_IndexBackward] = false;
+        _movementFlags[_IndexForward] = false;
+        _movementFlags[_IndexBackward] = false;
     }
-    if (_movement[_IndexLeft] && _movement[_IndexRight])
+    if (_movementFlags[_IndexLeft] && _movementFlags[_IndexRight])
     {
-        _movement[_IndexLeft] = false;
-        _movement[_IndexRight] = false;
+        _movementFlags[_IndexLeft] = false;
+        _movementFlags[_IndexRight] = false;
     }
 }
 

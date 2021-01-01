@@ -12,12 +12,12 @@ ScriptComponent::ScriptComponent(const SceneObjectPtr sceneObject, const ScriptP
     }
 
     _script->setSceneObject(sceneObject);
-    registerScript();
+    _registerScript();
 }
 
 ScriptComponent::~ScriptComponent()
 {
-    releaseSceneObject();
+    _releaseSceneObject();
 }
 
 ScriptPtr ScriptComponent::getScript() const
@@ -43,7 +43,7 @@ ScriptComponent* ScriptComponent::clone(const SceneObjectPtr newParent) const
     return clonedComponent;
 }
 
-void ScriptComponent::registerScript()
+void ScriptComponent::_registerScript()
 {
     // Get a pointer to the scene hosting the parent object
     SceneObjectPtr sceneObject = _sceneObject;
@@ -56,7 +56,7 @@ void ScriptComponent::registerScript()
     scene->registerScript(_script);
 }
 
-void ScriptComponent::detachScript()
+void ScriptComponent::_detachScript()
 {
     // Get a pointer to the scene hosting the parent object
     if (!_sceneObject) return;
@@ -68,9 +68,9 @@ void ScriptComponent::detachScript()
     scene->detachScript(_script->id);
 }
 
-void ScriptComponent::releaseSceneObject()
+void ScriptComponent::_releaseSceneObject()
 {
-    detachScript();
+    _detachScript();
     _sceneObject.reset();
     _script->setSceneObject(nullptr);
 }

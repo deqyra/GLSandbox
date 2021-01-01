@@ -31,7 +31,7 @@ TorusGenerator::TorusGenerator(Parameters parameters) :
 
 }
 
-MeshPtr TorusGenerator::generatePtr() const
+MeshPtr TorusGenerator::generateMesh() const
 {
     const Parameters& p(parameters);
 

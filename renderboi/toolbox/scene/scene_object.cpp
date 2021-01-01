@@ -21,7 +21,7 @@ SceneObject::~SceneObject()
 {
     for (auto it = _components.begin(); it != _components.end(); it++)
     {
-        (*it)->releaseSceneObject();
+        (*it)->_releaseSceneObject();
     }
 }
 

@@ -21,7 +21,6 @@ using Ref = FrameOfReference;
 
 #include <renderboi/toolbox/common_macros.hpp>
 #include <renderboi/toolbox/factory.hpp>
-#include <renderboi/toolbox/input_logger.hpp>
 #include <renderboi/toolbox/input_splitter.hpp>
 #include <renderboi/toolbox/controls/control_scheme_manager.hpp>
 #include <renderboi/toolbox/controls/control_event_translator.hpp>
@@ -32,6 +31,7 @@ using Ref = FrameOfReference;
 #include <renderboi/toolbox/scene/scene_object.hpp>
 #include <renderboi/toolbox/scene/component_type.hpp>
 #include <renderboi/toolbox/scene/components/all_components.hpp>
+#include <renderboi/toolbox/runnables/input_logger.hpp>
 #include <renderboi/toolbox/runnables/mouse_camera_manager.hpp>
 #include <renderboi/toolbox/runnables/keyboard_movement_script.hpp>
 #include <renderboi/toolbox/runnables/basic_window_manager.hpp>
@@ -55,27 +55,27 @@ void LightingSandbox::run(const GLWindowPtr window)
     lightConfig.addFeature(ShaderFeature::FragmentBlinnPhong);
     ShaderProgram lightingShader = ShaderBuilder::BuildShaderProgramFromConfig(lightConfig);
 
-    ScenePtr scene = Factory::makeScene();
+    ScenePtr scene = Factory::MakeScene();
 
     // BIG TORUS
-    SceneObjectPtr bigTorusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Big torus", {2.f, 0.5f, 72, 48}, Materials::Emerald, lightingShader);
+    SceneObjectPtr bigTorusObj = Factory::MakeSceneObjectWithMesh<MeshType::Torus>("Big torus", {2.f, 0.5f, 72, 48}, Materials::Emerald, lightingShader);
 
     // SMALL TORUS
-    SceneObjectPtr smallTorusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Small torus", {0.75f, 0.25f, 64, 32}, Materials::Gold, lightingShader);
+    SceneObjectPtr smallTorusObj = Factory::MakeSceneObjectWithMesh<MeshType::Torus>("Small torus", {0.75f, 0.25f, 64, 32}, Materials::Gold, lightingShader);
     
     // AXES
-    SceneObjectPtr axesObj = Factory::makeSceneObjectWithMesh<MeshType::Axes>("Axes", {3.f});
+    SceneObjectPtr axesObj = Factory::MakeSceneObjectWithMesh<MeshType::Axes>("Axes", {3.f});
     
     // CUBE
-    SceneObjectPtr cubeObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Materials::Default, lightingShader);
+    SceneObjectPtr cubeObj = Factory::MakeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Materials::Default, lightingShader);
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>(LightBaseRange);
     cubeObj->addComponent<LightComponent>(light);
 
     // TETRAHEDRON
-    SceneObjectPtr tetrahedronObj = Factory::makeSceneObjectWithMesh<MeshType::Tetrahedron>("Tetrahedron", {0.5f});
+    SceneObjectPtr tetrahedronObj = Factory::MakeSceneObjectWithMesh<MeshType::Tetrahedron>("Tetrahedron", {0.5f});
 
     // CAMERA
-    SceneObjectPtr cameraObj = Factory::makeSceneObject("Camera");
+    SceneObjectPtr cameraObj = Factory::MakeSceneObject("Camera");
     CameraPtr camera = std::make_shared<Camera>(CameraParams);
     cameraObj->addComponent<CameraComponent>(camera);
 
@@ -160,7 +160,7 @@ void LightingSandbox::run(const GLWindowPtr window)
     }
     window->setShouldClose(false);
 
-    Factory::destroyScene(scene);
+    Factory::DestroyScene(scene);
 
     // Reset everything back to how it was
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::NormalCursor);

@@ -22,9 +22,9 @@ GLWindow::~GLWindow()
 
 void GLWindow::processFramebufferResize(const int width, const int height)
 {
-    _inputProcessor->processFramebufferResize(shared_from_this(), width, height);
-    _width = width;
-    _height = height;
+    _inputProcessor->processFramebufferResize(shared_from_this(), (unsigned int) width, (unsigned int) height);
+    _width = (unsigned int) width;
+    _height = (unsigned int) height;
 }
 
 void GLWindow::processKeyboard(

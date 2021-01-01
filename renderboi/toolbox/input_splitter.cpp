@@ -30,7 +30,7 @@ void InputSplitter::detachAllInputProcessors()
     _subscribers.clear();
 }
 
-void InputSplitter::processFramebufferResize(const GLWindowPtr window, const int width, const int height)
+void InputSplitter::processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height)
 {
     for (auto it = _subscribers.begin(); it != _subscribers.end(); it++)
     {

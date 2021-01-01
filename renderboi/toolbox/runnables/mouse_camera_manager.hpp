@@ -29,13 +29,6 @@ private:
     /// @brief Whether the mouse was updated once.
     bool _mouseWasUpdatedOnce;
 
-    /// @brief Update the rotation of the parent scene object to fit 
-    /// recorded offsets in yaw and pitch.
-    ///
-    /// @param yawOffset How much the camera was rotated around Y in degrees.
-    /// @param pitchOffset How much the camera was rotated around X in degrees.
-    void processRotation(const float yawOffset, const float pitchOffset);
-    
 public:
     /// @brief The default mouse sensitivity.
     static constexpr float DefaultLookSensitivity = 0.1f;

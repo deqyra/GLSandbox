@@ -30,7 +30,7 @@ void InputLogger::setEventLoggingStatus(InputProcessor::EventType eventType, boo
     _loggingStatus[eventType] = enable;
 }
 
-void InputLogger::processFramebufferResize(const GLWindowPtr window, const int width, const int height)
+void InputLogger::processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height)
 {
     if (!_loggingStatus[InputProcessor::EventType::FramebufferResize]) return;
 

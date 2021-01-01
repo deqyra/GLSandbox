@@ -14,7 +14,6 @@
 
 #include <renderboi/toolbox/factory.hpp>
 #include <renderboi/toolbox/input_splitter.hpp>
-#include <renderboi/toolbox/input_logger.hpp>
 #include <renderboi/toolbox/controls/controlled_entity_manager.hpp>
 #include <renderboi/toolbox/mesh_generators/mesh_type.hpp>
 #include <renderboi/toolbox/mesh_generators/plane_generator.hpp>
@@ -25,6 +24,7 @@
 #include <renderboi/toolbox/scene/components/camera_component.hpp>
 #include <renderboi/toolbox/scene/components/light_component.hpp>
 #include <renderboi/toolbox/scene/components/mesh_component.hpp>
+#include <renderboi/toolbox/runnables/input_logger.hpp>
 #include <renderboi/toolbox/runnables/basic_window_manager.hpp>
 #include <renderboi/toolbox/runnables/camera_aspect_ratio_manager.hpp>
 #include <renderboi/toolbox/runnables/mouse_camera_manager.hpp>
@@ -77,7 +77,7 @@ void ShadowSandbox::run(const GLWindowPtr window)
     ///                                       ///
     /////////////////////////////////////////////
 
-    ScenePtr scene = Factory::makeScene();
+    ScenePtr scene = Factory::MakeScene();
 
     PlaneGenerator::Parameters planeParameters = {
         PlaneTileSize,      // tileSizeX
@@ -103,7 +103,7 @@ void ShadowSandbox::run(const GLWindowPtr window)
     );
     Texture2D floorTex = Texture2D("assets/textures/wood.png", PixelSpace::sRGB);
     floorMaterial.pushDiffuseMap(floorTex);
-    SceneObjectPtr floorObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("Floor", planeParameters, floorMaterial, blinnPhongShader);
+    SceneObjectPtr floorObj = Factory::MakeSceneObjectWithMesh<MeshType::Plane>("Floor", planeParameters, floorMaterial, blinnPhongShader);
 
     // WALLS
     Material wallMaterial = Material(
@@ -116,10 +116,10 @@ void ShadowSandbox::run(const GLWindowPtr window)
     wallMaterial.pushDiffuseMap(wallTex);
 
     // XY wall
-    SceneObjectPtr xyWallObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("XY wall", planeParameters, wallMaterial, blinnPhongShader);
+    SceneObjectPtr xyWallObj = Factory::MakeSceneObjectWithMesh<MeshType::Plane>("XY wall", planeParameters, wallMaterial, blinnPhongShader);
 
     // YZ wall
-    SceneObjectPtr yzWallObj = Factory::makeSceneObjectWithMesh<MeshType::Plane>("YZ wall", planeParameters, wallMaterial, blinnPhongShader);
+    SceneObjectPtr yzWallObj = Factory::MakeSceneObjectWithMesh<MeshType::Plane>("YZ wall", planeParameters, wallMaterial, blinnPhongShader);
 
     TorusGenerator::Parameters torusParameters = {
         4.f,    // toroidalRadius
@@ -129,15 +129,15 @@ void ShadowSandbox::run(const GLWindowPtr window)
     };
 
     // TORUS
-    SceneObjectPtr torusObj = Factory::makeSceneObjectWithMesh<MeshType::Torus>("Torus", torusParameters, Materials::Default, blinnPhongShader);
+    SceneObjectPtr torusObj = Factory::MakeSceneObjectWithMesh<MeshType::Torus>("Torus", torusParameters, Materials::Default, blinnPhongShader);
 
     // LIGHT
-    SceneObjectPtr lightObj = Factory::makeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Materials::Default, fullLightShader);
+    SceneObjectPtr lightObj = Factory::MakeSceneObjectWithMesh<MeshType::Cube>("Light cube", {0.3f, {0.f, 0.f, 0.f}, false}, Materials::Default, fullLightShader);
     std::shared_ptr<PointLight> light = std::make_shared<PointLight>(LightBaseRange);
     lightObj->addComponent<LightComponent>(light);
 
     // CAMERA
-    SceneObjectPtr cameraObj = Factory::makeSceneObject("Camera");
+    SceneObjectPtr cameraObj = Factory::MakeSceneObject("Camera");
     CameraPtr camera = std::make_shared<Camera>(CameraParams);
     cameraObj->addComponent<CameraComponent>(camera);
 
@@ -253,7 +253,7 @@ void ShadowSandbox::run(const GLWindowPtr window)
     ////////////////////
 
     splitter->detachAllInputProcessors();
-    Factory::destroyScene(scene);
+    Factory::DestroyScene(scene);
 
     // Reset everything back to how it was
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::NormalCursor);

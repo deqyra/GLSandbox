@@ -126,7 +126,7 @@ private:
     ///
     /// @param startingId ID of the object whose transform should be the 
     /// starting point of the recursive update, going downwards in the tree.
-    void worldTransformDFSUpdate(const unsigned int startingId) const;
+    void _worldTransformDFSUpdate(const unsigned int startingId) const;
 
     /// @brief For an object with given ID, find the topmost parent node 
     /// whose update marker is set, and return the parent ID chain to it.

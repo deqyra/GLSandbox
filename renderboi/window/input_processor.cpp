@@ -14,7 +14,7 @@ InputProcessor::InputProcessor() :
 
 // Default callbacks do nothing
 
-void InputProcessor::processFramebufferResize(const GLWindowPtr window, const int width, const int height)
+void InputProcessor::processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height)
 {
 
 }

@@ -11,7 +11,7 @@ class MeshGenerator
         /// return it.
         ///
         /// @return A pointer to the mesh containing the generated vertices.
-        virtual MeshPtr generatePtr() const = 0;
+        virtual MeshPtr generateMesh() const = 0;
 };
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATOR_HPP

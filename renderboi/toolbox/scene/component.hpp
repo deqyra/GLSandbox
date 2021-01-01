@@ -51,9 +51,6 @@ private:
     Component(const Component& other) = delete;
     Component& operator=(const Component& other) = delete;
 
-    /// @brief Release the parent scene object pointer.
-    virtual void releaseSceneObject();
-
 protected:
     /// @param type Literal describing the concrete type of this component.
     /// @param sceneObject Pointer to the SceneObject instance this 
@@ -66,6 +63,9 @@ protected:
 
     /// @brief Pointer to the SceneObject this component belongs to.
     SceneObjectPtr _sceneObject;
+
+    /// @brief Release the parent scene object pointer.
+    virtual void _releaseSceneObject();
 
 public:
     virtual ~Component();

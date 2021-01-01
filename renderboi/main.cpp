@@ -41,16 +41,16 @@ int main(int argc, char** argv)
     std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << '\n';
     std::cout << COPYLEFT_NOTICE << std::endl;
 
-	AppWindowFactory::setErrorCallback(UsedErrorCallback);
+	AppWindowFactory::SetErrorCallback(UsedErrorCallback);
 
-	if (!AppWindowFactory::initializeBackend())
+	if (!AppWindowFactory::InitializeBackend())
 		return EXIT_FAILURE;
 
 	// Init window, GL context and GL pointers
 	GLWindowPtr window;
 	try
 	{
-		window = AppWindowFactory::makeWindow("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
+		window = AppWindowFactory::MakeWindow("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
 	}
 	catch(const std::exception& e)
 	{
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 
 	// Destroy window by resetting what should be the only shared pointer to it
 	window = nullptr;
-	AppWindowFactory::terminateBackend();
+	AppWindowFactory::TerminateBackend();
 	return EXIT_SUCCESS;
 }
 
@@ -79,7 +79,7 @@ int abortWithError(std::string message, bool terminateBackend)
 	std::cerr << message;
 	if (terminateBackend)
 	{
-		AppWindowFactory::terminateBackend();
+		AppWindowFactory::TerminateBackend();
 	}
 
 	return EXIT_FAILURE;

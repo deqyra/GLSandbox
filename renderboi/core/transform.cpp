@@ -70,7 +70,7 @@ glm::vec3 Transform::translateBy<Ref::Parent>(const glm::vec3& other)
 template<>
 glm::vec3 Transform::translateBy<Ref::Self>(const glm::vec3& other)
 {
-    if (_localVectorsOutdated) updateLocalVectors();
+    if (_localVectorsOutdated) _updateLocalVectors();
 
     // Recalculate provided translation relative to the world
     glm::vec3 worldTranslation = other.x * _scale.x * _left   
@@ -122,7 +122,7 @@ glm::quat Transform::rotateBy<Ref::Parent>(const float radAngle, const glm::vec3
 template<>
 glm::quat Transform::rotateBy<Ref::Self>(const float radAngle, const glm::vec3& axis)
 {
-    if (_localVectorsOutdated) updateLocalVectors();
+    if (_localVectorsOutdated) _updateLocalVectors();
     // Recalculate provided axis relative to the world
     glm::vec3 worldAxis = axis.x * _left
                         + axis.y * _up
@@ -163,7 +163,7 @@ glm::vec3 Transform::orbit<Ref::Parent>(float radAngle, const glm::vec3& axis, c
 template<>
 glm::vec3 Transform::orbit<Ref::Self>(float radAngle, const glm::vec3& axis, const glm::vec3& center, const bool selfRotate)
 {
-    if (_localVectorsOutdated) updateLocalVectors();
+    if (_localVectorsOutdated) _updateLocalVectors();
 
     // Recalculate provided parameters relative to the world
     glm::vec3 worldCenter = center.x * _scale.x * _left
@@ -223,7 +223,7 @@ template<>
 glm::quat Transform::lookAt<Ref::World>(const glm::vec3& target, glm::vec3 yConstraint)
 {
     // Local vectors are going to be needed so update them
-    if (_localVectorsOutdated) updateLocalVectors();
+    if (_localVectorsOutdated) _updateLocalVectors();
 
     // Find new direction to look towards
     glm::vec3 direction = glm::normalize(target - _position);
@@ -241,7 +241,7 @@ glm::quat Transform::lookAt<Ref::World>(const glm::vec3& target, glm::vec3 yCons
     float angle = glm::acos(dot);
 
     rotateBy<Ref::World>(angle, axis);
-    updateLocalVectors();
+    _updateLocalVectors();
 
     yConstraint = glm::normalize(yConstraint);
 
@@ -287,7 +287,7 @@ glm::quat Transform::lookAt<Ref::Parent>(const glm::vec3& target, glm::vec3 yCon
 template<>
 glm::quat Transform::lookAt<Ref::Self>(const glm::vec3& target, glm::vec3 yConstraint)
 {
-    if (_localVectorsOutdated) updateLocalVectors();
+    if (_localVectorsOutdated) _updateLocalVectors();
     // Recalculate provided parameters relative to the world
     glm::vec3 worldTarget = target.x * _left
                           + target.y * _up
@@ -341,7 +341,7 @@ glm::mat4 Transform::getModelMatrix() const
 {
     if (_matrixOutdated)
     {
-        updateMatrix();
+        _updateMatrix();
     }
 
     return _modelMatrix;
@@ -393,7 +393,7 @@ Transform Transform::compoundFrom(const Transform& other) const
     return Transform(newPosition, newRotation, newScale);
 }
 
-void Transform::updateLocalVectors() const
+void Transform::_updateLocalVectors() const
 {
     // Transform world basis vectors according to rotation
     _forward = glm::normalize(_rotation * Z);
@@ -403,7 +403,7 @@ void Transform::updateLocalVectors() const
     _localVectorsOutdated = false;
 }
 
-void Transform::updateMatrix() const
+void Transform::_updateMatrix() const
 {
     // Generate 4x4 matrix from quaternion
     glm::mat4 rotation = glm::toMat4(_rotation);
@@ -426,7 +426,7 @@ glm::vec3 Transform::left() const
 {
     if (_localVectorsOutdated)
     {
-        updateLocalVectors();
+        _updateLocalVectors();
     }
 
     return _left;
@@ -436,7 +436,7 @@ glm::vec3 Transform::up() const
 {
     if (_localVectorsOutdated)
     {
-        updateLocalVectors();
+        _updateLocalVectors();
     }
 
     return _up;
@@ -446,7 +446,7 @@ glm::vec3 Transform::forward() const
 {
     if (_localVectorsOutdated)
     {
-        updateLocalVectors();
+        _updateLocalVectors();
     }
 
     return _forward;

@@ -38,7 +38,7 @@ PlaneGenerator::PlaneGenerator(Parameters parameters) :
         this->parameters.yTexSize = parameters.tileAmountY * parameters.tileSizeY;
 }
 
-MeshPtr PlaneGenerator::generatePtr() const
+MeshPtr PlaneGenerator::generateMesh() const
 {
     const Parameters& p(parameters);
     const unsigned int nVertices = (p.tileAmountX + 1) * (p.tileAmountY + 1);

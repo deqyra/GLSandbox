@@ -24,22 +24,22 @@
 #include "glfw3_adapter.hpp"
 #include "glfw3_window_callbacks.hpp"
 
-int WindowFactory<WindowBackend::GLFW3>::initializeBackend()
+int WindowFactory<WindowBackend::GLFW3>::InitializeBackend()
 {
     return glfwInit();
 }
 
-void WindowFactory<WindowBackend::GLFW3>::terminateBackend()
+void WindowFactory<WindowBackend::GLFW3>::TerminateBackend()
 {
     glfwTerminate();
 }
 
-void WindowFactory<WindowBackend::GLFW3>::setErrorCallback(const void* callback)
+void WindowFactory<WindowBackend::GLFW3>::SetErrorCallback(const void* callback)
 {
     glfwSetErrorCallback(*((ErrorCallbackSignature*)callback));
 }
 
-GLWindowPtr WindowFactory<WindowBackend::GLFW3>::makeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
+GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(std::string title, int width, int height, int glVersionMajor, int glVersionMinor, Window::OpenGLProfile glProfile, bool debug)
 {
 	// GL metadata
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);

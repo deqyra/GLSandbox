@@ -72,7 +72,7 @@ void SceneRenderer::renderScene(const ScenePtr scene) const
         lights.push_back(lightComp->getLight());
         worldTransforms.push_back(scene->getWorldTransform(lightObj->id));
     }
-    sendLightData(lights, worldTransforms, view);
+    _sendLightData(lights, worldTransforms, view);
 
     // Compute time elapsed between frames and limit framerate if necessary
     const std::chrono::time_point<std::chrono::system_clock> newTimestamp = std::chrono::system_clock::now();
@@ -93,7 +93,7 @@ void SceneRenderer::setFramerateLimit(const unsigned int framerateLimit)
     _frameIntervalUs = (int64_t)(1000000.f / framerateLimit);
 }
 
-void SceneRenderer::sendLightData(
+void SceneRenderer::_sendLightData(
     const std::vector<LightPtr>& lights,
     const std::vector<Transform>& worldTransforms,
     const glm::mat4& view

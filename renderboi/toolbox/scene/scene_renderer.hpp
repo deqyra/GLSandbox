@@ -44,7 +44,7 @@ private:
     /// @exception If there are too many lights of any type and they end up
     /// exceeding the per-type limit defined by the light UBO, the function
     /// will throw a std::runtime_error.
-    void sendLightData(
+    void _sendLightData(
         const std::vector<LightPtr>& lights,
         const std::vector<Transform>& worldTransforms,
         const glm::mat4& view
