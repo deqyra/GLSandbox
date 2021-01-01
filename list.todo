@@ -60,8 +60,8 @@ RenderBoi:
             ✔ In MeshComponent, make the mesh pointer private, add getter and setter to it @done(20-10-21 16:35)
             ✔ Keep a shared pointer to the SceneObject @done(20-10-21 13:02)
             ✔ Provide info as to whether a certain component type is allowed more than once per object @done(20-10-20 16:02)
-            ☐ Add InputProcessorComponent
-            ☐ Rethink InputProcessingScriptComponent
+            ✘ Add InputProcessorComponent @cancelled(20-12-31 14:44)
+            ✘ Rethink InputProcessingScriptComponent @cancelled(20-12-31 14:20)
         Factory:
             ✔ Method to attach camera and scripts to scene object@done(20-10-26 02:40)
             ☐ Forwarding methods to ShaderBuilder
@@ -81,6 +81,7 @@ RenderBoi:
             ✔ Add name for debugging purposes @done(20-10-19 12:04)
             ✔ Return shared pointers instead of weak pointers where possible @done(20-10-20 16:17)
             ✔ Keep a shared pointer to the scene @done(20-10-21 19:59)
+            ☐ Remove component
         SceneRenderer:
             ✔ Implement a framerate limiter @done(20-10-19 21:49)
             ☐ Mesh rendering order based on the requested shader, then on their VertexDataManager handle

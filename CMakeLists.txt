@@ -212,9 +212,6 @@ set(RB_TOOLBOX_SOURCE_FILES
     common_macros.hpp
     factory.cpp
     factory.hpp
-    mesh_generator.hpp
-    input_logger.cpp
-    input_logger.hpp
     input_splitter.cpp
     input_splitter.hpp 
     script.cpp
@@ -227,6 +224,7 @@ set(RB_TOOLBOX_SOURCE_FILES
     interfaces/action_event_receiver.hpp
     interfaces/control_binding_provider.hpp
     interfaces/default_control_scheme_provider.hpp
+    interfaces/mesh_generator.hpp
     mesh_generators/all_mesh_generators.hpp
     mesh_generators/axes_generator.cpp
     mesh_generators/axes_generator.hpp
@@ -265,6 +263,8 @@ set(RB_TOOLBOX_SOURCE_FILES
     runnables/basic_window_manager.hpp 
     runnables/camera_aspect_ratio_manager.cpp
     runnables/camera_aspect_ratio_manager.hpp 
+    runnables/input_logger.cpp
+    runnables/input_logger.hpp
     runnables/keyboard_movement_script.cpp
     runnables/keyboard_movement_script.hpp 
     runnables/mouse_camera_manager.cpp
