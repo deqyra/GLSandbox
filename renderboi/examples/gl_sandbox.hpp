@@ -5,6 +5,9 @@
 
 #include <renderboi/window/gl_window.hpp>
 
+namespace Renderboi
+{
+
 /// @brief Abstract class to run any 3D scene in a GL window.
 class GLSandbox
 {
@@ -14,5 +17,7 @@ class GLSandbox
 		/// @param window Pointer to the window to run stuff in.
 		virtual void run(const GLWindowPtr window) = 0;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__EXAMPLES__GL_SANDBOX_HPP

@@ -17,8 +17,6 @@
 #include <renderboi/core/frame_of_reference.hpp>
 #include <renderboi/core/shader/shader_builder.hpp>
 
-using Ref = FrameOfReference;
-
 #include <renderboi/toolbox/common_macros.hpp>
 #include <renderboi/toolbox/factory.hpp>
 #include <renderboi/toolbox/input_splitter.hpp>
@@ -38,6 +36,11 @@ using Ref = FrameOfReference;
 #include <renderboi/toolbox/runnables/camera_aspect_ratio_manager.hpp>
 
 #include <cpptools/enum_map.hpp>
+
+namespace Renderboi
+{
+
+using Ref = FrameOfReference;
 
 void LightingSandbox::run(const GLWindowPtr window)
 {
@@ -232,3 +235,5 @@ LightingSandboxScript* LightingSandboxScript::clone() const
 {
     return nullptr;
 }
+
+}//namespace Renderboi

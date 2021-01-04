@@ -32,6 +32,9 @@
 
 #include <cpptools/enum_map.hpp>
 
+namespace Renderboi
+{
+
 using Ref = FrameOfReference;
 
 void ShadowSandbox::run(const GLWindowPtr window)
@@ -322,3 +325,5 @@ ShadowSandboxScript* ShadowSandboxScript::clone() const
 {
     return nullptr;
 }
+
+}//namespace Renderboi

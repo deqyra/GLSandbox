@@ -17,6 +17,9 @@
 
 #include <cpptools/sine_generator.hpp>
 
+namespace Renderboi
+{
+
 /// @brief Example class to display lit moving objects.
 class LightingSandbox : public GLSandbox
 {
@@ -67,7 +70,7 @@ class LightingSandboxScript : public InputProcessor, public Script
         float _speedFactor;
 
         /// @brief Sine along which to vary the light range.
-        SineGenerator<float> _sine;
+        CppTools::SineGenerator<float> _sine;
 
         /// @brief Base range of the light.
         float _baseRange;
@@ -127,5 +130,7 @@ class LightingSandboxScript : public InputProcessor, public Script
             const int mods
         ) override;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__EXAMPLES__LIGHTING_EXAMPLE_HPP

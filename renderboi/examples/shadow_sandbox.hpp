@@ -15,6 +15,9 @@
 #include <renderboi/window/gl_window.hpp>
 #include <renderboi/window/input_processor.hpp>
 
+namespace Renderboi
+{
+
 class ShadowSandbox : public GLSandbox
 {
     public:
@@ -57,7 +60,7 @@ class ShadowSandboxScript : public Script, public InputProcessor
         float _speedFactor;
 
         /// @brief Sine along which to have the light position vary.
-        SineGenerator<float> _sine;
+        CppTools::SineGenerator<float> _sine;
 
     public:
         static constexpr glm::vec3 LightMovementAxis = {0.f, 1.f, 0.f};
@@ -112,5 +115,7 @@ class ShadowSandboxScript : public Script, public InputProcessor
         ) override;
 
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__EXAMPLES__SHADOW_SANDBOX_HPP
