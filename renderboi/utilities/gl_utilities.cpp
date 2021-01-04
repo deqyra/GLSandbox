@@ -5,6 +5,8 @@
 
 #include <glad/gl.h>
 
+namespace Renderboi
+{
 static std::unordered_set<int> ignoredMessageTypes;
 
 void glIgnoreDebugMessagesOfType(int type)
@@ -80,3 +82,4 @@ float glGetAspectRatio()
 
     return (float)(dims[2]) / (float)(dims[3]);
 }
+}//namespace Renderboi

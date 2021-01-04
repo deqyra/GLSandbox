@@ -3,6 +3,8 @@
 
 #include <glad/gl.h>
 
+namespace Renderboi
+{
 // The "naming convention" used hereafter is a cheat to make these funciton feel
 // like they are part of the GL API, although they really are not.
 
@@ -28,5 +30,6 @@ void APIENTRY glDebugCallback(
 );
 
 float glGetAspectRatio();
+}//namespace Renderboi
 
 #endif//RENDERBOI__UTILITIES__GL_UTILITIES_HPP
