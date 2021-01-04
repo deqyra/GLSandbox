@@ -53,6 +53,9 @@ float linearFactorForRange(const float range)
 };
 }
 
+namespace Renderboi
+{
+
 void attenuationFromRange(const float range, float& quadraticFactor, float& linearFactor, float& constant)
 {
     const float adaptiveFactor = 5;
@@ -60,3 +63,5 @@ void attenuationFromRange(const float range, float& quadraticFactor, float& line
     linearFactor = linearFactorForRange(range * adaptiveFactor);
     constant = 1.f;
 }
+
+}//namespace Renderboi

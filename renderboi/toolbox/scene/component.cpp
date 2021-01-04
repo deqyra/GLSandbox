@@ -6,6 +6,9 @@
 #include "scene_object.hpp"
 #include "component_type.hpp"
 
+namespace Renderboi
+{
+
 Component::Component(const ComponentType type, const SceneObjectPtr sceneObject) :
     type(type),
     _sceneObject(sceneObject)
@@ -35,3 +38,5 @@ void Component::_releaseSceneObject()
 {
     _sceneObject.reset();
 }
+
+}//namespace Renderboi

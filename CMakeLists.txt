@@ -122,6 +122,7 @@ file(MAKE_DIRECTORY ${EXPORT_LOCATION}/lib)
 
 set(CPPTOOLS_LIB_NAME "cpptools")
 set(GLAD_LIB_NAME "glad")
+set(GETOPT_WIN_LIB_NAME "getopt")
 set(STB_IMAGE_LIB_NAME "stb_image")
 set(GLM_LIB_NAME "glm")
 set(GLFW3_LIB_NAME "glfw3")
@@ -143,6 +144,9 @@ ExternalProject_Add(${CPPTOOLS_LIB_NAME}_source
 set(RB_UTILITIES_SOURCE_FILES
     gl_utilities.cpp
     gl_utilities.hpp
+    resource_locator.cpp
+    resource_locator.hpp
+    to_string.hpp
 )
 
 set(RB_CORE_SOURCE_FILES
@@ -287,6 +291,11 @@ set(RB_EXAMPLES_SOURCE_FILES
 #                                                                             #
 ###############################################################################
 
+# Import getopt target only for windows (linux has it)
+if(WIN32)
+    add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/getoptwin ${CMAKE_BINARY_DIR}/${GETOPT_LIB_NAME})
+endif()
+
 # Import GLAD targets
 add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/glad ${CMAKE_BINARY_DIR}/${GLAD_LIB_NAME})
 
@@ -333,6 +342,13 @@ add_dependencies("RenderBoi"
     "export_${RB_EXAMPLES_LIB_NAME}_lib"
     "export_${RB_EXAMPLES_LIB_NAME}_headers"
 )
+
+if(WIN32)
+    add_dependencies("RenderBoi"
+        "export_${GETOPT_LIB_NAME}_lib"
+        "export_${GETOPT_LIB_NAME}_headers"
+    )
+endif()
 
 target_include_directories("RenderBoi" PUBLIC ${EXPORT_LOCATION}/include)
 target_link_directories("RenderBoi" PUBLIC ${EXPORT_LOCATION}/lib)

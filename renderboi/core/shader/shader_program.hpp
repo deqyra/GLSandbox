@@ -13,6 +13,9 @@
 #include "shader_feature.hpp"
 #include "../material.hpp"
 
+namespace Renderboi
+{
+
 class ShaderBuilder;
 
 /// @brief Handler for a shader program resource on the GPU.
@@ -139,5 +142,7 @@ public:
     /// @return Whether or not the feature is supported.
     bool supports(const ShaderFeature feature) const;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__SHADER__SHADER_PROGRAM_HPP

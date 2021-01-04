@@ -18,6 +18,9 @@
 #include "scene_object.hpp"
 #include "scene_object_metadata.hpp"
 
+namespace Renderboi
+{
+
 class Factory;
 
 /// @brief A scene containing 3D objects organised in a tree structure. Handles
@@ -28,9 +31,9 @@ class Scene : public std::enable_shared_from_this<Scene>
 friend Factory;
 
 public:
-    using ObjectTree = Tree<SceneObjectPtr>;
-    using TransformTree = Tree<Transform>;
-    using BoolTree = Tree<bool>;
+    using ObjectTree = CppTools::Tree<SceneObjectPtr>;
+    using TransformTree = CppTools::Tree<Transform>;
+    using BoolTree = CppTools::Tree<bool>;
 
 private:
     /// @brief Scene graph. Contains all objects in the scene, 
@@ -358,5 +361,7 @@ std::vector<SceneObjectPtr> Scene::getObjectsWithComponent(const bool mustBeEnab
 
 using ScenePtr = std::shared_ptr<Scene>;
 using SceneWPtr = std::weak_ptr<Scene>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__SCENE_HPP

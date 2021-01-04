@@ -2,6 +2,9 @@
 
 #include <stdexcept>
 
+namespace Renderboi
+{
+
 InputSplitter::InputSplitter() :
     _subscriberRollingCount(0),
     _subscribers()
@@ -72,3 +75,5 @@ void InputSplitter::processMouseCursor(const GLWindowPtr window, const double xp
         it->second->processMouseCursor(window, xpos, ypos);
     }
 }
+
+}//namespace Renderboi

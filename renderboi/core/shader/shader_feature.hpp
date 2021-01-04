@@ -6,6 +6,9 @@
 
 #include "shader_stage.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Collection of literals describing the different aspects which
 /// a shader might support when rendering a scene or its elements.
 enum class ShaderFeature
@@ -16,7 +19,7 @@ enum class ShaderFeature
     // - ShaderConfig::FeatureRequirements() in shader_config.cpp
     // - ShaderConfig::IncompatibleFeatures() in shader_config.cpp
     // - FeatureStages() in shader_feature.cpp
-    // - std::to_string(ShaderFeature) in shader_feature.cpp
+    // - to_string(ShaderFeature) in shader_feature.cpp
     //
     // Upon changing a litteral's name, updates in all places mentioned
     // above may be required, as well as in all shader templates where the
@@ -108,9 +111,8 @@ enum class ShaderFeature
 /// @return A map describing in which stage shader features are implemented.
 const std::unordered_map<ShaderFeature, ShaderStage>& FeatureStages();
 
-namespace std
-{
-    string to_string(const ShaderFeature v);
-}
+std::string to_string(const ShaderFeature v);
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__SHADER__SHADER_FEATURE_HPP

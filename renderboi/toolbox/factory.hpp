@@ -15,6 +15,9 @@
 #include "scene/components/mesh_component.hpp"
 #include "scene/components/script_component.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Provides static methods to facilitate complex object instantiation.
 class Factory
 {
@@ -144,5 +147,7 @@ std::shared_ptr<T> Factory::CreateScriptAndAttachToObject(SceneObjectPtr object,
 
     return script;
 }
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__FACTORY_HPP

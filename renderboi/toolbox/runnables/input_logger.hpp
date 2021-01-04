@@ -7,6 +7,9 @@
 
 #include <renderboi/window/input_processor.hpp>
 
+namespace Renderboi
+{
+
 class InputLogger : public InputProcessor
 {
 private:
@@ -103,5 +106,7 @@ public:
 };
 
 using InputLoggerPtr = std::shared_ptr<InputLogger>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__INPUT_LOGGER_HPP

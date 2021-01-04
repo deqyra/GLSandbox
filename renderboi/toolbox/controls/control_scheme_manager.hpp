@@ -10,10 +10,15 @@
 #include <utility>
 #include <vector>
 
+#include <renderboi/utilities/to_string.hpp>
+
 #include <cpptools/map_tools.hpp>
 
 #include "control.hpp"
 #include "../interfaces/control_binding_provider.hpp"
+
+namespace Renderboi
+{
 
 /// @brief Given an enum of actions, this class allows easy management of
 /// controls bound to these actions.
@@ -138,15 +143,15 @@ template<typename T>
 void ControlSchemeManager<T>::bindControl(const Control control, const T action)
 {
     const unsigned int actionBindingCount = (unsigned int)_controlsBoundToAction.count(action);
-    const bool alreadyPresent = mapContainsPair(_actionBoundToControl, {control, action});
+    const bool alreadyPresent = CppTools::mapContainsPair(_actionBoundToControl, {control, action});
 
     if (actionBindingCount >= _MaxControlsPerAction)
     {
         if (!alreadyPresent)
         {
-            const std::string s = "ControlSchemeManager: cannot bind control " + std::to_string(control)
-                        + " to action " + std::to_string(action) + ", as it already has "
-                        "the max number of bindings (" + std::to_string(_MaxControlsPerAction) + ").";
+            const std::string s = "ControlSchemeManager: cannot bind control " + to_string(control)
+                        + " to action " + to_string(action) + ", as it already has "
+                        "the max number of bindings (" + to_string(_MaxControlsPerAction) + ").";
 
             throw std::runtime_error(s.c_str());
         }
@@ -209,7 +214,7 @@ T ControlSchemeManager<T>::getActionBoundToControl(const Control& control)
     if (!_actionBoundToControl.contains(control))
     {
         const std::string s = "ControlSchemeManager: "
-            "control " + std::to_string(control) + " is not bound, cannot retrieve action.";
+            "control " + to_string(control) + " is not bound, cannot retrieve action.";
 
         throw std::runtime_error(s.c_str());
     }
@@ -251,5 +256,7 @@ std::vector<std::pair<Control, T>> ControlSchemeManager<T>::getAllBoundControls(
 
 template<typename T>
 using ControlSchemeManagerPtr = std::shared_ptr<ControlSchemeManager<T>>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__CONTROLS__CONTROL_SCHEME_MANAGER_HPP

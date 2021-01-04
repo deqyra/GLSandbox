@@ -4,6 +4,9 @@
 
 #include <renderboi/window/gl_window.hpp>
 
+namespace Renderboi
+{
+
 InputLogger::InputLogger(std::ostream& outputStream) :
     _loggingStatus(),
     _outputStream(outputStream)
@@ -51,8 +54,8 @@ void InputLogger::processKeyboard(
     std::bitset<8> bits(mods);
 
     _outputStream << "Event on window \"" << window->getTitle() << "\": keyboard.\n"
-                     "Key: " << std::to_string(key) << " (scancode: " << std::hex << scancode << std::dec << ")\n"
-                     "Action: " << std::to_string(action) << "\n"
+                     "Key: " << to_string(key) << " (scancode: " << std::hex << scancode << std::dec << ")\n"
+                     "Action: " << to_string(action) << "\n"
                      "Mod flags: " << bits << "\n" << std::endl;
 }
 
@@ -68,8 +71,8 @@ void InputLogger::processMouseButton(
     std::bitset<8> bits(mods);
 
     _outputStream << "Event on window \"" << window->getTitle() << "\": mouse button.\n"
-                     "Button: " << std::to_string(button) << "\n"
-                     "Action: " << std::to_string(action) << "\n"
+                     "Button: " << to_string(button) << "\n"
+                     "Action: " << to_string(action) << "\n"
                      "Mod flags: " << bits << "\n" << std::endl;
 }
 
@@ -80,3 +83,5 @@ void InputLogger::processMouseCursor(const GLWindowPtr window, const double xpos
     _outputStream << "Event on window \"" << window->getTitle() << "\": mouse moved.\n"
                      "New position: x=" << xpos << ";y=" << ypos << ".\n" << std::endl;
 }
+
+}//namespace Renderboi

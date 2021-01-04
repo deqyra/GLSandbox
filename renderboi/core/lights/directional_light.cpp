@@ -1,5 +1,8 @@
 #include "directional_light.hpp"
 
+namespace Renderboi
+{
+
 DirectionalLight::DirectionalLight(const glm::vec3 direction) :
     DirectionalLight(direction, glm::vec3(1.f), glm::vec3(1.f), glm::vec3(1.f))
 {
@@ -25,3 +28,5 @@ DirectionalLight* DirectionalLight::clone() const
 {
     return new DirectionalLight(direction, ambient, diffuse, specular);
 }
+
+}//namespace Renderboi

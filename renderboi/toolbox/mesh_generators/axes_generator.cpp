@@ -9,6 +9,9 @@
 
 #include "../common_macros.hpp"
 
+namespace Renderboi
+{
+
 AxesGenerator::AxesGenerator() :
     AxesGenerator(DefaultAxisLength)
 {
@@ -49,3 +52,5 @@ MeshPtr AxesGenerator::generateMesh() const
 
     return std::make_shared<Mesh>(GL_LINES, vertices, indices);
 }
+
+}//namespace Renderboi

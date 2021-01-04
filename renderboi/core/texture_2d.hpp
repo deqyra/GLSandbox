@@ -8,6 +8,9 @@
 
 #include "pixel_space.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Handler for a 2D texture resource on the GPU.
 class Texture2D
 {
@@ -77,5 +80,7 @@ public:
     /// IndexOutOfBoundsError.
     void bind(unsigned int unit) const;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__TEXTURE_2D_HPP

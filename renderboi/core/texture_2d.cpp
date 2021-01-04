@@ -6,7 +6,13 @@
 #include <stb_image/stb_image.hpp>
 
 #include "pixel_space.hpp"
+
+#include <renderboi/utilities/to_string.hpp>
+
 #include <cpptools/exceptions/index_out_of_bounds_error.hpp>
+
+namespace Renderboi
+{
 
 std::unordered_map<unsigned int, unsigned int> Texture2D::_locationRefCounts = std::unordered_map<unsigned int, unsigned int>();
 std::unordered_map<std::string , unsigned int> Texture2D::_pathsToIds  = std::unordered_map<std::string, unsigned int>();
@@ -138,10 +144,12 @@ void Texture2D::bind(unsigned int unit) const
     unsigned int realUnit = GL_TEXTURE0 + unit;
     if (realUnit > MaxTextureUnit)
     {
-        std::string s = "Texture2D: cannot bind to texture unit " + std::to_string(realUnit) + ".";
+        std::string s = "Texture2D: cannot bind to texture unit " + to_string(realUnit) + ".";
         throw IndexOutOfBoundsError(s);
     }
 
     glActiveTexture(realUnit);
     glBindTexture(GL_TEXTURE_2D, _location);
 }
+
+}//namespace Renderboi

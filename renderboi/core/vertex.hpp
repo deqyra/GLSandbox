@@ -3,6 +3,9 @@
 
 #include <glm/glm.hpp>
 
+namespace Renderboi
+{
+
 /// @brief A vertex with basic attributes.
 struct Vertex
 {
@@ -18,5 +21,7 @@ struct Vertex
     /// @brief Texture coordinates associated with the vertex.
     glm::vec2 texCoord;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__VERTEX_HPP

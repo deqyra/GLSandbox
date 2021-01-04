@@ -5,6 +5,9 @@
 #include <string>
 #include <unordered_map>
 
+namespace Renderboi
+{
+
 const std::unordered_map<ShaderFeature, ShaderStage>& FeatureStages()
 {
     static bool runOnce = false;
@@ -36,38 +39,37 @@ const std::unordered_map<ShaderFeature, ShaderStage>& FeatureStages()
     return map;
 }
 
-namespace std
+std::string to_string(const ShaderFeature v)
 {
-    string to_string(const ShaderFeature v)
+    static bool runOnce = false;
+    static std::unordered_map<ShaderFeature, std::string> featureNames;
+
+    if (!runOnce)
     {
-        static bool runOnce = false;
-        static unordered_map<ShaderFeature, string> featureNames;
+        featureNames[ShaderFeature::VertexMVP]                      = "VertexMVP";
+        featureNames[ShaderFeature::VertexNormalsToColor]           = "VertexNormalsToColor";
+        // featureNames[ShaderFeature::VertexFishEye]                  = "VertexFishEye";       // IMPLEMENT VERT LENS
+        // featureNames[ShaderFeature::GeometryShowNormals]            = "GeometryShowNormals"; // IMPLEMENT GEOM NORMALS
+        featureNames[ShaderFeature::FragmentFullLight]              = "FragmentFullLight";
+        featureNames[ShaderFeature::FragmentViewDepthBuffer]        = "FragmentViewDepthBuffer";
+        featureNames[ShaderFeature::FragmentViewLightAttenuation]   = "FragmentViewLightAttenuation";
+        featureNames[ShaderFeature::FragmentMeshMaterial]           = "FragmentMeshMaterial";
+        featureNames[ShaderFeature::FragmentBypassVertexColor]      = "FragmentBypassVertexColor";
+        // featureNames[ShaderFeature::FragmentFlatShading]            = "FragmentFlatShading"; // IMPLEMENT FRAG FLAT
+        featureNames[ShaderFeature::FragmentPhong]                  = "FragmentPhong";
+        featureNames[ShaderFeature::FragmentBlinnPhong]             = "FragmentBlinnPhong";
+        featureNames[ShaderFeature::FragmentGammaCorrection]        = "FragmentGammaCorrection";
+        // featureNames[ShaderFeature::FragmentOutline]                = "FragmentOutline";     // IMPLEMENT FRAG OUTLINE
+        // featureNames[ShaderFeature::FragmentCubemap]                = "FragmentCubemap";     // IMPLEMENT FRAG CUBEMAP
+        // featureNames[ShaderFeature::FragmentBlending]               = "FragmentBlending";    // IMPLEMENT FRAG BLENDING
+        // featureNames[ShaderFeature::FragmentShadows]                = "FragmentShadows";     // IMPLEMENT FRAG SHADOWS
 
-        if (!runOnce)
-        {
-            featureNames[ShaderFeature::VertexMVP]                      = "VertexMVP";
-            featureNames[ShaderFeature::VertexNormalsToColor]           = "VertexNormalsToColor";
-            // featureNames[ShaderFeature::VertexFishEye]                  = "VertexFishEye";       // IMPLEMENT VERT LENS
-            // featureNames[ShaderFeature::GeometryShowNormals]            = "GeometryShowNormals"; // IMPLEMENT GEOM NORMALS
-            featureNames[ShaderFeature::FragmentFullLight]              = "FragmentFullLight";
-            featureNames[ShaderFeature::FragmentViewDepthBuffer]        = "FragmentViewDepthBuffer";
-            featureNames[ShaderFeature::FragmentViewLightAttenuation]   = "FragmentViewLightAttenuation";
-            featureNames[ShaderFeature::FragmentMeshMaterial]           = "FragmentMeshMaterial";
-            featureNames[ShaderFeature::FragmentBypassVertexColor]      = "FragmentBypassVertexColor";
-            // featureNames[ShaderFeature::FragmentFlatShading]            = "FragmentFlatShading"; // IMPLEMENT FRAG FLAT
-            featureNames[ShaderFeature::FragmentPhong]                  = "FragmentPhong";
-            featureNames[ShaderFeature::FragmentBlinnPhong]             = "FragmentBlinnPhong";
-            featureNames[ShaderFeature::FragmentGammaCorrection]        = "FragmentGammaCorrection";
-            // featureNames[ShaderFeature::FragmentOutline]                = "FragmentOutline";     // IMPLEMENT FRAG OUTLINE
-            // featureNames[ShaderFeature::FragmentCubemap]                = "FragmentCubemap";     // IMPLEMENT FRAG CUBEMAP
-            // featureNames[ShaderFeature::FragmentBlending]               = "FragmentBlending";    // IMPLEMENT FRAG BLENDING
-            // featureNames[ShaderFeature::FragmentShadows]                = "FragmentShadows";     // IMPLEMENT FRAG SHADOWS
-
-            runOnce = true;
-        }
-
-        auto it = featureNames.find(v);
-        return (it != featureNames.end()) ?
-            it->second : "Unknown shader feature";
+        runOnce = true;
     }
+
+    auto it = featureNames.find(v);
+    return (it != featureNames.end()) ?
+        it->second : "Unknown shader feature";
 }
+
+}//namespace Renderboi

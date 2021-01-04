@@ -8,7 +8,8 @@
 #include <renderboi/window/gl_window.hpp>
 #include <renderboi/window/enums.hpp>
 
-#include <cpptools/enum_map.hpp>
+namespace Renderboi
+{
 
 BasicWindowManager::BasicWindowManager()
 {
@@ -59,26 +60,25 @@ ControlSchemeManagerPtr<BasicWindowManagerAction> BasicWindowManager::getDefault
     return schemeManager;
 }
 
-namespace std
+std::string to_string(const BasicWindowManagerAction& action)
 {
-    string to_string(const BasicWindowManagerAction& action)
+    static bool runOnce = false;
+    static std::unordered_map<BasicWindowManagerAction, std::string> enumNames;
+
+    if (!runOnce)
     {
-        static bool runOnce = false;
-        static unordered_enum_map<BasicWindowManagerAction, std::string> enumNames;
+        enumNames[BasicWindowManagerAction::Terminate]      = "Terminate";
+        enumNames[BasicWindowManagerAction::PolygonFill]    = "PolygonFill";
+        enumNames[BasicWindowManagerAction::PolygonLine]    = "PolygonLine";
+        enumNames[BasicWindowManagerAction::PolygonPoint]   = "PolygonPoint";
 
-        if (!runOnce)
-        {
-            enumNames[BasicWindowManagerAction::Terminate]      = "Terminate";
-            enumNames[BasicWindowManagerAction::PolygonFill]    = "PolygonFill";
-            enumNames[BasicWindowManagerAction::PolygonLine]    = "PolygonLine";
-            enumNames[BasicWindowManagerAction::PolygonPoint]   = "PolygonPoint";
-
-            runOnce = true;
-        }
-
-        auto it = enumNames.find(action);
-        if (it != enumNames.end()) return it->second;
-
-        return "Unknown";
+        runOnce = true;
     }
+
+    auto it = enumNames.find(action);
+    if (it != enumNames.end()) return it->second;
+
+    return "Unknown";
 }
+
+}//namespace Renderboi

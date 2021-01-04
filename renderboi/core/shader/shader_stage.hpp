@@ -4,6 +4,9 @@
 #include <string>
 #include <unordered_map>
 
+namespace Renderboi
+{
+
 enum class ShaderStage
 {
     Vertex,
@@ -11,8 +14,8 @@ enum class ShaderStage
     Fragment
 };
 
-namespace std
-{
-    string to_string(const ShaderStage v);
-}
+std::string to_string(const ShaderStage v);
+
+}//namespace Renderboi
+
 #endif//RENDERBOI__CORE__SHADER__SHADER_STAGE_HPP

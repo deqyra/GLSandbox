@@ -9,6 +9,9 @@
 
 #include <iostream>
 
+namespace Renderboi
+{
+
 void globalGlfwFramebufferResizeCallback(GLFWwindow* window, const int width, const int height)
 {
     static_cast<GLWindow*>(glfwGetWindowUserPointer(window))->processFramebufferResize(width, height);
@@ -41,3 +44,5 @@ void globalGlfwErrorCallback(const int error, const char* description)
 {
 	std::cerr << "GLFW error: 0x" << std::hex << error << ", \"" << description << "\"" << std::endl;
 }
+
+}//namespace Renderboi

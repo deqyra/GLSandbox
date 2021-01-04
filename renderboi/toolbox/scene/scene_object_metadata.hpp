@@ -1,6 +1,9 @@
 #ifndef RENDERBOI__TOOLBOX__SCENE__SCENE_OBJECT_METADATA_HPP
 #define RENDERBOI__TOOLBOX__SCENE__SCENE_OBJECT_METADATA_HPP
 
+namespace Renderboi
+{
+
 /// @brief Packs together information about the management of an object within
 /// a scene.
 struct SceneObjectMetadata
@@ -27,5 +30,7 @@ struct SceneObjectMetadata
     /// this metadata refers to.
     unsigned int transformSubscriberId;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__SCENE_OBJECT_METADATA_HPP

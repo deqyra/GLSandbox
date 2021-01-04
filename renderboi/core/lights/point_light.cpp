@@ -2,6 +2,9 @@
 
 #include "tools.hpp"
 
+namespace Renderboi
+{
+
 PointLight::PointLight(float range) :
     PointLight(glm::vec3(1.f), glm::vec3(1.f), glm::vec3(1.f), range)
 {
@@ -46,3 +49,5 @@ PointLight* PointLight::clone() const
     return new PointLight(ambient, diffuse, specular,
                           constant, linear, quadratic);
 }
+
+}//namespace Renderboi

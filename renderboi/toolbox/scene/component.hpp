@@ -6,6 +6,9 @@
 
 #include "component_type.hpp"
 
+namespace Renderboi
+{
+
 class SceneObject;
 using SceneObjectPtr = std::shared_ptr<SceneObject>;
 using SceneObjectWPtr = std::weak_ptr<SceneObject>;
@@ -142,5 +145,7 @@ bool Component::multipleInstancesAllowed()
 {
     return false;
 }
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__COMPONENT_HPP

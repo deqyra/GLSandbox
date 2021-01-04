@@ -3,6 +3,9 @@
 
 #include <renderboi/core/mesh.hpp>
 
+namespace Renderboi
+{
+
 /// @brief Interface for classes which can generate parameterized vertex data.
 class MeshGenerator
 {
@@ -13,5 +16,7 @@ class MeshGenerator
         /// @return A pointer to the mesh containing the generated vertices.
         virtual MeshPtr generateMesh() const = 0;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATOR_HPP

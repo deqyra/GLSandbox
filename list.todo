@@ -3,6 +3,8 @@ RenderBoi:
         ✔ Port to VSCode @done(20-04-17 03:59)
         ☐ Write test suite
         ☐ Better exceptions
+        ✔ Use ADL to find proper to_string instead of polluting std @done(21-01-04 23:29)
+        ✔ Make everything part of a RenderBoi namespace @done(21-01-04 23:29)
         ✔ Use const refs where applicable (especially upon fetching values held by iterators) @done(20-12-28 04:52)
         ✔ Start static member names with caps @done(20-12-28 04:52)
         ✔ Add const qualifiers everywhere and constexpr qualifiers where possible @done(20-12-28 04:52)

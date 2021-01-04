@@ -7,6 +7,9 @@
 
 #include "../interfaces/mesh_generator.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Generates vertices for a multi- or single-colored tetrahedron.
 class TetrahedronGenerator : public MeshGenerator
 {
@@ -59,5 +62,7 @@ public:
     /// @return A pointer to the mesh containing the generated vertices.
     MeshPtr generateMesh() const override;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATORS__TETRAHEDRON_GENERATOR_HPP

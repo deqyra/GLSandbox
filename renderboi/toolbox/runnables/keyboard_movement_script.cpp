@@ -3,11 +3,13 @@
 #include <exception>
 
 #include <renderboi/core/frame_of_reference.hpp>
-using Ref = FrameOfReference;
 
 #include <renderboi/window/enums.hpp>
 
-#include <cpptools/enum_map.hpp>
+namespace Renderboi
+{
+
+using Ref = FrameOfReference;
 
 KeyboardMovementScript::KeyboardMovementScript(
     const BasisProviderPtr basisProvider,
@@ -141,27 +143,26 @@ void KeyboardMovementScript::cancelOppositeDirections()
     }
 }
 
-namespace std
+std::string to_string(const KeyboardMovementAction& action)
 {
-    string to_string(const KeyboardMovementAction& action)
+    static bool runOnce = false;
+    static std::unordered_map<KeyboardMovementAction, std::string> enumNames;
+
+    if (!runOnce)
     {
-        static bool runOnce = false;
-        static unordered_enum_map<KeyboardMovementAction, std::string> enumNames;
+        enumNames[KeyboardMovementAction::Forward]   = "Forward";
+        enumNames[KeyboardMovementAction::Backward]  = "Backward";
+        enumNames[KeyboardMovementAction::Left]      = "Left";
+        enumNames[KeyboardMovementAction::Right]     = "Right";
+        enumNames[KeyboardMovementAction::Sprint]    = "Sprint";
 
-        if (!runOnce)
-        {
-            enumNames[KeyboardMovementAction::Forward]   = "Forward";
-            enumNames[KeyboardMovementAction::Backward]  = "Backward";
-            enumNames[KeyboardMovementAction::Left]      = "Left";
-            enumNames[KeyboardMovementAction::Right]     = "Right";
-            enumNames[KeyboardMovementAction::Sprint]    = "Sprint";
-
-            runOnce = true;
-        }
-
-        auto it = enumNames.find(action);
-        if (it != enumNames.end()) return it->second;
-
-        return "Unknown";
+        runOnce = true;
     }
+
+    auto it = enumNames.find(action);
+    if (it != enumNames.end()) return it->second;
+
+    return "Unknown";
 }
+
+}//namespace Renderboi

@@ -7,6 +7,9 @@
 #include "light.hpp"
 #include "light_type.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Collection of parameters representing a directional light.
 class PointLight : public Light
 {
@@ -81,5 +84,7 @@ public:
     /// @return A raw pointer to the light instance cloned from this one.
     PointLight* clone() const override;
 };
+
+}//namespace Renderboi
 
 #endif//POINT_LIGHT_HPP

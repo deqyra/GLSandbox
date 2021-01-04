@@ -7,6 +7,9 @@
 
 #include "../interfaces/mesh_generator.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Generates vertices for a multi- or single-colored cube.
 class CubeGenerator : public MeshGenerator
 {
@@ -57,5 +60,7 @@ public:
     /// @return A pointer to the mesh containing the generated vertices.
     MeshPtr generateMesh() const override;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATORS__CUBE_GENERATOR_HPP

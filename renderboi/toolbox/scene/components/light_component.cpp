@@ -4,6 +4,9 @@
 
 #include "../scene_object.hpp"
 
+namespace Renderboi
+{
+
 LightComponent::LightComponent(const SceneObjectPtr sceneObject, const LightPtr light) :
     Component(ComponentType::Light, sceneObject),
     _light(light)
@@ -57,3 +60,5 @@ bool Component::multipleInstancesAllowed<LightComponent>()
 {
     return false;
 }
+
+}//namespace Renderboi

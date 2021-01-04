@@ -8,6 +8,9 @@
 #include "tetrahedron_generator.hpp"
 #include "torus_generator.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Used for mapping, at compile-time, a MeshType to the corresponding 
 /// MeshGenerator concrete subclass. Use inner typedef GenType to get the 
 /// actual type.
@@ -49,5 +52,7 @@ struct TypeToGenMapping<MeshType::Torus>
 {
     using GenType = TorusGenerator;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__MESH_GENERATORS__TYPE_TO_GEN_MAPPING_HPP

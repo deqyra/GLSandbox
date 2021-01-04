@@ -7,6 +7,9 @@
 
 #include "enums.hpp"
 
+namespace Renderboi
+{
+
 class GLWindow;
 using GLWindowPtr = std::shared_ptr<GLWindow>;
 
@@ -93,5 +96,7 @@ public:
 
 using InputProcessorPtr = std::shared_ptr<InputProcessor>;
 using InputProcessorWPtr = std::weak_ptr<InputProcessor>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__WINDOW__INPUT_PROCESSOR_HPP

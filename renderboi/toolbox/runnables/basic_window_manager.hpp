@@ -1,11 +1,16 @@
 #ifndef RENDERBOI__TOOLBOX__RUNNABLES__BASIC_INPUT_MANAGER_HPP
 #define RENDERBOI__TOOLBOX__RUNNABLES__BASIC_INPUT_MANAGER_HPP
 
+#include <string>
+
 #include <renderboi/window/input_processor.hpp>
 
 #include "../controls/control_scheme_manager.hpp"
 #include "../interfaces/action_event_receiver.hpp"
 #include "../interfaces/default_control_scheme_provider.hpp"
+
+namespace Renderboi
+{
 
 enum class BasicWindowManagerAction
 {
@@ -14,6 +19,7 @@ enum class BasicWindowManagerAction
     PolygonLine,
     PolygonPoint
 };
+
 
 /// @brief Provides event callbacks associated with basic window management.
 class BasicWindowManager :  public InputProcessor,
@@ -72,9 +78,8 @@ public:
     ControlSchemeManagerPtr<BasicWindowManagerAction> getDefaultControlScheme() const override;
 };
 
-namespace std
-{
-    string to_string(const BasicWindowManagerAction& action);
-}
+std::string to_string(const BasicWindowManagerAction& action);
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__RUNNABLES__BASIC_INPUT_MANAGER_HPP

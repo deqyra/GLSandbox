@@ -24,6 +24,9 @@
 #include "glfw3_adapter.hpp"
 #include "glfw3_window_callbacks.hpp"
 
+namespace Renderboi
+{
+
 int WindowFactory<WindowBackend::GLFW3>::InitializeBackend()
 {
     return glfwInit();
@@ -99,3 +102,5 @@ GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(std::string title, i
     // Return a shared pointer
     return glWindow;
 }
+
+}//namespace Renderboi

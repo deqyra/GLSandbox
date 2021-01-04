@@ -1,5 +1,7 @@
 #include "input_processor.hpp"
 
+namespace Renderboi
+{
 static std::vector<InputProcessor::EventType> listEventTypes();
 
 // Initialize static stuff
@@ -54,3 +56,4 @@ std::vector<InputProcessor::EventType> listEventTypes()
         InputProcessor::EventType::MouseCursor
     };
 }
+}//namespace Renderboi

@@ -6,6 +6,9 @@
 #include "glfw3/glfw3_adapter.hpp"
 #include "input_processor.hpp"
 
+namespace Renderboi
+{
+
 const InputProcessorPtr GLWindow::_DefaultInputProcessor = std::make_shared<InputProcessor>();
 
 GLWindow::GLWindow(std::string title) :
@@ -70,3 +73,5 @@ std::string GLWindow::getTitle() const
 {
     return _title;
 }
+
+}//namespace Renderboi

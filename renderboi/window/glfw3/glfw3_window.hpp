@@ -7,6 +7,9 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
+namespace Renderboi
+{
+
 // To be attached to a GLFWwindow object, providing event callback functionality through a custom InputProcessor
 class GLFW3Window : public GLWindow
 {
@@ -72,5 +75,7 @@ class GLFW3Window : public GLWindow
 };
 
 using GLFW3WindowPtr = std::shared_ptr<GLFW3Window>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__WINDOW__GLFW3__GLFW3_WINDOW_HPP

@@ -5,6 +5,9 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
+namespace Renderboi
+{
+
 /// @brief Callback for a framebuffer resize event. Will get the GLWindow instance
 /// corresponding to the window which received the event, from its user pointer,
 /// and will forward the event to it.
@@ -60,5 +63,7 @@ void globalGlfwMouseCursorCallback(GLFWwindow* window, const double xpos, const 
 /// @param description C-string containing a description of the error which just
 /// occurred.
 void globalGlfwErrorCallback(const int error, const char* description);
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__WINDOW__GLFW_WINDOW_CALLBACKS_HPP

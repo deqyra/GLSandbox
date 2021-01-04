@@ -8,14 +8,17 @@
 
 #include "frame_of_reference.hpp"
 
-using Ref = FrameOfReference;
-
 /* ╔════════════════════════════════════╗
  * ║               README               ║
  * ║ Refer to the explicative paragraph ║
  * ║  in transform.hpp if you haven't.  ║
  * ╚════════════════════════════════════╝
  */
+
+namespace Renderboi
+{
+
+using Ref = FrameOfReference;
 
 Transform::Transform() :
     _position(glm::vec3(0.f)),
@@ -451,3 +454,5 @@ glm::vec3 Transform::forward() const
 
     return _forward;
 }
+
+}//namespace Renderboi

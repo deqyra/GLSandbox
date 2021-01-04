@@ -4,10 +4,13 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
+namespace Renderboi
+{
 namespace Window
 {
 namespace GLFW3Adapter
 {
+
     namespace EnumMaps
     {
         const std::unordered_map<unsigned int, Window::OpenGLProfile>& GlProfileEnums()
@@ -800,5 +803,7 @@ namespace GLFW3Adapter
     {
         return ValueMaps::GlProfileValues().at(literal);
     }
+
 }// namespace GLFW3Adapter
 }// namespace Window
+}//namespace Renderboi

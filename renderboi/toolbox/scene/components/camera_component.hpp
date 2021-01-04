@@ -8,6 +8,9 @@
 #include "../component.hpp"
 #include "../component_type.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Component allowing to attach a camera to a scene object.
 class CameraComponent : public Component
 {
@@ -92,5 +95,7 @@ std::string Component::componentTypeString<CameraComponent>();
 
 template<>
 bool Component::multipleInstancesAllowed<CameraComponent>();
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__COMPONENTS__CAMERA_COMPONENT_HPP

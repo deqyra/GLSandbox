@@ -9,6 +9,9 @@
 
 #include "../common_macros.hpp"
 
+namespace Renderboi
+{
+
 PlaneGenerator::PlaneGenerator() :
     parameters{
         1.f,                // tileSizeX
@@ -116,3 +119,5 @@ MeshPtr PlaneGenerator::generateMesh() const
 
     return std::make_shared<Mesh>(GL_TRIANGLE_STRIP, vertices, indices, primitiveSizes, primitiveOffsets);
 }
+
+}//namespace Renderboi

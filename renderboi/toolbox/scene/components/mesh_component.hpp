@@ -10,6 +10,9 @@
 #include "../component.hpp"
 #include "../component_type.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Component allowing to attach a mesh to a scene object.
 class MeshComponent : public Component
 {
@@ -124,5 +127,7 @@ std::string Component::componentTypeString<MeshComponent>();
 
 template<>
 bool Component::multipleInstancesAllowed<MeshComponent>();
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__COMPONENTS__MESH_COMPONENT_HPP

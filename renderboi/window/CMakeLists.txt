@@ -34,6 +34,7 @@ add_library(${RB_WINDOW_LIB_NAME} ${STATIC_OR_SHARED}
 )
 add_dependencies(${RB_WINDOW_LIB_NAME}
     "${GLFW3_LIB_NAME}_source"
+    "${CPPTOOLS_LIB_NAME}_source"
     "export_${GLAD_LIB_NAME}_lib"
     "export_${GLAD_LIB_NAME}_headers"
     "export_${RB_UTILITIES_LIB_NAME}_lib"

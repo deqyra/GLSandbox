@@ -6,6 +6,9 @@
 #include "../component.hpp"
 #include "../component_type.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Component allowinf to attach any light to a scene object.
 class LightComponent : public Component
 {
@@ -66,5 +69,7 @@ std::string Component::componentTypeString<LightComponent>();
 
 template<>
 bool Component::multipleInstancesAllowed<LightComponent>();
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__COMPONENTS__LIGHT_COMPONENT

@@ -1,14 +1,19 @@
 #include "shader_program.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
-
 #include <algorithm>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
 
+#include <glm/gtc/type_ptr.hpp>
+
+#include <renderboi/utilities/to_string.hpp>
+
 #include "shader_feature.hpp"
+
+namespace Renderboi
+{
 
 std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>>
 ShaderProgram::_uniformLocations = std::unordered_map<unsigned int, std::unordered_map<std::string, unsigned int>>();
@@ -188,7 +193,7 @@ void ShaderProgram::setMaterial(const std::string& name, const Material& value)
     // Diffuse maps are bound in texture units 0 through 7
     for (unsigned int i = 0; i < count; i++)
     {
-        std::string samplerName = name + ".diffuseMaps[" + std::to_string(i) + "]";
+        std::string samplerName = name + ".diffuseMaps[" + to_string(i) + "]";
         setInt(samplerName, (int)i);
     }
     setUint(name + ".diffuseMapCount", count);
@@ -197,7 +202,7 @@ void ShaderProgram::setMaterial(const std::string& name, const Material& value)
     // Specular maps are bound in texture units 8 through 15
     for (unsigned int i = 0; i < count; i++)
     {
-        std::string samplerName = name + ".specularMaps[" + std::to_string(i) + "]";
+        std::string samplerName = name + ".specularMaps[" + to_string(i) + "]";
         setInt(samplerName, Material::SpecularMapMaxCount + (int)i);
     }
     setUint(name + ".specularMapCount", count);
@@ -218,3 +223,5 @@ bool ShaderProgram::supports(const ShaderFeature feature) const
 
     return it != _supportedFeatures.end();
 }
+
+}//namespace Renderboi

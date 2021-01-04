@@ -21,6 +21,9 @@
 #include "components/light_component.hpp"
 #include "components/camera_component.hpp"
 
+namespace Renderboi
+{
+
 SceneRenderer::SceneRenderer(const unsigned int framerateLimit) :
     _matrixUbo(),
     _lightUbo(),
@@ -200,3 +203,5 @@ void SceneRenderer::drawMesh(const SceneObjectPtr meshObject, const glm::mat4& v
 
     meshComponent->getMesh()->draw();
 }
+
+}//namespace Renderboi

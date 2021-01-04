@@ -3,6 +3,9 @@
 #include <renderboi/core/materials.hpp>
 #include <renderboi/core/shader/shader_builder.hpp>
 
+namespace Renderboi
+{
+
 MeshComponent::MeshComponent(const SceneObjectPtr sceneObject, const MeshPtr mesh) :
     MeshComponent(sceneObject, mesh, Materials::Default, ShaderBuilder::MinimalShaderProgram())
 {
@@ -103,3 +106,5 @@ bool Component::multipleInstancesAllowed<MeshComponent>()
 {
     return false;
 }
+
+}//namespace Renderboi

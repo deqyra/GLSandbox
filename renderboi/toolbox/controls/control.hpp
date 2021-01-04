@@ -7,6 +7,9 @@
 
 #include <cpptools/hash_combine.hpp>
 
+namespace Renderboi
+{
+
 /// @brief Litterals describing the flavor of a control.
 enum class ControlKind : unsigned int
 {
@@ -52,16 +55,21 @@ class ControlHash
         std::size_t operator()(Control const& c) const;
 };
 
+std::string to_string(const Control& control);
+
+}//namespace Renderboi
+
 namespace std
 {
-    string to_string(const Control& control);
 
-    template<>
-    class less<Control>
-    {
-        public:
-            bool operator()(const Control& left, const Control& right) const;
-    };
-}
+template<>
+class less<Renderboi::Control>
+{
+    public:
+        bool operator()(const Renderboi::Control& left, const Renderboi::Control& right) const;
+};
+
+}//namespace std
+
 
 #endif//RENDERBOI__TOOLBOX__CONTROLS__CONTROL_HPP

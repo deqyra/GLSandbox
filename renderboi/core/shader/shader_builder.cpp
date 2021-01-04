@@ -14,10 +14,16 @@
 #include "shader_feature.hpp"
 #include "shader_stage.hpp"
 
-#include <cpptools/string_tools.hpp>
 #include <glad/gl.h>
 
+#include <renderboi/utilities/to_string.hpp>
+
+#include <cpptools/string_tools.hpp>
+
 #define INFO_BUFFER_SIZE 2048
+
+namespace Renderboi
+{
 
 std::unordered_map<std::string, bool> ShaderBuilder::_namedStringLoadStatus = std::unordered_map<std::string, bool>();
 
@@ -39,7 +45,7 @@ ShaderProgram ShaderBuilder::BuildShaderProgramFromConfig(const ShaderConfig& co
         if (jt == FeatureStages().end())
         {
             const std::string s = "ShaderBuilder: cannot build shader program from config, feature "
-                "\"" + std::to_string(*it) + "\" (" + std::to_string((unsigned int) *it) + ") "
+                "\"" + to_string(*it) + "\" (" + to_string((unsigned int) *it) + ") "
                 "from unknown stage was requested.";
 
             throw std::runtime_error(s.c_str());
@@ -79,7 +85,7 @@ ShaderProgram ShaderBuilder::LinkShaders(const std::vector<Shader>& shaders)
         else
         {
             const std::string s = "ShaderBuilder: cannot link shaders, several objects were provided for stage \""
-                + std::to_string(stage) + "\".";
+                + to_string(stage) + "\".";
 
             throw std::runtime_error(s.c_str());
         }        
@@ -116,7 +122,7 @@ Shader ShaderBuilder::BuildShaderStageFromConfig(const ShaderStage stage, const 
     auto it = _StageTemplatePaths().find(stage);
     if (it == _StageTemplatePaths().end())
     {
-        const std::string s = "ShaderBuilder: cannot find template path for stage \"" + std::to_string(stage) + "\".";
+        const std::string s = "ShaderBuilder: cannot find template path for stage \"" + to_string(stage) + "\".";
         throw std::runtime_error(s.c_str());
     }
 
@@ -188,8 +194,8 @@ Shader ShaderBuilder::BuildShaderStageFromText(
     auto it = _ShaderStageMacros().find(stage);
     if (it == _ShaderStageMacros().end())
     {
-        const std::string s = "ShaderBuilder: Unknown requested shader stage \"" + std::to_string(stage) + "\" "
-            "(" + std::to_string((unsigned int) stage) + ").";
+        const std::string s = "ShaderBuilder: Unknown requested shader stage \"" + to_string(stage) + "\" "
+            "(" + to_string((unsigned int) stage) + ").";
 
         throw std::runtime_error(s.c_str());
     }
@@ -281,7 +287,7 @@ std::unordered_set<std::string> ShaderBuilder::_FindIncludeDirectivesInSource(st
     static const std::string IncludeStringStart = "#include";
     std::unordered_set<std::string> includeDirectives;
 
-    StringTools::stripComments(text);
+    CppTools::String::stripComments(text);
 
     size_t offset = text.find(IncludeStringStart, 0);
     while (offset != std::string::npos)
@@ -290,7 +296,7 @@ std::unordered_set<std::string> ShaderBuilder::_FindIncludeDirectivesInSource(st
         if (lastEol == std::string::npos) lastEol = 0;
 
         const std::string before = text.substr(lastEol, offset - lastEol);
-        if (!StringTools::stringIsWhitespace(before)) continue;
+        if (!CppTools::String::stringIsWhitespace(before)) continue;
 
         offset += IncludeStringStart.size();
         const size_t eol = text.find('\n', offset);
@@ -302,7 +308,7 @@ std::unordered_set<std::string> ShaderBuilder::_FindIncludeDirectivesInSource(st
             std::string::npos;
 
         std::string includeArgument = text.substr(offset, len);
-        StringTools::trim(includeArgument);
+        CppTools::String::trim(includeArgument);
 
         const char firstDelimiter = includeArgument[0];
         char secondDelimiter = 0;
@@ -346,7 +352,7 @@ std::unordered_set<std::string> ShaderBuilder::_FindIncludeDirectivesInSource(st
                 throw std::runtime_error(s.c_str());
             }
 
-            const std::string all = StringTools::readFileIntoString(jt->second);
+            const std::string all = CppTools::String::readFileIntoString(jt->second);
             std::unordered_set<std::string> newIncludeDirectives = _FindIncludeDirectivesInSource(all, true);
 
             // Add them all to the current include directives
@@ -359,7 +365,7 @@ std::unordered_set<std::string> ShaderBuilder::_FindIncludeDirectivesInSource(st
 
 void ShaderBuilder::_MakeNamedString(const std::string& name, const std::string& sourceFilename)
 {
-    std::string all = StringTools::readFileIntoString(sourceFilename);
+    std::string all = CppTools::String::readFileIntoString(sourceFilename);
 	const char* source = all.c_str();
 
     glNamedStringARB(GL_SHADER_INCLUDE_ARB, -1, name.c_str(), -1, source);
@@ -414,7 +420,7 @@ std::string ShaderBuilder::_DumpShaderSource(ShaderStage stage, const std::strin
     ss << std::put_time(&tm, "%d-%m-%Y-%H-%M-%S");
 
     const std::unordered_map<ShaderStage, std::string>& fileExtensions = _StageFileExtensions();
-    const std::string filename = DumpFolder + std::to_string(stage) + "_shader_dump_" + ss.str() + '.' + fileExtensions.at(stage);
+    const std::string filename = DumpFolder + to_string(stage) + "_shader_dump_" + ss.str() + '.' + fileExtensions.at(stage);
 
     std::ofstream file;
     file.open(filename, std::ios::out);
@@ -426,7 +432,7 @@ std::string ShaderBuilder::_DumpShaderSource(ShaderStage stage, const std::strin
 
 const std::string& ShaderBuilder::_GenerateVersionDirective()
 {
-    static const std::string s = "#version " + std::to_string(ShadingLanguageVersion) + " " + ShadingLanguageProfile + "\n";
+    static const std::string s = "#version " + to_string(ShadingLanguageVersion) + " " + ShadingLanguageProfile + "\n";
     return s;
 }
 
@@ -620,8 +626,8 @@ ShaderBuilder::_GenerateDefineDirectives(const std::vector<ShaderFeature>& featu
         if (it == defineMacros.cend())
         {
             std::string s = "ShaderBuilder: cannot generate #define directive "
-                "for feature \"" + std::to_string(feature) + "\" "
-                "(" + std::to_string((unsigned int)(feature)) + ").";
+                "for feature \"" + to_string(feature) + "\" "
+                "(" + to_string((unsigned int)(feature)) + ").";
 
             throw std::runtime_error(s.c_str());
         }
@@ -635,3 +641,5 @@ ShaderBuilder::_GenerateDefineDirectives(const std::vector<ShaderFeature>& featu
         addDirective
     );
 }
+
+}//namespace Renderboi

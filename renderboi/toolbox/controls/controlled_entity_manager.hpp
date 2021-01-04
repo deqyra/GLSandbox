@@ -8,6 +8,9 @@
 #include "control_event_translator.hpp"
 #include "../interfaces/default_control_scheme_provider.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Eases out management of entities which provide a default control 
 /// scheme.
 ///
@@ -77,5 +80,7 @@ public:
         return _translator;
     }
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__CONTROLLED_ENTITY_MANAGER_HPP

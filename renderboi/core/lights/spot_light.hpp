@@ -7,6 +7,9 @@
 #include "light.hpp"
 #include "light_type.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Collection of parameters representing a spot light.
 class SpotLight : public Light
 {
@@ -183,5 +186,7 @@ public:
     /// @return A raw pointer to the light instance cloned from this one.
     SpotLight* clone() const override;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__LIGHTS__SPOT_LIGHT_HPP

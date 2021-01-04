@@ -10,6 +10,9 @@
 #include "material.hpp"
 #include "vertex.hpp"
 
+namespace Renderboi
+{
+
 class Mesh;
 using MeshPtr = std::shared_ptr<Mesh>;
 using MeshWPtr = std::weak_ptr<Mesh>;
@@ -92,5 +95,7 @@ public:
     /// @brief ID of the Mesh instance.
     const unsigned int id;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__MESH_HPP

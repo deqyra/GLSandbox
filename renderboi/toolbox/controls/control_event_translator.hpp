@@ -15,6 +15,9 @@
 #include "../interfaces/control_binding_provider.hpp"
 #include "../interfaces/action_event_receiver.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Class to be plugged in directly into the window. Will receive and
 /// filter control events, translate them into actions if appropriate, and
 /// forward those to their listener.
@@ -176,5 +179,7 @@ void ControlEventTranslator<T>::_ImportControlBindingsIntoMap(
 
 template<typename T>
 using ControlEventTranslatorPtr = std::shared_ptr<ControlEventTranslator<T>>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__CONTROLS__CONTROL_EVENT_TRANSLATOR_HPP

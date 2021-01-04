@@ -8,6 +8,9 @@
 #include "gl_window.hpp"
 #include "window_backend.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Abstraction of an OS-instantiated window.
 ///
 /// @tparam W Literal describing the window backend to use to create the window.
@@ -57,5 +60,7 @@ class WindowFactory
             bool debug
         ) = delete;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__WINDOW__WINDOW_FACTORY_HPP

@@ -5,8 +5,11 @@
 
 #include "../enums.hpp"
 
+namespace Renderboi
+{
 namespace Window
 {
+
 /// @brief Contains utilities to translate GLFW constants to RenderBoi enums 
 /// and the other way around.
 namespace GLFW3Adapter
@@ -121,6 +124,8 @@ namespace GLFW3Adapter
     template<>
     int getValue(OpenGLProfile literal);
 }
+
 }//namespace Window
+}//namespace Renderboi
 
 #endif//RENDERBOI__WINDOW__GLFW3_ADAPTER_HPP

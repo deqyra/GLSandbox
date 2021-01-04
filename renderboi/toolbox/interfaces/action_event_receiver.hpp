@@ -5,6 +5,9 @@
 
 #include <renderboi/window/gl_window.hpp>
 
+namespace Renderboi
+{
+
 /// @brief Interface for an object able to receive and process events related to
 /// an action of a certain type.
 ///
@@ -30,5 +33,7 @@ public:
 
 template<typename T>
 using ActionEventReceiverPtr = std::shared_ptr<ActionEventReceiver<T>>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__INTERFACES__ACTION_EVENT_RECEIVER_HPP

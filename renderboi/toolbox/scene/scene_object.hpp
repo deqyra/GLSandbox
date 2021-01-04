@@ -12,9 +12,14 @@
 
 #include <renderboi/core/transform.hpp>
 
+#include <renderboi/utilities/to_string.hpp>
+
 #include "object_transform.hpp"
 #include "component.hpp"
 #include "component_type.hpp"
+
+namespace Renderboi
+{
 
 class Scene;
 using ScenePtr = std::shared_ptr<Scene>;
@@ -140,7 +145,7 @@ std::shared_ptr<T> SceneObject::addComponent(ArgTypes&& ... args)
     // unless specifically allowed by component type
     if (!Component::multipleInstancesAllowed<T>() && hasComponent<T>())
     {
-        const std::string s = "SceneObject: object with ID " + std::to_string(id) + " already has a component "
+        const std::string s = "SceneObject: object with ID " + to_string(id) + " already has a component "
             "of type " + Component::componentTypeString<T>() + " and cannot have another one.";
 
         throw std::runtime_error(s.c_str());
@@ -202,5 +207,7 @@ std::vector<std::shared_ptr<T>> SceneObject::getComponents() const
 
     return components;
 }
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__SCENE_OBJECT_HPP

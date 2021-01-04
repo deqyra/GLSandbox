@@ -5,6 +5,9 @@
 
 #include "transform.hpp"
 
+namespace Renderboi
+{
+
 Camera::Camera(const Camera& other) :
     _forward(other._forward),
     _left(other._left),
@@ -188,3 +191,5 @@ glm::vec3 Camera::up() const
 {
     return _up;
 }
+
+}//namespace Renderboi

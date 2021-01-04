@@ -5,6 +5,9 @@
 
 #include <renderboi/window/input_processor.hpp>
 
+namespace Renderboi
+{
+
 /// @brief Provides event callbacks to manage the aspect ratio of a camera as 
 /// the framebuffer size changes. This script must be attached to an object 
 /// which has a camera component, otherwise an std::runtime_error will be thrown
@@ -36,5 +39,7 @@ public:
     /// @param height New height (in pixels) of the framebuffer.
     void processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height) override;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__RUNNABLES__CAMERA_ASPECT_RATIO_MANAGER_HPP

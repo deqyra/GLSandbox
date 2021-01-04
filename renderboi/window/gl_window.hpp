@@ -8,6 +8,9 @@
 #include "enums.hpp"
 #include "input_processor.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Abstract window, supporting event callbacks through a custom 
 /// InputProcessor.
 class GLWindow : public std::enable_shared_from_this<GLWindow>
@@ -135,5 +138,7 @@ protected:
 };
 
 using GLWindowPtr = std::shared_ptr<GLWindow>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__WINDOW__GL_WINDOW_HPP

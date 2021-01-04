@@ -2,8 +2,13 @@
 
 #include <string>
 
+#include <renderboi/utilities/to_string.hpp>
+
 #include <cpptools/exceptions/index_out_of_bounds_error.hpp>
 #include <cpptools/exceptions/unmatched_array_size_error.hpp>
+
+namespace Renderboi
+{
 
 Material::Material(const Material& other) :
     ambient(other.ambient),
@@ -95,7 +100,7 @@ unsigned int Material::setDiffuseMaps(const std::vector<Texture2D> diffuseMaps)
     unsigned int size = (unsigned int) diffuseMaps.size();
     if (size > DiffuseMapMaxCount)
     {
-        std::string s = "Material: cannot set diffuse maps to array of size " + std::to_string(_diffuseMaps.size()) + ".";
+        std::string s = "Material: cannot set diffuse maps to array of size " + to_string(size) + ".";
         throw UnmatchedArraySizeError(s);
     }
 
@@ -106,9 +111,9 @@ unsigned int Material::setDiffuseMaps(const std::vector<Texture2D> diffuseMaps)
 unsigned Material::setSpecularMaps(const std::vector<Texture2D> specularMaps)
 {
     unsigned int size = (unsigned int) specularMaps.size();
-    if (specularMaps.size() >= SpecularMapMaxCount)
+    if (size >= SpecularMapMaxCount)
     {
-        std::string s = "Material: cannot set specular maps to array of size " + std::to_string(_specularMaps.size()) + ".";
+        std::string s = "Material: cannot set specular maps to array of size " + to_string(size) + ".";
         throw UnmatchedArraySizeError(s);
     }
 
@@ -138,3 +143,5 @@ void Material::bindTextures() const
         _diffuseMaps[i].bind(DiffuseMapMaxCount + i);
     }
 }
+
+}//namespace Renderboi

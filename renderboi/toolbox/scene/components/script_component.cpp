@@ -2,6 +2,9 @@
 
 #include "../scene.hpp"
 
+namespace Renderboi
+{
+
 ScriptComponent::ScriptComponent(const SceneObjectPtr sceneObject, const ScriptPtr script) :
     Component(ComponentType::Script, sceneObject),
     _script(script)
@@ -92,3 +95,5 @@ bool Component::multipleInstancesAllowed<ScriptComponent>()
 {
     return true;
 }
+
+}//namespace Renderboi

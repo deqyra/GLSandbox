@@ -9,6 +9,9 @@
 
 #include "../common_macros.hpp"
 
+namespace Renderboi
+{
+
 CubeGenerator::CubeGenerator() :
     CubeGenerator(DefaultSize)
 {
@@ -99,3 +102,5 @@ MeshPtr CubeGenerator::generateMesh() const
 
     return std::make_shared<Mesh>(GL_TRIANGLE_STRIP, vertices, indices, primitiveSizes, primitiveOffsets);
 }
+
+}//namespace Renderboi

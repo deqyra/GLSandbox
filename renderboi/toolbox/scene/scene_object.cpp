@@ -4,6 +4,9 @@
 
 #include "scene.hpp"
 
+namespace Renderboi
+{
+
 unsigned int SceneObject::_count = 0;
 
 SceneObject::SceneObject(std::string name) :
@@ -69,3 +72,5 @@ std::vector<ComponentPtr> SceneObject::getAllComponents() const
 
     return components;
 }
+
+}//namespace Renderboi

@@ -6,6 +6,9 @@
 
 #include <renderboi/window/input_processor.hpp>
 
+namespace Renderboi
+{
+
 /// @brief Forwards all input it receives to multiple subscribers.
 class InputSplitter : public InputProcessor
 {
@@ -96,5 +99,7 @@ public:
 };
 
 using InputSplitterPtr = std::shared_ptr<InputSplitter>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__INPUT_SPLITTER_HPP

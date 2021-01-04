@@ -4,6 +4,9 @@
 #include "../scene_object.hpp"
 #include "../object_transform.hpp"
 
+namespace Renderboi
+{
+
 CameraComponent::CameraComponent(const SceneObjectPtr sceneObject, const CameraPtr camera) :
     Component(ComponentType::Camera, sceneObject)
 {
@@ -83,3 +86,5 @@ bool Component::multipleInstancesAllowed<CameraComponent>()
 {
     return false;
 }
+
+}//namespace Renderboi

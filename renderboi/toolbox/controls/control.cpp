@@ -4,6 +4,9 @@
 
 #include <renderboi/window/enums.hpp>
 
+namespace Renderboi
+{
+
 Control::Control(const Window::Input::Key key) :
     kind(ControlKind::Key),
     key(key)
@@ -20,12 +23,12 @@ Control::Control(const Window::Input::MouseButton mouseButton) :
 
 bool Control::operator==(const Control& other)
 {
-    return ::operator==(*this, other);
+    return Renderboi::operator==(*this, other);
 }
 
 bool Control::operator<(const Control& other)
 {
-    return ::operator<(*this, other);
+    return Renderboi::operator<(*this, other);
 }
 
 bool operator==(const Control& left, const Control& right)
@@ -52,34 +55,38 @@ std::size_t ControlHash::operator()(Control const& c) const
     std::size_t res = 0;
 
     const unsigned int* data = reinterpret_cast<const unsigned int*>(&c);
-    hash_combine(res, data[0]);
-    hash_combine(res, data[1]);
+    CppTools::hash_combine(res, data[0]);
+    CppTools::hash_combine(res, data[1]);
 
     return res;
 }
 
+std::string to_string(const Control& control)
+{
+    switch(control.kind)
+    {
+        case ControlKind::Key:
+            return to_string(control.key);
+        case ControlKind::MouseButton:
+            return to_string(control.mouseButton);
+        case ControlKind::GamepadButton:
+            return to_string(control.gamepadButton);
+        case ControlKind::GamepadAxis:
+            return to_string(control.gamepadAxis);
+        case ControlKind::Joystick:
+            return to_string(control.joystick);
+    }
+    return "Unknown control";
+}
+
+}//namespace Renderboi
+
 namespace std
 {
-    string to_string(const Control& control)
-    {
-        switch(control.kind)
-        {
-            case ControlKind::Key:
-                return to_string(control.key);
-            case ControlKind::MouseButton:
-                return to_string(control.mouseButton);
-            case ControlKind::GamepadButton:
-                return to_string(control.gamepadButton);
-            case ControlKind::GamepadAxis:
-                return to_string(control.gamepadAxis);
-            case ControlKind::Joystick:
-                return to_string(control.joystick);
-        }
-        return "Unknown control";
-    }
 
-    bool less<Control>::operator()(const Control& left, const Control& right) const
-    {
-        return left < right;
-    }
+bool less<Renderboi::Control>::operator()(const Renderboi::Control& left, const Renderboi::Control& right) const
+{
+    return left < right;
+}
+
 }

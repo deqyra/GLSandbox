@@ -1,6 +1,9 @@
 #include "spot_light.hpp"
 #include "tools.hpp"
 
+namespace Renderboi
+{
+
 SpotLight::SpotLight(const glm::vec3 direction) :
     SpotLight(direction, DefaultRange)
 {
@@ -108,3 +111,5 @@ void SpotLight::setRange(const float range)
 {
     attenuationFromRange(range, constant, linear, quadratic);
 }
+
+}//namespace Renderboi

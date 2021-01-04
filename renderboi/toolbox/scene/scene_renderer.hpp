@@ -17,6 +17,9 @@
 #include "scene_object.hpp"
 #include "component.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Manages the render process of a scene.
 class SceneRenderer
 {
@@ -76,5 +79,7 @@ public:
     /// should seek to render.
     void setFramerateLimit(const unsigned int framerateLimit);
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__SCENE_RENDERER_HPP

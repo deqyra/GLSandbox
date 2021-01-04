@@ -5,9 +5,9 @@
    //         \\
    =============
    
-   DO NOT edit env_info.hpp, or your changes
+   DO NOT edit window/env_info.hpp, or your changes
    will be OVERWRITTEN at the next run of CMake.
-   Instead, edit config/env_info.config.hpp.
+   Instead, edit window/config/env_info.config.hpp.
 */
 
 #ifndef RENDERBOI__WINDOW__ENV_INFO_HPP

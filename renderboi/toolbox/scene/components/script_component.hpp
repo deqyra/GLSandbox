@@ -7,6 +7,9 @@
 #include "../component_type.hpp"
 #include "../../script.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Component allowing a scene object to self-update through time.
 class ScriptComponent : public Component
 {
@@ -79,5 +82,7 @@ std::string Component::componentTypeString<ScriptComponent>();
 
 template<>
 bool Component::multipleInstancesAllowed<ScriptComponent>();
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__COMPONENTS__SCRIPT_COMPONENT_HPP

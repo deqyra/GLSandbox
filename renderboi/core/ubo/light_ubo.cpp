@@ -3,6 +3,9 @@
 #include <glad/gl.h>
 #include <glm/gtc/type_ptr.hpp>
 
+namespace Renderboi
+{
+
 LightUBO::LightUBO()
 {
     // Generate the buffer and allocate space
@@ -82,3 +85,5 @@ void LightUBO::setDirectionalCount(const unsigned int count)
     glBindBuffer(GL_UNIFORM_BUFFER, _location);
     glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(unsigned int), &count);
 }
+
+}//namespace Renderboi

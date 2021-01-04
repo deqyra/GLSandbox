@@ -5,6 +5,9 @@
 
 #include <renderboi/window/input_processor.hpp>
 
+namespace Renderboi
+{
+
 /// @brief Provides event callbacks to manage a camera as in a FPS game. This 
 /// script must be attached to an object which has a camera component, otherwise
 /// an std::runtime_error will be thrown upon attaching.
@@ -51,5 +54,7 @@ public:
     /// @param ypos Y coordinate of the new position of the mouse.
     void processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos) override;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__RUNNABLES__MOUSE_CAMERA_SCRIPT_HPP

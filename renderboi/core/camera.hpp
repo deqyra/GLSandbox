@@ -8,6 +8,9 @@
 #include "interfaces/basis_provider.hpp"
 #include "transform.hpp"
 
+namespace Renderboi
+{
+
 /// @brief A camera managing its own orientation and providing view and projection matrices.
 class Camera : public BasisProvider
 {
@@ -209,5 +212,7 @@ public:
 
 using CameraPtr = std::shared_ptr<Camera>;
 using CameraWPtr = std::weak_ptr<Camera>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__CAMERA_HPP

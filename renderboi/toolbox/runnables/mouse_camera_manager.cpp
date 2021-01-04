@@ -1,6 +1,10 @@
 #include "mouse_camera_manager.hpp"
 
 #include <renderboi/core/frame_of_reference.hpp>
+
+namespace Renderboi
+{
+
 using Ref = FrameOfReference;
 
 MouseCameraManager::MouseCameraManager(const CameraPtr camera, const float sensitivity) :
@@ -35,3 +39,5 @@ void MouseCameraManager::processMouseCursor(const GLWindowPtr window, const doub
     _lastMouseX = (float)xpos;
     _lastMouseY = (float)ypos;
 }
+
+}//namespace Renderboi

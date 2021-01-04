@@ -9,6 +9,9 @@
 #include "materials.hpp"
 #include "vertex.hpp"
 
+namespace Renderboi
+{
+
 unsigned int Mesh::_count = 0;
 std::unordered_map<unsigned int, unsigned int> Mesh::_arrayRefCount = std::unordered_map<unsigned int, unsigned int>();
 std::unordered_map<unsigned int, unsigned int> Mesh::_bufferRefCount = std::unordered_map<unsigned int, unsigned int>();
@@ -174,3 +177,5 @@ void Mesh::draw()
         (GLsizei) _primitiveSizes.size()
     );
 }
+
+}//namespace Renderboi

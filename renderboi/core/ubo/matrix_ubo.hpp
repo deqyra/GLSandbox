@@ -15,6 +15,9 @@
  * };						// Size: 240
  **/
 
+namespace Renderboi
+{
+
 /// @brief Manager for a UBO resource on the GPU, meants for vertex 
 /// transformation matrices.
 class MatrixUBO
@@ -58,5 +61,7 @@ public:
     /// those will be ignored.
     void setNormal(const glm::mat4& normal);
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__UBO__MATRIX_UBO_HPP

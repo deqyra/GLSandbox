@@ -11,6 +11,9 @@
 
 #include "../common_macros.hpp"
 
+namespace Renderboi
+{
+
 constexpr double Pi = glm::pi<double>();
 
 TorusGenerator::TorusGenerator() :
@@ -120,3 +123,5 @@ MeshPtr TorusGenerator::generateMesh() const
 
     return std::make_shared<Mesh>(GL_TRIANGLE_STRIP, vertices, indices);
 }
+
+}//namespace Renderboi

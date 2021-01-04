@@ -9,6 +9,9 @@
 
 #include "../common_macros.hpp"
 
+namespace Renderboi
+{
+
 TetrahedronGenerator::TetrahedronGenerator() :
     TetrahedronGenerator(DefaultSize)
 {
@@ -78,3 +81,5 @@ MeshPtr TetrahedronGenerator::generateMesh() const
 
     return std::make_shared<Mesh>(GL_TRIANGLES, vertices, indices);
 }
+
+}//namespace Renderboi

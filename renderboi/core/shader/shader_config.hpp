@@ -6,6 +6,9 @@
 
 #include "shader_feature.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Holds the requested configuration for a shader prior to building it.
 class ShaderConfig
 {
@@ -100,5 +103,7 @@ public:
     /// @return A map describing incompatibilities between shader features.
     static const std::unordered_map<ShaderFeature, std::vector<ShaderFeature>>& IncompatibleFeatures();
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__SHADER__SHADER_CONFIG_HPP

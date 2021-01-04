@@ -3,6 +3,9 @@
 
 #include <memory>
 
+namespace Renderboi
+{
+
 template<typename T>
 class ControlBindingProvider
 {
@@ -54,5 +57,7 @@ public:
 
 template<typename T>
 using ControlBindingProviderPtr = std::shared_ptr<ControlBindingProvider<T>>;
+
+}//namespace Renderboi
 
 #endif//CONTROL_BINDING_PROVIDER_HPP

@@ -5,6 +5,9 @@
 
 #include "glfw3_adapter.hpp"
 
+namespace Renderboi
+{
+
 GLFW3Window::GLFW3Window(GLFWwindow* window, std::string title) :
     GLWindow(title),
     _w(window)
@@ -59,3 +62,5 @@ float GLFW3Window::getAspectRatio() const
 {
     return (float)_width / (float)_height;
 }
+
+}//namespace Renderboi

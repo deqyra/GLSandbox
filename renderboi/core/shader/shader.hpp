@@ -7,6 +7,9 @@
 #include "shader_feature.hpp"
 #include "shader_stage.hpp"
 
+namespace Renderboi
+{
+
 class ShaderBuilder;
 
 /// @brief Handler for a shader resource on the GPU.
@@ -69,5 +72,7 @@ class Shader
         /// @return Whether or not the feature is supported.
         bool supports(const ShaderFeature feature) const;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__SHADER__SHADER_HPP

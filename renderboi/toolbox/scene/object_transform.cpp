@@ -12,8 +12,6 @@
 #include "scene.hpp"
 #include "scene_object.hpp"
 
-using Ref = FrameOfReference;
-
 /* ╔══════════════════════════════════════════╗
  * ║                  README                  ║
  * ║ First refer to the explicative paragraph ║
@@ -54,6 +52,11 @@ using Ref = FrameOfReference;
  * ▫ Same when arguments are provided relative to the transform's own frame of 
  * reference.
  */
+
+namespace Renderboi
+{
+
+using Ref = FrameOfReference;
 
 ObjectTransform::ObjectTransform(const Transform transform) :
     Transform(transform),
@@ -510,3 +513,5 @@ void ObjectTransform::notifyChange() const
 {
     _transformNotifier.notify(_objectId);
 }
+
+}//namespace Renderboi

@@ -6,6 +6,9 @@
 
 #include "texture_2d.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Material with ambient, diffuse and specular components, as well as 
 /// diffuse and specular maps.
 class Material
@@ -136,5 +139,7 @@ public:
     /// channel on the GPU.
     void bindTextures() const;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__MATERIAL_HPP

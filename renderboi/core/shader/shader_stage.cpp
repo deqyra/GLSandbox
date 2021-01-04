@@ -5,24 +5,26 @@
 
 #include <glad/gl.h>
 
-namespace std
+namespace Renderboi
 {
-    string to_string(const ShaderStage v)
+
+std::string to_string(const ShaderStage v)
+{
+    static bool runOnce = false;
+    static std::unordered_map<ShaderStage, std::string> _stageNames;
+
+    if (!runOnce)
     {
-        static bool runOnce = false;
-        static unordered_map<ShaderStage, string> _stageNames;
+        _stageNames[ShaderStage::Vertex]    = "Vertex";
+        _stageNames[ShaderStage::Geometry]  = "Geometry";
+        _stageNames[ShaderStage::Fragment]  = "Fragment";
 
-        if (!runOnce)
-        {
-            _stageNames[ShaderStage::Vertex]    = "Vertex";
-            _stageNames[ShaderStage::Geometry]  = "Geometry";
-            _stageNames[ShaderStage::Fragment]  = "Fragment";
-
-            runOnce = true;
-        }
-
-        auto it = _stageNames.find(v);
-        return (it != _stageNames.end()) ?
-            it->second : "Unknown shader stage";
+        runOnce = true;
     }
+
+    auto it = _stageNames.find(v);
+    return (it != _stageNames.end()) ?
+        it->second : "Unknown shader stage";
 }
+
+}//namespace Renderboi

@@ -9,11 +9,16 @@
 
 #include <glm/glm.hpp>
 
+#include <renderboi/utilities/to_string.hpp>
+
 #include <cpptools/tree.hpp>
 
 #include "../factory.hpp"
 #include "../script.hpp"
 #include "scene_object.hpp"
+
+namespace Renderboi
+{
 
 // As this->shared_from_this cannot be called until the Scene is fully 
 // constructed, the object graph is initialized with a null shared pointer, 
@@ -310,7 +315,7 @@ void Scene::_objectTransformModified(const unsigned int id)
     auto it = _objectMetadata.find(id);
     if (it == _objectMetadata.end())
     {
-        std::string s = "Scene: the object transform callback was called with non-existing ID " + std::to_string(id) + "!";
+        std::string s = "Scene: the object transform callback was called with non-existing ID " + to_string(id) + "!";
         throw std::runtime_error(s.c_str());
     }
 
@@ -344,7 +349,7 @@ void Scene::_verifyNoParentSceneOrThrow(const SceneObjectPtr object) const
     ScenePtr objectScene = object->getScene();
     if (objectScene == this->shared_from_this())
     {
-        const std::string s = "Scene: SceneObject with ID " + std::to_string(object->id)
+        const std::string s = "Scene: SceneObject with ID " + to_string(object->id)
             + " is already registered to this scene.";
 
         throw std::runtime_error(s.c_str());
@@ -352,7 +357,7 @@ void Scene::_verifyNoParentSceneOrThrow(const SceneObjectPtr object) const
 
     if (objectScene != nullptr)
     {
-        const std::string s = "Scene: SceneObject with ID " + std::to_string(object->id) 
+        const std::string s = "Scene: SceneObject with ID " + to_string(object->id) 
             + " already has a parent scene.";
 
         throw std::runtime_error(s.c_str());
@@ -364,7 +369,7 @@ SceneObjectMetadata Scene::_findObjectMetaOrThrow(const unsigned int id) const
     auto it = _objectMetadata.find(id);
     if (it == _objectMetadata.end())
     {
-        const std::string s = "Scene: no SceneObject with ID " + std::to_string(id) 
+        const std::string s = "Scene: no SceneObject with ID " + to_string(id) 
             + ", cannot retrieve world transform.";
 
         throw std::runtime_error(s.c_str());
@@ -536,3 +541,5 @@ bool Scene::_hasDisabledParent(const unsigned int id) const
     }
     return false;
 }
+
+}//namespace Renderboi

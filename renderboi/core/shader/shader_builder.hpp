@@ -8,6 +8,9 @@
 #include "shader_stage.hpp"
 #include "shader_config.hpp"
 
+namespace Renderboi
+{
+
 class ShaderBuilder
 {
 public:
@@ -265,5 +268,7 @@ private:
     /// @return A string containing all the necessary #define directives.
     static std::string _GenerateDefineDirectives(const std::vector<ShaderFeature>& features);
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__SHADER__SHADER_BUILDER_HPP

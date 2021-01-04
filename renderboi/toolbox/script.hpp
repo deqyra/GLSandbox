@@ -5,6 +5,9 @@
 
 #include "scene/scene_object.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Abstract class to autonomously update scene object on a per-frame 
 /// basis.
 class Script
@@ -57,5 +60,7 @@ class Script
 
 using ScriptPtr = std::shared_ptr<Script>;
 using ScriptWPtr = std::weak_ptr<Script>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__SCRIPT_HPP

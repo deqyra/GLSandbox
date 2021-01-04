@@ -3,6 +3,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/gl.h>
 
+namespace Renderboi
+{
+
 MatrixUBO::MatrixUBO()
 {
     // Generate the buffer and allocate space
@@ -41,3 +44,5 @@ void MatrixUBO::setNormal(const glm::mat4& normal)
     glBindBuffer(GL_UNIFORM_BUFFER, _location);
     glBufferSubData(GL_UNIFORM_BUFFER, 192, 3*sizeof(glm::vec4), glm::value_ptr(normal));
 }
+
+}//namespace Renderboi

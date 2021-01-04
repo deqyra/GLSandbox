@@ -5,6 +5,8 @@
 #include "scene/scene.hpp"
 #include "scene/scene_object.hpp"
 
+namespace Renderboi
+{
 
 ScenePtr Factory::MakeScene()
 {
@@ -25,3 +27,5 @@ SceneObjectPtr Factory::MakeSceneObject(std::string name)
     sceneObject->init();
     return sceneObject;
 }
+
+}//namespace Renderboi

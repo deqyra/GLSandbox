@@ -3,6 +3,14 @@
 #include <string>
 #include <vector>
 
+// Header where getopt is defined
+#ifdef _WIN32
+	#include <windows.h>
+	#include <getoptwin/getopth.h>
+#elif defined __linux__
+	#include <unistd.h>
+#endif
+
 #include <renderboi/window/enums.hpp>
 #include <renderboi/window/window_factory.hpp>
 #include <renderboi/window/window_backend.hpp>
@@ -15,21 +23,21 @@
 
 #include "project_macros.hpp"
 
-#ifdef _WIN32
-	#include <windows.h>
-#endif
-
 #include <renderboi/window/glfw3/glfw3_window_factory.hpp>
 #include <renderboi/window/glfw3/glfw3_window_callbacks.hpp>
-static constexpr WindowBackend UsedBackend = WindowBackend::GLFW3;
-static constexpr void* UsedErrorCallback = (void*)(&globalGlfwErrorCallback);
-using AppWindowFactory = WindowFactory<UsedBackend>;
+
+namespace rb = Renderboi;
+
+static constexpr rb::WindowBackend UsedBackend = rb::WindowBackend::GLFW3;
+using AppWindowFactory = rb::WindowFactory<UsedBackend>;
+
+static const void* UsedErrorCallback = (void*)(&rb::globalGlfwErrorCallback);
 
 // Halt the execution with a clean exit
 int abortWithError(std::string message, bool terminateBackend = true);
 
 // Instantiate all available sandboxes
-std::vector<GLSandbox*> createAllSandboxes();
+std::vector<rb::GLSandbox*> createAllSandboxes();
 
 //Initialise OpenGL and display a window with an active GL context
 int main(int argc, char** argv)
@@ -47,21 +55,28 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 
 	// Init window, GL context and GL pointers
-	GLWindowPtr window;
+	rb::GLWindowPtr window;
 	try
 	{
-		window = AppWindowFactory::MakeWindow("RenderBoi", 1280, 720, GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR, Window::OpenGLProfile::Core, true);
+		window = AppWindowFactory::MakeWindow(
+			"RenderBoi",
+			1280, 720,
+			GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR,
+			rb::Window::OpenGLProfile::Core,
+			true
+		);
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << "Exception thrown during window creation:" << '\n'<< e.what() << std::endl;
+		std::cerr << "Exception thrown during window creation:\n"
+			<< e.what() << std::endl;
 		return abortWithError("Window creation failed. Aborting...");
 	}
 
-	glIgnoreDebugMessagesOfType(GL_DEBUG_TYPE_PERFORMANCE_ARB);
+	rb::glIgnoreDebugMessagesOfType(GL_DEBUG_TYPE_PERFORMANCE_ARB);
 
     // Instantiate and run examples
-	std::vector<GLSandbox*> examples = createAllSandboxes();
+	std::vector<rb::GLSandbox*> examples = createAllSandboxes();
     for (auto it = examples.begin(); it != examples.end(); it++)
     {
         (*it)->run(window);
@@ -85,14 +100,14 @@ int abortWithError(std::string message, bool terminateBackend)
 	return EXIT_FAILURE;
 }
 
-std::vector<GLSandbox*> createAllSandboxes()
+std::vector<rb::GLSandbox*> createAllSandboxes()
 {
     // Try and instantiate all sandboxes.
     try
     {
-        return std::vector<GLSandbox*>({
-            //new LightingSandbox(),
-			new ShadowSandbox()
+        return std::vector<rb::GLSandbox*>({
+            //new rb::LightingSandbox(),
+			new rb::ShadowSandbox()
         });
     }
     catch (std::runtime_error e)
@@ -100,5 +115,5 @@ std::vector<GLSandbox*> createAllSandboxes()
         std::cerr << "createAllSandboxes: " << e.what();
     }
 
-    return std::vector<GLSandbox*>();
+    return std::vector<rb::GLSandbox*>();
 }

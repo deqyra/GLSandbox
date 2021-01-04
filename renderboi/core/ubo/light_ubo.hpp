@@ -21,6 +21,9 @@
  * };                                                          // Size: 11532
  **/
 
+namespace Renderboi
+{
+
 class LightUBO
 {
 private:
@@ -101,5 +104,7 @@ public:
     /// @param count The number of directional lights in the UBO.
     void setDirectionalCount(const unsigned int count);
 };
+
+}//namespace Renderboi
 
 #endif//LIGHT_UBO_HPP

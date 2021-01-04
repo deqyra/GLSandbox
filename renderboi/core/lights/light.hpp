@@ -5,6 +5,9 @@
 
 #include "light_type.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Abstract light.
 class Light
 {
@@ -36,5 +39,7 @@ public:
 
 using LightPtr = std::shared_ptr<Light>;
 using LightWPtr = std::weak_ptr<Light>;
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__LIGHT_HPP

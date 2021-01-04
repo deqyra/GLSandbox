@@ -10,6 +10,9 @@
 #include "../interfaces/action_event_receiver.hpp"
 #include "../interfaces/default_control_scheme_provider.hpp"
 
+namespace Renderboi
+{
+
 /// @brief Litterals describing the actions which can be performed by the
 /// KeyboardMovementScript
 enum class KeyboardMovementAction
@@ -140,9 +143,8 @@ public:
     ControlSchemeManagerPtr<KeyboardMovementAction> getDefaultControlScheme() const override;
 };
 
-namespace std
-{
-    string to_string(const KeyboardMovementAction& action);
-}
+std::string to_string(const KeyboardMovementAction& action);
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__RUNNABLES__KEYBOARD_MOVEMENT_SCRIPT_HPP

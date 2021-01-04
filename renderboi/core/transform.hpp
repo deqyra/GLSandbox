@@ -46,6 +46,9 @@
  *   which the transformation is about to be applied.
  */
 
+namespace Renderboi
+{
+
 /// @brief Manages the 3D-space properties of an object: position, orientation
 /// and scale. Refer to the README section at the top of the .hpp file for more
 /// info.
@@ -267,5 +270,7 @@ class Transform : public BasisProvider
         /// @return The local Z vector of the object, in world coordinates.
         glm::vec3 forward() const override;
 };
+
+}//namespace Renderboi
 
 #endif//RENDERBOI__CORE__TRANSFORM_HPP
