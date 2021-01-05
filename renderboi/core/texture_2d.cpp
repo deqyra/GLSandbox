@@ -8,11 +8,15 @@
 #include "pixel_space.hpp"
 
 #include <renderboi/utilities/to_string.hpp>
+#include <renderboi/utilities/resource_locator.hpp>
 
 #include <cpptools/exceptions/index_out_of_bounds_error.hpp>
 
 namespace Renderboi
 {
+
+using ReLoc = ResourceLocator;
+using ReType = ResourceType;
 
 std::unordered_map<unsigned int, unsigned int> Texture2D::_locationRefCounts = std::unordered_map<unsigned int, unsigned int>();
 std::unordered_map<std::string , unsigned int> Texture2D::_pathsToIds  = std::unordered_map<std::string, unsigned int>();
@@ -32,7 +36,7 @@ Texture2D::Texture2D(const std::string& filename, const PixelSpace space) :
     else
     {
         // Load the image
-        _location = _LoadTextureFromFile(filename, space);
+        _location = _LoadTextureFromFile(ReLoc::locate(ReType::Texture, filename), space);
         // Map the new texture location to image filename and set a refcount
         _pathsToIds[filename] = _location;
         _locationRefCounts[_location] = 1;

@@ -13,11 +13,13 @@ add_library(${RB_CORE_LIB_NAME} ${STATIC_OR_SHARED}
 )
 add_dependencies(${RB_CORE_LIB_NAME}
     "${CPPTOOLS_LIB_NAME}_source"
+    "export_${GLM_LIB_NAME}_headers"
     "export_${GLAD_LIB_NAME}_lib"
     "export_${GLAD_LIB_NAME}_headers"
     "export_${STB_IMAGE_LIB_NAME}_lib"
     "export_${STB_IMAGE_LIB_NAME}_headers"
-    "export_${GLM_LIB_NAME}_headers"
+    "export_${RB_UTILITIES_LIB_NAME}_lib"
+    "export_${RB_UTILITIES_LIB_NAME}_headers"
 )
 target_include_directories(${RB_CORE_LIB_NAME} PUBLIC ${EXPORT_LOCATION}/include)
 target_link_directories(${RB_CORE_LIB_NAME} PUBLIC ${EXPORT_LOCATION}/lib)

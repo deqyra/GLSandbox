@@ -14,6 +14,7 @@ RenderBoi:
         ✔ Move tools to external repo and update CMake to use it @done(20-12-17 14:20)
         ☐ Set up continuous integration
         ✔ Better documentation @done(20-10-19 19:22)
+        ☐ In all accessor functions using local-statically generated data: provide a refresh argument
     Core:
         Camera:
             ✔ Use a parent transform instead of a simple up vector @done(20-10-14 12:27)
@@ -95,6 +96,8 @@ RenderBoi:
             ✔ Separate FPSCameraScript into MouseCameraScript and KeyboardMovementScript @done(20-10-20 14:06)
             ✔ Give a camera reference to the KeyboardMovementScript for it to use a proper front vector @done(20-10-20 18:30)
             ✔ CameraAspectRatioScript: updates the camera aspect ratio based on framebuffer resize events @done(20-10-26 17:22)
+    Utilities:
+        ✔ Write resource locator @done(21-01-05 21:54)
     Window:
         ✔ Isolate calls to GLFW in a windowing tool module @done(20-07-02 15:04)
         ✔ Fill adapter maps the same way as shader maps @done(20-10-26 01:49)

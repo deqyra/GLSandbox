@@ -104,7 +104,7 @@ void ShadowSandbox::run(const GLWindowPtr window)
         glm::vec3(0.3203125f, 0.254296875f, 0.180859375f),
         128.f
     );
-    Texture2D floorTex = Texture2D("assets/textures/wood.png", PixelSpace::sRGB);
+    Texture2D floorTex = Texture2D("wood.png", PixelSpace::sRGB);
     floorMaterial.pushDiffuseMap(floorTex);
     SceneObjectPtr floorObj = Factory::MakeSceneObjectWithMesh<MeshType::Plane>("Floor", planeParameters, floorMaterial, blinnPhongShader);
 
@@ -115,7 +115,7 @@ void ShadowSandbox::run(const GLWindowPtr window)
         glm::vec3(0.25f, 0.15f, 0.15f), 
         2.f
     );
-    Texture2D wallTex = Texture2D("assets/textures/wall.jpg", PixelSpace::sRGB);
+    Texture2D wallTex = Texture2D("wall.jpg", PixelSpace::sRGB);
     wallMaterial.pushDiffuseMap(wallTex);
 
     // XY wall
