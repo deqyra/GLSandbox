@@ -39,7 +39,7 @@ on your setup, please file an issue with details so I can have a look at it.
 ## Building
 
 If you're lucky, it should be fast and painless:  
-```bash
+```sh
 $ git clone git@github.com:deqyra/RenderBoi.git
 $ cd RenderBoi
 $ mkdir build && cd build
@@ -51,7 +51,10 @@ This will fetch and build all dependencies, then build RenderBoi as a set of
 libraries, and finally build an executable which when run will display a series 
 of example scenes. The executable must be run from the same directory as 
 `assets/` (a symlink is fine), or must be provided the path to `assets/` as a 
-command line argument: `$ RenderBoi [(-a|--assets) <path>]`.
+command line argument:  
+```sh
+$ RenderBoi [(-a|--assets) <path>]
+```
 
 If you run into trouble, refer to that wiki page which I haven't even started 
 writing yet.
