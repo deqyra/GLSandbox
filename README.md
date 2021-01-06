@@ -18,7 +18,9 @@ account.
 
 ## Info
 
-* Simply requires an OpenGL 4.2-capable environment.
+* Simply requires:
+  * an OpenGL 4.2-capable environment;
+  * a C++20-compliant compiler.
 * Extensions used:
   * `GL_ARB_debug_output`;
   * `GL_ARB_shading_language_include`.
@@ -27,12 +29,32 @@ on your setup, please file an issue with details so I can have a look at it.
 * Original development environments:
   * Windows 10 / Nvidia GeForce GTX 1650 Ti
   * Arch Linux (kernel 5.6.15) / GNOME with Wayland (EGL backend) / Nvidia GeForce GT630M
-* Here are links to some UML diagrams giving a good overview of how everything works:
+* Here are links to some UML diagrams giving a decent overview of how everything adds up:
   * [Package diagram][pkg_diag]
   * [Core class diagram][core_diag]
   * [Window class diagram][window_diag]
   * [Toolbox class diagram][toolbox_diag]
   * [StarUML file][mdj]
+
+## Building
+
+If you're lucky, it should be fast and painless:  
+```bash
+$ git clone git@github.com:deqyra/RenderBoi.git
+$ cd RenderBoi
+$ mkdir build && cd build
+$ cmake ..
+$ cmake --build .
+```
+
+This will fetch and build all dependencies, then build RenderBoi as a set of 
+libraries, and finally build an executable which when run will display a series 
+of example scenes. The executable must be run from the same directory as 
+`assets/` (a symlink is fine), or must be provided the path to `assets/` as a 
+command line argument: `$ RenderBoi [(-a|--assets) <path>]`.
+
+If you run into trouble, refer to that wiki page which I haven't even started 
+writing yet.
 
 ## Current features
 
@@ -58,7 +80,13 @@ on your setup, please file an issue with details so I can have a look at it.
     * **Light component:** the scene object emits light;
     * **Camera component:** a camera is attached to the scene object;
     * **Script component:** a script class controls the aspects of the scene object based on time, user input, etc.
-* **FPS camera and key bindings**, implemented as script components attached to the scene camera
+* Classes for **easy key binding management**
+
+### Provided scripts:
+* Input logger
+* First person camera control (mouse)
+* Directional movement (keyboard)
+* Camera aspect ratio auto fit
 
 ## Roadmap
 
@@ -74,9 +102,9 @@ on your setup, please file an issue with details so I can have a look at it.
 See file [`list.todo`][todo] for a more concise view of what is likely to be worked on at present.
 
 [video]: https://streamable.com/vrq3u8
-[pkg_diag]: https://github.com/deqyra/RenderBoi/blob/master/uml/package_diagram.png
-[core_diag]: https://github.com/deqyra/RenderBoi/blob/master/uml/core_class_diagram.png
-[window_diag]: https://github.com/deqyra/RenderBoi/blob/master/uml/window_class_diagram.png
-[toolbox_diag]: https://github.com/deqyra/RenderBoi/blob/master/uml/toolbox_class_diagram.png
+[pkg_diag]: https://raw.githubusercontent.com/deqyra/RenderBoi/master/uml/package_diagram.png
+[core_diag]: https://raw.githubusercontent.com/deqyra/RenderBoi/master/uml/core_class_diagram.png
+[window_diag]: https://raw.githubusercontent.com/deqyra/RenderBoi/master/uml/window_class_diagram.png
+[toolbox_diag]: https://raw.githubusercontent.com/deqyra/RenderBoi/master/uml/toolbox_class_diagram.png
 [mdj]: https://github.com/deqyra/RenderBoi/blob/GL15-shader-improvements/uml/RenderBoi%20model.mdj
 [todo]:  https://github.com/deqyra/RenderBoi/blob/master/list.todo
