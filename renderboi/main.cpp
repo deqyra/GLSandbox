@@ -1,43 +1,28 @@
 #include <exception>
+#include <filesystem>
 #include <iostream>
-#include <string>
 #include <vector>
-
-// Header where getopt is defined
-#ifdef _WIN32
-	#include <windows.h>
-	#include <getoptwin/getopth.h>
-#elif defined __linux__
-	#include <unistd.h>
-#endif
 
 #include <renderboi/window/enums.hpp>
 #include <renderboi/window/window_factory.hpp>
 #include <renderboi/window/window_backend.hpp>
 
 #include <renderboi/examples/gl_sandbox.hpp>
-#include <renderboi/examples/lighting_sandbox.hpp>
-#include <renderboi/examples/shadow_sandbox.hpp>
 
 #include <renderboi/utilities/gl_utilities.hpp>
-
-#include "project_macros.hpp"
+#include <renderboi/utilities/resource_locator.hpp>
 
 #include <renderboi/window/glfw3/glfw3_window_factory.hpp>
 #include <renderboi/window/glfw3/glfw3_window_callbacks.hpp>
 
+#include "project_env.hpp"
+#include "main_functions.hpp"
+#include "renderboi_parameters.hpp"
+
 namespace rb = Renderboi;
-
-static constexpr rb::WindowBackend UsedBackend = rb::WindowBackend::GLFW3;
-using AppWindowFactory = rb::WindowFactory<UsedBackend>;
-
 static const void* UsedErrorCallback = (void*)(&rb::globalGlfwErrorCallback);
 
-// Halt the execution with a clean exit
-int abortWithError(std::string message, bool terminateBackend = true);
-
-// Instantiate all available sandboxes
-std::vector<rb::GLSandbox*> createAllSandboxes();
+namespace fs = std::filesystem;
 
 //Initialise OpenGL and display a window with an active GL context
 int main(int argc, char** argv)
@@ -45,6 +30,34 @@ int main(int argc, char** argv)
 	#ifdef _WIN32
 		SetConsoleOutputCP(65001);
 	#endif
+
+	RenderboiParameters params = {
+		fs::current_path()
+	};
+	if (!processArguments(argc, argv, params))
+	{
+		printHelp();
+		std::cerr 	<< "Could not parse arguments.\n"
+					<< "Aborting..." << std::endl;
+
+		return EXIT_FAILURE;
+	}
+
+	fs::path assetsDir = fs::absolute(params.assetsPath / "assets/");
+	if (!fs::exists(assetsDir))
+	{
+		std::cerr 	<< "Error: assets/ could not be found in the current directory, "
+					<< "or in the path provided by command line argument.\n"
+					<< "Currently stored path: " << assetsDir.string() << "\n"
+					<< "Aborting..." << std::endl;
+		
+		return EXIT_FAILURE;
+	}
+
+	using ReLoc = rb::ResourceLocator;
+	using ReType = rb::ResourceType;
+	ReLoc::setPrefixFor(ReType::ShaderSource, assetsDir / "shaders/");
+	ReLoc::setPrefixFor(ReType::Texture,      assetsDir / "textures/");
 
     std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << '\n';
     std::cout << COPYLEFT_NOTICE << std::endl;
@@ -86,34 +99,6 @@ int main(int argc, char** argv)
 	// Destroy window by resetting what should be the only shared pointer to it
 	window = nullptr;
 	AppWindowFactory::TerminateBackend();
+
 	return EXIT_SUCCESS;
-}
-
-int abortWithError(std::string message, bool terminateBackend)
-{
-	std::cerr << message;
-	if (terminateBackend)
-	{
-		AppWindowFactory::TerminateBackend();
-	}
-
-	return EXIT_FAILURE;
-}
-
-std::vector<rb::GLSandbox*> createAllSandboxes()
-{
-    // Try and instantiate all sandboxes.
-    try
-    {
-        return std::vector<rb::GLSandbox*>({
-            //new rb::LightingSandbox(),
-			new rb::ShadowSandbox()
-        });
-    }
-    catch (std::runtime_error e)
-    {
-        std::cerr << "createAllSandboxes: " << e.what();
-    }
-
-    return std::vector<rb::GLSandbox*>();
 }

@@ -21,15 +21,15 @@ account.
 * Simply requires:
   * an OpenGL 4.2-capable environment;
   * a C++20-compliant compiler.
-* Extensions used:
+* GL extensions used:
   * `GL_ARB_debug_output`;
   * `GL_ARB_shading_language_include`.
 * I am still figuring out cross-platformability. If the project does not work
 on your setup, please file an issue with details so I can have a look at it.
 * Original development environments:
-  * Windows 10 / Nvidia GeForce GTX 1650 Ti
-  * Arch Linux (kernel 5.6.15) / GNOME with Wayland (EGL backend) / Nvidia GeForce GT630M
-* Here are links to some UML diagrams giving a decent overview of how everything adds up:
+  * **Windows 10** / Nvidia GeForce GTX 1650 Ti
+  * **Arch Linux** (kernel 5.6.15) / **GNOME with Wayland** (EGL backend) / Nvidia GeForce GT630M
+* Here are links to some UML diagrams which give a decent overview of how everything adds up:
   * [Package diagram][pkg_diag]
   * [Core class diagram][core_diag]
   * [Window class diagram][window_diag]
@@ -50,8 +50,8 @@ $ cmake --build .
 This will fetch and build all dependencies, then build RenderBoi as a set of 
 libraries, and finally build an executable which when run will display a series 
 of example scenes. The executable must be run from the same directory as 
-`assets/` (a symlink is fine), or must be provided the path to `assets/` as a 
-command line argument:  
+`assets/` (a symlink is fine), or must be provided the path to `assets/` from 
+the current directory as a command line argument:  
 ```sh
 $ RenderBoi [(-a|--assets) <path>]
 ```

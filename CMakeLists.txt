@@ -93,7 +93,7 @@ endif()
 set(PROJECT_COPYLEFT "${DATE_SPAN} ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>")
 
 # File configuration
-configure_file("${CMAKE_SOURCE_DIR}/renderboi/config/project_macros.config.hpp" "${CMAKE_SOURCE_DIR}/renderboi/project_macros.hpp")
+configure_file("${CMAKE_SOURCE_DIR}/renderboi/config/project_env.config.hpp" "${CMAKE_SOURCE_DIR}/renderboi/project_env.hpp")
 
 
 
@@ -331,7 +331,10 @@ add_subdirectory(${RENDERBOI_MODULE_LOCATION}/examples ${CMAKE_BINARY_DIR}/${RB_
 # Build executable
 add_executable("RenderBoi"
     ${RENDERBOI_MODULE_LOCATION}/main.cpp
-    ${RENDERBOI_MODULE_LOCATION}/project_macros.hpp
+    ${RENDERBOI_MODULE_LOCATION}/main_functions.hpp
+    ${RENDERBOI_MODULE_LOCATION}/main_functions.cpp
+    ${RENDERBOI_MODULE_LOCATION}/project_env.hpp
+    ${RENDERBOI_MODULE_LOCATION}/renderboi_parameters.hpp
 )   
 
 add_dependencies("RenderBoi"

@@ -1,5 +1,7 @@
 #include "resource_locator.hpp"
 
+#include <filesystem>
+
 namespace Renderboi
 {
 
@@ -34,7 +36,14 @@ std::string ResourceLocator::locate(ResourceType type, std::string filename)
     if (it == _resourceLocationPrefixes.end())
         return filename;
     
-    return (_resourceLocationPrefixes[type] / std::filesystem::path(filename)).string();
+    std::filesystem::path file = _resourceLocationPrefixes[type] / std::filesystem::path(filename);
+    if (!std::filesystem::exists(file))
+    {
+        std::string s = "ResourceLocator: cannot locate resource \"" + file.string() + "\".";
+        throw std::runtime_error(s.c_str());
+    }
+
+    return file.string();
 }
 
 
