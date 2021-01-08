@@ -60,7 +60,8 @@ int main(int argc, char** argv)
 	ReLoc::setPrefixFor(ReType::Texture,      assetsDir / "textures/");
 
     std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << '\n';
-    std::cout << COPYLEFT_NOTICE << std::endl;
+    std::cout << COPYRIGHT_NOTICE << '\n';
+	std::cout << MIT_LICENSE_NOTICE << std::endl;
 
 	AppWindowFactory::SetErrorCallback(UsedErrorCallback);
 

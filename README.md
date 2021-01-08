@@ -79,7 +79,7 @@ writing yet.
   * Scene objects are arranged in a tree.
   * The world transforms of scene objects depend on the local transform of their parent chain up to the root of the tree.
   * Scene objects are abstract entities whose concrete aspects are given to them by components.
-  * There are several components to choose from:
+  * Several components may be added to a scene object. There are four component kinds to choose from:
     * **Mesh component:** the scene object has a mesh and will be rendered;
     * **Light component:** the scene object emits light;
     * **Camera component:** a camera is attached to the scene object;

@@ -90,7 +90,7 @@ if(NOT CURRENT_YEAR EQUAL PROJECT_START_YEAR)
     set(DATE_SPAN "${PROJECT_START_YEAR}-${CURRENT_YEAR}")
 endif()
 
-set(PROJECT_COPYLEFT "${DATE_SPAN} ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>")
+set(PROJECT_COPYRIGHT "${DATE_SPAN} © ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>")
 
 # File configuration
 configure_file("${CMAKE_SOURCE_DIR}/renderboi/config/project_env.config.hpp" "${CMAKE_SOURCE_DIR}/renderboi/project_env.hpp")
