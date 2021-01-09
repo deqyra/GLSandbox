@@ -305,9 +305,9 @@ namespace GLFW3Adapter
                 map[GLFW_GAMEPAD_BUTTON_Y] = Window::Input::Gamepad::Button::Y;
                 map[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] = Window::Input::Gamepad::Button::LeftBumper;
                 map[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] = Window::Input::Gamepad::Button::RightBumper;
-                map[GLFW_GAMEPAD_BUTTON_BACK] = Window::Input::Gamepad::Button::Back;
+                map[GLFW_GAMEPAD_BUTTON_BACK] = Window::Input::Gamepad::Button::Select;
                 map[GLFW_GAMEPAD_BUTTON_START] = Window::Input::Gamepad::Button::Start;
-                map[GLFW_GAMEPAD_BUTTON_GUIDE] = Window::Input::Gamepad::Button::Guide;
+                map[GLFW_GAMEPAD_BUTTON_GUIDE] = Window::Input::Gamepad::Button::Home;
                 map[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] = Window::Input::Gamepad::Button::LeftThumb;
                 map[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB] = Window::Input::Gamepad::Button::RightThumb;
                 map[GLFW_GAMEPAD_BUTTON_DPAD_UP] = Window::Input::Gamepad::Button::DPadUp;
@@ -637,9 +637,9 @@ namespace GLFW3Adapter
                 map[Window::Input::Gamepad::Button::Y] = GLFW_GAMEPAD_BUTTON_Y;
                 map[Window::Input::Gamepad::Button::LeftBumper] = GLFW_GAMEPAD_BUTTON_LEFT_BUMPER;
                 map[Window::Input::Gamepad::Button::RightBumper] = GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER;
-                map[Window::Input::Gamepad::Button::Back] = GLFW_GAMEPAD_BUTTON_BACK;
+                map[Window::Input::Gamepad::Button::Select] = GLFW_GAMEPAD_BUTTON_BACK;
                 map[Window::Input::Gamepad::Button::Start] = GLFW_GAMEPAD_BUTTON_START;
-                map[Window::Input::Gamepad::Button::Guide] = GLFW_GAMEPAD_BUTTON_GUIDE;
+                map[Window::Input::Gamepad::Button::Home] = GLFW_GAMEPAD_BUTTON_GUIDE;
                 map[Window::Input::Gamepad::Button::LeftThumb] = GLFW_GAMEPAD_BUTTON_LEFT_THUMB;
                 map[Window::Input::Gamepad::Button::RightThumb] = GLFW_GAMEPAD_BUTTON_RIGHT_THUMB;
                 map[Window::Input::Gamepad::Button::DPadUp] = GLFW_GAMEPAD_BUTTON_DPAD_UP;

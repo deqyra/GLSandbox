@@ -327,9 +327,9 @@ std::string to_string(const Window::Input::Gamepad::Button& gamepadButton)
         enumNames[Window::Input::Gamepad::Button::Y]            = "Y";
         enumNames[Window::Input::Gamepad::Button::LeftBumper]   = "LeftBumper";
         enumNames[Window::Input::Gamepad::Button::RightBumper]  = "RightBumper";
-        enumNames[Window::Input::Gamepad::Button::Back]         = "Back";
+        enumNames[Window::Input::Gamepad::Button::Select]       = "Select";
         enumNames[Window::Input::Gamepad::Button::Start]        = "Start";
-        enumNames[Window::Input::Gamepad::Button::Guide]        = "Guide";
+        enumNames[Window::Input::Gamepad::Button::Home]         = "Home";
         enumNames[Window::Input::Gamepad::Button::LeftThumb]    = "LeftThumb";
         enumNames[Window::Input::Gamepad::Button::RightThumb]   = "RightThumb";
         enumNames[Window::Input::Gamepad::Button::DPadUp]       = "DPadUp";
