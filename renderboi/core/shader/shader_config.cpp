@@ -1,5 +1,6 @@
 #include "shader_config.hpp"
 
+#include <iterator>
 #include <stdexcept>
 #include <string>
 

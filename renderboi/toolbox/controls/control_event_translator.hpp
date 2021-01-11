@@ -148,7 +148,7 @@ void ControlEventTranslator<T>::processMouseButton(
 template<typename T>
 void ControlEventTranslator<T>::_translateAndNotify(const Control& control, Window::Input::Action action, const GLWindowPtr window) const
 {
-    using Iter = std::multimap<Control, T>::const_iterator;
+    using Iter = typename std::multimap<Control, T>::const_iterator;
     const std::pair<Iter, Iter> range = _controlBindings.equal_range(control);
     
     if (action == Window::Input::Action::Release)

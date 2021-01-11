@@ -41,6 +41,8 @@ EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 #include <malloc.h>
 #include "getopt.h"
 
+#define EXPORTS_GETOPT
+
 #ifdef __cplusplus
 	#define _GETOPT_THROW throw()
 #else

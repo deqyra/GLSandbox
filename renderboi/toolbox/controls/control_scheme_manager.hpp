@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <iterator>
 #include <map>
 #include <memory>
 #include <stdexcept>
@@ -175,7 +176,7 @@ void ControlSchemeManager<T>::unbindControl(const Control& control)
 
     _actionBoundToControl.erase(control);
 
-    using Iter = std::unordered_multimap<Control, T>::iterator;
+    using Iter = typename std::unordered_multimap<Control, T>::iterator;
     std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
     for (Iter it = range.first; it != range.second; it++)
     {
@@ -192,7 +193,7 @@ unsigned int ControlSchemeManager<T>::unbindAllControlsFromAction(const T& actio
 {
     if (_controlsBoundToAction.count(action) == 0) return 0;
 
-    using Iter = std::unordered_multimap<T, Control>::iterator;
+    using Iter = typename std::unordered_multimap<T, Control>::iterator;
     std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
     for (Iter it = range.first; it != range.second; it++)
     {
@@ -231,7 +232,7 @@ bool ControlSchemeManager<T>::actionIsBound(const T& action)
 template<typename T>
 std::vector<Control> ControlSchemeManager<T>::getControlsBoundToAction(const T& action)
 {
-    using Iter = std::multimap<T, Control>::iterator;
+    using Iter = typename std::multimap<T, Control>::iterator;
     std::pair<Iter, Iter> range = _controlsBoundToAction.equal_range(action);
 
     std::function<Control(std::pair<const T, Control>)> controlFromPair = [](const std::pair<const T, Control>& p) -> Control

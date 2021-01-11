@@ -1,9 +1,10 @@
 #ifndef RENDERBOI__TOOLBOX__SCENE__SCENE_OBJECT_HPP
 #define RENDERBOI__TOOLBOX__SCENE__SCENE_OBJECT_HPP
 
-
+#include <algorithm>
 #include <exception>
 #include <functional>
+#include <iterator>
 #include <memory>
 #include <string>
 #include <stdexcept>

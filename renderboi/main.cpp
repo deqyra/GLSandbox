@@ -15,6 +15,10 @@
 #include <renderboi/window/glfw3/glfw3_window_factory.hpp>
 #include <renderboi/window/glfw3/glfw3_window_callbacks.hpp>
 
+#ifdef _WIN32
+	#include <windows.h>
+#endif//_WIN32
+
 #include "project_env.hpp"
 #include "main_functions.hpp"
 #include "renderboi_parameters.hpp"

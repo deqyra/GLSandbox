@@ -7,8 +7,7 @@
 
 // Header where getopt is defined
 #ifdef _WIN32
-	#include <windows.h>
-	#include <getoptwin/getopth.h>
+	#include <getoptwin/getopt.h>
 #elif defined __linux__
     #include <getopt.h>
 #endif

@@ -21,7 +21,7 @@ endif()
 option(BUILD_STATIC_LIBS "Build libraries as static libraries" OFF)
 option(BUILD_RELEASE "Whether to build for a debug or release profile" OFF)
 
-if(${BUILD_STATIC_LIBS} OR WIN32)
+if(${BUILD_STATIC_LIBS})
     set(STATIC_OR_SHARED "STATIC")
 else()
     set(STATIC_OR_SHARED "SHARED")
@@ -291,9 +291,9 @@ set(RB_EXAMPLES_SOURCE_FILES
 #                                                                             #
 ###############################################################################
 
-# Import getopt target only for windows (linux has it)
+# Import getopt target only for windows (linux already has it)
 if(WIN32)
-    add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/getoptwin ${CMAKE_BINARY_DIR}/${GETOPT_LIB_NAME})
+    add_subdirectory(${EXTERNAL_SOURCE_LOCATION}/getoptwin ${CMAKE_BINARY_DIR}/${GETOPT_WIN_LIB_NAME})
 endif()
 
 # Import GLAD targets
@@ -348,18 +348,30 @@ add_dependencies("RenderBoi"
 
 if(WIN32)
     add_dependencies("RenderBoi"
-        "export_${GETOPT_LIB_NAME}_lib"
-        "export_${GETOPT_LIB_NAME}_headers"
+        "export_${GETOPT_WIN_LIB_NAME}_lib"
+        "export_${GETOPT_WIN_LIB_NAME}_headers"
     )
 endif()
 
 target_include_directories("RenderBoi" PUBLIC ${EXPORT_LOCATION}/include)
 target_link_directories("RenderBoi" PUBLIC ${EXPORT_LOCATION}/lib)
 
-target_link_libraries("RenderBoi" PUBLIC
+target_link_libraries("RenderBoi" PUBLIC ${CMAKE_DL_LIBS}
     ${RB_WINDOW_LIB_NAME}
     ${RB_EXAMPLES_LIB_NAME}
 ) 
+
+if(WIN32)
+    target_link_libraries("RenderBoi" PUBLIC ${CMAKE_DL_LIBS}
+        ${CMAKE_DL_LIBS}
+        ${GETOPT_WIN_LIB_NAME}
+    ) 
+endif()
+
+add_custom_command(TARGET "RenderBoi" POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${EXPORT_LOCATION}/lib" $<TARGET_FILE_DIR:RenderBoi>
+)
 
 
 
