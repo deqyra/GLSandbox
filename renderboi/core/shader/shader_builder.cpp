@@ -29,7 +29,7 @@ namespace Renderboi
 using ReLoc = ResourceLocator;
 using ReType = ResourceType;
 
-std::unordered_map<std::string, bool> ShaderBuilder::_namedStringLoadStatus = std::unordered_map<std::string, bool>();
+std::unordered_map<std::string, std::string> ShaderBuilder::_includeStrings = std::unordered_map<std::string, std::string>();
 
 ShaderProgram ShaderBuilder::MinimalShaderProgram()
 {
@@ -187,7 +187,7 @@ Shader ShaderBuilder::BuildShaderStageFromFile(
 
 Shader ShaderBuilder::BuildShaderStageFromText(
     const ShaderStage stage,
-    const std::string& text,
+    std::string text,
     const std::vector<ShaderFeature>& supportedFeatures,
     const bool dumpSource)
 {
@@ -209,7 +209,7 @@ Shader ShaderBuilder::BuildShaderStageFromText(
 	const char* source = text.c_str();
 	const unsigned int location = glCreateShader(shaderType);
 	glShaderSource(location, 1, &source, nullptr);
-	glCompileShaderIncludeARB(location, 0, nullptr, nullptr);
+	glCompileShader(location);
 
 	// Print errors if any
 	int success;
@@ -262,56 +262,79 @@ ShaderBuilder::_MakeShaderProgram(const std::vector<unsigned int>& locations)
 	return program;
 }
 
-void ShaderBuilder::_ProcessIncludeDirectives(const std::string& text)
+void ShaderBuilder::_ProcessIncludeDirectives(std::string& text)
 {
-    std::unordered_set<std::string> includeDirectives = _FindIncludeDirectivesInSource(text, true);
+    std::vector<std::pair<std::string, std::pair<size_t, size_t>>>
+    includeArguments = _LocateIncludeDirectivesInSource(text);
     
-    for (auto it = includeDirectives.begin(); it != includeDirectives.end(); it++)
+    // Process arguments in reverse, in order to preserve lower positions in the
+    // string as substrings are progressively being replaced.
+    for (auto it = includeArguments.rbegin(); it != includeArguments.rend(); it++)
     {
-        // Find whether the named string for the requested include directive is loaded
-        auto jt = _namedStringLoadStatus.find(*it);
-        if (jt != _namedStringLoadStatus.end() && jt->second == true) continue;
+        text.replace(it->second.first, it->second.second, _GetIncludeString(it->first));
+    }
+}
 
-        // Find the source file needed to create the requested named string
-        auto kt = _IncludeFilenames().find(*it);
-        if (kt == _IncludeFilenames().end())
+std::string ShaderBuilder::_GetIncludeString(const std::string& arg)
+{
+    // Find the string 
+    auto it = _includeStrings.find(arg);
+
+    // If not present, try to find info
+    if (it == _includeStrings.end())
+    {
+        auto jt = _IncludeFilenames().find(arg);
+        if (jt == _IncludeFilenames().end())
         {
             const std::string s = "ShaderBuilder: Info about include directive "
-                "<" + *it + "> cannot be found.";
+                "<" + arg + "> cannot be found.";
 
             throw std::runtime_error(s.c_str());
         }
 
-        _MakeNamedString(kt->first, kt->second);
+        // Read file contents and cache it
+        _includeStrings[arg] = CppTools::String::readFileIntoString(jt->second);
     }
+
+    return _includeStrings[arg];
 }
 
-std::unordered_set<std::string> ShaderBuilder::_FindIncludeDirectivesInSource(std::string text, const bool recursive)
+std::vector<std::pair<std::string, std::pair<size_t, size_t>>>
+ShaderBuilder::_LocateIncludeDirectivesInSource(std::string text)
 {
     static const std::string IncludeStringStart = "#include";
-    std::unordered_set<std::string> includeDirectives;
+    std::vector<std::pair<std::string, std::pair<size_t, size_t>>> includeArguments;
 
     CppTools::String::stripComments(text);
 
     size_t offset = text.find(IncludeStringStart, 0);
     while (offset != std::string::npos)
     {
+        const size_t startPos = offset;
         size_t lastEol = text.find_last_of('\n', offset);
         if (lastEol == std::string::npos) lastEol = 0;
 
         const std::string before = text.substr(lastEol, offset - lastEol);
-        if (!CppTools::String::stringIsWhitespace(before)) continue;
+        if (!CppTools::String::stringIsWhitespace(before))
+        {
+            std::cout << "ShaderBuilder: ignored include directive as non "
+                         "whitespace characters are present on the same line "
+                         "before the start of the directive." << std::endl;
+    
+            offset = text.find(IncludeStringStart, offset);
+            continue;
+        }
 
         offset += IncludeStringStart.size();
         const size_t eol = text.find('\n', offset);
 
         // Length of the string starting after the directive head,
         // going down to the next EOL, or end of the string altogether
-        const size_t len = (eol != std::string::npos) ?
+        const size_t argLength = (eol != std::string::npos) ?
             eol - offset :
-            std::string::npos;
+            text.size() - offset;
 
-        std::string includeArgument = text.substr(offset, len);
+        std::string includeArgument = text.substr(offset, argLength);
         CppTools::String::trim(includeArgument);
 
         const char firstDelimiter = includeArgument[0];
@@ -337,44 +360,15 @@ std::unordered_set<std::string> ShaderBuilder::_FindIncludeDirectivesInSource(st
             const std::string s = "Badly formatted #include directive: argument \"" + includeArgument + "\" is illegal.";
             throw std::runtime_error(s.c_str());
         }
-        includeDirectives.insert(includeArgument);
+        includeArguments.push_back({
+            includeArgument,
+            {startPos, IncludeStringStart.size() + argLength}
+        });
 
         offset = text.find(IncludeStringStart, offset);
     }
 
-    if (recursive)
-    {
-        for (auto it = includeDirectives.begin(); it != includeDirectives.end(); it++)
-        {
-            // Retrieve filename for include directive
-            auto jt = _IncludeFilenames().find(*it);
-            if (jt == _IncludeFilenames().end())
-            {
-                const std::string s = "ShaderBuilder: missing info about include directive \"" + *it + "\", "
-                    "cannot recursively find include directives.";
-
-                throw std::runtime_error(s.c_str());
-            }
-
-            const std::string all = CppTools::String::readFileIntoString(jt->second);
-            std::unordered_set<std::string> newIncludeDirectives = _FindIncludeDirectivesInSource(all, true);
-
-            // Add them all to the current include directives
-            includeDirectives.merge(newIncludeDirectives);
-        }
-    }
-
-    return includeDirectives;
-}
-
-void ShaderBuilder::_MakeNamedString(const std::string& name, const std::string& sourceFilename)
-{
-    std::string all = CppTools::String::readFileIntoString(sourceFilename);
-	const char* source = all.c_str();
-
-    glNamedStringARB(GL_SHADER_INCLUDE_ARB, -1, name.c_str(), -1, source);
-
-    _namedStringLoadStatus[name] = true;
+    return includeArguments;
 }
 
 std::vector<ShaderFeature> ShaderBuilder::_AggregateShaderFeatures(const std::vector<Shader>& shaders)
