@@ -170,7 +170,7 @@ private:
     /// @exception If an #include directive is found to be badly formatted,
     /// the function will throw an std::runtime_error.
     static std::vector<std::pair<std::string, std::pair<size_t, size_t>>>
-    _LocateIncludeDirectivesInSource(std::string text);
+    _LocateIncludeDirectivesInSource(std::string& text);
 
     /// @brief Append the features supported by a shader to an array.
     ///

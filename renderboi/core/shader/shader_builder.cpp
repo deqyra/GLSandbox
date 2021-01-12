@@ -121,7 +121,7 @@ ShaderProgram ShaderBuilder::LinkShaders(const std::vector<Shader>& shaders)
 
 Shader ShaderBuilder::BuildShaderStageFromConfig(const ShaderStage stage, const ShaderConfig& config, const bool dumpSource)
 {
-    const std::vector<ShaderFeature> requested = _FilterFeaturesByStage(config.getRequestedFeatures(), stage);
+    const std::vector<ShaderFeature> requestedFeatures = _FilterFeaturesByStage(config.getRequestedFeatures(), stage);
 
     auto it = _StageTemplatePaths().find(stage);
     if (it == _StageTemplatePaths().end())
@@ -143,14 +143,14 @@ Shader ShaderBuilder::BuildShaderStageFromConfig(const ShaderStage stage, const 
     // requested features
 	std::string source = _GenerateVersionDirective()
         + _GenerateExtensionDirectives()
-        + _GenerateDefineDirectives(requested);
+        + _GenerateDefineDirectives(requestedFeatures);
 
     // Add all file contents
 	std::string line;
 	while (std::getline(file, line))
 		source += line + "\n";
 
-    return BuildShaderStageFromText(stage, source, requested, dumpSource);
+    return BuildShaderStageFromText(stage, source, requestedFeatures, dumpSource);
 }
 
 Shader ShaderBuilder::BuildShaderStageFromFile(
@@ -181,7 +181,7 @@ Shader ShaderBuilder::BuildShaderStageFromFile(
         if (it != _FeaturesSupportedByFile().end())
             return BuildShaderStageFromText(stage, source, it->second);
     }
-
+    // else
     return BuildShaderStageFromText(stage, source, supportedFeatures);
 }
 
@@ -198,8 +198,8 @@ Shader ShaderBuilder::BuildShaderStageFromText(
     auto it = _ShaderStageMacros().find(stage);
     if (it == _ShaderStageMacros().end())
     {
-        const std::string s = "ShaderBuilder: Unknown requested shader stage \"" + to_string(stage) + "\" "
-            "(" + to_string((unsigned int) stage) + ").";
+        const std::string s = "ShaderBuilder: Unknown requested shader stage "
+            "\"" + to_string(stage) + "\" (" + to_string((unsigned int) stage) + ").";
 
         throw std::runtime_error(s.c_str());
     }
@@ -267,11 +267,16 @@ void ShaderBuilder::_ProcessIncludeDirectives(std::string& text)
     std::vector<std::pair<std::string, std::pair<size_t, size_t>>>
     includeArguments = _LocateIncludeDirectivesInSource(text);
     
-    // Process arguments in reverse, in order to preserve lower positions in the
-    // string as substrings are progressively being replaced.
-    for (auto it = includeArguments.rbegin(); it != includeArguments.rend(); it++)
+    while (includeArguments.size() > 0)
     {
-        text.replace(it->second.first, it->second.second, _GetIncludeString(it->first));
+        // Process arguments in reverse, in order to preserve lower positions in the
+        // string as substrings are progressively being replaced.
+        for (auto it = includeArguments.rbegin(); it != includeArguments.rend(); it++)
+        {
+            text.replace(it->second.first, it->second.second, _GetIncludeString(it->first));
+        }
+
+        includeArguments = _LocateIncludeDirectivesInSource(text);
     }
 }
 
@@ -300,7 +305,7 @@ std::string ShaderBuilder::_GetIncludeString(const std::string& arg)
 }
 
 std::vector<std::pair<std::string, std::pair<size_t, size_t>>>
-ShaderBuilder::_LocateIncludeDirectivesInSource(std::string text)
+ShaderBuilder::_LocateIncludeDirectivesInSource(std::string& text)
 {
     static const std::string IncludeStringStart = "#include";
     std::vector<std::pair<std::string, std::pair<size_t, size_t>>> includeArguments;
@@ -465,7 +470,7 @@ ShaderBuilder::_ShadingLanguageExtensions()
 
     if (!runOnce)
     {
-        map["GL_ARB_shading_language_include"] = "require";
+        // map["GL_ARB_shading_language_include"] = "require";
 
         runOnce = true;
     }
