@@ -21,7 +21,7 @@ endif()
 option(BUILD_STATIC_LIBS "Build libraries as static libraries" OFF)
 option(BUILD_RELEASE "Whether to build for a debug or release profile" OFF)
 
-if(${BUILD_STATIC_LIBS})
+if(${BUILD_STATIC_LIBS} OR WIN32)
     set(STATIC_OR_SHARED "STATIC")
 else()
     set(STATIC_OR_SHARED "SHARED")

@@ -60,12 +60,10 @@ EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 		#define _BEGIN_EXTERN_C extern "C" {
 		#define _END_EXTERN_C }
 		#define _GETOPT_THROW throw()
-		#pragma message("CACA")
 	#else
 		#define _BEGIN_EXTERN_C
 		#define _END_EXTERN_C
 		#define _GETOPT_THROW
-		#pragma message("KIKI")
 	#endif
 
 	// Standard GNU options

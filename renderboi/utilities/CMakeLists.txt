@@ -12,13 +12,13 @@ add_library(${RB_UTILITIES_LIB_NAME} ${STATIC_OR_SHARED}
     ${RB_UTILITIES_SOURCE_FILES}
 )
 add_dependencies(${RB_UTILITIES_LIB_NAME}
+    "${CPPTOOLS_LIB_NAME}_source"
     "export_${GLAD_LIB_NAME}_lib"
     "export_${GLAD_LIB_NAME}_headers"
 )
 target_include_directories(${RB_UTILITIES_LIB_NAME} PUBLIC ${EXPORT_LOCATION}/include)
 target_link_directories(${RB_UTILITIES_LIB_NAME} PUBLIC ${EXPORT_LOCATION}/lib)
 target_link_libraries(${RB_UTILITIES_LIB_NAME} PUBLIC ${CMAKE_DL_LIBS}
-    ${STB_IMAGE_LIB_NAME}
     ${GLAD_LIB_NAME}
     ${CPPTOOLS_LIB_NAME}
 )
