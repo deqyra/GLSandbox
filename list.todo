@@ -104,7 +104,12 @@ RenderBoi:
         ✔ Doc @done(20-10-26 01:49)
         ✔ Allow selection of window backend with an enum and templated methods @done(20-10-26 02:12)
         ✔ Move functionality to get input action/button names (used in BasicInputManager) @done(20-12-25 16:00)
-        ☐ Fully support gamepad (and maybe joysticks)
+        ☐ Update concrete window instantiation mechanisms?
+        Gamepad:
+            ☐ Support gamepad
+            ☐ Update input logger
+            ☐ Add a gamepad input splitter
+        ☐ Stop rendering when the window loses focus / is minimized
         InputProcessor:
             ☐ Think about breaking the interface apart for performance
         ☐ Implement an input poll rate limiter

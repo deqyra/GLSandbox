@@ -8,7 +8,7 @@ namespace Renderboi
 std::unordered_map<ResourceType, std::filesystem::path>
 ResourceLocator::_resourceLocationPrefixes = std::unordered_map<ResourceType, std::filesystem::path>();
 
-void ResourceLocator::setPrefixFor(ResourceType what, std::string prefix)
+void ResourceLocator::setPrefixFor(const ResourceType what, const std::string& prefix)
 {
     if (prefix == "")
     {
@@ -19,7 +19,7 @@ void ResourceLocator::setPrefixFor(ResourceType what, std::string prefix)
     _resourceLocationPrefixes[what] = std::filesystem::absolute(prefix);
 }
 
-void ResourceLocator::setPrefixFor(ResourceType what, std::filesystem::path prefix)
+void ResourceLocator::setPrefixFor(const ResourceType what, const std::filesystem::path& prefix)
 {
     if (prefix.empty())
     {
@@ -30,7 +30,7 @@ void ResourceLocator::setPrefixFor(ResourceType what, std::filesystem::path pref
     _resourceLocationPrefixes[what] = std::filesystem::absolute(prefix);
 }
 
-std::string ResourceLocator::locate(ResourceType type, std::string filename)
+std::string ResourceLocator::locate(const ResourceType type, const std::string& filename)
 {
     auto it = _resourceLocationPrefixes.find(type);
     if (it == _resourceLocationPrefixes.end())

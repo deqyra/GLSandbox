@@ -9,13 +9,13 @@
 #include "renderboi_parameters.hpp"
 
 // Halt the execution with a clean exit
-int abortWithError(std::string message, bool terminateBackend = true);
+int abortWithError(const std::string& message, const bool terminateBackend = true);
 
 // Instantiate all available sandboxes
 std::vector<Renderboi::GLSandbox*> createAllSandboxes();
 
 // Process command line arguments and parse parameters
-bool processArguments(int argc, char** argv, RenderboiParameters& dest);
+bool processArguments(const int argc, char* const* argv, RenderboiParameters& dest);
 
 // Print usage message and exit cleanly
 void printHelp();

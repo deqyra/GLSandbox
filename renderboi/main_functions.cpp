@@ -21,7 +21,7 @@
 namespace rb = Renderboi;
 namespace fs = std::filesystem;
 
-int abortWithError(std::string message, bool terminateBackend)
+int abortWithError(const std::string& message, const bool terminateBackend)
 {
 	std::cerr << message;
 	if (terminateBackend)
@@ -50,7 +50,7 @@ std::vector<rb::GLSandbox*> createAllSandboxes()
     return std::vector<rb::GLSandbox*>();
 }
 
-bool processArguments(int argc, char** argv, RenderboiParameters& dest)
+bool processArguments(const int argc, char* const* argv, RenderboiParameters& dest)
 {
     static option cliOptions[] = {
         {"assets", required_argument, nullptr, 'a'}
