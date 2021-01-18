@@ -7,6 +7,7 @@
 
 #include "enums.hpp"
 #include "input_processor.hpp"
+#include "gamepad/gamepad_manager.hpp"
 
 namespace Renderboi
 {
@@ -118,6 +119,11 @@ public:
     /// @param x [Output parameter] The X coordinate of the cursor.
     /// @param y [Output parameter] The Y coordinate of the cursor.
     virtual void getCursorPos(double& x, double& y) const = 0;
+
+    /// @brief Get a gamepad plugged into a certain slot.
+    ///
+    /// @param slot Virtual slot where to find the controller to manager.
+    virtual GamepadManagerPtr getGamepadManager(Window::Input::Joystick slot) const = 0;
 
 protected:
     /// @brief Default input processor of all windows.

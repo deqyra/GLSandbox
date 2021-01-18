@@ -204,7 +204,8 @@ namespace Window
             Middle = B3
         };
 
-        /// @brief Collection of literals describing the buttons on a joystick.
+        /// @brief Collection of literals describing hardware joysticks that can
+        /// be reached and polled.
         enum class Joystick : unsigned int
         {
             J1,
@@ -231,37 +232,37 @@ namespace Window
             /// gamepad (XBox, DualShock, etc).
             enum class Button : unsigned int
             {
-                A,
-                B,
-                X,
-                Y,
-                LeftBumper,
-                RightBumper,
-                Select,
-                Start,
-                Home,
-                LeftThumb,
-                RightThumb,
-                DPadUp,
-                DPadRight,
-                DPadDown,
-                DPadLeft,
-                Cross = A,
-                Circle = B,
-                Square = X,
-                Triangle = Y
+                A           = 0x0,
+                B           = 0x1,
+                X           = 0x2,
+                Y           = 0x3,
+                LeftBumper  = 0x4,
+                RightBumper = 0x5,
+                DPadUp      = 0x6,
+                DPadRight   = 0x7,
+                DPadDown    = 0x8,
+                DPadLeft    = 0x9,
+                LeftThumb   = 0xA,
+                RightThumb  = 0xB,
+                Select      = 0xC,
+                Start       = 0xD,
+                Home        = 0xE,
+                Cross       = A,
+                Circle      = B,
+                Square      = X,
+                Triangle    = Y
             };
 
             /// @brief Collection of literals describing the continous input 
             /// controllers on a modern gamepad.
             enum class Axis : unsigned int
             {
-                LeftX,
-                LeftY,
-                RightX,
-                RightY,
-                LeftTrigger,
-                RightTrigger
+                LeftX           = 0x0,
+                LeftY           = 0x1,
+                RightX          = 0x2,
+                RightY          = 0x3,
+                LeftTrigger     = 0x4,
+                RightTrigger    = 0x5
             };
         }
     }
