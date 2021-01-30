@@ -22,12 +22,12 @@ account.
   * an OpenGL 4.2-capable environment;
   * a C++20-compliant compiler.
 * GL extensions used:
-  * `GL_ARB_debug_output`;
-  * `GL_ARB_shading_language_include`.
+  * `GL_ARB_debug_output`.
 * I am still figuring out cross-platformability. If the project does not work
 on your setup, please file an issue with details so I can have a look at it.
 * Original development environments:
   * **Windows 10** / Nvidia GeForce GTX 1650 Ti
+  * **Windows 10** / Intel (Core i7 10610U) UHD Graphics
   * **Arch Linux** (kernel 5.6.15) / **GNOME with Wayland** (EGL backend) / Nvidia GeForce GT630M
 * Here are links to some UML diagrams which give a decent overview of how everything adds up:
   * [Package diagram][pkg_diag]

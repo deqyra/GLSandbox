@@ -48,8 +48,19 @@ endif()
 
 set(CMAKE_CXX_STANDARD 20)
 
-if(UNIX)
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g")
+if (NOT ${BUILD_RELEASE})
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        # using Clang
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -g -O0")
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+        # using Intel C++
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /Od")
+    endif()
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCC)
 endif()
 
 # set(CMAKE_CXX_COMPILER_WORKS 1)
