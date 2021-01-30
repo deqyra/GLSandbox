@@ -257,7 +257,6 @@ void ShadowSandbox::run(const GLWindowPtr window)
 
     splitter->detachAllInputProcessors();
     Factory::DestroyScene(scene);
-    scene.reset();
 
     // Reset everything back to how it was
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::NormalCursor);
