@@ -54,7 +54,7 @@ public:
     ///
     /// @exception If a gamepad cannot be found on the provided slot, the 
     /// function will throw an std::runtime_error.
-    virtual GamepadPtr getGamepad(Joystick slot) const = 0;
+    virtual GamepadPtr getGamepad(Joystick slot) = 0;
 
     /// @brief Enable polling the state for a gamepad. May be called from any
     /// thread.

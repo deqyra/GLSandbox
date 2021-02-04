@@ -18,22 +18,22 @@ GamepadInputProcessor::GamepadInputProcessor() :
 
 }
 
-void GamepadInputProcessor::processConnected()
+void GamepadInputProcessor::processConnected(const Joystick slot)
 {
 
 }
 
-void GamepadInputProcessor::processDisconnected()
+void GamepadInputProcessor::processDisconnected(const Joystick slot)
 {
 
 }
 
-void GamepadInputProcessor::processButton(const Window::Input::Gamepad::Button button, const Window::Input::Action action)
+void GamepadInputProcessor::processButton(const Joystick slot, const Window::Input::Gamepad::Button button, const Window::Input::Action action)
 {
 
 }
 
-void GamepadInputProcessor::processAxis(const Window::Input::Gamepad::Axis axis, const float value)
+void GamepadInputProcessor::processAxis(const Joystick slot, const Window::Input::Gamepad::Axis axis, const float value)
 {
 
 }

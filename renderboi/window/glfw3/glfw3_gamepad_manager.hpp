@@ -1,10 +1,15 @@
 #ifndef RENDERBOI__WINDOW__GLFW3__GLFW3_GAMEPAD_MANAGER_HPP
 #define RENDERBOI__WINDOW__GLFW3__GLFW3_GAMEPAD_MANAGER_HPP
 
-#include "../gamepad/gamepad_manager.hpp"
-
 #include <atomic>
 #include <vector>
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#undef GLFW_INCLUDE_NONE
+
+#include "../enums.hpp"
+#include "../gamepad/gamepad_manager.hpp"
 
 namespace Renderboi
 {
@@ -22,6 +27,9 @@ private:
     /// them is enabled.
     mutable std::map<Window::Input::Joystick, std::atomic<bool>> _enabledGamepads;
 
+    /// @brief Get a Renderboi gamepad state from a GLFW3 gamepad state.
+    ///
+    /// @param glfwState GLFW gamepad state to convert to a Renderboi gamepad state.
     static GamepadState _GamepadStateFromGlfwGamepadState(const GLFWgamepadstate& glfwState);
 
 public:
@@ -64,7 +72,7 @@ public:
     ///
     /// @exception If a gamepad cannot be found on the provided slot, the 
     /// function will throw an std::runtime_error.
-    GamepadPtr getGamepad(Joystick slot) const override;
+    GamepadPtr getGamepad(Joystick slot) override;
 
     /// @brief Enable polling the state for a gamepad. May be called from any
     /// thread.

@@ -100,7 +100,7 @@ unsigned int Material::setDiffuseMaps(const std::vector<Texture2D> diffuseMaps)
     unsigned int size = (unsigned int) diffuseMaps.size();
     if (size > DiffuseMapMaxCount)
     {
-        std::string s = "Material: cannot set diffuse maps to array of size " + to_string(size) + ".";
+        std::string s = "Material: cannot set diffuse maps to array of size " + std::to_string(size) + ".";
         throw UnmatchedArraySizeError(s);
     }
 
@@ -113,7 +113,7 @@ unsigned Material::setSpecularMaps(const std::vector<Texture2D> specularMaps)
     unsigned int size = (unsigned int) specularMaps.size();
     if (size >= SpecularMapMaxCount)
     {
-        std::string s = "Material: cannot set specular maps to array of size " + to_string(size) + ".";
+        std::string s = "Material: cannot set specular maps to array of size " + std::to_string(size) + ".";
         throw UnmatchedArraySizeError(s);
     }
 

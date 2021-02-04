@@ -33,6 +33,27 @@ void InputSplitter::detachAllInputProcessors()
     _subscribers.clear();
 }
 
+unsigned int InputSplitter::registerGamepadInputProcessor(GamepadInputProcessorPtr inputProcessor)
+{
+    if (!inputProcessor)
+    {
+        throw std::runtime_error("InputSplitter: cannot register null input processor pointer.");
+    }
+
+    _gamepadSubscribers[_subscriberRollingCount] = inputProcessor;
+    return _subscriberRollingCount++;
+}
+
+void InputSplitter::detachGamepadInputProcessor(unsigned int subscriptionId)
+{
+    _gamepadSubscribers.erase(subscriptionId);
+}
+
+void InputSplitter::detachAllIGamepadnputProcessors()
+{
+    _gamepadSubscribers.clear();
+}
+
 void InputSplitter::processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height)
 {
     for (auto it = _subscribers.begin(); it != _subscribers.end(); it++)
@@ -43,9 +64,9 @@ void InputSplitter::processFramebufferResize(const GLWindowPtr window, const uns
 
 void InputSplitter::processKeyboard(
     const GLWindowPtr window, 
-    const Window::Input::Key key, 
+    const Key key, 
     const int scancode, 
-    const Window::Input::Action action, 
+    const Action action, 
     const int mods
 )
 {
@@ -57,8 +78,8 @@ void InputSplitter::processKeyboard(
 
 void InputSplitter::processMouseButton(
     const GLWindowPtr window, 
-    const Window::Input::MouseButton button, 
-    const Window::Input::Action action, 
+    const MButton button, 
+    const Action action, 
     const int mods
 )
 {
@@ -73,6 +94,38 @@ void InputSplitter::processMouseCursor(const GLWindowPtr window, const double xp
     for (auto it = _subscribers.begin(); it != _subscribers.end(); it++)
     {
         it->second->processMouseCursor(window, xpos, ypos);
+    }
+}
+
+void InputSplitter::processConnected(const Joystick slot)
+{
+    for (auto it = _gamepadSubscribers.begin(); it != _gamepadSubscribers.end(); it++)
+    {
+        it->second->processConnected(slot);
+    }
+}
+
+void InputSplitter::processDisconnected(const Joystick slot)
+{
+    for (auto it = _gamepadSubscribers.begin(); it != _gamepadSubscribers.end(); it++)
+    {
+        it->second->processDisconnected(slot);
+    }
+}
+
+void InputSplitter::processButton(const Joystick slot, const GButton button, const Action action)
+{
+    for (auto it = _gamepadSubscribers.begin(); it != _gamepadSubscribers.end(); it++)
+    {
+        it->second->processButton(slot, button, action);
+    }
+}
+
+void InputSplitter::processAxis(const Joystick slot, const Axis axis, const float value)
+{
+    for (auto it = _gamepadSubscribers.begin(); it != _gamepadSubscribers.end(); it++)
+    {
+        it->second->processAxis(slot, axis, value);
     }
 }
 

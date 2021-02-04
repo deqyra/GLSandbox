@@ -75,7 +75,7 @@ GamepadInputProcessorPtr Gamepad::getInputProcessor() const
     return _inputProcessor;
 }
 
-void Gamepad::setInputProcessor(const GamepadInputProcessorPtr inputProcessor)
+void Gamepad::registerInputProcessor(const GamepadInputProcessorPtr inputProcessor)
 {
     _inputProcessor = inputProcessor;
     if (_inputProcessor == nullptr)
@@ -132,12 +132,12 @@ const std::unordered_map<Axis, float>& Gamepad::AxisRestValues()
 
 void Gamepad::_processConnected()
 {
-    _inputProcessor->processConnected();
+    _inputProcessor->processConnected(slot);
 }
 
 void Gamepad::_processDisconnected()
 {
-    _inputProcessor->processDisconnected();
+    _inputProcessor->processDisconnected(slot);
 }
 
 void Gamepad::_setNewState(const GamepadState newState)
@@ -153,106 +153,106 @@ void Gamepad::_compareAndFireEvents(const GamepadState& before, const GamepadSta
     if (before.A != after.A)
     {
         after.A
-            ? _inputProcessor->processButton(Button::A, Action::Press)
-            : _inputProcessor->processButton(Button::A, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::A, Action::Press)
+            : _inputProcessor->processButton(slot, Button::A, Action::Release);
     }
 
     if (before.B != after.B)
     {
         after.B
-            ? _inputProcessor->processButton(Button::B, Action::Press)
-            : _inputProcessor->processButton(Button::B, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::B, Action::Press)
+            : _inputProcessor->processButton(slot, Button::B, Action::Release);
     }
 
     if (before.X != after.X)
     {
         after.X
-            ? _inputProcessor->processButton(Button::X, Action::Press)
-            : _inputProcessor->processButton(Button::X, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::X, Action::Press)
+            : _inputProcessor->processButton(slot, Button::X, Action::Release);
     }
 
     if (before.Y != after.Y)
     {
         after.Y
-            ? _inputProcessor->processButton(Button::Y, Action::Press)
-            : _inputProcessor->processButton(Button::Y, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::Y, Action::Press)
+            : _inputProcessor->processButton(slot, Button::Y, Action::Release);
     }
 
     if (before.LeftBumper != after.LeftBumper)
     {
         after.LeftBumper
-            ? _inputProcessor->processButton(Button::LeftBumper, Action::Press)
-            : _inputProcessor->processButton(Button::LeftBumper, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::LeftBumper, Action::Press)
+            : _inputProcessor->processButton(slot, Button::LeftBumper, Action::Release);
     }
 
     if (before.RightBumper != after.RightBumper)
     {
         after.RightBumper
-            ? _inputProcessor->processButton(Button::RightBumper, Action::Press)
-            : _inputProcessor->processButton(Button::RightBumper, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::RightBumper, Action::Press)
+            : _inputProcessor->processButton(slot, Button::RightBumper, Action::Release);
     }
 
     if (before.DPadUp != after.DPadUp)
     {
         after.DPadUp
-            ? _inputProcessor->processButton(Button::DPadUp, Action::Press)
-            : _inputProcessor->processButton(Button::DPadUp, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::DPadUp, Action::Press)
+            : _inputProcessor->processButton(slot, Button::DPadUp, Action::Release);
     }
 
     if (before.DPadRight != after.DPadRight)
     {
         after.DPadRight
-            ? _inputProcessor->processButton(Button::DPadRight, Action::Press)
-            : _inputProcessor->processButton(Button::DPadRight, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::DPadRight, Action::Press)
+            : _inputProcessor->processButton(slot, Button::DPadRight, Action::Release);
     }
 
     if (before.DPadDown != after.DPadDown)
     {
         after.DPadDown
-            ? _inputProcessor->processButton(Button::DPadDown, Action::Press)
-            : _inputProcessor->processButton(Button::DPadDown, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::DPadDown, Action::Press)
+            : _inputProcessor->processButton(slot, Button::DPadDown, Action::Release);
     }
 
     if (before.DPadLeft != after.DPadLeft)
     {
         after.DPadLeft
-            ? _inputProcessor->processButton(Button::DPadLeft, Action::Press)
-            : _inputProcessor->processButton(Button::DPadLeft, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::DPadLeft, Action::Press)
+            : _inputProcessor->processButton(slot, Button::DPadLeft, Action::Release);
     }
 
     if (before.LeftThumb != after.LeftThumb)
     {
         after.LeftThumb
-            ? _inputProcessor->processButton(Button::LeftThumb, Action::Press)
-            : _inputProcessor->processButton(Button::LeftThumb, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::LeftThumb, Action::Press)
+            : _inputProcessor->processButton(slot, Button::LeftThumb, Action::Release);
     }
 
     if (before.RightThumb != after.RightThumb)
     {
         after.RightThumb
-            ? _inputProcessor->processButton(Button::RightThumb, Action::Press)
-            : _inputProcessor->processButton(Button::RightThumb, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::RightThumb, Action::Press)
+            : _inputProcessor->processButton(slot, Button::RightThumb, Action::Release);
     }
 
     if (before.Start != after.Start)
     {
         after.Start
-            ? _inputProcessor->processButton(Button::Start, Action::Press)
-            : _inputProcessor->processButton(Button::Start, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::Start, Action::Press)
+            : _inputProcessor->processButton(slot, Button::Start, Action::Release);
     }
 
     if (before.Select != after.Select)
     {
         after.Select
-            ? _inputProcessor->processButton(Button::Select, Action::Press)
-            : _inputProcessor->processButton(Button::Select, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::Select, Action::Press)
+            : _inputProcessor->processButton(slot, Button::Select, Action::Release);
     }
 
     if (before.Home != after.Home)
     {
         after.Home
-            ? _inputProcessor->processButton(Button::Home, Action::Press)
-            : _inputProcessor->processButton(Button::Home, Action::Release);
+            ? _inputProcessor->processButton(slot, Button::Home, Action::Press)
+            : _inputProcessor->processButton(slot, Button::Home, Action::Release);
     }
 
     bool dead = true;
@@ -261,66 +261,66 @@ void Gamepad::_compareAndFireEvents(const GamepadState& before, const GamepadSta
     if (!_axisWasInDeadZone[Axis::LeftX] && dead)
     {
         _axisWasInDeadZone[Axis::LeftX] = true;
-        _inputProcessor->processAxis(Axis::LeftX, AxisRestValues().at(Axis::LeftX));
+        _inputProcessor->processAxis(slot, Axis::LeftX, AxisRestValues().at(Axis::LeftX));
     }
     else if (!dead && (before.LeftX != after.LeftX))
     {
-        _inputProcessor->processAxis(Axis::LeftX, after.LeftX);
+        _inputProcessor->processAxis(slot, Axis::LeftX, after.LeftX);
     }
 
     dead = _valueIsInAxisDeadZone(after.LeftY, Axis::LeftY);
     if (!_axisWasInDeadZone[Axis::LeftY] && dead)
     {
         _axisWasInDeadZone[Axis::LeftY] = true;
-        _inputProcessor->processAxis(Axis::LeftY, AxisRestValues().at(Axis::LeftY));
+        _inputProcessor->processAxis(slot, Axis::LeftY, AxisRestValues().at(Axis::LeftY));
     }
     else if (!dead && (before.LeftY != after.LeftY))
     {
-        _inputProcessor->processAxis(Axis::LeftY, after.LeftY);
+        _inputProcessor->processAxis(slot, Axis::LeftY, after.LeftY);
     }
 
     dead = _valueIsInAxisDeadZone(after.RightX, Axis::RightX);
     if (!_axisWasInDeadZone[Axis::RightX] && dead)
     {
         _axisWasInDeadZone[Axis::RightX] = true;
-        _inputProcessor->processAxis(Axis::RightX, AxisRestValues().at(Axis::RightX));
+        _inputProcessor->processAxis(slot, Axis::RightX, AxisRestValues().at(Axis::RightX));
     }
     else if (!dead && (before.RightX != after.RightX))
     {
-        _inputProcessor->processAxis(Axis::RightX, after.RightX);
+        _inputProcessor->processAxis(slot, Axis::RightX, after.RightX);
     }
 
     dead = _valueIsInAxisDeadZone(after.RightY, Axis::RightY);
     if (!_axisWasInDeadZone[Axis::RightY] && dead)
     {
         _axisWasInDeadZone[Axis::RightY] = true;
-        _inputProcessor->processAxis(Axis::RightY, AxisRestValues().at(Axis::RightY));
+        _inputProcessor->processAxis(slot, Axis::RightY, AxisRestValues().at(Axis::RightY));
     }
     else if (!dead && (before.RightY != after.RightY))
     {
-        _inputProcessor->processAxis(Axis::RightY, after.RightY);
+        _inputProcessor->processAxis(slot, Axis::RightY, after.RightY);
     }
 
     dead = _valueIsInAxisDeadZone(after.LeftTrigger, Axis::LeftTrigger);
     if (!_axisWasInDeadZone[Axis::LeftTrigger] && dead)
     {
         _axisWasInDeadZone[Axis::LeftTrigger] = true;
-        _inputProcessor->processAxis(Axis::LeftTrigger, AxisRestValues().at(Axis::LeftTrigger));
+        _inputProcessor->processAxis(slot, Axis::LeftTrigger, AxisRestValues().at(Axis::LeftTrigger));
     }
     else if (!dead && (before.LeftTrigger != after.LeftTrigger))
     {
-        _inputProcessor->processAxis(Axis::LeftTrigger, after.LeftTrigger);
+        _inputProcessor->processAxis(slot, Axis::LeftTrigger, after.LeftTrigger);
     }
 
     dead = _valueIsInAxisDeadZone(after.RightTrigger, Axis::RightTrigger);
     if (!_axisWasInDeadZone[Axis::RightTrigger] && dead)
     {
         _axisWasInDeadZone[Axis::RightTrigger] = true;
-        _inputProcessor->processAxis(Axis::RightTrigger, AxisRestValues().at(Axis::RightTrigger));
+        _inputProcessor->processAxis(slot, Axis::RightTrigger, AxisRestValues().at(Axis::RightTrigger));
     }
     else if (!dead && (before.RightTrigger != after.RightTrigger))
     {
-        _inputProcessor->processAxis(Axis::RightTrigger, after.RightTrigger);
+        _inputProcessor->processAxis(slot, Axis::RightTrigger, after.RightTrigger);
     }
 }
 

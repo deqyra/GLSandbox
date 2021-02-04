@@ -45,7 +45,23 @@ void ShadowSandbox::setUp(const GLWindowPtr window)
 
     // Remove cursor from window
     namespace InputMode = Window::Input::Mode;
-    window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
+//    window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
+
+    using Joystick = Window::Input::Joystick;
+    GamepadManagerPtr gManager = window->getGamepadManager();
+    std::vector<Joystick> presentGamepads = gManager->pollPresentGamepads();
+
+    if (presentGamepads.size())
+    {
+        _gamepad = gManager->getGamepad(presentGamepads[0]);
+        _gamepadPresent = true;
+        _gamepad->enable();
+    }
+    else
+    {
+        _gamepad = nullptr;
+        _gamepadPresent = false;
+    }
 }
 
 void ShadowSandbox::run(const GLWindowPtr window)
@@ -206,18 +222,25 @@ void ShadowSandbox::run(const GLWindowPtr window)
     // Instantiate an input logger
     InputLoggerPtr logger = std::make_shared<InputLogger>();
 
-    // Register the scene and the control translator to the splitter
+    // Register all input processors to the splitter
     InputSplitterPtr splitter = std::make_shared<InputSplitter>();
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraManager));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraAspectRatioManager));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(movementScript));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(keyboardScriptManager.getEventTranslator()));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEntity()));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEventTranslator()));
+
+    // Register the logger as both a classic input processor and a gamepad input processor
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));
+    splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(logger));
     
-    // Register the splitter to the window
+    // Register the splitter to the window and the gamepad
     window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
+    if (_gamepadPresent)
+    {
+        _gamepad->registerInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(splitter));
+    }
 
 
 

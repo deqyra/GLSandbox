@@ -16,6 +16,8 @@
 
 #include <renderboi/window/gl_window.hpp>
 #include <renderboi/window/input_processor.hpp>
+#include <renderboi/window/gamepad/gamepad.hpp>
+#include <renderboi/window/gamepad/gamepad_manager.hpp>
 
 namespace Renderboi
 {
@@ -25,6 +27,12 @@ class ShadowSandbox : public GLSandbox
     private:
         /// @brief Used to temporarily store the original title of the window.
         std::string _title;
+
+        /// @brief Pointer to a gamepad instace.
+        GamepadPtr _gamepad;
+        
+        /// @brief Whether or not a gamepad could be retrieved.
+        bool _gamepadPresent;
 
     public:
         static constexpr float LightBaseRange = 10.f;

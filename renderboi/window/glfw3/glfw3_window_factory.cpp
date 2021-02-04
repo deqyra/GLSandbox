@@ -34,6 +34,8 @@ int WindowFactory<WindowBackend::GLFW3>::InitializeBackend()
 
     glfwSetJoystickCallback(globalGlfwJoystickCallback);
     pollGamepads();
+
+    return result;
 }
 
 void WindowFactory<WindowBackend::GLFW3>::TerminateBackend()

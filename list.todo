@@ -70,6 +70,8 @@ RenderBoi:
             ☐ Forwarding methods to ShaderBuilder
         InputSplitter:
             ☐ Async dispatch of events
+        Logger:
+            ☐ Write a real logger, have the input logger use it
         Scene:
             ✔ In `moveObject`, add possibility to keep world position of moved object @done(20-10-13 14:49)
             ☐ Add something like `registerObjectTree(ScenePtr)` to import complex objects into a scene

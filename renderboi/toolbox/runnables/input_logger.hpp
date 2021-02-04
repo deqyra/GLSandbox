@@ -6,16 +6,30 @@
 #include <unordered_map>
 
 #include <renderboi/window/input_processor.hpp>
+#include <renderboi/window/gamepad/gamepad_input_processor.hpp>
 
 namespace Renderboi
 {
 
-class InputLogger : public InputProcessor
+class InputLogger : public InputProcessor, public GamepadInputProcessor
 {
 private:
+    using IEventType = InputProcessor::EventType;
+    using GEventType = GamepadInputProcessor::EventType;
+    using Key = Window::Input::Key;
+    using MButton = Window::Input::MouseButton;
+    using Joystick = Window::Input::Joystick;
+    using GButton = Window::Input::Gamepad::Button;
+    using Axis = Window::Input::Gamepad::Axis;
+    using Action = Window::Input::Action;
+
     /// @brief Structure telling whether events of a certain type should be
     /// logged.
-    std::unordered_map<InputProcessor::EventType, bool> _loggingStatus;
+    std::unordered_map<IEventType, bool> _inputLoggingStatus;
+
+    /// @brief Structure telling whether events of a certain type should be
+    /// logged.
+    std::unordered_map<GEventType, bool> _gamepadInputLoggingStatus;
 
     /// @brief Stream to which events should be logged. Very shady and prone
     /// to errors but will do for now.
@@ -29,13 +43,25 @@ public:
     ///
     /// @param eventType Litteral describing the type of the event for which
     /// to enable logging.
-    void enableEventLog(InputProcessor::EventType eventType);
+    void enableEventLog(IEventType eventType);
 
     /// @brief Disables logging for a certain type of input event.
     ///
     /// @param eventType Litteral describing the type of the event for which
     /// to disable logging.
-    void disableEventLog(InputProcessor::EventType eventType);
+    void disableEventLog(IEventType eventType);
+
+    /// @brief Enables logging for a certain type of input event.
+    ///
+    /// @param eventType Litteral describing the type of the event for which
+    /// to enable logging.
+    void enableEventLog(GEventType eventType);
+
+    /// @brief Disables logging for a certain type of input event.
+    ///
+    /// @param eventType Litteral describing the type of the event for which
+    /// to disable logging.
+    void disableEventLog(GEventType eventType);
 
     /// @brief Set the logging status for a certain type of input event: 
     /// enabled or disabled.
@@ -44,7 +70,16 @@ public:
     /// to set the logging status.
     /// @param enable Whether to enable or disable logging for the event 
     /// type.
-    void setEventLoggingStatus(InputProcessor::EventType eventType, bool enable);
+    void setEventLoggingStatus(IEventType eventType, bool enable);
+
+    /// @brief Set the logging status for a certain type of input event: 
+    /// enabled or disabled.
+    ///
+    /// @param eventType Litteral describing the type of the event for which
+    /// to set the logging status.
+    /// @param enable Whether to enable or disable logging for the event 
+    /// type.
+    void setEventLoggingStatus(GEventType eventType, bool enable);
 
     //////////////////////////////////////////////
     ///                                        ///
@@ -73,9 +108,9 @@ public:
     /// during the key event (Ctrl, Shift, etc).
     void processKeyboard(
         const GLWindowPtr window,
-        const Window::Input::Key key,
+        const Key key,
         const int scancode,
-        const Window::Input::Action action,
+        const Action action,
         const int mods
     ) override;
 
@@ -91,8 +126,8 @@ public:
     /// during the button event (Ctrl, Shift, etc).
     void processMouseButton(
         const GLWindowPtr window,
-        const Window::Input::MouseButton button,
-        const Window::Input::Action action,
+        const MButton button,
+        const Action action,
         const int mods
     ) override;
 
@@ -103,6 +138,33 @@ public:
     /// @param xpos X coordinate of the new position of the mouse.
     /// @param ypos Y coordinate of the new position of the mouse.
     void processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos) override;
+
+
+
+    /////////////////////////////////////////////////////
+    ///                                               ///
+    /// Methods overridden from GamepadInputProcessor ///
+    ///                                               ///
+    /////////////////////////////////////////////////////
+
+    /// @brief Callback for when the gamepad is connected.
+    void processConnected(const Joystick slot);
+
+    /// @brief Callback for when the gamepad is disconnected.
+    void processDisconnected(const Joystick slot);
+
+    /// @brief Callback for a gamepad button event.
+    ///
+    /// @param button Literal describing which key triggered the event.
+    /// @param action Literal describing what action was performed on
+    /// the button which triggered the event.
+    void processButton(const Joystick slot, const GButton button, const Action action);
+
+    /// @brief Callback for a gamepad axis event.
+    ///
+    /// @param axis Literal describing which axis triggered the event.
+    /// @param value Value at which the axis was polled.
+    void processAxis(const Joystick slot, const Axis axis, const float value);
 };
 
 using InputLoggerPtr = std::shared_ptr<InputLogger>;

@@ -151,7 +151,7 @@ void ControlSchemeManager<T>::bindControl(const Control control, const T action)
         {
             const std::string s = "ControlSchemeManager: cannot bind control " + to_string(control)
                         + " to action " + to_string(action) + ", as it already has "
-                        "the max number of bindings (" + to_string(_MaxControlsPerAction) + ").";
+                        "the max number of bindings (" + std::to_string(_MaxControlsPerAction) + ").";
 
             throw std::runtime_error(s.c_str());
         }

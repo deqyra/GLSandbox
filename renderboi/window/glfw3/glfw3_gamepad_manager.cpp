@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
+#include <renderboi/utilities/to_string.hpp>
+
 #include "../enums.hpp"
 #include "glfw3_adapter.hpp"
 
@@ -40,7 +42,7 @@ void GLFW3GamepadManager::gamepadDisconnected(Joystick slot) const
     }
 }
 
-std::vector<Window::Input::Joystick> GLFW3GamepadManager::pollPresentGamepads(bool mustBeUnused = true) const
+std::vector<Window::Input::Joystick> GLFW3GamepadManager::pollPresentGamepads(bool mustBeUnused) const
 {
     using Window::Input::Joysticks;
 
@@ -58,7 +60,7 @@ std::vector<Window::Input::Joystick> GLFW3GamepadManager::pollPresentGamepads(bo
     return result;
 }
 
-GamepadPtr GLFW3GamepadManager::getGamepad(Window::Input::Joystick slot) const
+GamepadPtr GLFW3GamepadManager::getGamepad(Window::Input::Joystick slot)
 {
     int jid = Window::GLFW3Adapter::getValue(slot);
     if (!glfwJoystickIsGamepad(jid))

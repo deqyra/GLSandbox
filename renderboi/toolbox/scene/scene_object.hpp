@@ -145,7 +145,7 @@ std::shared_ptr<T> SceneObject::addComponent(ArgTypes&& ... args)
     // unless specifically allowed by component type
     if (!Component::multipleInstancesAllowed<T>() && hasComponent<T>())
     {
-        const std::string s = "SceneObject: object with ID " + to_string(id) + " already has a component "
+        const std::string s = "SceneObject: object with ID " + std::to_string(id) + " already has a component "
             "of type " + Component::componentTypeString<T>() + " and cannot have another one.";
 
         throw std::runtime_error(s.c_str());

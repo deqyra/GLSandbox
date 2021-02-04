@@ -76,7 +76,7 @@ private:
 
 public:
     /// @param manager Pointer to the gamepad manager which the gamepad will be linked to.
-    Gamepad(const GamepadManagerPtr manager, const Window::Input::Joystick slot);
+    Gamepad(GamepadManagerPtr manager, const Window::Input::Joystick slot);
 
     /// @brief Enable polling the state of the gamepad.
     void enable();
@@ -116,7 +116,7 @@ public:
     ///
     /// @param inputProcessor A pointer to the entity which will receive gamepad
     /// events.
-    void setInputProcessor(const GamepadInputProcessorPtr inputProcessor);
+    void registerInputProcessor(const GamepadInputProcessorPtr inputProcessor);
 
     /// @brief Get the dead zone for an axis, a pair of values between which
     /// axis events are ignored and not being forwarded.

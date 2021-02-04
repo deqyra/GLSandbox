@@ -5,7 +5,7 @@
 
 namespace Renderboi
 {
-
+/*
 namespace adl_helper
 {
     using std::to_string;
@@ -22,7 +22,7 @@ std::string to_string(T&& t)
 {
     return adl_helper::as_string(std::forward<T>(t));
 }
-
+*/
 }//namespace Renderboi
 
 #endif//RENDERBOI__UTILITIES__TO_STRING_HPP

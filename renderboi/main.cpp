@@ -66,12 +66,15 @@ int main(int argc, char** argv)
 
     std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << '\n';
     std::cout << COPYRIGHT_NOTICE << '\n';
-	std::cout << MIT_LICENSE_NOTICE << std::endl;
+	std::cout << MIT_LICENSE_NOTICE << '\n' << std::endl;
 
 	AppWindowFactory::SetErrorCallback(UsedErrorCallback);
 
 	if (!AppWindowFactory::InitializeBackend())
+	{
+		std::cout << "Failed to initialize window backend. Aborting..." << std::endl;
 		return EXIT_FAILURE;
+	}
 
 	// Init window, GL context and GL pointers
 	rb::GLWindowPtr window;

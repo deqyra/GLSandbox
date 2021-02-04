@@ -49,7 +49,7 @@ ShaderProgram ShaderBuilder::BuildShaderProgramFromConfig(const ShaderConfig& co
         if (jt == FeatureStages().end())
         {
             const std::string s = "ShaderBuilder: cannot build shader program from config, feature "
-                "\"" + to_string(*it) + "\" (" + to_string((unsigned int) *it) + ") "
+                "\"" + to_string(*it) + "\" (" + std::to_string((unsigned int) *it) + ") "
                 "from unknown stage was requested.";
 
             throw std::runtime_error(s.c_str());
@@ -199,7 +199,7 @@ Shader ShaderBuilder::BuildShaderStageFromText(
     if (it == _ShaderStageMacros().end())
     {
         const std::string s = "ShaderBuilder: Unknown requested shader stage \"" + to_string(stage) + "\" "
-            "(" + to_string((unsigned int) stage) + ").";
+            "(" + std::to_string((unsigned int) stage) + ").";
 
         throw std::runtime_error(s.c_str());
     }
@@ -436,7 +436,7 @@ std::string ShaderBuilder::_DumpShaderSource(ShaderStage stage, const std::strin
 
 const std::string& ShaderBuilder::_GenerateVersionDirective()
 {
-    static const std::string s = "#version " + to_string(ShadingLanguageVersion) + " " + ShadingLanguageProfile + "\n";
+    static const std::string s = "#version " + std::to_string(ShadingLanguageVersion) + " " + ShadingLanguageProfile + "\n";
     return s;
 }
 
@@ -631,7 +631,7 @@ ShaderBuilder::_GenerateDefineDirectives(const std::vector<ShaderFeature>& featu
         {
             std::string s = "ShaderBuilder: cannot generate #define directive "
                 "for feature \"" + to_string(feature) + "\" "
-                "(" + to_string((unsigned int)(feature)) + ").";
+                "(" + std::to_string((unsigned int)(feature)) + ").";
 
             throw std::runtime_error(s.c_str());
         }
