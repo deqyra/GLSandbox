@@ -1,9 +1,13 @@
-#ifndef RENDERBOI__WINDOW__GLFW_WINDOW_CALLBACKS_HPP
-#define RENDERBOI__WINDOW__GLFW_WINDOW_CALLBACKS_HPP
+#ifndef RENDERBOI__WINDOW__GLFW3__GLFW3_UTILITIES_HPP
+#define RENDERBOI__WINDOW__GLFW3__GLFW3_UTILITIES_HPP
+
+#include <memory>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
+
+#include "../gl_window.hpp"
 
 namespace Renderboi
 {
@@ -64,6 +68,30 @@ void globalGlfwMouseCursorCallback(GLFWwindow* window, const double xpos, const 
 /// occurred.
 void globalGlfwErrorCallback(const int error, const char* description);
 
+/// @brief Subscribe a window to the event callback for when a joystick is 
+/// connected.
+///
+/// @param window Pointer to the window to subscribe.
+void subscribeToGlfwJoystickStatus(GLWindowPtr window);
+
+/// @brief Unsubscribe a window from the event callback for when a joystick is 
+/// connected.
+///
+/// @param window Pointer to the window to unsubscribe.
+void unsubscribeFromGlfwJoystickStatus(GLWindowPtr window);
+
+/// @brief Callback for a joystick status event. The event will be forwarded to
+/// all windows whiche were subscribed through subscribeToGlfwJoystickStatus().
+///
+/// @param jid ID of the joystick which was just (dis)connected from the system.
+/// @param event Value describing whether the joystick was connected or 
+/// disconnected. 
+void globalGlfwJoystickCallback(int jid, int event);
+
+/// @brief Poll all gamepads and initialize internal structures to keep track of
+/// those.
+void pollGamepads();
+
 }//namespace Renderboi
 
-#endif//RENDERBOI__WINDOW__GLFW_WINDOW_CALLBACKS_HPP
+#endif//RENDERBOI__WINDOW__GLFW3__GLFW3_UTILITIES_HPP
