@@ -4,6 +4,10 @@
 #include <thread>
 #include <vector>
 
+#ifdef _WIN32
+	#include <windows.h>
+#endif//_WIN32
+
 #include <renderboi/window/enums.hpp>
 #include <renderboi/window/window_factory.hpp>
 #include <renderboi/window/window_backend.hpp>
@@ -115,6 +119,9 @@ int main(int argc, char** argv)
 	// Destroy window by resetting what should be the only shared pointer to it
 	window.reset();
 	AppWindowFactory::TerminateBackend();
+
+	int* a = new int;
+	a[3] = 0;
 
 	return EXIT_SUCCESS;
 }

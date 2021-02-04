@@ -78,6 +78,14 @@ public:
     /// @param x [Output parameter] The X coordinate of the cursor.
     /// @param y [Output parameter] The Y coordinate of the cursor.
     void getCursorPos(double& x, double& y) const override;
+
+    /// @brief Make the GL context current for the calling thread. May be called
+    /// from any thread.
+    void makeContextCurrent();
+
+    /// @brief Make the GL context non- current for the calling thread. May be 
+    /// called from any thread.
+    void releaseContext();    
 };
 
 using GLFW3WindowPtr = std::shared_ptr<GLFW3Window>;

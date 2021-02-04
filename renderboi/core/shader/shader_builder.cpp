@@ -208,6 +208,11 @@ Shader ShaderBuilder::BuildShaderStageFromText(
 	// Compile into shader
 	const char* source = text.c_str();
 	const unsigned int location = glCreateShader(shaderType);
+    if (!location)
+    {
+        throw std::runtime_error("ShaderBuilder: Shader resource allocation failed.");
+    }
+
 	glShaderSource(location, 1, &source, nullptr);
 	glCompileShader(location);
 

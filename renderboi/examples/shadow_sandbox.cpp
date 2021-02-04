@@ -66,6 +66,8 @@ void ShadowSandbox::setUp(const GLWindowPtr window)
 
 void ShadowSandbox::run(const GLWindowPtr window)
 {
+    window->makeContextCurrent();
+
     ////////////////////////////
     ///                      ///
     ///   Generate shaders   ///
@@ -279,6 +281,7 @@ void ShadowSandbox::run(const GLWindowPtr window)
     Factory::DestroyScene(scene);
 
     window->exitEventPollingLoop();
+    window->releaseContext();
 }
 
 void ShadowSandbox::tearDown(const GLWindowPtr window)

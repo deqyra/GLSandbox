@@ -69,9 +69,6 @@ GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(std::string title, i
         throw std::runtime_error("Failed to create window.");
     }
 
-	// Init context in new window
-	glfwMakeContextCurrent(window);
-
 	// Load GL pointers
 	if (!gladLoadGL())
 	{

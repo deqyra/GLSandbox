@@ -67,6 +67,16 @@ void GLFW3Window::getCursorPos(double& x, double& y) const
     glfwGetCursorPos(_w, &x, &y);
 }
 
+void GLFW3Window::makeContextCurrent()
+{
+    glfwMakeContextCurrent(_w);
+}
+
+void GLFW3Window::releaseContext()
+{
+    glfwMakeContextCurrent(nullptr);
+}
+
 float GLFW3Window::getAspectRatio() const
 {
     return (float)_width / (float)_height;

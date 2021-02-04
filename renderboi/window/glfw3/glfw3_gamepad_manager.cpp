@@ -1,5 +1,6 @@
 #include "glfw3_gamepad_manager.hpp"
 
+#include <stdexcept>
 #include <vector>
 
 #define GLFW_INCLUDE_NONE
