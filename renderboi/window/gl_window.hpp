@@ -1,9 +1,11 @@
 #ifndef RENDERBOI__WINDOW__GL_WINDOW_HPP
 #define RENDERBOI__WINDOW__GL_WINDOW_HPP
 
+#include <atomic>
 #include <memory>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "enums.hpp"
 #include "input_processor.hpp"
@@ -19,7 +21,8 @@ class GLWindow : public std::enable_shared_from_this<GLWindow>
 public:
     /// @param title Title of the window.
     GLWindow(std::string title);
-    ~GLWindow();
+    
+    virtual ~GLWindow();
 
     /// @brief Callback for a framebuffer resize event.
     ///
@@ -76,35 +79,40 @@ public:
     /// @brief Discard any registered custom input processor.
     virtual void detachInputProcessor();
 
-    /// @brief Whether the window was flagged for closing.
+    /// @brief Whether the window was flagged for closing. May be called from
+    /// any thread.
     ///
     /// @return Whether or not the window was flagged for closing.
     virtual bool shouldClose() const = 0;
 
-    /// @brief Set the window closing flag.
+    /// @brief Set the window closing flag. May be called from any thread.
     ///
     /// @param value Whether or not the window should be flagged for closing.
     virtual void setShouldClose(const bool value) = 0;
 
-    /// @brief Swap the front and back buffers of the window.
+    /// @brief Swap the front and back buffers of the window. May be called from
+    /// any thread.
     virtual void swapBuffers() = 0;
 
-    /// @brief Poll events recorded by the window.
+    /// @brief Poll events recorded by the window. May only be called from 
+    /// the main thread.
     virtual void pollEvents() const = 0;
 
-    /// @brief Set the input mode of a certain target in the window.
+    /// @brief Set the input mode of a certain target in the window. May only be
+    /// called from the main thread.
     ///
     /// @param target Literal describing which aspect of the window whose
     /// input mode should be set.
     /// @param value Literal describing which input to set the target to.
     virtual void setInputMode(const Window::Input::Mode::Target target, const Window::Input::Mode::Value value) = 0;
 
-    /// @brief Get the title of the window.
+    /// @brief Get the title of the window. May be called from any thread.
     ///
     /// @return The title of the window.
     virtual std::string getTitle() const;
 
-    /// @brief Set the title of the window.
+    /// @brief Set the title of the window. May only be called from the main
+    /// thread.
     ///
     /// @return The title of the window.
     virtual void setTitle(std::string title) = 0;
@@ -120,10 +128,18 @@ public:
     /// @param y [Output parameter] The Y coordinate of the cursor.
     virtual void getCursorPos(double& x, double& y) const = 0;
 
-    /// @brief Get a gamepad plugged into a certain slot.
+    /// @brief Repeatedly poll and forward input events. May be called only from
+    /// the main thread. Call exitEvenPollingLoop() from another thread to yield.
+    virtual void startEventPollingLoop();
+
+    /// @brief Stop the event polling loop started by startEventPollingLoop(). 
+    /// May be called from any thread.
+    virtual void exitEventPollingLoop();
+
+    /// @brief Get the entity to manager gamepads.
     ///
-    /// @param slot Virtual slot where to find the controller to manager.
-    virtual GamepadManagerPtr getGamepadManager(Window::Input::Joystick slot) const = 0;
+    /// @return A pointer to the gamepad manager.
+    virtual GamepadManagerPtr getGamepadManager(); 
 
 protected:
     /// @brief Default input processor of all windows.
@@ -141,6 +157,13 @@ protected:
 
     /// @brief Height of the window.
     unsigned int _height;
+
+    /// @brief Flag to indicate exiting the event polling loop.
+    std::atomic<bool> _stopPollingFlag;
+
+    /// @brief Entity to manage gamepads. Must be initialized at construction
+    /// by inheriting classes.
+    GamepadManagerPtr _gamepadManager;
 };
 
 using GLWindowPtr = std::shared_ptr<GLWindow>;

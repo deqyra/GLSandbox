@@ -104,9 +104,14 @@ RenderBoi:
         ✔ Doc @done(20-10-26 01:49)
         ✔ Allow selection of window backend with an enum and templated methods @done(20-10-26 02:12)
         ✔ Move functionality to get input action/button names (used in BasicInputManager) @done(20-12-25 16:00)
-        ☐ Update concrete window instantiation mechanisms?
+        ✘ Update concrete window instantiation mechanisms? @cancelled(21-01-31 17:12)
+        ✔ Move rendering away in another thread, keep event polling in the main thread @done(21-01-31 17:46)
         Gamepad:
-            ☐ Support gamepad
+            ✔ Write GamepadState @done(21-01-25 12:37)
+            ✔ Write Gamepad @done(21-01-25 15:18)
+            ✔ Write GamepadManager @done(21-01-31 19:53)
+            ✔ Update event flow @done(21-01-31 19:21)
+            ✔ Handle connection / disconnection @done(21-02-04 08:24)
             ☐ Update input logger
             ☐ Add a gamepad input splitter
         ☐ Stop rendering when the window loses focus / is minimized

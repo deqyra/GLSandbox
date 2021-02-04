@@ -202,14 +202,24 @@ set(RB_WINDOW_SOURCE_FILES
     input_processor.hpp
     window_factory.hpp
     window_backend.hpp
+    gamepad/gamepad_input_processor.cpp
+    gamepad/gamepad_input_processor.hpp
+    gamepad/gamepad_manager.cpp
+    gamepad/gamepad_manager.hpp
+    gamepad/gamepad_state.cpp
+    gamepad/gamepad_state.hpp
+    gamepad/gamepad.cpp
+    gamepad/gamepad.hpp
     glfw3/glfw3_adapter.cpp
     glfw3/glfw3_adapter.hpp
-    glfw3/glfw3_window.cpp
-    glfw3/glfw3_window.hpp
-    glfw3/glfw3_window_callbacks.cpp
-    glfw3/glfw3_window_callbacks.hpp
+    glfw3/glfw3_gamepad_manager.cpp
+    glfw3/glfw3_gamepad_manager.hpp
+    glfw3/glfw3_utilities.cpp
+    glfw3/glfw3_utilities.hpp
     glfw3/glfw3_window_factory.cpp
     glfw3/glfw3_window_factory.hpp
+    glfw3/glfw3_window.cpp
+    glfw3/glfw3_window.hpp
 )
 
 set(RB_TOOLBOX_SOURCE_FILES

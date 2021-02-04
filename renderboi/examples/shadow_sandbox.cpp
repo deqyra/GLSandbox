@@ -37,18 +37,19 @@ namespace Renderboi
 
 using Ref = FrameOfReference;
 
-void ShadowSandbox::run(const GLWindowPtr window)
+void ShadowSandbox::setUp(const GLWindowPtr window)
 {
     // Update window title
-    std::string title = window->getTitle();
-    window->setTitle(title + " - Shadows");
+    _title = window->getTitle();
+    window->setTitle(_title + " - Shadows");
 
     // Remove cursor from window
     namespace InputMode = Window::Input::Mode;
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
+}
 
-
-
+void ShadowSandbox::run(const GLWindowPtr window)
+{
     ////////////////////////////
     ///                      ///
     ///   Generate shaders   ///
@@ -238,12 +239,8 @@ void ShadowSandbox::run(const GLWindowPtr window)
 
         // Update and draw scene
         scene->triggerUpdate();
-
         sceneRenderer.renderScene(scene);
-
-        // Refresh screen and process input
         window->swapBuffers();
-        window->pollEvents();
     }
     window->setShouldClose(false);
 
@@ -258,11 +255,19 @@ void ShadowSandbox::run(const GLWindowPtr window)
     splitter->detachAllInputProcessors();
     Factory::DestroyScene(scene);
 
+    window->exitEventPollingLoop();
+}
+
+void ShadowSandbox::tearDown(const GLWindowPtr window)
+{
+    namespace InputMode = Window::Input::Mode;
+
     // Reset everything back to how it was
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::NormalCursor);
     window->detachInputProcessor();
-    window->setTitle(title);
+    window->setTitle(_title);
 }
+
 
 ShadowSandboxScript::ShadowSandboxScript(SceneObjectPtr lightObj, SceneObjectPtr torusObj) :
     _lightObj(lightObj),

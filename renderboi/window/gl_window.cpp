@@ -13,7 +13,9 @@ const InputProcessorPtr GLWindow::_DefaultInputProcessor = std::make_shared<Inpu
 
 GLWindow::GLWindow(std::string title) :
     _inputProcessor(_DefaultInputProcessor),
-    _title(title)
+    _title(title),
+    _stopPollingFlag(true),
+    _gamepadManager(nullptr)
 {
 
 }
@@ -73,5 +75,26 @@ std::string GLWindow::getTitle() const
 {
     return _title;
 }
+
+void GLWindow::startEventPollingLoop()
+{
+    _stopPollingFlag = false;
+    while (!_stopPollingFlag)
+    {
+        pollEvents();
+        _gamepadManager->pollGamepadStates();
+    }
+}
+
+void GLWindow::exitEventPollingLoop()
+{
+    _stopPollingFlag = true;
+}
+
+GamepadManagerPtr GLWindow::getGamepadManager()
+{
+    return _gamepadManager;
+}
+
 
 }//namespace Renderboi

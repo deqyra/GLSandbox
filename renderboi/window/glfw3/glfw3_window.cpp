@@ -3,7 +3,14 @@
 #include <iostream>
 #include <string>
 
+#include "../enums.hpp"
 #include "glfw3_adapter.hpp"
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#undef GLFW_INCLUDE_NONE
+
+#include "glfw3_gamepad_manager.hpp"
 
 namespace Renderboi
 {
@@ -12,6 +19,8 @@ GLFW3Window::GLFW3Window(GLFWwindow* window, std::string title) :
     GLWindow(title),
     _w(window)
 {
+    _gamepadManager = std::static_pointer_cast<GamepadManager>(std::make_shared<GLFW3GamepadManager>());
+    _gamepadManager->pollPresentGamepads();
     glfwGetFramebufferSize(_w, (int*)&_width, (int*)&_height);
 }
 

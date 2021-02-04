@@ -22,7 +22,7 @@
 #define GL_CONTEXT_VERSION_MINOR @GL_CONTEXT_VERSION_MINOR@
 
 #include <renderboi/window/glfw3/glfw3_window_factory.hpp>
-#include <renderboi/window/glfw3/glfw3_window_callbacks.hpp>
+#include <renderboi/window/glfw3/glfw3_utilities.hpp>
 
 namespace rb = Renderboi;
 

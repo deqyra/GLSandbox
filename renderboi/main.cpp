@@ -1,6 +1,7 @@
 #include <exception>
 #include <filesystem>
 #include <iostream>
+#include <thread>
 #include <vector>
 
 #include <renderboi/window/enums.hpp>
@@ -12,17 +13,21 @@
 #include <renderboi/utilities/gl_utilities.hpp>
 #include <renderboi/utilities/resource_locator.hpp>
 
-#include <renderboi/window/glfw3/glfw3_window_factory.hpp>
-#include <renderboi/window/glfw3/glfw3_window_callbacks.hpp>
-
 #include "project_env.hpp"
 #include "main_functions.hpp"
 #include "renderboi_parameters.hpp"
 
 namespace rb = Renderboi;
+namespace fs = std::filesystem;
+
+/////////////////// CONCRETE WINDOW BACKEND SPECIFICATION //////////////////////
+
+#include <renderboi/window/glfw3/glfw3_window_factory.hpp>
+#include <renderboi/window/glfw3/glfw3_utilities.hpp>
+
 static const void* UsedErrorCallback = (void*)(&rb::globalGlfwErrorCallback);
 
-namespace fs = std::filesystem;
+////////////////////////////////////////////////////////////////////////////////
 
 //Initialise OpenGL and display a window with an active GL context
 int main(int argc, char** argv)
@@ -32,7 +37,7 @@ int main(int argc, char** argv)
 	#endif
 
 	RenderboiParameters params = {
-		fs::current_path()
+		fs::current_path()		// .assetsPath
 	};
 	if (!processArguments(argc, argv, params))
 	{
@@ -48,7 +53,7 @@ int main(int argc, char** argv)
 	{
 		std::cerr 	<< "Error: assets/ could not be found in the current directory, "
 					<< "or in the path provided by command line argument.\n"
-					<< "Currently stored path: " << assetsDir.string() << "\n"
+					<< "Path currently in use: " << assetsDir.string() << "\n"
 					<< "Aborting..." << std::endl;
 		
 		return EXIT_FAILURE;
@@ -93,7 +98,14 @@ int main(int argc, char** argv)
 	std::vector<rb::GLSandbox*> examples = createAllSandboxes();
     for (auto it = examples.begin(); it != examples.end(); it++)
     {
-        (*it)->run(window);
+		(*it)->setUp(window);
+
+		std::thread th(&rb::GLSandbox::run, *it, window);
+		window->startEventPollingLoop();
+
+		th.join();
+		(*it)->tearDown(window);
+
         delete (*it);
     }
 
