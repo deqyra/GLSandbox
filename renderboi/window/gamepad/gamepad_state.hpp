@@ -58,6 +58,21 @@ public:
     /// @brief Whether or not the right bumper is pressed on the gamepad.
     bool& RightBumper = Buttons[(unsigned int)Button::RightBumper];
 
+    /// @brief Whether or not the Select button is pressed on the gamepad.
+    bool& Select = Buttons[(unsigned int)Button::Select];
+
+    /// @brief Whether or not the Start button is pressed on the gamepad.
+    bool& Start = Buttons[(unsigned int)Button::Start];
+
+    /// @brief Whether or not the Home button is pressed on the gamepad.
+    bool& Home = Buttons[(unsigned int)Button::Home];
+
+    /// @brief Whether or not the left thumbstick is pressed on the gamepad.
+    bool& LeftThumb = Buttons[(unsigned int)Button::LeftThumb];
+
+    /// @brief Whether or not the right thumbstick is pressed on the gamepad.
+    bool& RightThumb = Buttons[(unsigned int)Button::RightThumb];
+
     /// @brief Whether or not the DPad is pressed upwards on the gamepad.
     bool& DPadUp = Buttons[(unsigned int)Button::DPadUp];
 
@@ -69,21 +84,6 @@ public:
 
     /// @brief Whether or not the DPad is pressed to the left on the gamepad.
     bool& DPadLeft = Buttons[(unsigned int)Button::DPadLeft];
-
-    /// @brief Whether or not the left thumbstick is pressed on the gamepad.
-    bool& LeftThumb = Buttons[(unsigned int)Button::LeftThumb];
-
-    /// @brief Whether or not the right thumbstick is pressed on the gamepad.
-    bool& RightThumb = Buttons[(unsigned int)Button::RightThumb];
-
-    /// @brief Whether or not the Start button is pressed on the gamepad.
-    bool& Start = Buttons[(unsigned int)Button::Start];
-
-    /// @brief Whether or not the Select button is pressed on the gamepad.
-    bool& Select = Buttons[(unsigned int)Button::Select];
-
-    /// @brief Whether or not the Home button is pressed on the gamepad.
-    bool& Home = Buttons[(unsigned int)Button::Home];
 
     /// @brief Value of the X axis of the left thumbstick on the gamepad.
     /// Guaranteed to be in [-1.f ; 1.f]. Rest position at 0.f.
@@ -133,6 +133,6 @@ public:
     GamepadState& operator=(GamepadState other);
 };
 
-}
+}//namespace Renderboi
 
 #endif//RENDERBOI__WINDOW__GAMEPAD__GAMEPAD_STATE_HPP
