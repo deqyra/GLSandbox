@@ -2,6 +2,9 @@
 #define RENDERBOI__CORE__SHADER__SHADER_BUILDER_HPP
 
 #include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include "shader.hpp"
 #include "shader_program.hpp"
@@ -116,7 +119,7 @@ public:
     /// source code, the function will throw an std::runtime_error.
     static Shader BuildShaderStageFromText(
         const ShaderStage stage,
-        const std::string& text,
+        std::string text,
         const std::vector<ShaderFeature>& supportedFeatures,
         const bool dumpSource = false
     );
@@ -125,7 +128,7 @@ private:
     /// @brief Structure telling whether a named string was loaded on the 
     /// GPU. Used for shader #include directives.
     /// Assume that (string not present == string not loaded).
-    static std::unordered_map<std::string, bool> _namedStringLoadStatus;
+    static std::unordered_map<std::string, std::string> _includeStrings;
 
     /// @brief Combine shaders and link them into a program.
     ///
@@ -143,30 +146,31 @@ private:
     ///
     /// @exception If an #include directive is found to be badly formatted,
     /// the function will throw an std::runtime_error.
-    static void _ProcessIncludeDirectives(const std::string& text);
+    static void _ProcessIncludeDirectives(std::string& text);
 
-    /// @brief Find arguments to valid #include directives in shader source 
-    /// code.
+    /// @brief Given the argument to an include directive, get the text to 
+    /// replace the whole directive with.
+    ///
+    /// @param arg Argument to the include directive to process?
+    ///
+    /// @return The content to replace the directive with.
+    ///
+    /// @exception If info about a corresponding include directive cannot be
+    /// found, the function will throw an std::runtime_error.
+    static std::string _GetIncludeString(const std::string& arg);
+
+    /// @brief Locate arguments to valid #include directives in shader source 
+    /// code, and get their position and size.
     ///
     /// @param text Source code to process.
     ///
-    /// @return An array filled with filenames used in valid #include
-    /// directives.
+    /// @return An array filled with incldue arguments paired with the starting
+    /// position and size of the directive they are part of.
     ///
     /// @exception If an #include directive is found to be badly formatted,
     /// the function will throw an std::runtime_error.
-    static std::unordered_set<std::string> _FindIncludeDirectivesInSource(std::string text, const bool recursive);
-
-    /// @brief Load the contents of a file into a named string which will be
-    /// uploaded to the GPU.
-    ///
-    /// @param name Name to be assigned to the named string.
-    /// @param sourceFilename Path to the source file whose contents to fill
-    /// the named string with.
-    ///
-    /// @exception If the source file cannot be found, the function will 
-    /// throw a std::runtime_error.
-    static void _MakeNamedString(const std::string& name, const std::string& sourceFilename);
+    static std::vector<std::pair<std::string, std::pair<size_t, size_t>>>
+    _LocateIncludeDirectivesInSource(std::string& text);
 
     /// @brief Append the features supported by a shader to an array.
     ///
@@ -181,7 +185,7 @@ private:
     /// belong to, and get an array of the features which match the provided
     /// stage.
     ///
-    /// @param features Set of features to filter.
+    /// @param features Array of features to filter.
     /// @param stage Shader stage to filter features on.
     ///
     /// @return An array with only the features which matched the requested

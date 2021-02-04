@@ -16,6 +16,8 @@ add_library(${RB_EXAMPLES_LIB_NAME} ${STATIC_OR_SHARED}
 add_dependencies(${RB_EXAMPLES_LIB_NAME}
     "export_${RB_TOOLBOX_LIB_NAME}_lib"
     "export_${RB_TOOLBOX_LIB_NAME}_headers"
+    "export_${GLAD_LIB_NAME}_lib"
+    "export_${GLAD_LIB_NAME}_headers"
     "export_${GLM_LIB_NAME}_headers"
 )
 target_include_directories(${RB_EXAMPLES_LIB_NAME} PUBLIC ${EXTERNAL_INSTALL_LOCATION}/include)

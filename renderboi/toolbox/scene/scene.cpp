@@ -292,7 +292,7 @@ void Scene::_init()
 
 void Scene::_terminate()
 {
-    // Remove scene references in all scene objects
+    // Remove scene references in all scene objects, unsubscribe scene from object updates
     for (auto it = _objectMetadata.begin(); it != _objectMetadata.end(); it++)
     {
         const SceneObjectMetadata& meta = it->second;

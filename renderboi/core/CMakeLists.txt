@@ -27,6 +27,7 @@ target_link_libraries(${RB_CORE_LIB_NAME} PUBLIC ${CMAKE_DL_LIBS}
     ${STB_IMAGE_LIB_NAME}
     ${GLAD_LIB_NAME}
     ${CPPTOOLS_LIB_NAME}
+    ${RB_UTILITIES_LIB_NAME}
 )
 
 # Custom target to export core lib

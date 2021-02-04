@@ -18,7 +18,6 @@ ScenePtr Factory::MakeScene()
 void Factory::DestroyScene(ScenePtr scene)
 {
     scene->_terminate();
-    scene.reset();
 }
 
 SceneObjectPtr Factory::MakeSceneObject(std::string name)
