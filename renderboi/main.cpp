@@ -101,7 +101,7 @@ int main(int argc, char** argv)
     }
 
 	// Destroy window by resetting what should be the only shared pointer to it
-	window = nullptr;
+	window.reset();
 	AppWindowFactory::TerminateBackend();
 
 	return EXIT_SUCCESS;
