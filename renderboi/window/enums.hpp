@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include <renderboi/utilities/to_string.hpp>
 
@@ -208,23 +209,25 @@ namespace Window
         /// be reached and polled.
         enum class Joystick : unsigned int
         {
-            J1,
-            J2,
-            J3,
-            J4,
-            J5,
-            J6,
-            J7,
-            J8,
-            J9,
-            J10,
-            J11,
-            J12,
-            J13,
-            J14,
-            J15,
-            J16
+            J1  = 0x0,
+            J2  = 0x1,
+            J3  = 0x2,
+            J4  = 0x3,
+            J5  = 0x4,
+            J6  = 0x5,
+            J7  = 0x6,
+            J8  = 0x7,
+            J9  = 0x8,
+            J10 = 0x9,
+            J11 = 0xA,
+            J12 = 0xB,
+            J13 = 0xC,
+            J14 = 0xD,
+            J15 = 0xE,
+            J16 = 0xF
         };
+
+        extern const std::vector<Joystick> Joysticks;
 
         namespace Gamepad
         {
@@ -238,15 +241,15 @@ namespace Window
                 Y           = 0x3,
                 LeftBumper  = 0x4,
                 RightBumper = 0x5,
-                DPadUp      = 0x6,
-                DPadRight   = 0x7,
-                DPadDown    = 0x8,
-                DPadLeft    = 0x9,
-                LeftThumb   = 0xA,
-                RightThumb  = 0xB,
-                Select      = 0xC,
-                Start       = 0xD,
-                Home        = 0xE,
+                Select      = 0x6,
+                Start       = 0x7,
+                Home        = 0x8,
+                LeftThumb   = 0x9,
+                RightThumb  = 0xA,
+                DPadUp      = 0xB,
+                DPadRight   = 0xC,
+                DPadDown    = 0xD,
+                DPadLeft    = 0xE,
                 Cross       = A,
                 Circle      = B,
                 Square      = X,

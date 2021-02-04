@@ -11,7 +11,8 @@
 namespace Renderboi
 {
 
-/// @brief GLFW3 specialization of the window factory.
+/// @brief GLFW3 specialization of the window factory. These functions may be 
+/// called only from the main thread.
 template<>
 class WindowFactory<WindowBackend::GLFW3>
 {
@@ -33,6 +34,8 @@ class WindowFactory<WindowBackend::GLFW3>
             Window::OpenGLProfile glProfile,
             bool debug
         );
+
+        static void DestroyWindow(GLWindowPtr window);
 };
 
 }//namespace Renderboi

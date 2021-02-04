@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
+#include "../enums.hpp"
+
 namespace Renderboi
 {
 namespace Window

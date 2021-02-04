@@ -22,6 +22,8 @@ public:
     /// handled by an InputProcessor.
     enum class EventType
     {
+        Connect,
+        Disconnect,
         Button,
         Axis
     };
@@ -31,6 +33,12 @@ public:
     static const std::vector<EventType> EventTypeList;
 
     GamepadInputProcessor();
+
+    /// @brief Callback for when the gamepad is connected.
+    virtual void processConnected();
+
+    /// @brief Callback for when the gamepad is disconnected.
+    virtual void processDisconnected();
 
     /// @brief Callback for a gamepad button event.
     ///
@@ -51,6 +59,6 @@ public:
 
 using GamepadInputProcessorPtr = std::shared_ptr<GamepadInputProcessor>;
 
-}
+}//namespace Renderboi
 
 #endif//RENDERBOI__WINDOW__GAMEPAD__GAMEPAD_INPUT_PROCESSOR_HPP

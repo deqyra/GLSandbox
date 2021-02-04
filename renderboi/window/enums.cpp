@@ -7,6 +7,28 @@
 namespace Renderboi
 {
 
+namespace Window::Input
+{
+    extern const std::vector<Joystick> Joysticks = {
+        Joystick::J1,
+        Joystick::J2,
+        Joystick::J3,
+        Joystick::J4,
+        Joystick::J5,
+        Joystick::J6,
+        Joystick::J7,
+        Joystick::J8,
+        Joystick::J9,
+        Joystick::J10,
+        Joystick::J11,
+        Joystick::J12,
+        Joystick::J13,
+        Joystick::J14,
+        Joystick::J15,
+        Joystick::J16
+    };
+}
+
 unsigned int operator&(unsigned int left, Window::Input::Modifier right)
 {
     return left & static_cast<unsigned int>(right);

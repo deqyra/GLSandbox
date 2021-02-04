@@ -6,12 +6,24 @@ namespace Renderboi
 unsigned int GamepadInputProcessor::_count = 0;
 
 const std::vector<GamepadInputProcessor::EventType> GamepadInputProcessor::EventTypeList = {
+    GamepadInputProcessor::EventType::Connect,
+    GamepadInputProcessor::EventType::Disconnect,
     GamepadInputProcessor::EventType::Axis,
     GamepadInputProcessor::EventType::Button
 };
 
 GamepadInputProcessor::GamepadInputProcessor() :
     id(_count++)
+{
+
+}
+
+void GamepadInputProcessor::processConnected()
+{
+
+}
+
+void GamepadInputProcessor::processDisconnected()
 {
 
 }
@@ -26,5 +38,4 @@ void GamepadInputProcessor::processAxis(const Window::Input::Gamepad::Axis axis,
 
 }
 
-
-}
+}//namespace Renderboi

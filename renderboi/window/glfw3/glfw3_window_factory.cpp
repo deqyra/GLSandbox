@@ -22,14 +22,18 @@
 
 #include "glfw3_window.hpp"
 #include "glfw3_adapter.hpp"
-#include "glfw3_window_callbacks.hpp"
+#include "glfw3_utilities.hpp"
 
 namespace Renderboi
 {
 
 int WindowFactory<WindowBackend::GLFW3>::InitializeBackend()
 {
-    return glfwInit();
+    int result = glfwInit();
+    if (!result) return result;
+
+    glfwSetJoystickCallback(globalGlfwJoystickCallback);
+    pollGamepads();
 }
 
 void WindowFactory<WindowBackend::GLFW3>::TerminateBackend()
@@ -86,11 +90,11 @@ GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(std::string title, i
         glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
 
-    // It is not possible to set methods of a user-defined class as the callbacks of a window, because of function pointer type mismatch
-    // Instead, use the user pointer of the GLFWwindow object, which can be set to point to any user-defined window class
-
-    const GLWindowPtr glWindow = std::make_shared<GLFW3Window>(window, title); // Initialize a GLWindow instance with a GLFWwindow object
-    glfwSetWindowUserPointer(window, glWindow.get());                    // Set the user pointer of the GLFWwindow to the newly created GLWindow instance
+    // Initialize a GLWindow instance with a GLFWwindow object
+    const GLFW3WindowPtr glfw3Window = std::make_shared<GLFW3Window>(window, title);
+    // Set the user pointer of the GLFWwindow to the newly created GLWindow instance
+    const GLWindowPtr glWindow = std::static_pointer_cast<GLWindow>(glfw3Window);
+    glfwSetWindowUserPointer(window, (void*)glWindow.get());
 
     // Then, a function can retrieve the GLWindow instance from the GLFWwindow object and call the appropriate callback on the GLWindow instance
     // Bind all relevant callbacks to such functions
@@ -99,8 +103,17 @@ GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(std::string title, i
     glfwSetMouseButtonCallback(window, globalGlfwMouseButtonCallback);
     glfwSetCursorPosCallback(window, globalGlfwMouseCursorCallback);
 
-    // Return a shared pointer
+    subscribeToGlfwJoystickStatus(glWindow);
+
     return glWindow;
+}
+
+void WindowFactory<WindowBackend::GLFW3>::DestroyWindow(GLWindowPtr window)
+{
+    unsubscribeFromGlfwJoystickStatus(window);
+
+    // No need to actually destroy the window, as the underlying GLFW3Window
+    // instance will do it in its own destructor.
 }
 
 }//namespace Renderboi
