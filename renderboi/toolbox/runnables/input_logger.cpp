@@ -109,35 +109,37 @@ void InputLogger::processMouseCursor(const GLWindowPtr window, const double xpos
                      "New position: x=" << xpos << ";y=" << ypos << ".\n" << std::endl;
 }
 
-void InputLogger::processConnected(const Joystick slot)
+void InputLogger::processConnected(const GamepadPtr gamepad)
 {
     if (!_gamepadInputLoggingStatus[GEventType::Connect]) return;
 
-    _outputStream << "Gamepad " << to_string(slot) << "was connected.\n" << std::endl;
+    _outputStream << "Gamepad \"" << gamepad->name << "\" (slot " << to_string(gamepad->slot) << ") was connected.\n" << std::endl;
 }
 
-void InputLogger::processDisconnected(const Joystick slot)
+void InputLogger::processDisconnected(const GamepadPtr gamepad)
 {
     if (!_gamepadInputLoggingStatus[GEventType::Disconnect]) return;
 
-    _outputStream << "Gamepad " << to_string(slot) << "was disconnected.\n" << std::endl;
+    _outputStream << "Gamepad \"" << gamepad->name << "\" (slot " << to_string(gamepad->slot) << ") was disconnected.\n" << std::endl;
 }
 
-void InputLogger::processButton(const Joystick slot, const GButton button, const Window::Input::Action action)
+void InputLogger::processButton(const GamepadPtr gamepad, const GButton button, const Window::Input::Action action)
 {
     if (!_gamepadInputLoggingStatus[GEventType::Button]) return;
 
-    _outputStream << "Event on gamepad " << to_string(slot) << "\": button.\n"
+    _outputStream << "Event on gamepad (slot " << to_string(gamepad->slot) << "): button.\n"
+                     "Gamepad name: " << gamepad->name << "\n"
                      "Button: " << to_string(button) << "\n"
                      "Action: " << to_string(action) << "\n" << std::endl;
 }
 
-void InputLogger::processAxis(const Joystick slot, const Axis axis, const float value)
+void InputLogger::processAxis(const GamepadPtr gamepad, const Axis axis, const float value)
 {
     if (!_gamepadInputLoggingStatus[GEventType::Axis]) return;
 
     _outputStream << std::setprecision(3) <<
-                     "Event on gamepad " << to_string(slot) << "\": axis.\n"
+                     "Event on gamepad (slot " << to_string(gamepad->slot) << "): axis.\n"
+                     "Gamepad name: " << gamepad->name << "\n"
                      "Axis: " << to_string(axis) << "\n"
                      "New value: " << value << "\n" << std::endl;
 }

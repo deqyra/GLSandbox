@@ -79,6 +79,39 @@ public:
     /// @brief Discard any registered custom input processor.
     virtual void detachInputProcessor();
 
+    /// @brief Set the input mode of a certain target in the window. May only be
+    /// called from the main thread.
+    ///
+    /// @param target Literal describing which aspect of the window whose
+    /// input mode should be set.
+    /// @param value Literal describing which input to set the target to.
+    virtual void setInputMode(const Window::Input::Mode::Target target, const Window::Input::Mode::Value value) = 0;
+
+    /// @brief Repeatedly poll and forward input events. May be called only from
+    /// the main thread. Call exitEvenPollingLoop() from another thread to yield.
+    virtual void startEventPollingLoop();
+
+    /// @brief Stop the event polling loop started by startEventPollingLoop(). 
+    /// May be called from any thread.
+    virtual void exitEventPollingLoop();
+
+    /// @brief Get a pointer to the entity which manages gamepads. May be called
+    /// from any thread.
+    ///
+    /// @return A pointer to the gamepad manager.
+    virtual GamepadManagerPtr getGamepadManager();
+
+    /// @brief Get the title of the window. May be called from any thread.
+    ///
+    /// @return The title of the window.
+    virtual std::string getTitle() const;
+
+    /// @brief Set the title of the window. May only be called from the main
+    /// thread.
+    ///
+    /// @return The title of the window.
+    virtual void setTitle(std::string title) = 0;
+
     /// @brief Whether the window was flagged for closing. May be called from
     /// any thread.
     ///
@@ -97,25 +130,6 @@ public:
     /// @brief Poll events recorded by the window. May only be called from 
     /// the main thread.
     virtual void pollEvents() const = 0;
-
-    /// @brief Set the input mode of a certain target in the window. May only be
-    /// called from the main thread.
-    ///
-    /// @param target Literal describing which aspect of the window whose
-    /// input mode should be set.
-    /// @param value Literal describing which input to set the target to.
-    virtual void setInputMode(const Window::Input::Mode::Target target, const Window::Input::Mode::Value value) = 0;
-
-    /// @brief Get the title of the window. May be called from any thread.
-    ///
-    /// @return The title of the window.
-    virtual std::string getTitle() const;
-
-    /// @brief Set the title of the window. May only be called from the main
-    /// thread.
-    ///
-    /// @return The title of the window.
-    virtual void setTitle(std::string title) = 0;
     
     /// @brief Get the aspect ratio of the framebuffer used by the window.
     ///
@@ -136,19 +150,11 @@ public:
     /// called from any thread.
     virtual void releaseContext() = 0;
 
-    /// @brief Repeatedly poll and forward input events. May be called only from
-    /// the main thread. Call exitEvenPollingLoop() from another thread to yield.
-    virtual void startEventPollingLoop();
-
-    /// @brief Stop the event polling loop started by startEventPollingLoop(). 
-    /// May be called from any thread.
-    virtual void exitEventPollingLoop();
-
-    /// @brief Get a pointer to the entity which manages gamepads. May be called
-    /// from any thread.
+    /// @brief Tell whether the GL context supports a certain extension. A GL 
+    /// context must be current on the calling thread.
     ///
-    /// @return A pointer to the gamepad manager.
-    virtual GamepadManagerPtr getGamepadManager();
+    /// @param extName String containing the name of the extension to query.
+    virtual bool extensionSupported(std::string extName) = 0;
 
 protected:
     /// @brief Default input processor of all windows.

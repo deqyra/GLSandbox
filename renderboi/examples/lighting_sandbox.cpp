@@ -42,16 +42,21 @@ namespace Renderboi
 
 using Ref = FrameOfReference;
 
-void LightingSandbox::run(const GLWindowPtr window)
+void LightingSandbox::setUp(const GLWindowPtr window, const GLSandboxParameters& params)
 {
     // Update window title
-    std::string title = window->getTitle();
-    window->setTitle(title + " - Lighting");
+    _title = window->getTitle();
+    window->setTitle(_title + " - Lighting");
 
     // Remove cursor from window
     namespace InputMode = Window::Input::Mode;
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
-    
+}
+
+void LightingSandbox::run(const GLWindowPtr window, const GLSandboxParameters& params)
+{
+    GLSandbox::initContext(window, params);
+
     ShaderConfig lightConfig;
     lightConfig.addFeature(ShaderFeature::VertexMVP);
     lightConfig.addFeature(ShaderFeature::FragmentMeshMaterial);
@@ -162,13 +167,19 @@ void LightingSandbox::run(const GLWindowPtr window)
         window->pollEvents();
     }
     window->setShouldClose(false);
-
     Factory::DestroyScene(scene);
+    window->exitEventPollingLoop();
+    
+    GLSandbox::terminateContext(window);
+}
 
+void LightingSandbox::tearDown(const GLWindowPtr window)
+{
     // Reset everything back to how it was
+    namespace InputMode = Window::Input::Mode;
     window->setInputMode(InputMode::Target::Cursor, InputMode::Value::NormalCursor);
     window->detachInputProcessor();
-    window->setTitle(title);
+    window->setTitle(_title);
 }
 
 LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj, SceneObjectPtr cameraObj, std::shared_ptr<PointLight> light, float baseLightRange) :

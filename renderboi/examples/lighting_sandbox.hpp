@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "gl_sandbox.hpp"
+#include "gl_sandbox_parameters.hpp"
 
 #include <renderboi/core/camera.hpp>
 #include <renderboi/core/lights/point_light.hpp>
@@ -23,6 +24,10 @@ namespace Renderboi
 /// @brief Example class to display lit moving objects.
 class LightingSandbox : public GLSandbox
 {
+    private:
+        /// @brief Used to temporarily store the original title of the window.
+        std::string _title;
+
     public:
         static constexpr float LightBaseRange = 30.f;
         static constexpr Camera::CameraParameters CameraParams = {-45.f, -40.f, 1.f};
@@ -35,10 +40,24 @@ class LightingSandbox : public GLSandbox
         ///                                   ///
         /////////////////////////////////////////
 
-        /// @brief Run something in the provided GL window.
+		/// @brief Set up the window prior to running the example. Will be
+		/// called from the main thread.
+		///
+		/// @param window Pointer to the window to initialize.
+		virtual void setUp(const GLWindowPtr window, const GLSandboxParameters& params);
+
+        /// @brief Run something in the provided GL window. To be executed by
+		/// a separate thread.
 		///
 		/// @param window Pointer to the window to run stuff in.
-        void run(const GLWindowPtr window) override;
+		virtual void run(const GLWindowPtr window, const GLSandboxParameters& params);
+
+		/// @brief Restore the window back to how it was before the example ran.
+		/// The contents of this function should be the opposite from those in
+		/// setUp(). Will be called from the main thread once run() has returned.
+		///
+		/// @param window Pointer to the window to detach from.
+		virtual void tearDown(const GLWindowPtr window);
 };
 
 // Handle object movement in the scene displayed by LightingSandbox

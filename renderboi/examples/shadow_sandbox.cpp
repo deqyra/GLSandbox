@@ -1,7 +1,6 @@
 #include "shadow_sandbox.hpp"
 
 #include <string>
-#include <glad/gl.h>
 
 #include <renderboi/core/camera.hpp>
 #include <renderboi/core/frame_of_reference.hpp>
@@ -37,7 +36,7 @@ namespace Renderboi
 
 using Ref = FrameOfReference;
 
-void ShadowSandbox::setUp(const GLWindowPtr window)
+void ShadowSandbox::setUp(const GLWindowPtr window, const GLSandboxParameters& params)
 {
     // Update window title
     _title = window->getTitle();
@@ -45,7 +44,7 @@ void ShadowSandbox::setUp(const GLWindowPtr window)
 
     // Remove cursor from window
     namespace InputMode = Window::Input::Mode;
-//    window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
+    //window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
 
     using Joystick = Window::Input::Joystick;
     GamepadManagerPtr gManager = window->getGamepadManager();
@@ -64,9 +63,9 @@ void ShadowSandbox::setUp(const GLWindowPtr window)
     }
 }
 
-void ShadowSandbox::run(const GLWindowPtr window)
+void ShadowSandbox::run(const GLWindowPtr window, const GLSandboxParameters& params)
 {
-    window->makeContextCurrent();
+    GLSandbox::initContext(window, params);
 
     ////////////////////////////
     ///                      ///
@@ -281,7 +280,8 @@ void ShadowSandbox::run(const GLWindowPtr window)
     Factory::DestroyScene(scene);
 
     window->exitEventPollingLoop();
-    window->releaseContext();
+
+    GLSandbox::terminateContext(window);
 }
 
 void ShadowSandbox::tearDown(const GLWindowPtr window)

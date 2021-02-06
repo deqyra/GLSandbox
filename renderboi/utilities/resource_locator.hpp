@@ -11,7 +11,8 @@ namespace Renderboi
 enum class ResourceType
 {
     ShaderSource,
-    Texture
+    Texture,
+    Any
 };
 
 /// @brief Eases out finding the correct full path to a ressource.

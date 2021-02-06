@@ -85,7 +85,13 @@ public:
 
     /// @brief Make the GL context non- current for the calling thread. May be 
     /// called from any thread.
-    void releaseContext();    
+    void releaseContext();
+
+    /// @brief Tell whether the GL context supports a certain extension. A GL 
+    /// context must be current on the calling thread.
+    ///
+    /// @param extName String containing the name of the extension to query.
+    bool extensionSupported(std::string extName);
 };
 
 using GLFW3WindowPtr = std::shared_ptr<GLFW3Window>;

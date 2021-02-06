@@ -297,6 +297,8 @@ set(RB_TOOLBOX_SOURCE_FILES
 )
 
 set(RB_EXAMPLES_SOURCE_FILES
+    gl_sandbox_parameters.hpp
+    gl_sandbox.cpp
     gl_sandbox.hpp
     lighting_sandbox.cpp
     lighting_sandbox.hpp

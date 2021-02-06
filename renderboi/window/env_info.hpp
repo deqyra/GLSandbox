@@ -13,7 +13,7 @@
 #ifndef RENDERBOI__WINDOW__ENV_INFO_HPP
 #define RENDERBOI__WINDOW__ENV_INFO_HPP
 
-#if 0
+#if 1
 #define EGL_DETECTED
 #endif
 

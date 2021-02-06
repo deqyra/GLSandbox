@@ -148,23 +148,23 @@ public:
     /////////////////////////////////////////////////////
 
     /// @brief Callback for when the gamepad is connected.
-    void processConnected(const Joystick slot);
+    void processConnected(const GamepadPtr gamepad);
 
     /// @brief Callback for when the gamepad is disconnected.
-    void processDisconnected(const Joystick slot);
+    void processDisconnected(const GamepadPtr gamepad);
 
     /// @brief Callback for a gamepad button event.
     ///
     /// @param button Literal describing which key triggered the event.
     /// @param action Literal describing what action was performed on
     /// the button which triggered the event.
-    void processButton(const Joystick slot, const GButton button, const Action action);
+    void processButton(const GamepadPtr gamepad, const GButton button, const Action action);
 
     /// @brief Callback for a gamepad axis event.
     ///
     /// @param axis Literal describing which axis triggered the event.
     /// @param value Value at which the axis was polled.
-    void processAxis(const Joystick slot, const Axis axis, const float value);
+    void processAxis(const GamepadPtr gamepad, const Axis axis, const float value);
 };
 
 using InputLoggerPtr = std::shared_ptr<InputLogger>;

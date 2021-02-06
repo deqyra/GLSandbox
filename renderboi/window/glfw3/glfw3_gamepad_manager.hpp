@@ -63,8 +63,8 @@ public:
     /// gamepads.
     std::vector<Joystick> pollPresentGamepads(bool mustBeUnused = true) const override;
 
-    /// @brief Get a gamepad plugged into a certain slot. The gamepad can then
-    /// be enabled to start receiving input from the main thread.
+    /// @brief Get a gamepad plugged into a certain slot. This function may be 
+    /// called only from the main thread.
     ///
     /// @param slot Virtual slot on which to find the controller to manage.
     ///

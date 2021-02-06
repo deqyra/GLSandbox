@@ -97,35 +97,35 @@ void InputSplitter::processMouseCursor(const GLWindowPtr window, const double xp
     }
 }
 
-void InputSplitter::processConnected(const Joystick slot)
+void InputSplitter::processConnected(const GamepadPtr gamepad)
 {
     for (auto it = _gamepadSubscribers.begin(); it != _gamepadSubscribers.end(); it++)
     {
-        it->second->processConnected(slot);
+        it->second->processConnected(gamepad);
     }
 }
 
-void InputSplitter::processDisconnected(const Joystick slot)
+void InputSplitter::processDisconnected(const GamepadPtr gamepad)
 {
     for (auto it = _gamepadSubscribers.begin(); it != _gamepadSubscribers.end(); it++)
     {
-        it->second->processDisconnected(slot);
+        it->second->processDisconnected(gamepad);
     }
 }
 
-void InputSplitter::processButton(const Joystick slot, const GButton button, const Action action)
+void InputSplitter::processButton(const GamepadPtr gamepad, const GButton button, const Action action)
 {
     for (auto it = _gamepadSubscribers.begin(); it != _gamepadSubscribers.end(); it++)
     {
-        it->second->processButton(slot, button, action);
+        it->second->processButton(gamepad, button, action);
     }
 }
 
-void InputSplitter::processAxis(const Joystick slot, const Axis axis, const float value)
+void InputSplitter::processAxis(const GamepadPtr gamepad, const Axis axis, const float value)
 {
     for (auto it = _gamepadSubscribers.begin(); it != _gamepadSubscribers.end(); it++)
     {
-        it->second->processAxis(slot, axis, value);
+        it->second->processAxis(gamepad, axis, value);
     }
 }
 

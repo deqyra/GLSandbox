@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "gl_sandbox.hpp"
+#include "gl_sandbox_parameters.hpp"
 
 #include <cpptools/sine_generator.hpp>
 
@@ -53,12 +54,12 @@ class ShadowSandbox : public GLSandbox
 		/// called from the main thread.
 		///
 		/// @param window Pointer to the window to initialize.
-		virtual void setUp(const GLWindowPtr window) override;
+		virtual void setUp(const GLWindowPtr window, const GLSandboxParameters& params) override;
 
         /// @brief Run something in the provided GL window.
 		///
 		/// @param window Pointer to the window to run stuff in.
-        void run(const GLWindowPtr window) override;
+        void run(const GLWindowPtr window, const GLSandboxParameters& params) override;
 
 		/// @brief Restore the window back to how it was before the example ran.
 		/// The contents of this function should be the opposite from those in

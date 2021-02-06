@@ -52,6 +52,8 @@ std::vector<Window::Input::Joystick> GLFW3GamepadManager::pollPresentGamepads(bo
     {
         int jid = Window::GLFW3Adapter::getValue(*it);
 
+        bool present = glfwJoystickPresent(jid);
+        bool gamepad = glfwJoystickIsGamepad(jid);
         if (glfwJoystickIsGamepad(jid) && !(mustBeUnused && _managedGamepads.contains(*it)))
         {
             result.push_back(*it);
@@ -63,13 +65,16 @@ std::vector<Window::Input::Joystick> GLFW3GamepadManager::pollPresentGamepads(bo
 
 GamepadPtr GLFW3GamepadManager::getGamepad(Window::Input::Joystick slot)
 {
+    if (_managedGamepads.contains(slot)) return _managedGamepads.at(slot);
+
     int jid = Window::GLFW3Adapter::getValue(slot);
     if (!glfwJoystickIsGamepad(jid))
     {
         throw std::runtime_error("GLFW3GamepadManager: no gamepad on slot " + to_string(slot) + ".");
     }
 
-    _managedGamepads[slot] = std::make_shared<Gamepad>(shared_from_this(), slot);
+    std::string gamepadName(glfwGetGamepadName(jid));
+    _managedGamepads[slot] = GamepadManager::createGamepad(shared_from_this(), slot, gamepadName);
     return _managedGamepads[slot];
 }
 

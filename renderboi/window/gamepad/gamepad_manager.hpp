@@ -91,7 +91,23 @@ protected:
     /// @param gamepad Pointer to the gamepad instance to notify of its 
     /// disconnection status.
     static void setGamepadDisconnected(GamepadPtr gamepad);
+
+    /// @brief Method allowing inheriting classes to instantiate a gamepad,
+    /// without privileged access to it (private constructor may not be called
+    /// directly by them).
+    ///
+    /// @param gamepad Pointer to the gamepad instance to notify of its 
+    /// disconnection status.
+    template<typename ...ArgTypes>
+    static GamepadPtr createGamepad(ArgTypes&& ...args);
 };
+
+template<typename ...ArgTypes>
+GamepadPtr GamepadManager::createGamepad(ArgTypes&& ...args)
+{
+    Gamepad* gamepad = new Gamepad(std::forward<ArgTypes>(args)...);
+    return GamepadPtr(gamepad);
+}
 
 using GamepadManagerPtr = std::shared_ptr<GamepadManager>;
 

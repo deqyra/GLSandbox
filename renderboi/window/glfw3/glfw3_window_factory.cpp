@@ -13,7 +13,10 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
+#include <cpptools/string_tools.hpp>
+
 #include <renderboi/utilities/gl_utilities.hpp>
+#include <renderboi/utilities/resource_locator.hpp>
 
 #include "../env_info.hpp"
 #include "../enums.hpp"
@@ -27,11 +30,20 @@
 namespace Renderboi
 {
 
+using ReLoc = ResourceLocator;
+using ReType = ResourceType;
+
 int WindowFactory<WindowBackend::GLFW3>::InitializeBackend()
 {
     int result = glfwInit();
     if (!result) return result;
 
+    ///////////////////////////
+    // GAMEPAD RELATED STUFF //
+    ///////////////////////////
+    std::string gamepadMappingsPath = ReLoc::locate(ReType::Any, "gamecontrollerdb.txt");
+    std::string gamepadMappings = CppTools::String::readFileIntoString(gamepadMappingsPath);
+    glfwUpdateGamepadMappings(gamepadMappings.c_str());
     glfwSetJoystickCallback(globalGlfwJoystickCallback);
     pollGamepads();
 
@@ -67,26 +79,6 @@ GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(std::string title, i
 	if (!window)
 	{
         throw std::runtime_error("Failed to create window.");
-    }
-
-	// Load GL pointers
-	if (!gladLoadGL())
-	{
-		glfwDestroyWindow(window);
-        throw std::runtime_error("Failed to load GL function pointers.");
-    }
-
-    if (debug)
-    {
-        if (!glfwExtensionSupported("GL_ARB_debug_output"))
-        {
-    		glfwDestroyWindow(window);
-            throw std::runtime_error("A debug context was requested but GL_ARB_debug_output is not available.");
-        }
-
-        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
-        glDebugMessageCallbackARB(glDebugCallback, nullptr);
-        glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
 
     // Initialize a GLWindow instance with a GLFWwindow object

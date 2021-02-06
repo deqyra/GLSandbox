@@ -2,6 +2,7 @@
 #define RENDERBOI__WINDOW__GAMEPAD__GAMEPAD_HPP
 
 #include <memory>
+#include <string>
 #include <unordered_map>
 #include <utility>
 
@@ -16,7 +17,7 @@ class GamepadManager;
 using GamepadManagerPtr = std::shared_ptr<GamepadManager>;
 
 /// @brief Proxy class to receive input from a XBox-like gamepad.
-class Gamepad
+class Gamepad : public std::enable_shared_from_this<Gamepad>
 {
 public:
     using Axis = Window::Input::Gamepad::Axis;
@@ -24,6 +25,9 @@ public:
 
 private:
     friend GamepadManager;
+
+    /// @param manager Pointer to the gamepad manager which the gamepad will be linked to.
+    Gamepad(GamepadManagerPtr manager, const Window::Input::Joystick slot, const std::string name);
 
     /// @brief Current state of the gamepad (buttons and axes).
     GamepadState _state;
@@ -75,9 +79,6 @@ private:
     inline bool _valueIsInAxisDeadZone(const float& value, const Axis& axis) const;
 
 public:
-    /// @param manager Pointer to the gamepad manager which the gamepad will be linked to.
-    Gamepad(GamepadManagerPtr manager, const Window::Input::Joystick slot);
-
     /// @brief Enable polling the state of the gamepad.
     void enable();
 
@@ -147,6 +148,9 @@ public:
 
     /// @brief The slot on which the gamepad is plugged.
     const Window::Input::Joystick slot;
+
+    /// @brief Name of the gamepad.
+    std::string name;
 };
 
 using GamepadPtr = std::shared_ptr<Gamepad>;

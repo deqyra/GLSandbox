@@ -6,6 +6,7 @@
 #include "../enums.hpp"
 #include "glfw3_adapter.hpp"
 
+#include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
@@ -70,11 +71,21 @@ void GLFW3Window::getCursorPos(double& x, double& y) const
 void GLFW3Window::makeContextCurrent()
 {
     glfwMakeContextCurrent(_w);
+	// Load GL pointers
+	if (!gladLoadGL())
+	{
+        throw std::runtime_error("GLFW3Window: Failed to load GL function pointers.");
+    }
 }
 
 void GLFW3Window::releaseContext()
 {
     glfwMakeContextCurrent(nullptr);
+}
+
+bool GLFW3Window::extensionSupported(std::string extName)
+{
+    return (bool)glfwExtensionSupported(extName.c_str());
 }
 
 float GLFW3Window::getAspectRatio() const

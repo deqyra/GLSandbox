@@ -9,6 +9,9 @@
 namespace Renderboi
 {
 
+class Gamepad;
+using GamepadPtr = std::shared_ptr<Gamepad>;
+
 /// @brief Callback manager to handle input from a gamepad.
 class GamepadInputProcessor
 {
@@ -39,23 +42,23 @@ public:
     GamepadInputProcessor();
 
     /// @brief Callback for when the gamepad is connected.
-    virtual void processConnected(const Joystick slot);
+    virtual void processConnected(const GamepadPtr gamepad);
 
     /// @brief Callback for when the gamepad is disconnected.
-    virtual void processDisconnected(const Joystick slot);
+    virtual void processDisconnected(const GamepadPtr gamepad);
 
     /// @brief Callback for a gamepad button event.
     ///
     /// @param button Literal describing which key triggered the event.
     /// @param action Literal describing what action was performed on
     /// the button which triggered the event.
-    virtual void processButton(const Joystick slot, const Window::Input::Gamepad::Button button, const Window::Input::Action action);
+    virtual void processButton(const GamepadPtr gamepad, const Window::Input::Gamepad::Button button, const Window::Input::Action action);
 
     /// @brief Callback for a gamepad axis event.
     ///
     /// @param axis Literal describing which axis triggered the event.
     /// @param value Value at which the axis was polled.
-    virtual void processAxis(const Joystick slot, const Window::Input::Gamepad::Axis axis, const float value);
+    virtual void processAxis(const GamepadPtr gamepad, const Window::Input::Gamepad::Axis axis, const float value);
 
     /// @brief Unique identifier of the gamepad input processor.
     const unsigned int id;

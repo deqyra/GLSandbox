@@ -13,6 +13,7 @@
 #include <renderboi/window/window_backend.hpp>
 
 #include <renderboi/examples/gl_sandbox.hpp>
+#include <renderboi/examples/gl_sandbox_parameters.hpp>
 
 #include <renderboi/utilities/gl_utilities.hpp>
 #include <renderboi/utilities/resource_locator.hpp>
@@ -40,10 +41,10 @@ int main(int argc, char** argv)
 		SetConsoleOutputCP(65001);
 	#endif
 
-	RenderboiParameters params = {
+	RenderboiParameters rbParams = {
 		fs::current_path()		// .assetsPath
 	};
-	if (!processArguments(argc, argv, params))
+	if (!processArguments(argc, argv, rbParams))
 	{
 		printHelp();
 		std::cerr 	<< "Could not parse arguments.\n"
@@ -52,7 +53,7 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	fs::path assetsDir = fs::absolute(params.assetsPath / "assets/");
+	fs::path assetsDir = fs::absolute(rbParams.assetsPath / "assets/");
 	if (!fs::exists(assetsDir))
 	{
 		std::cerr 	<< "Error: assets/ could not be found in the current directory, "
@@ -67,6 +68,7 @@ int main(int argc, char** argv)
 	using ReType = rb::ResourceType;
 	ReLoc::setPrefixFor(ReType::ShaderSource, assetsDir / "shaders/");
 	ReLoc::setPrefixFor(ReType::Texture,      assetsDir / "textures/");
+	ReLoc::setPrefixFor(ReType::Any,          assetsDir);
 
     std::cout << PROJECT_NAME << " v" << PROJECT_VERSION << '\n';
     std::cout << COPYRIGHT_NOTICE << '\n';
@@ -101,13 +103,17 @@ int main(int argc, char** argv)
 
 	rb::glIgnoreDebugMessagesOfType(GL_DEBUG_TYPE_PERFORMANCE_ARB);
 
+	const rb::GLSandboxParameters sbParams = {
+		.debug = true
+	};
+
     // Instantiate and run examples
 	std::vector<rb::GLSandbox*> examples = createAllSandboxes();
     for (auto it = examples.begin(); it != examples.end(); it++)
     {
-		(*it)->setUp(window);
+		(*it)->setUp(window, sbParams);
 
-		std::thread th(&rb::GLSandbox::run, *it, window);
+		std::thread th(&rb::GLSandbox::run, *it, window, sbParams);
 		window->startEventPollingLoop();
 
 		th.join();
