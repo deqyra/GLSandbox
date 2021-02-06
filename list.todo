@@ -114,8 +114,8 @@ RenderBoi:
             ✔ Write GamepadManager @done(21-01-31 19:53)
             ✔ Update event flow @done(21-01-31 19:21)
             ✔ Handle connection / disconnection @done(21-02-04 08:24)
-            ☐ Update input logger
-            ☐ Add a gamepad input splitter
+            ✔ Update input logger @done(21-02-06 01:04)
+            ✔ Add a gamepad input splitter @done(21-02-06 01:04)
         ☐ Stop rendering when the window loses focus / is minimized
         InputProcessor:
             ☐ Think about breaking the interface apart for performance
