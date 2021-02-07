@@ -85,6 +85,7 @@ writing yet.
     * **Camera component:** a camera is attached to the scene object;
     * **Script component:** a script class controls the aspects of the scene object based on time, user input, etc.
 * Classes for **easy key binding management**
+* XBox-like Gamepad support
 
 ### Provided scripts:
 * Input logger

@@ -14,7 +14,7 @@ namespace Renderboi
 {
 
 /// @brief Litterals describing the actions which can be performed by the
-/// KeyboardMovementScript
+/// KeyboardMovementScript.
 enum class KeyboardMovementAction
 {
     Forward,
@@ -24,10 +24,10 @@ enum class KeyboardMovementAction
     Sprint
 };
 
-/// @brief Provides event callbacks to manage a camera as in a FPS game.
-class KeyboardMovementScript :  public Script,
-                                public ActionEventReceiver<KeyboardMovementAction>,
-                                public DefaultControlSchemeProvider<KeyboardMovementAction>
+/// @brief Provides bindings to move an entity using the keyboard.
+class KeyboardMovementScript : public Script,
+                               public ActionEventReceiver<KeyboardMovementAction>,
+                               public DefaultControlSchemeProvider<KeyboardMovementAction>
 {
 private:
     /// @brief Index of a bool array which flags a forward keypress.

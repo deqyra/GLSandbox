@@ -6,10 +6,10 @@
 #include <renderboi/core/frame_of_reference.hpp>
 #include <renderboi/core/material.hpp>
 #include <renderboi/core/materials.hpp>
-#include <renderboi/core/texture_2d.hpp>
 #include <renderboi/core/pixel_space.hpp>
-#include <renderboi/core/shader/shader.hpp>
+#include <renderboi/core/texture_2d.hpp>
 #include <renderboi/core/lights/point_light.hpp>
+#include <renderboi/core/shader/shader.hpp>
 
 #include <renderboi/toolbox/factory.hpp>
 #include <renderboi/toolbox/input_splitter.hpp>
@@ -23,11 +23,12 @@
 #include <renderboi/toolbox/scene/components/camera_component.hpp>
 #include <renderboi/toolbox/scene/components/light_component.hpp>
 #include <renderboi/toolbox/scene/components/mesh_component.hpp>
-#include <renderboi/toolbox/runnables/input_logger.hpp>
 #include <renderboi/toolbox/runnables/basic_window_manager.hpp>
 #include <renderboi/toolbox/runnables/camera_aspect_ratio_manager.hpp>
-#include <renderboi/toolbox/runnables/mouse_camera_manager.hpp>
+#include <renderboi/toolbox/runnables/gamepad_movement_script.hpp>
+#include <renderboi/toolbox/runnables/input_logger.hpp>
 #include <renderboi/toolbox/runnables/keyboard_movement_script.hpp>
+#include <renderboi/toolbox/runnables/mouse_camera_manager.hpp>
 
 #include <cpptools/enum_map.hpp>
 
@@ -210,12 +211,18 @@ void ShadowSandbox::run(const GLWindowPtr window, const GLSandboxParameters& par
     std::shared_ptr<CameraAspectRatioManager> cameraAspectRatioManager = std::make_shared<CameraAspectRatioManager>(camera);
 
     // Attach object movement script to scene
-    std::shared_ptr<ShadowSandboxScript> movementScript = std::make_shared<ShadowSandboxScript>(lightObj, torusObj);
-    scene->registerScript(std::static_pointer_cast<Script>(movementScript));
+    std::shared_ptr<ShadowSandboxScript> sandboxScript = std::make_shared<ShadowSandboxScript>(lightObj, torusObj);
+    scene->registerScript(std::static_pointer_cast<Script>(sandboxScript));
     
+    std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
+
     // Add script component to camera: KeyboardMovementScript
-    ControlledEntityManager<KeyboardMovementScript> keyboardScriptManager(std::static_pointer_cast<BasisProvider>(camera));
-    cameraObj->addComponent<ScriptComponent>(std::static_pointer_cast<Script>(keyboardScriptManager.getEntity()));
+    ControlledEntityManager<KeyboardMovementScript> keyboardMovementScriptManager(cameraAsBasisProvider);
+    cameraObj->addComponent<ScriptComponent>(std::static_pointer_cast<Script>(keyboardMovementScriptManager.getEntity()));
+
+    // Add script component to camera: GamepadMovementScript
+    std::shared_ptr<GamepadMovementScript> gamepadMovementScript = std::make_shared<GamepadMovementScript>(cameraAsBasisProvider);
+    cameraObj->addComponent<ScriptComponent>(std::static_pointer_cast<Script>(gamepadMovementScript));
 
     // Window script
     ControlledEntityManager<BasicWindowManager> windowManager;
@@ -227,10 +234,13 @@ void ShadowSandbox::run(const GLWindowPtr window, const GLSandboxParameters& par
     InputSplitterPtr splitter = std::make_shared<InputSplitter>();
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraManager));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraAspectRatioManager));
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(movementScript));
-    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(keyboardScriptManager.getEventTranslator()));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(sandboxScript));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(keyboardMovementScriptManager.getEventTranslator()));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEntity()));
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEventTranslator()));
+
+    // Register all gamepad input processors to the splitter
+    splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(gamepadMovementScript));
 
     // Register the logger as both a classic input processor and a gamepad input processor
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));

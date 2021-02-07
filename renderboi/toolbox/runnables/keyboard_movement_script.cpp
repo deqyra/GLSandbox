@@ -1,6 +1,6 @@
 #include "keyboard_movement_script.hpp"
 
-#include <exception>
+#include <stdexcept>
 
 #include <renderboi/core/frame_of_reference.hpp>
 
@@ -22,7 +22,7 @@ KeyboardMovementScript::KeyboardMovementScript(
     _movementFlags{ false },
     _sprint(false)
 {
-    if (!basisProvider) throw std::runtime_error("KeyboardMovementScript: cannot construct from a null FrontProviderPtr.");
+    if (!basisProvider) throw std::runtime_error("KeyboardMovementScript: cannot construct from a null BasisProvider pointer.");
 }
 
 void KeyboardMovementScript::update(float timeElapsed)

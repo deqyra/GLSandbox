@@ -266,6 +266,7 @@ void Gamepad::_compareAndFireEvents(const GamepadState& before, const GamepadSta
     }
     else if (!dead && (before.LeftX != after.LeftX))
     {
+        _axisWasInDeadZone[Axis::LeftX] = false;
         _inputProcessor->processAxis(shared_from_this(), Axis::LeftX, after.LeftX);
     }
 
@@ -277,6 +278,7 @@ void Gamepad::_compareAndFireEvents(const GamepadState& before, const GamepadSta
     }
     else if (!dead && (before.LeftY != after.LeftY))
     {
+        _axisWasInDeadZone[Axis::LeftY] = false;
         _inputProcessor->processAxis(shared_from_this(), Axis::LeftY, after.LeftY);
     }
 
@@ -288,6 +290,7 @@ void Gamepad::_compareAndFireEvents(const GamepadState& before, const GamepadSta
     }
     else if (!dead && (before.RightX != after.RightX))
     {
+        _axisWasInDeadZone[Axis::RightX] = false;
         _inputProcessor->processAxis(shared_from_this(), Axis::RightX, after.RightX);
     }
 
@@ -299,6 +302,7 @@ void Gamepad::_compareAndFireEvents(const GamepadState& before, const GamepadSta
     }
     else if (!dead && (before.RightY != after.RightY))
     {
+        _axisWasInDeadZone[Axis::RightY] = false;
         _inputProcessor->processAxis(shared_from_this(), Axis::RightY, after.RightY);
     }
 
@@ -310,6 +314,7 @@ void Gamepad::_compareAndFireEvents(const GamepadState& before, const GamepadSta
     }
     else if (!dead && (before.LeftTrigger != after.LeftTrigger))
     {
+        _axisWasInDeadZone[Axis::LeftTrigger] = false;
         _inputProcessor->processAxis(shared_from_this(), Axis::LeftTrigger, after.LeftTrigger);
     }
 
@@ -321,6 +326,7 @@ void Gamepad::_compareAndFireEvents(const GamepadState& before, const GamepadSta
     }
     else if (!dead && (before.RightTrigger != after.RightTrigger))
     {
+        _axisWasInDeadZone[Axis::RightTrigger] = false;
         _inputProcessor->processAxis(shared_from_this(), Axis::RightTrigger, after.RightTrigger);
     }
 }
