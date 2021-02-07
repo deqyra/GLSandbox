@@ -290,6 +290,8 @@ set(RB_TOOLBOX_SOURCE_FILES
     runnables/camera_aspect_ratio_manager.hpp 
     runnables/gamepad_movement_script.cpp
     runnables/gamepad_movement_script.hpp 
+    runnables/gamepad_camera_manager.cpp
+    runnables/gamepad_camera_manager.hpp 
     runnables/input_logger.cpp
     runnables/input_logger.hpp
     runnables/keyboard_movement_script.cpp

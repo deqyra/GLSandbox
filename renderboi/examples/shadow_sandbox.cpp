@@ -26,6 +26,7 @@
 #include <renderboi/toolbox/runnables/basic_window_manager.hpp>
 #include <renderboi/toolbox/runnables/camera_aspect_ratio_manager.hpp>
 #include <renderboi/toolbox/runnables/gamepad_movement_script.hpp>
+#include <renderboi/toolbox/runnables/gamepad_camera_manager.hpp>
 #include <renderboi/toolbox/runnables/input_logger.hpp>
 #include <renderboi/toolbox/runnables/keyboard_movement_script.hpp>
 #include <renderboi/toolbox/runnables/mouse_camera_manager.hpp>
@@ -224,6 +225,10 @@ void ShadowSandbox::run(const GLWindowPtr window, const GLSandboxParameters& par
     std::shared_ptr<GamepadMovementScript> gamepadMovementScript = std::make_shared<GamepadMovementScript>(cameraAsBasisProvider);
     cameraObj->addComponent<ScriptComponent>(std::static_pointer_cast<Script>(gamepadMovementScript));
 
+    // Add script component to scene: GamepadCameraManager
+    std::shared_ptr<GamepadCameraManager> gamepadCameraManager = std::make_shared<GamepadCameraManager>(camera);
+    scene->registerScript(std::static_pointer_cast<Script>(gamepadCameraManager));
+
     // Window script
     ControlledEntityManager<BasicWindowManager> windowManager;
 
@@ -241,6 +246,7 @@ void ShadowSandbox::run(const GLWindowPtr window, const GLSandboxParameters& par
 
     // Register all gamepad input processors to the splitter
     splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(gamepadMovementScript));
+    splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(gamepadCameraManager));
 
     // Register the logger as both a classic input processor and a gamepad input processor
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));

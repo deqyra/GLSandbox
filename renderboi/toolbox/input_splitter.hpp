@@ -127,8 +127,6 @@ public:
     /// @param ypos Y coordinate of the new position of the mouse.
     void processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos) override;
 
-
-
     /////////////////////////////////////////////////////
     ///                                               ///
     /// Methods overridden from GamepadInputProcessor ///
@@ -136,23 +134,23 @@ public:
     /////////////////////////////////////////////////////
 
     /// @brief Callback for when the gamepad is connected.
-    void processConnected(const GamepadPtr gamepad);
+    void processConnected(const GamepadPtr gamepad) override;
 
     /// @brief Callback for when the gamepad is disconnected.
-    void processDisconnected(const GamepadPtr gamepad);
+    void processDisconnected(const GamepadPtr gamepad) override;
 
     /// @brief Callback for a gamepad button event.
     ///
     /// @param button Literal describing which key triggered the event.
     /// @param action Literal describing what action was performed on
     /// the button which triggered the event.
-    void processButton(const GamepadPtr gamepad, const GButton button, const Action action);
+    void processButton(const GamepadPtr gamepad, const GButton button, const Action action) override;
 
     /// @brief Callback for a gamepad axis event.
     ///
     /// @param axis Literal describing which axis triggered the event.
     /// @param value Value at which the axis was polled.
-    void processAxis(const GamepadPtr gamepad, const Axis axis, const float value);
+    void processAxis(const GamepadPtr gamepad, const Axis axis, const float value) override;
 };
 
 using InputSplitterPtr = std::shared_ptr<InputSplitter>;

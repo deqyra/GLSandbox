@@ -96,13 +96,13 @@ public:
     /// @param button Literal describing which key triggered the event.
     /// @param action Literal describing what action was performed on
     /// the button which triggered the event.
-    virtual void processButton(const GamepadPtr gamepad, const Window::Input::Gamepad::Button button, const Window::Input::Action action);
+    virtual void processButton(const GamepadPtr gamepad, const Window::Input::Gamepad::Button button, const Window::Input::Action action) override;
 
     /// @brief Callback for a gamepad axis event.
     ///
     /// @param axis Literal describing which axis triggered the event.
     /// @param value Value at which the axis was polled.
-    virtual void processAxis(const GamepadPtr gamepad, const Window::Input::Gamepad::Axis axis, const float value);
+    virtual void processAxis(const GamepadPtr gamepad, const Window::Input::Gamepad::Axis axis, const float value) override;
 };
 
 }//namespace Renderboi
