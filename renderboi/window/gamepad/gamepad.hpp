@@ -12,6 +12,8 @@
 
 namespace Renderboi
 {
+namespace Window
+{
 
 class GamepadManager;
 using GamepadManagerPtr = std::shared_ptr<GamepadManager>;
@@ -153,6 +155,9 @@ public:
     std::string name;
 };
 
+}//namespace Window
+
+using Gamepad = Window::Gamepad;
 using GamepadPtr = std::shared_ptr<Gamepad>;
 
 }//namespace Renderboi

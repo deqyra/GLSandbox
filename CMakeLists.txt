@@ -110,6 +110,18 @@ configure_file("${CMAKE_SOURCE_DIR}/renderboi/config/project_env.config.hpp" "${
 
 ###############################################################################
 #                                                                             #
+#                            Project-wide toggles                             #
+#                                                                             #
+###############################################################################
+
+option(WINDOW_BACKEND_GLFW3 "Use GLFW3 as the window backend" ON)
+option(GLFW3_BORDERLESS_POLICY_NATIVE "Have GLFW3 detect borderless fullscreen parameters upon starting up (default, overrides GLFW3_BORDERLESS_POLICY_MAX_MODE)" ON)
+option(GLFW3_BORDERLESS_POLICY_MAX_MODE "Have GLFW3 use the largest available video mode for borderless fullscreen" OFF)
+
+
+
+###############################################################################
+#                                                                             #
 #                            Dependency locations                             #
 #                                                                             #
 ###############################################################################
@@ -136,7 +148,6 @@ set(GLAD_LIB_NAME "glad")
 set(GETOPT_WIN_LIB_NAME "getopt")
 set(STB_IMAGE_LIB_NAME "stb_image")
 set(GLM_LIB_NAME "glm")
-set(GLFW3_LIB_NAME "glfw3")
 set(RB_UTILITIES_LIB_NAME "renderboi.utilities")
 set(RB_CORE_LIB_NAME "renderboi.core")
 set(RB_WINDOW_LIB_NAME "renderboi.window")
@@ -147,6 +158,7 @@ include(ExternalProject)
 ExternalProject_Add(${CPPTOOLS_LIB_NAME}_source
     GIT_REPOSITORY https://github.com/deqyra/CppTools
     CMAKE_ARGS
+    UPDATE_DISCONNECTED TRUE
     -DCMAKE_INSTALL_PREFIX=${EXPORT_LOCATION}
     -DCPPTOOLS_EXTERNAL_INSTALL_PREFIX=True
     -DCPPTOOLS_SKIP_TESTS=ON
@@ -211,8 +223,11 @@ set(RB_WINDOW_SOURCE_FILES
     gl_window.hpp
     input_processor.cpp
     input_processor.hpp
-    window_factory.hpp
+    monitor.cpp
+    monitor.hpp
     window_backend.hpp
+    window_creation_parameters.hpp
+    window_factory.hpp
     gamepad/gamepad_input_processor.cpp
     gamepad/gamepad_input_processor.hpp
     gamepad/gamepad_manager.cpp
@@ -225,6 +240,8 @@ set(RB_WINDOW_SOURCE_FILES
     glfw3/glfw3_adapter.hpp
     glfw3/glfw3_gamepad_manager.cpp
     glfw3/glfw3_gamepad_manager.hpp
+    glfw3/glfw3_monitor.cpp
+    glfw3/glfw3_monitor.hpp
     glfw3/glfw3_utilities.cpp
     glfw3/glfw3_utilities.hpp
     glfw3/glfw3_window_factory.cpp
@@ -408,14 +425,26 @@ add_custom_command(TARGET "RenderBoi" POST_BUILD
 #                                                                             #
 ###############################################################################
 
-# Build and run tests
-# enable_testing()
-# add_executable(${TEST_TARGET_NAME})
-# target_link_libraries(${TEST_TARGET_NAME} PUBLIC "RenderBoi.Core" ${CPPTOOLS_LIB_NAME})
-# add_dependencies(${TEST_TARGET_NAME} "copy_assets" "copy_dlls")
+set(TEST_SOURCE_LOCATION ${CMAKE_SOURCE_DIR}/tests)
+set(TEST_SOURCE_FILES
+    ${TEST_SOURCE_LOCATION}/main.cpp
+)
 
-# add_test(NAME "tests" COMMAND ${TEST_TARGET_NAME})
-# add_custom_command(TARGET ${TEST_TARGET_NAME}
-#                    COMMENT "Running tests"
-#                    POST_BUILD
-#                    COMMAND "./tests")
+# Build and run tests
+enable_testing()
+add_executable("RenderBoiTests"
+    ${TEST_SOURCE_FILES}
+)
+
+target_include_directories("RenderBoiTests" PUBLIC ${EXPORT_LOCATION}/include)
+target_link_directories("RenderBoiTests" PUBLIC ${EXPORT_LOCATION}/lib)
+
+target_link_libraries("RenderBoiTests" PUBLIC ${CMAKE_DL_LIBS}
+    ${RB_CORE_LIB_NAME}
+    # ${RB_TOOLBOX_LIB_NAME}
+    # ${RB_WINDOW_LIB_NAME}
+) 
+
+add_test(NAME tests 
+    COMMAND "RenderBoiTests"
+)

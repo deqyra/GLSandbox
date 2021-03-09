@@ -1,7 +1,6 @@
 #include "glfw3_utilities.hpp"
 
 #include <iostream>
-#include <unordered_map>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -12,14 +11,10 @@
 #include "../gamepad/gamepad_manager.hpp"
 #include "glfw3_adapter.hpp"
 #include "glfw3_window.hpp"
+#include "glfw3_gamepad_manager.hpp"
 
-namespace Renderboi
+namespace Renderboi::Window::GLFW3Utilities
 {
-
-static std::unordered_map<unsigned int, GamepadManagerPtr>
-_gamepadManagers = std::unordered_map<unsigned int, GamepadManagerPtr>();
-
-static std::unordered_map<int, bool> _joystickIsGamepad = std::unordered_map<int, bool>();
 
 void globalGlfwFramebufferResizeCallback(GLFWwindow* window, const int width, const int height)
 {
@@ -51,58 +46,55 @@ void globalGlfwMouseCursorCallback(GLFWwindow* window, const double xpos, const 
 
 void globalGlfwErrorCallback(const int error, const char* description)
 {
-	std::cerr << "GLFW error: 0x" << std::hex << error << ", \"" << description << "\"" << std::endl;
+    std::cerr << "GLFW error: 0x" << std::hex << error << ", \"" << description << "\"" << std::endl;
 }
 
 void subscribeToGlfwJoystickStatus(GLWindowPtr window)
 {
     GamepadManagerPtr manager = window->getGamepadManager();
-    _gamepadManagers[manager->id] = manager;
+    GLFW3GamepadManager::_GamepadManagers[manager->id] = manager;
 }
 
 void unsubscribeFromGlfwJoystickStatus(GLWindowPtr window)
 {
-    _gamepadManagers.erase(window->getGamepadManager()->id);
+    GLFW3GamepadManager::_GamepadManagers.erase(window->getGamepadManager()->id);
 }
 
 void globalGlfwJoystickCallback(int jid, int event)
 {
     if (event == GLFW_CONNECTED)
     {
-        if (glfwJoystickIsGamepad(jid))
-        {
-            _joystickIsGamepad[jid] = true;
-
-            for (auto it = _gamepadManagers.begin(); it != _gamepadManagers.end(); it++)
-            {
-                it->second->gamepadConnected(Window::GLFW3Adapter::getEnum<Window::Input::Joystick>(jid));
-            }
-        }
-        // else { ... }
-        // Joysticks not supported (yet).
+        GLFW3GamepadManager::_PresentJoysticks[jid] = true;
+        GLFW3GamepadManager::_PresentJoysticks[jid] = false;
+        // No mutex lock because the flag only needs to be atomic-written to,
+        // regardless of the value it held before.
+        GLFW3GamepadManager::_JoystickStatusRefreshFlag = true;
     }
     else //if (event == GLFW_DISCONNECTED)
     {
-        if (_joystickIsGamepad[jid])
+        if (GLFW3GamepadManager::_PresentGamepads[jid])
         {
-            for (auto it = _gamepadManagers.begin(); it != _gamepadManagers.end(); it++)
+            for (auto it = GLFW3GamepadManager::_GamepadManagers.begin(); it != GLFW3GamepadManager::_GamepadManagers.end(); it++)
             {
                 it->second->gamepadDisconnected(Window::GLFW3Adapter::getEnum<Window::Input::Joystick>(jid));
             }
 
-            _joystickIsGamepad[jid] = false;
+            GLFW3GamepadManager::_PresentGamepads[jid] = false;
         }
         // else { ... }
         // Joysticks not supported (yet).
+
+        GLFW3GamepadManager::_PresentJoysticks[jid] = false;
     }
 }
 
-void pollGamepads()
+void initGamepadStatuses()
 {
     for (int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST + 1; i++)
     {
-        _joystickIsGamepad[i] = glfwJoystickIsGamepad(i);
+        GLFW3GamepadManager::_PresentJoysticks[i] = glfwJoystickPresent(i);
+        GLFW3GamepadManager::_PresentGamepads[i] = glfwJoystickIsGamepad(i);
     }
 }
 
-}//namespace Renderboi
+}//namespace Renderboi::GLFW3Utilities

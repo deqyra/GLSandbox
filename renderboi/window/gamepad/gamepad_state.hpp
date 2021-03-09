@@ -5,6 +5,8 @@
 
 namespace Renderboi
 {
+namespace Window
+{
 
 /// @brief Class representing the state of a gamepad controller as a collection 
 /// of buttons which are pressed or released, as well as axes whose assigned 
@@ -132,6 +134,10 @@ public:
     /// @param other GamepadState to copy state from.
     GamepadState& operator=(GamepadState other);
 };
+
+}//namespace Window
+
+using GamepadState = Window::GamepadState;
 
 }//namespace Renderboi
 

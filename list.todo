@@ -109,6 +109,7 @@ RenderBoi:
         ✔ Move functionality to get input action/button names (used in BasicInputManager) @done(20-12-25 16:00)
         ✘ Update concrete window instantiation mechanisms? @cancelled(21-01-31 17:12)
         ✔ Move rendering away in another thread, keep event polling in the main thread @done(21-01-31 17:46)
+        ☐ Fully integrate GLFW in windowing systeam
         Gamepad:
             ✔ Write GamepadState @done(21-01-25 12:37)
             ✔ Write Gamepad @done(21-01-25 15:18)
@@ -117,8 +118,10 @@ RenderBoi:
             ✔ Handle connection / disconnection @done(21-02-04 08:24)
             ✔ Update input logger @done(21-02-06 01:04)
             ✔ Add a gamepad input splitter @done(21-02-06 01:04)
+            ☐ Async dispatch of events
         ☐ Stop rendering when the window loses focus / is minimized
         InputProcessor:
+            ☐ Async dispatch of events
             ☐ Think about breaking the interface apart for performance
         ☐ Implement an input poll rate limiter
     Examples:

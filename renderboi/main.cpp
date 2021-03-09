@@ -23,20 +23,18 @@
 #include "renderboi_parameters.hpp"
 
 namespace rb = Renderboi;
+namespace rbw = rb::Window;
 namespace fs = std::filesystem;
-
-/////////////////// CONCRETE WINDOW BACKEND SPECIFICATION //////////////////////
-
-#include <renderboi/window/glfw3/glfw3_window_factory.hpp>
-#include <renderboi/window/glfw3/glfw3_utilities.hpp>
-
-static const void* UsedErrorCallback = (void*)(&rb::globalGlfwErrorCallback);
-
-////////////////////////////////////////////////////////////////////////////////
 
 //Initialise OpenGL and display a window with an active GL context
 int main(int argc, char** argv)
 {
+	if (AppBackend == rbw::WindowBackend::Unknown)
+	{
+		std::cerr << "No window backend was selected for the app. Cannot run examples." << std::endl;
+		return EXIT_FAILURE;
+	}
+
 	#ifdef _WIN32
 		SetConsoleOutputCP(65001);
 	#endif
@@ -74,7 +72,7 @@ int main(int argc, char** argv)
     std::cout << COPYRIGHT_NOTICE << '\n';
 	std::cout << MIT_LICENSE_NOTICE << '\n' << std::endl;
 
-	AppWindowFactory::SetErrorCallback(UsedErrorCallback);
+	AppWindowFactory::SetErrorCallback(AppWindowErrorCallback);
 
 	if (!AppWindowFactory::InitializeBackend())
 	{
@@ -83,22 +81,41 @@ int main(int argc, char** argv)
 	}
 
 	// Init window, GL context and GL pointers
-	rb::GLWindowPtr window;
+	rbw::GLWindowPtr window;
+	rbw::WindowCreationParameters windowParams = {
+		"RenderBoi",						// title
+		1280,								// width
+		720,								// height
+		true,								// resizable
+		GL_CONTEXT_VERSION_MAJOR,			// glVersionMajor
+		GL_CONTEXT_VERSION_MINOR,			// glVersionMinor
+		rb::Window::OpenGLProfile::Core,	// glProfile
+		nullptr,							// shareContext
+		nullptr,							// monitor
+		false,								// borderlessFullscreen
+		false,								// autoMinimize
+		true,								// decorated
+		false,								// transparentFramebuffer
+		true,								// visible
+		false,								// maximized
+		false,								// alwaysOnTop
+		true,								// focused
+		true,								// focusOnShow
+		true								// debug
+	};
+
 	try
 	{
-		window = AppWindowFactory::MakeWindow(
-			"RenderBoi",
-			1280, 720,
-			GL_CONTEXT_VERSION_MAJOR, GL_CONTEXT_VERSION_MINOR,
-			rb::Window::OpenGLProfile::Core,
-			true
-		);
+		window = AppWindowFactory::MakeWindow(windowParams);
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << "Exception thrown during window creation:\n"
-			<< e.what() << std::endl;
-		return abortWithError("Window creation failed. Aborting...");
+		std::cerr 	<< "Exception thrown during window creation:\n"
+				  	<< e.what() << '\n'
+					<< "Window creation failed. Aborting..." << std::endl;
+
+		AppWindowFactory::TerminateBackend();
+		return EXIT_FAILURE; 
 	}
 
 	rb::glIgnoreDebugMessagesOfType(GL_DEBUG_TYPE_PERFORMANCE_ARB);
@@ -125,9 +142,6 @@ int main(int argc, char** argv)
 	// Destroy window by resetting what should be the only shared pointer to it
 	window.reset();
 	AppWindowFactory::TerminateBackend();
-
-	int* a = new int;
-	a[3] = 0;
 
 	return EXIT_SUCCESS;
 }

@@ -9,9 +9,6 @@
 
 #include "renderboi_parameters.hpp"
 
-// Halt the execution with a clean exit
-int abortWithError(const std::string& message, const bool terminateBackend = true);
-
 // Process command line arguments and parse parameters
 bool processArguments(const int argc, char* const* argv, RenderboiParameters& dest);
 

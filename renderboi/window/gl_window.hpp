@@ -9,9 +9,12 @@
 
 #include "enums.hpp"
 #include "input_processor.hpp"
+#include "monitor.hpp"
 #include "gamepad/gamepad_manager.hpp"
 
 namespace Renderboi
+{
+namespace Window
 {
 
 /// @brief Abstract window, supporting event callbacks through a custom 
@@ -79,16 +82,8 @@ public:
     /// @brief Discard any registered custom input processor.
     virtual void detachInputProcessor();
 
-    /// @brief Set the input mode of a certain target in the window. May only be
-    /// called from the main thread.
-    ///
-    /// @param target Literal describing which aspect of the window whose
-    /// input mode should be set.
-    /// @param value Literal describing which input to set the target to.
-    virtual void setInputMode(const Window::Input::Mode::Target target, const Window::Input::Mode::Value value) = 0;
-
     /// @brief Repeatedly poll and forward input events. May be called only from
-    /// the main thread. Call exitEvenPollingLoop() from another thread to yield.
+    /// the main thread. Call exitEventPollingLoop() from another thread to yield.
     virtual void startEventPollingLoop();
 
     /// @brief Stop the event polling loop started by startEventPollingLoop(). 
@@ -112,6 +107,109 @@ public:
     /// @return The title of the window.
     virtual void setTitle(std::string title) = 0;
 
+    /// @brief Set the input mode of a certain target in the window. May only be
+    /// called from the main thread.
+    ///
+    /// @param target Literal describing which aspect of the window whose
+    /// input mode should be set.
+    /// @param value Literal describing which input to set the target to.
+    virtual void setInputMode(const Window::Input::Mode::Target target, const Window::Input::Mode::Value value) = 0;
+
+    /// @brief Hide the window. May be called only from the main thread.
+    virtual void hide() = 0;
+
+    /// @brief Show the window. May be called only from the main thread.
+    virtual void show() = 0;
+
+    /// @brief Whether the window is visible. May be called only from the main 
+    /// thread.
+    ///
+    /// @return Whether the window is visible.
+    virtual bool isVisible() const = 0;
+
+    /// @brief Bring focus to the window. May be called only from the main 
+    /// thread.
+    virtual void focus() = 0;
+
+    /// @brief Whether the window is visible. May be called only from the main 
+    /// thread.
+    ///
+    /// @return Whether the window is visible.
+    virtual bool isFocused() const = 0;
+
+    /// @brief Maximize the window. May be called only from the main thread.
+    virtual void maximize() = 0;
+
+    /// @brief Whether or not the window is maximized. May be called only from 
+    /// the main thread.
+    ///
+    /// @return Whether or not the window is maximized.
+    virtual bool isMaximized() const = 0;
+
+    /// @brief Minimize the window. May be called only from the main thread.
+    virtual void minimize() = 0;
+
+    /// @brief Whether or not the window is minimized. May be called only from 
+    /// the main thread.
+    ///
+    /// @return Whether or not the window is minimized.
+    virtual bool isMinimized() const = 0;
+
+    /// @brief Retrieve the width and height of the window in screen coordinates.
+    ///
+    /// @param[out] width Will receive the width of the window.
+    /// @param[out] height Will receive the height of the window.
+    virtual void getSize(int& width, int& height) const = 0;
+
+    /// @brief Retrieve the width and height of the framebuffer in pixels.
+    ///
+    /// @param[out] width Will receive the width of the framebuffer.
+    /// @param[out] height Will receive the height of the framebuffer.
+    virtual void getFramebufferSize(int& width, int& height) const = 0;
+
+    /// @brief Display the window in fullscreen on the specified monitor. The
+    /// primary monitor will be used if none is provided. May be called only
+    /// from the main thread.
+    ///
+    /// @param monitor Pointer to the monitor on which to make the window go
+    /// fullscreen.
+    /// @param borderless Whether or not to go borderless fullscreen. When 
+    /// enabled, this makes the window fit exactly the video mode of the monitor
+    /// it is on. Otherwise, the attributes of the window are left untouched.
+    virtual void goFullscreen(MonitorPtr monitor = nullptr, bool borderless = false) = 0;
+
+    /// @brief Display the window in fullscreen on the specified monitor. The
+    /// primary monitor will be used if none is provided. The window will switch
+    /// to the video mode which is the closest to the indicated parameters. May
+    /// be called only from the main thread.
+    ///
+    /// @param monitor Pointer to the monitor on which to make the window go
+    /// fullscreen.
+    /// @param width Desired width of the video mode.
+    /// @param height Desired height of the video mode.
+    /// @param refreshRate Desired refresh rate.
+    virtual void goFullscreen(
+        MonitorPtr monitor = nullptr,
+        int width = -1,
+        int height = -1,
+        int refreshRate = -1
+    ) = 0;
+
+    /// @brief Whether or not the window is displayed in fullscreen mode. May be
+    /// called only from the main thread.
+    ///
+    /// @return Whether or not the window is displayed in fullscreen mode.
+    virtual bool isFullscreen() const = 0;
+
+    /// @brief Display the window in windowed mode. May be called only from the
+    /// main thread.
+    virtual void exitFullscreen() = 0;
+
+    /// @brief Set the refresh rate of a fullscreen window. Has no effect on a
+    /// window displayed in windowed mode. May be called only from the main 
+    /// thread.
+    virtual void setRefreshRate(int rate) = 0;
+
     /// @brief Whether the window was flagged for closing. May be called from
     /// any thread.
     ///
@@ -127,8 +225,8 @@ public:
     /// any thread.
     virtual void swapBuffers() = 0;
 
-    /// @brief Poll events recorded by the window. May only be called from 
-    /// the main thread.
+    /// @brief Poll the event queue of the window. May only be called from the 
+    /// main thread.
     virtual void pollEvents() const = 0;
     
     /// @brief Get the aspect ratio of the framebuffer used by the window.
@@ -146,7 +244,7 @@ public:
     /// from any thread.
     virtual void makeContextCurrent() = 0;
 
-    /// @brief Make the GL context non- current for the calling thread. May be 
+    /// @brief Make the GL context non-current for the calling thread. May be 
     /// called from any thread.
     virtual void releaseContext() = 0;
 
@@ -167,12 +265,6 @@ protected:
     /// @brief Title of the window.
     std::string _title;
 
-    /// @brief Width of the window.
-    unsigned int _width;
-
-    /// @brief Height of the window.
-    unsigned int _height;
-
     /// @brief Flag to indicate exiting the event polling loop.
     std::atomic<bool> _stopPollingFlag;
 
@@ -181,6 +273,11 @@ protected:
     GamepadManagerPtr _gamepadManager;
 };
 
+using GLWindowPtr = std::shared_ptr<GLWindow>;
+
+}//namespace Window
+
+using GLWindow = Window::GLWindow;
 using GLWindowPtr = std::shared_ptr<GLWindow>;
 
 }//namespace Renderboi

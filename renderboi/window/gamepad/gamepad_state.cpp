@@ -1,6 +1,6 @@
 #include "gamepad_state.hpp"
 
-namespace Renderboi
+namespace Renderboi::Window
 {
 
 GamepadState::GamepadState() :
@@ -70,4 +70,4 @@ void swap(GamepadState& left, GamepadState& right)
     swap(left.Axes,    right.Axes);
 }
 
-}//namespace Renderboi
+}//namespace Renderboi::Window

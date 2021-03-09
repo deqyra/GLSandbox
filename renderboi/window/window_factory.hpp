@@ -6,13 +6,15 @@
 #include <glad/gl.h>
 
 #include "gl_window.hpp"
+#include "monitor.hpp"
 #include "window_backend.hpp"
+#include "window_creation_parameters.hpp"
 
-namespace Renderboi
+namespace Renderboi::Window
 {
 
-/// @brief Collection of functions to instantiate a window on the OS-level. Call
-/// only from the main thread.
+/// @brief Collection of functions to instantiate a window on the OS-level. 
+/// These must be called only from the main thread.
 ///
 /// @tparam W Literal describing the window backend to use to create the window.
 template<WindowBackend W>
@@ -21,28 +23,44 @@ class WindowFactory
 public:
     using ErrorCallbackSignature = void(void);
 
-    /// @brief Initialize the window backend in use.
+    /// @brief Initialize the window backend in use. To be called before any
+    /// other function is used.
     static int InitializeBackend() = delete;
 
-    /// @brief Terminate the window backend in use.
+    /// @brief Terminate the window backend in use. Call after being done using
+    /// the window backend. Call InitializeBackend() before using any other
+    /// function again.
     static void TerminateBackend() = delete;
 
-    /// @brief Set the error callback for created windows.
+    /// @brief Set the error callback for the window backend.
     ///
     /// @param callback Function pointer to the callback to use for error
     /// reporting.
     static void SetErrorCallback(const void* callback) = delete;
 
-    /// @brief Create an OpenGL context within a window, bind callbacks and 
-    /// initialize OpenGL function pointers.
+    /// @brief Get a pointer to the primary monitor of the system.
+    static MonitorPtr GetPrimaryMonitor() = delete;
+
+    /// @brief Get an array filled with pointers to the different monitors of
+    /// the system.
+    static std::vector<MonitorPtr> GetMonitors() = delete;
+
+    /// @brief Set the callback for monitor configuration changes.
     ///
-    /// @param title Title of the window.
-    /// @param width Width of the window.
-    /// @param height Height of the window.
-    /// @param glVersionMajor Version major of the OpenGL specification to use.
-    /// @param glVersionMinor Version minor of the OpenGL specification to use.
-    /// @param glProfile Literal describing the OpenGL profile to use.
-    /// @param bool Whether or not to print out the debugging output.
+    /// @param callback Function pointer to the callback to use for monitor
+    /// configuration change.
+    static void SetMonitorCallback(const void* callback) = delete;
+
+    /// @brief Get the desktop video mode of the monitor. Implementation may not
+    /// always return exact results under particular circumstances.
+    ///
+    /// @param monitor Pointer to the monitor whose native video mode to retrieve.
+    static Monitor::VideoMode GetMonitorNativeVideoMode(const MonitorPtr monitor) = delete;
+
+    /// @brief Create a window on the system, initialize a context within it,
+    /// bind callbacks, and get a pointer to it.
+    ///
+    /// @param params Parameters for the window creation.
     ///
     /// @return A pointer to an instantiated GLWindow.
     ///
@@ -51,15 +69,7 @@ public:
     /// std::runtime_error. If a debug capable context was requested but the 
     /// environment does not support GL_ARB_debug_output, the function will 
     /// throw a std::runtime_error.
-    static GLWindowPtr MakeWindow(
-        std::string title,
-        int width,
-        int height,
-        int glVersionMajor,
-        int glVersionMinor,
-        Window::OpenGLProfile glProfile,
-        bool debug
-    ) = delete;
+    static GLWindowPtr MakeWindow(const WindowCreationParameters& params) = delete;
 
     /// @brief Unbind a window from the system and deallocate the resources 
     /// it uses.
@@ -68,6 +78,6 @@ public:
     static void DestroyWindow(GLWindowPtr window) = delete;
 };
 
-}//namespace Renderboi
+}//namespace Renderboi::Window
 
 #endif//RENDERBOI__WINDOW__WINDOW_FACTORY_HPP

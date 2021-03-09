@@ -20,17 +20,6 @@
 namespace rb = Renderboi;
 namespace fs = std::filesystem;
 
-int abortWithError(const std::string& message, const bool terminateBackend)
-{
-	std::cerr << message;
-	if (terminateBackend)
-	{
-		AppWindowFactory::TerminateBackend();
-	}
-
-	return EXIT_FAILURE;
-}
-
 bool processArguments(const int argc, char* const* argv, RenderboiParameters& dest)
 {
     static option cliOptions[] = {

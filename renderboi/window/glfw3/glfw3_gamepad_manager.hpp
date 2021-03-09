@@ -2,6 +2,7 @@
 #define RENDERBOI__WINDOW__GLFW3__GLFW3_GAMEPAD_MANAGER_HPP
 
 #include <atomic>
+#include <unordered_map>
 #include <vector>
 
 #define GLFW_INCLUDE_NONE
@@ -10,22 +11,42 @@
 
 #include "../enums.hpp"
 #include "../gamepad/gamepad_manager.hpp"
+#include "glfw3_utilities.hpp"
 
-namespace Renderboi
+namespace Renderboi::Window
 {
 
 class GLFW3GamepadManager : public GamepadManager
 {
 private:
-    using Joystick = Window::Input::Joystick;
+    friend void GLFW3Utilities::subscribeToGlfwJoystickStatus(GLWindowPtr window);
+    friend void GLFW3Utilities::unsubscribeFromGlfwJoystickStatus(GLWindowPtr window);
+    friend void GLFW3Utilities::globalGlfwJoystickCallback(int jid, int event);
+    friend void GLFW3Utilities::initGamepadStatuses();
+
+    using Joystick = Input::Joystick;
 
     /// @brief Structure mapping managed gamepad to litterals describing the 
     /// slot which they are assigned to.
-    mutable std::map<Window::Input::Joystick, GamepadPtr> _managedGamepads;
+    mutable std::map<Joystick, GamepadPtr> _managedGamepads;
 
     /// @brief Structure mapping managed gamepad to whether or not polling for
     /// them is enabled.
-    mutable std::map<Window::Input::Joystick, std::atomic<bool>> _enabledGamepads;
+    mutable std::map<Joystick, std::atomic<bool>> _enabledGamepads;
+    
+    /// @brief Structure mapping gamepad manager IDs to the instances with those IDs.
+    static std::unordered_map<unsigned int, GamepadManagerPtr> _GamepadManagers;
+
+    /// @brief Structure mapping joystick IDs to whether or not they are present
+    /// on the system.
+    static std::unordered_map<int, std::atomic<bool>> _PresentJoysticks;
+
+    /// @brief Structure mapping joystick IDs to whether or not they are gamepads.
+    static std::unordered_map<int, std::atomic<bool>> _PresentGamepads;
+
+    /// @brief Whether or not some newly detected gamepads need to be scanned for
+    /// more info about their status.
+    static std::atomic<bool> _JoystickStatusRefreshFlag;
 
     /// @brief Get a Renderboi gamepad state from a GLFW3 gamepad state.
     ///
@@ -54,7 +75,7 @@ public:
     void gamepadDisconnected(Joystick slot) const override;
 
     /// @brief Get an array filled with litterals representing handles to
-    /// present gamepads.
+    /// present gamepads. This function may be called only from the main thread.
     ///
     /// @param mustBeUnused Whether to return all present gamepads or only those
     /// not already in use by the window.
@@ -86,11 +107,14 @@ public:
     /// @param slot Virtual slot on which to find the controller to stop polling.
     void stopGamepadPolling(Joystick slot) const override;
 
+    /// @brief Process any pending gamepad connection event.
+    void refreshGamepadStatuses() const override;
+
     /// @brief Poll the state for gamepads. And forward it to gamepads.
     void pollGamepadStates() const override;
 };
 
-}//namespace Renderboi
+}//namespace Renderboi::Window
 
 
 #endif//RENDERBOI__WINDOW__GLFW3__GLFW3_GAMEPAD_MANAGER_HPP

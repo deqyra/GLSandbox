@@ -9,7 +9,7 @@
 
 #include "../gl_window.hpp"
 
-namespace Renderboi
+namespace Renderboi::Window::GLFW3Utilities
 {
 
 /// @brief Callback for a framebuffer resize event. Will get the GLWindow instance
@@ -81,17 +81,30 @@ void subscribeToGlfwJoystickStatus(GLWindowPtr window);
 void unsubscribeFromGlfwJoystickStatus(GLWindowPtr window);
 
 /// @brief Callback for a joystick status event. The event will be forwarded to
-/// all windows whiche were subscribed through subscribeToGlfwJoystickStatus().
+/// the gamepad managers of all windows which were subscribed through 
+/// subscribeToGlfwJoystickStatus().
+/// CAUTION : this function will be called by GLFW in a separate thread. However,
+/// in the case of a connection event, actually checking the status of a 
+/// joystick (to know whether it is a gamepad or not) requires to call GLFW 
+/// functions which only work when called from the main thread. Since this is 
+/// not the case here, what this callback actually does is raise a flag to check
+/// upon joystick statuses. The actual processing is then deferred to the main
+/// thread of the application, which should call 
+/// GLFW3GamepadManager::refreshGamepadStatuses() at some point (typically 
+/// done through calling GLWindow::startEventProcessingLoop()). Only then will 
+/// the connection events be fired to registered gamepad managers.
+/// Gamepad disconnection events are not affected by this.
 ///
-/// @param jid ID of the joystick which was just (dis)connected from the system.
+/// @param jid ID of the joystick which the connection / disconnection event 
+/// relates to.
 /// @param event Value describing whether the joystick was connected or 
 /// disconnected. 
 void globalGlfwJoystickCallback(int jid, int event);
 
 /// @brief Poll all gamepads and initialize internal structures to keep track of
 /// those.
-void pollGamepads();
+void initGamepadStatuses();
 
-}//namespace Renderboi
+}//namespace Renderboi::Window::GLFW3Utilities
 
 #endif//RENDERBOI__WINDOW__GLFW3__GLFW3_UTILITIES_HPP

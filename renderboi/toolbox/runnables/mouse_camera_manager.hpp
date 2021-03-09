@@ -4,6 +4,7 @@
 #include <renderboi/core/camera.hpp>
 
 #include <renderboi/window/input_processor.hpp>
+#include <renderboi/window/gl_window.hpp>
 
 namespace Renderboi
 {

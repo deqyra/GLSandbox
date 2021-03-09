@@ -8,7 +8,7 @@
 #include "../window_backend.hpp"
 #include "../gl_window.hpp"
 
-namespace Renderboi
+namespace Renderboi::Window
 {
 
 template<WindowBackend W>
@@ -18,10 +18,26 @@ class WindowFactory;
 class GLFW3Window : public GLWindow
 {
 private:
-    friend class WindowFactory<WindowBackend::GLFW3>;
+    using GLFW3WindowFactory = WindowFactory<WindowBackend::GLFW3>;
+    friend class GLFW3WindowFactory;
 
     /// @brief Pointer to the managed GLFW window.
     GLFWwindow* _w;
+
+    /// @brief Pointer to the monitor on which the window is fullscreen, or nullptr.
+    GLFWmonitor* _fullscreenMonitor;
+
+    /// @brief Width of the window before fullscreen was requested.
+    int _widthBeforeFullscreen;
+
+    /// @brief Height of the window before fullscreen was requested.
+    int _heightBeforeFullscreen;
+
+    /// @brief X position of the window before fullscreen was requested.
+    int _xPosBeforeFullscreen;
+
+    /// @brief Y position of the window before fullscreen was requested.
+    int _yPosBeforeFullscreen;
 
 public:
     /// @param window Raw pointer to the GLFW window struct.
@@ -40,6 +56,113 @@ public:
     ///                                  ///
     ////////////////////////////////////////
 
+    /// @brief Set the title of the window.
+    ///
+    /// @return The title of the window.
+    void setTitle(std::string title) override;
+
+    /// @brief Set the input mode of a certain target in the window.
+    ///
+    /// @param target Literal describing which aspect of the window whose
+    /// input mode should be set.
+    /// @param value Literal describing which input to set the target to.
+    void setInputMode(Window::Input::Mode::Target target, Window::Input::Mode::Value value) override;
+
+    /// @brief Hide the window. May be called only from the main thread.
+    void hide() override;
+
+    /// @brief Show the window. May be called only from the main thread.
+    void show() override;
+
+    /// @brief Whether the window is visible. May be called only from the main 
+    /// thread.
+    ///
+    /// @return Whether the window is visible.
+    bool isVisible() const override;
+
+    /// @brief Bring focus to the window. May be called only from the main 
+    /// thread.
+    void focus() override;
+
+    /// @brief Whether the window is visible. May be called only from the main 
+    /// thread.
+    ///
+    /// @return Whether the window is visible.
+    bool isFocused() const override;
+
+    /// @brief Maximize the window. May be called only from the main thread.
+    void maximize() override;
+
+    /// @brief Whether or not the window is maximized. May be called only from 
+    /// the main thread.
+    ///
+    /// @return Whether or not the window is maximized.
+    bool isMaximized() const override;
+
+    /// @brief Minimize the window. May be called only from the main thread.
+    void minimize() override;
+
+    /// @brief Whether or not the window is minimized. May be called only from 
+    /// the main thread.
+    ///
+    /// @return Whether or not the window is minimized.
+    bool isMinimized() const override;
+
+    /// @brief Retrieve the width and height of the window in screen coordinates.
+    ///
+    /// @param[out] width Will receive the width of the window.
+    /// @param[out] height Will receive the height of the window.
+    void getSize(int& width, int& height) const override;
+
+    /// @brief Retrieve the width and height of the framebuffer in pixels.
+    ///
+    /// @param[out] width Will receive the width of the framebuffer.
+    /// @param[out] height Will receive the height of the framebuffer.
+    void getFramebufferSize(int& width, int& height) const override;
+
+    /// @brief Display the window in fullscreen on the specified monitor. The
+    /// primary monitor will be used if none is provided. May be called only
+    /// from the main thread.
+    ///
+    /// @param monitor Pointer to the monitor on which to make the window go
+    /// fullscreen.
+    /// @param borderless Whether or not to go borderless fullscreen. When 
+    /// enabled, this makes the window fit exactly the video mode of the monitor
+    /// it is on. Otherwise, the attributes of the window are left untouched.
+    void goFullscreen(MonitorPtr monitor = nullptr, bool borderless = false) override;
+
+    /// @brief Display the window in fullscreen on the specified monitor. The
+    /// primary monitor will be used if none is provided. The window will switch
+    /// to the video mode which is the closest to the indicated parameters. May
+    /// be called only from the main thread.
+    ///
+    /// @param monitor Pointer to the monitor on which to make the window go
+    /// fullscreen.
+    /// @param width Desired width of the video mode.
+    /// @param height Desired height of the video mode.
+    /// @param refreshRate Desired refresh rate.
+    void goFullscreen(
+        MonitorPtr monitor = nullptr,
+        int width = -1,
+        int height = -1,
+        int refreshRate = -1
+    ) override;
+
+    /// @brief Whether or not the window is displayed in fullscreen mode. May be
+    /// called only from the main thread.
+    ///
+    /// @return Whether or not the window is displayed in fullscreen mode.
+    bool isFullscreen() const override;
+
+    /// @brief Display the window in windowed mode. May be called only from the
+    /// main thread.
+    void exitFullscreen() override;
+
+    /// @brief Set the refresh rate of a fullscreen window. Has no effect on a
+    /// window displayed in windowed mode. May be called only from the main 
+    /// thread.
+    void setRefreshRate(int rate) override;
+
     /// @brief Whether the window was flagged for closing.
     ///
     /// @return Whether or not the window was flagged for closing.
@@ -55,18 +178,6 @@ public:
 
     /// @brief Poll events recorded by the window.
     void pollEvents() const override;
-
-    /// @brief Set the input mode of a certain target in the window.
-    ///
-    /// @param target Literal describing which aspect of the window whose
-    /// input mode should be set.
-    /// @param value Literal describing which input to set the target to.
-    void setInputMode(Window::Input::Mode::Target target, Window::Input::Mode::Value value) override;
-
-    /// @brief Set the title of the window.
-    ///
-    /// @return The title of the window.
-    void setTitle(std::string title) override;
     
     /// @brief Get the aspect ratio of the framebuffer used by the window.
     ///
@@ -96,6 +207,6 @@ public:
 
 using GLFW3WindowPtr = std::shared_ptr<GLFW3Window>;
 
-}//namespace Renderboi
+}//namespace Renderboi::Window
 
 #endif//RENDERBOI__WINDOW__GLFW3__GLFW3_WINDOW_HPP

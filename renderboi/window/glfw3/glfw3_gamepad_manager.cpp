@@ -1,6 +1,8 @@
 #include "glfw3_gamepad_manager.hpp"
 
+#include <atomic>
 #include <stdexcept>
+#include <unordered_map>
 #include <vector>
 
 #define GLFW_INCLUDE_NONE
@@ -11,9 +13,15 @@
 
 #include "../enums.hpp"
 #include "glfw3_adapter.hpp"
+#include "glfw3_utilities.hpp"
 
-namespace Renderboi
+namespace Renderboi::Window
 {
+
+std::unordered_map<unsigned int, GamepadManagerPtr> gamepadManagers = std::unordered_map<unsigned int, GamepadManagerPtr>();
+std::unordered_map<int, bool> joystickIsPresent = std::unordered_map<int, bool>();
+std::unordered_map<int, bool> joystickIsGamepad = std::unordered_map<int, bool>();
+std::atomic<bool> unknownJoysticksPresent = true;
 
 GLFW3GamepadManager::GLFW3GamepadManager() :
     GamepadManager(),
@@ -52,8 +60,6 @@ std::vector<Window::Input::Joystick> GLFW3GamepadManager::pollPresentGamepads(bo
     {
         int jid = Window::GLFW3Adapter::getValue(*it);
 
-        bool present = glfwJoystickPresent(jid);
-        bool gamepad = glfwJoystickIsGamepad(jid);
         if (glfwJoystickIsGamepad(jid) && !(mustBeUnused && _managedGamepads.contains(*it)))
         {
             result.push_back(*it);
@@ -86,6 +92,36 @@ void GLFW3GamepadManager::startGamepadPolling(Window::Input::Joystick slot) cons
 void GLFW3GamepadManager::stopGamepadPolling(Window::Input::Joystick slot) const
 {
     _enabledGamepads[slot] = false;
+}
+
+void GLFW3GamepadManager::refreshGamepadStatuses() const
+{
+    if (_JoystickStatusRefreshFlag)
+    {
+        // Reset the flag immediately
+        _JoystickStatusRefreshFlag = false;
+
+        for (auto it = _PresentJoysticks.begin(); it != _PresentJoysticks.end(); it++)
+        {
+            // Don't bother with undetected gamepads
+            if (!it->second) continue;
+
+            // Don't bother with joysticks already marked as gamepads
+            if (_PresentGamepads[it->first]) continue;
+
+            // Update the gamepad status for that joystick
+            if (glfwJoystickIsGamepad(it->first))
+            {
+                _PresentGamepads[it->first] = true;
+
+                // Fire connection events to registered gamepad managers
+                for (auto it = _GamepadManagers.begin(); it != _GamepadManagers.end(); it++)
+                {
+                    it->second->gamepadConnected(Window::GLFW3Adapter::getEnum<Window::Input::Joystick>(it->first));
+                }
+            }
+        }
+    }
 }
 
 void GLFW3GamepadManager::pollGamepadStates() const
@@ -129,4 +165,4 @@ GamepadState GLFW3GamepadManager::_GamepadStateFromGlfwGamepadState(const GLFWga
     return state;
 }
 
-}
+}//namespace Renderboi::Window

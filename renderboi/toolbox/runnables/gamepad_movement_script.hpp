@@ -6,6 +6,7 @@
 #include <glm/vec2.hpp>
 
 #include <renderboi/core/interfaces/basis_provider.hpp>
+#include <renderboi/window/gamepad/gamepad.hpp>
 #include <renderboi/window/gamepad/gamepad_input_processor.hpp>
 
 #include "../script.hpp"

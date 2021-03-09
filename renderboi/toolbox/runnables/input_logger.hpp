@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include <renderboi/window/input_processor.hpp>
+#include <renderboi/window/gl_window.hpp>
 #include <renderboi/window/gamepad/gamepad_input_processor.hpp>
 
 namespace Renderboi

@@ -21,12 +21,11 @@
 #define GL_CONTEXT_VERSION_MAJOR 4
 #define GL_CONTEXT_VERSION_MINOR 2
 
-#include <renderboi/window/glfw3/glfw3_window_factory.hpp>
-#include <renderboi/window/glfw3/glfw3_utilities.hpp>
+#include <renderboi/window/env_info.hpp>
 
 namespace rb = Renderboi;
+namespace rbw = rb::Window;
 
-static constexpr rb::WindowBackend UsedBackend = rb::WindowBackend::GLFW3;
-using AppWindowFactory = rb::WindowFactory<UsedBackend>;
+using AppWindowFactory = rbw::WindowFactory<AppBackend>;
 
 #endif//RENDERBOI__PROJECT_ENV_HPP

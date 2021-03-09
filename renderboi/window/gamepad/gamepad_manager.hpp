@@ -9,6 +9,8 @@
 
 namespace Renderboi
 {
+namespace Window
+{
 
 /// @brief Interface for an entity in charge of managing gamepad handles and 
 /// forwarding input from the window.
@@ -36,7 +38,7 @@ public:
     virtual void gamepadDisconnected(Joystick slot) const = 0;
 
     /// @brief Get an array filled with litterals representing handles to
-    /// present gamepads.
+    /// present gamepads. This function may be called only from the main thread.
     ///
     /// @param unused Whether to return all present gamepads or only those not
     /// already in use by the window.
@@ -46,7 +48,8 @@ public:
     virtual std::vector<Joystick> pollPresentGamepads(bool unused = true) const = 0;
 
     /// @brief Get a gamepad plugged into a certain slot. The gamepad can then
-    /// be enabled to start receiving input from the main thread.
+    /// be enabled to start receiving input from the main thread. This function 
+    /// may be called only from the main thread.
     ///
     /// @param slot Virtual slot on which to find the controller to manage.
     ///
@@ -64,7 +67,10 @@ public:
     /// thread.
     virtual void stopGamepadPolling(Joystick slat) const = 0;
 
-    /// @brief Poll the state for gamepads. And forward it to gamepads.
+    /// @brief Process any pending gamepad connection event.
+    virtual void refreshGamepadStatuses() const = 0;
+
+    /// @brief Poll the state for gamepads and forward it to gamepad entities.
     virtual void pollGamepadStates() const = 0;
 
     /// @brief Unique ID of the gamepad manager.
@@ -96,8 +102,7 @@ protected:
     /// without privileged access to it (private constructor may not be called
     /// directly by them).
     ///
-    /// @param gamepad Pointer to the gamepad instance to notify of its 
-    /// disconnection status.
+    /// @param args Argument to construct the gamepad with.
     template<typename ...ArgTypes>
     static GamepadPtr createGamepad(ArgTypes&& ...args);
 };
@@ -109,6 +114,9 @@ GamepadPtr GamepadManager::createGamepad(ArgTypes&& ...args)
     return GamepadPtr(gamepad);
 }
 
+}//namespace Window
+
+using GamepadManager = Window::GamepadManager;
 using GamepadManagerPtr = std::shared_ptr<GamepadManager>;
 
 }//namespace Renderboi
