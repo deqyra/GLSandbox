@@ -13,11 +13,12 @@ file(WRITE ${CMAKE_BINARY_DIR}/cp_${GETOPT_WIN_LIB_NAME}_headers.cmake
     )\n"
 )
 
-# Build glad lib
+# Build getopt lib
 add_library(${GETOPT_WIN_LIB_NAME} SHARED
     getopt.c
     getopt.h
 )
+add_compile_definitions(EXPORTS_GETOPT)
 
 add_custom_target("export_${GETOPT_WIN_LIB_NAME}_lib")
 add_dependencies("export_${GETOPT_WIN_LIB_NAME}_lib" ${GETOPT_WIN_LIB_NAME})

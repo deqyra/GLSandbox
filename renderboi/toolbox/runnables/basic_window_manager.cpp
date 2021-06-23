@@ -32,6 +32,8 @@ void BasicWindowManager::triggerAction(const GLWindowPtr window, const BasicWind
         case BasicWindowManagerAction::PolygonPoint:
             glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
             break;
+        case BasicWindowManagerAction::ToggleFullscreen:
+            _toggleFullscreen(window);
     }
 }
 
@@ -56,8 +58,23 @@ ControlSchemeManagerPtr<BasicWindowManagerAction> BasicWindowManager::getDefault
     schemeManager->bindControl(Control(Key::F1), BasicWindowManagerAction::PolygonFill);
     schemeManager->bindControl(Control(Key::F2), BasicWindowManagerAction::PolygonLine);
     schemeManager->bindControl(Control(Key::F3), BasicWindowManagerAction::PolygonPoint);
+    schemeManager->bindControl(Control(Key::F11), BasicWindowManagerAction::ToggleFullscreen);
 
     return schemeManager;
+}
+
+void BasicWindowManager::_toggleFullscreen(const GLWindowPtr window) const
+{
+    using Window::GLWindowCriticalEvent;
+    
+    if (window->isFullscreen())
+    {
+        window->criticalEventManager.queueCriticalEvent(GLWindowCriticalEvent::GoFullscreen);
+    }
+    else
+    {
+        window->criticalEventManager.queueCriticalEvent(GLWindowCriticalEvent::ExitFullscreen);
+    }
 }
 
 std::string to_string(const BasicWindowManagerAction& action)
@@ -67,10 +84,11 @@ std::string to_string(const BasicWindowManagerAction& action)
 
     if (!runOnce)
     {
-        enumNames[BasicWindowManagerAction::Terminate]      = "Terminate";
-        enumNames[BasicWindowManagerAction::PolygonFill]    = "PolygonFill";
-        enumNames[BasicWindowManagerAction::PolygonLine]    = "PolygonLine";
-        enumNames[BasicWindowManagerAction::PolygonPoint]   = "PolygonPoint";
+        enumNames[BasicWindowManagerAction::Terminate]          = "Terminate";
+        enumNames[BasicWindowManagerAction::PolygonFill]        = "PolygonFill";
+        enumNames[BasicWindowManagerAction::PolygonLine]        = "PolygonLine";
+        enumNames[BasicWindowManagerAction::PolygonPoint]       = "PolygonPoint";
+        enumNames[BasicWindowManagerAction::ToggleFullscreen]   = "ToggleFullscreen";
 
         runOnce = true;
     }

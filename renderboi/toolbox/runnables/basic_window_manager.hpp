@@ -17,7 +17,8 @@ enum class BasicWindowManagerAction
     Terminate,
     PolygonFill,
     PolygonLine,
-    PolygonPoint
+    PolygonPoint,
+    ToggleFullscreen
 };
 
 
@@ -29,6 +30,9 @@ class BasicWindowManager :  public InputProcessor,
 private:
     BasicWindowManager(const BasicWindowManager& other) = delete;
     BasicWindowManager& operator=(const BasicWindowManager& other) = delete;
+
+    /// @brief Toggles the fullscreen state of the managed window.
+    void _toggleFullscreen(const GLWindowPtr window) const;
 
 public:
     using ActionType = BasicWindowManagerAction;

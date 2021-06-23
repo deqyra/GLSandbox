@@ -168,7 +168,7 @@ void LightingSandbox::run(const GLWindowPtr window, const GLSandboxParameters& p
     }
     window->setShouldClose(false);
     Factory::DestroyScene(scene);
-    window->exitEventPollingLoop();
+    window->signalExit();
     
     GLSandbox::terminateContext(window);
 }

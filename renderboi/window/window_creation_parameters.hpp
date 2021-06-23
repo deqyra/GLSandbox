@@ -79,6 +79,10 @@ struct WindowCreationParameters
     /// @brief Whether or not the window should get the input focus when shown.
     bool focusOnShow;
 
+    /// @brief Whether or not to scale the window's content area by the scaling
+    /// factor used by the monitor.
+    bool scaleToMonitor;
+
     /// @brief Whether or not to request a debug context.
     bool debug;
 };
@@ -101,6 +105,7 @@ const WindowCreationParameters DefaultWindowCreationParameters = {
     .alwaysOnTop                = false,
     .focused                    = true,
     .focusOnShow                = true,
+    .scaleToMonitor             = true,
     .debug                      = false
 };
 

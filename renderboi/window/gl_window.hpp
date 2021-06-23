@@ -7,10 +7,12 @@
 #include <string>
 #include <vector>
 
+#include "critical_event_manager.hpp"
 #include "enums.hpp"
 #include "input_processor.hpp"
 #include "monitor.hpp"
 #include "gamepad/gamepad_manager.hpp"
+#include "interfaces/critical_event_receiver.hpp"
 
 namespace Renderboi
 {
@@ -82,13 +84,13 @@ public:
     /// @brief Discard any registered custom input processor.
     virtual void detachInputProcessor();
 
-    /// @brief Repeatedly poll and forward input events. May be called only from
-    /// the main thread. Call exitEventPollingLoop() from another thread to yield.
-    virtual void startEventPollingLoop();
+    /// @brief Tells whether an exit signal was sent to the window.
+    virtual bool exitSignaled();
 
-    /// @brief Stop the event polling loop started by startEventPollingLoop(). 
-    /// May be called from any thread.
-    virtual void exitEventPollingLoop();
+    /// @brief Send an exit signal to the window.
+    ///
+    /// @param value Whether the exit signal sent is positive or negative.
+    virtual void signalExit(bool value = true);
 
     /// @brief Get a pointer to the entity which manages gamepads. May be called
     /// from any thread.
@@ -254,6 +256,11 @@ public:
     /// @param extName String containing the name of the extension to query.
     virtual bool extensionSupported(std::string extName) = 0;
 
+    /// @brief Entity in charge of processing events which require to temporarily
+    /// invalidate that the window shares with the processes which are running
+    /// in it.
+    CriticalEventManager criticalEventManager;
+
 protected:
     /// @brief Default input processor of all windows.
     static const InputProcessorPtr _DefaultInputProcessor;
@@ -266,7 +273,7 @@ protected:
     std::string _title;
 
     /// @brief Flag to indicate exiting the event polling loop.
-    std::atomic<bool> _stopPollingFlag;
+    std::atomic<bool> _exitSignaled;
 
     /// @brief Entity to manage gamepads. Must be initialized at construction
     /// by inheriting classes.

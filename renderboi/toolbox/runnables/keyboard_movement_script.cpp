@@ -35,15 +35,22 @@ void KeyboardMovementScript::update(float timeElapsed)
     // Retrieve the linked scene object.
     glm::vec3 position = _sceneObject->transform.getPosition();
 
-    // Depending on which directional flags were raised, compute new position
+    // Compute velocity across basis vectors
+    float forwardVelocity = 0.f;
+    float leftVelocity = 0.f;
+
     if (_movementFlags[_IndexForward])
-        position += _basisProvider->forward() * velocity;
+        forwardVelocity += velocity;
     if (_movementFlags[_IndexBackward])
-        position -= _basisProvider->forward() * velocity;
+        forwardVelocity -= velocity;
     if (_movementFlags[_IndexLeft])
-        position += _basisProvider->left() * velocity;
+        leftVelocity += velocity;
     if (_movementFlags[_IndexRight])
-        position -= _basisProvider->left() * velocity;
+        leftVelocity -= velocity;
+
+    // Compute new position
+    position += _basisProvider->forward() * forwardVelocity;
+    position += _basisProvider->left() * leftVelocity;
 
     // Update parent position
     _sceneObject->transform.setPosition<Ref::Parent>(position);
@@ -85,8 +92,6 @@ void KeyboardMovementScript::triggerAction(const GLWindowPtr window, const Keybo
             _sprint = true;
             break;
     }
-
-    cancelOppositeDirections();
 }
 
 void KeyboardMovementScript::stopAction(const GLWindowPtr window, const KeyboardMovementAction& action)
@@ -109,8 +114,6 @@ void KeyboardMovementScript::stopAction(const GLWindowPtr window, const Keyboard
             _sprint = false;
             break;
     }
-
-    cancelOppositeDirections();
 }
 
 ControlSchemeManagerPtr<KeyboardMovementAction> KeyboardMovementScript::getDefaultControlScheme() const
@@ -126,21 +129,6 @@ ControlSchemeManagerPtr<KeyboardMovementAction> KeyboardMovementScript::getDefau
     schemeManager->bindControl(Control(Key::LeftShift), KeyboardMovementAction::Sprint);
 
     return schemeManager;
-}
-
-void KeyboardMovementScript::cancelOppositeDirections()
-{
-    // Cancel directions if opposite
-    if (_movementFlags[_IndexForward] && _movementFlags[_IndexBackward])
-    {
-        _movementFlags[_IndexForward] = false;
-        _movementFlags[_IndexBackward] = false;
-    }
-    if (_movementFlags[_IndexLeft] && _movementFlags[_IndexRight])
-    {
-        _movementFlags[_IndexLeft] = false;
-        _movementFlags[_IndexRight] = false;
-    }
 }
 
 std::string to_string(const KeyboardMovementAction& action)

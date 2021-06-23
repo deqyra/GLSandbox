@@ -216,11 +216,14 @@ set(RB_CORE_SOURCE_FILES
 )
 
 set(RB_WINDOW_SOURCE_FILES
+    critical_event_manager.cpp
+    critical_event_manager.hpp
     enums.cpp
     enums.hpp
     env_info.hpp
     gl_window.cpp
     gl_window.hpp
+    gl_window_critical_event.hpp
     input_processor.cpp
     input_processor.hpp
     monitor.cpp
@@ -321,6 +324,7 @@ set(RB_EXAMPLES_SOURCE_FILES
     gl_sandbox_parameters.hpp
     gl_sandbox.cpp
     gl_sandbox.hpp
+    gl_sandbox_runner.hpp
     lighting_sandbox.cpp
     lighting_sandbox.hpp
     shadow_sandbox.cpp

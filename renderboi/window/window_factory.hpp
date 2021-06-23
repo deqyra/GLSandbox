@@ -25,6 +25,9 @@ public:
 
     /// @brief Initialize the window backend in use. To be called before any
     /// other function is used.
+    ///
+    /// @param callback Optional pointer to the callback to use for error
+    /// reporting by the window backend.
     static int InitializeBackend() = delete;
 
     /// @brief Terminate the window backend in use. Call after being done using

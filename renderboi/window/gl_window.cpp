@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 
-#include "glfw3/glfw3_adapter.hpp"
 #include "input_processor.hpp"
 
 namespace Renderboi::Window
@@ -14,8 +13,9 @@ const InputProcessorPtr GLWindow::_DefaultInputProcessor = std::make_shared<Inpu
 GLWindow::GLWindow(std::string title) :
     _inputProcessor(_DefaultInputProcessor),
     _title(title),
-    _stopPollingFlag(true),
-    _gamepadManager(nullptr)
+    _exitSignaled(false),
+    _gamepadManager(nullptr),
+    criticalEventManager(this)
 {
 
 }
@@ -74,20 +74,14 @@ std::string GLWindow::getTitle() const
     return _title;
 }
 
-void GLWindow::startEventPollingLoop()
+void GLWindow::signalExit(bool value)
 {
-    _stopPollingFlag = false;
-    while (!_stopPollingFlag)
-    {
-        pollEvents();
-        _gamepadManager->refreshGamepadStatuses();
-        _gamepadManager->pollGamepadStates();
-    }
+    _exitSignaled = value;
 }
 
-void GLWindow::exitEventPollingLoop()
+bool GLWindow::exitSignaled()
 {
-    _stopPollingFlag = true;
+    return _exitSignaled;
 }
 
 GamepadManagerPtr GLWindow::getGamepadManager()

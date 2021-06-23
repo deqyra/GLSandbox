@@ -18,10 +18,10 @@
 namespace Renderboi::Window
 {
 
-std::unordered_map<unsigned int, GamepadManagerPtr> gamepadManagers = std::unordered_map<unsigned int, GamepadManagerPtr>();
-std::unordered_map<int, bool> joystickIsPresent = std::unordered_map<int, bool>();
-std::unordered_map<int, bool> joystickIsGamepad = std::unordered_map<int, bool>();
-std::atomic<bool> unknownJoysticksPresent = true;
+std::unordered_map<unsigned int, GamepadManagerPtr> GLFW3GamepadManager::_GamepadManagers = std::unordered_map<unsigned int, GamepadManagerPtr>();
+std::unordered_map<int, std::atomic<bool>> GLFW3GamepadManager::_PresentJoysticks = std::unordered_map<int, std::atomic<bool>>();
+std::unordered_map<int, std::atomic<bool>> GLFW3GamepadManager::_PresentGamepads = std::unordered_map<int, std::atomic<bool>>();
+std::atomic<bool> GLFW3GamepadManager::_JoystickStatusRefreshFlag = true;
 
 GLFW3GamepadManager::GLFW3GamepadManager() :
     GamepadManager(),

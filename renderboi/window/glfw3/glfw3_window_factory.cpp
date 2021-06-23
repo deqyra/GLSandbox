@@ -17,8 +17,8 @@
 #include <renderboi/utilities/gl_utilities.hpp>
 #include <renderboi/utilities/resource_locator.hpp>
 
-#include "../env_info.hpp"
 #include "../enums.hpp"
+#include "../env_info.hpp"
 #include "../gl_window.hpp"
 #include "../window_backend.hpp"
 #include "../window_factory.hpp"
@@ -48,6 +48,8 @@ int WindowFactory<WindowBackend::GLFW3>::InitializeBackend()
     int result = glfwInit();
     if (!result) return result;
 
+    glfwSetErrorCallback(GLFW3Utilities::globalGlfwErrorCallback);
+
     ///////////////////////////
     // GAMEPAD RELATED STUFF //
     ///////////////////////////
@@ -60,7 +62,9 @@ int WindowFactory<WindowBackend::GLFW3>::InitializeBackend()
     ///////////////////////////
     // MONITOR RELATED STUFF //
     ///////////////////////////
+    _monitors.clear();
     _monitors = _ListMonitors();
+    _nativeVideoModes.clear();
     _SaveMonitorVideoModes();
     glfwSetMonitorCallback(_GlobalGlfwMonitorCallback);
 
@@ -69,6 +73,9 @@ int WindowFactory<WindowBackend::GLFW3>::InitializeBackend()
 
 void WindowFactory<WindowBackend::GLFW3>::TerminateBackend()
 {
+    _monitors.clear();
+    _nativeVideoModes.clear();
+    
     glfwTerminate();
 }
 
@@ -107,19 +114,72 @@ Monitor::VideoMode WindowFactory<WindowBackend::GLFW3>::GetMonitorNativeVideoMod
 
 GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(const WindowCreationParameters& params)
 {
-	// GL metadata
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, params.glVersionMajor);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, params.glVersionMinor);
-    
+    // Window hints
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,      params.glVersionMajor);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,      params.glVersionMinor);
+    glfwWindowHint(GLFW_RESIZABLE,                  params.resizable                ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_AUTO_ICONIFY,               params.autoMinimize             ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_DECORATED,                  params.decorated                ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_VISIBLE,                    params.visible                  ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_MAXIMIZED,                  params.maximized                ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_FLOATING,                   params.alwaysOnTop              ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_FOCUSED,                    params.focused                  ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_FOCUS_ON_SHOW,              params.focusOnShow              ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_SCALE_TO_MONITOR,           params.scaleToMonitor           ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT,       params.debug                    ? GL_TRUE : GL_FALSE);
+
 #ifndef EGL_DETECTED
-	glfwWindowHint(GLFW_OPENGL_PROFILE, Window::GLFW3Adapter::getValue(params.glProfile));
+	glfwWindowHint(GLFW_OPENGL_PROFILE,             Window::GLFW3Adapter::getValue(params.glProfile));
 #endif//EGL_DETECTED
 
-    if (params.debug)
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+    // Shared GL context
+    GLFWwindow* sharedContextWindow = nullptr;
+    if (params.shareContext != nullptr)
+    {
+        GLFW3WindowPtr glfw3SharedWindow = std::static_pointer_cast<GLFW3Window>(params.shareContext);
+        sharedContextWindow = glfw3SharedWindow->_w;
+    }
+
+    // Fullscreen
+    GLFWmonitor* fullscreenMonitor = nullptr;
+    if (params.monitor != nullptr)
+    {
+        GLFW3MonitorPtr glfw3Monitor = std::static_pointer_cast<GLFW3Monitor>(params.monitor);
+        fullscreenMonitor = glfw3Monitor->_m;
+    }
+
+    int width = params.width;
+    int height = params.height;
+    int refreshRate = GLFW_DONT_CARE;
+    // Bit depths for red, green and blue buffers
+    int framebufferDepth[3] = {8, 8, 8};
+
+    if (params.borderlessFullscreen)
+    {
+        if (fullscreenMonitor == nullptr)
+        {
+            fullscreenMonitor = glfwGetPrimaryMonitor();
+        }
+
+        GLFW3Monitor* glfw3Monitor = (GLFW3Monitor*) glfwGetMonitorUserPointer(fullscreenMonitor);
+        Monitor::VideoMode mode = _nativeVideoModes[glfw3Monitor->id];
+        width = mode.width;
+        height = mode.height;
+        refreshRate = mode.refreshRate;
+        framebufferDepth[0] = mode.redBits;
+        framebufferDepth[1] = mode.greenBits;
+        framebufferDepth[2] = mode.blueBits;
+    }
+
+    // Framebuffer hints    
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER,    params.transparentFramebuffer   ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_RED_BITS,                   framebufferDepth[0]);
+    glfwWindowHint(GLFW_GREEN_BITS,                 framebufferDepth[1]);
+    glfwWindowHint(GLFW_BLUE_BITS,                  framebufferDepth[2]);
+    glfwWindowHint(GLFW_REFRESH_RATE,               refreshRate);
 
 	// Instantiate window
-	GLFWwindow* window = glfwCreateWindow(params.width, params.height, params.title.c_str(), NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, params.title.c_str(), fullscreenMonitor, sharedContextWindow);
 
 	if (!window)
 	{
@@ -139,6 +199,7 @@ GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(const WindowCreation
     glfwSetMouseButtonCallback(window, GLFW3Utilities::globalGlfwMouseButtonCallback);
     glfwSetCursorPosCallback(window, GLFW3Utilities::globalGlfwMouseCursorCallback);
 
+    // Plug in joystick events
     GLFW3Utilities::subscribeToGlfwJoystickStatus(glWindow);
 
     return glWindow;
@@ -180,7 +241,7 @@ void WindowFactory<WindowBackend::GLFW3>::_SaveMonitorVideoModes()
 void WindowFactory<WindowBackend::GLFW3>::_GlobalGlfwMonitorCallback(GLFWmonitor* m, int event)
 {
     if (_monitorCallback != nullptr) (*_monitorCallback)(m, event);
-    
+
     if (event == GLFW_CONNECTED)
     {
         GLFW3Monitor* glfw3Monitor = new GLFW3Monitor(m);

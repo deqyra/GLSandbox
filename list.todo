@@ -15,6 +15,7 @@ RenderBoi:
         ☐ Set up continuous integration
         ✔ Better documentation @done(20-10-19 19:22)
         ☐ In all accessor functions using local-statically generated data: provide a refresh argument
+        ☐ In all functions using the `bool runOnce` trick to generate local static data once: use initialiser syntax instead
     Core:
         Camera:
             ✔ Use a parent transform instead of a simple up vector @done(20-10-14 12:27)

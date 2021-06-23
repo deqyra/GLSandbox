@@ -11,9 +11,13 @@
 #include <renderboi/window/enums.hpp>
 #include <renderboi/window/window_factory.hpp>
 #include <renderboi/window/window_backend.hpp>
+#include <renderboi/window/glfw3/glfw3_utilities.hpp>
 
 #include <renderboi/examples/gl_sandbox.hpp>
 #include <renderboi/examples/gl_sandbox_parameters.hpp>
+#include <renderboi/examples/gl_sandbox_runner.hpp>
+#include <renderboi/examples/lighting_sandbox.hpp>
+#include <renderboi/examples/shadow_sandbox.hpp>
 
 #include <renderboi/utilities/gl_utilities.hpp>
 #include <renderboi/utilities/resource_locator.hpp>
@@ -72,8 +76,6 @@ int main(int argc, char** argv)
     std::cout << COPYRIGHT_NOTICE << '\n';
 	std::cout << MIT_LICENSE_NOTICE << '\n' << std::endl;
 
-	AppWindowFactory::SetErrorCallback(AppWindowErrorCallback);
-
 	if (!AppWindowFactory::InitializeBackend())
 	{
 		std::cout << "Failed to initialize window backend. Aborting..." << std::endl;
@@ -99,8 +101,9 @@ int main(int argc, char** argv)
 		true,								// visible
 		false,								// maximized
 		false,								// alwaysOnTop
-		true,								// focused
-		true,								// focusOnShow
+		false,								// focused
+		false,								// focusOnShow
+		true,								// scaleToMonitor
 		true								// debug
 	};
 
@@ -124,8 +127,14 @@ int main(int argc, char** argv)
 		.debug = true
 	};
 
-    // Instantiate and run examples
-	std::vector<rb::GLSandbox*> examples = createAllSandboxes();
+    // Run examples
+	rb::GLSandboxRunner<rb::ShadowSandbox> shadowSandbox =
+	rb::GLSandboxRunner<rb::ShadowSandbox>(window, sbParams, false);
+
+	shadowSandbox.worker->run();
+	shadowSandbox.startEventPollingLoop();
+
+	/*	
     for (auto it = examples.begin(); it != examples.end(); it++)
     {
 		(*it)->setUp(window, sbParams);
@@ -138,10 +147,13 @@ int main(int argc, char** argv)
 
         delete (*it);
     }
+	*/
+
+	shadowSandbox.worker->waitUntilFinalized();
 
 	// Destroy window by resetting what should be the only shared pointer to it
 	window.reset();
 	AppWindowFactory::TerminateBackend();
 
-	return EXIT_SUCCESS;
+	return EXIT_SUCCESS + 1;
 }
