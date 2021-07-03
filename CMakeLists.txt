@@ -21,8 +21,9 @@ endif()
 option(BUILD_STATIC_LIBS "Build libraries as static libraries" OFF)
 option(BUILD_RELEASE "Whether to build for a debug or release profile" OFF)
 
-if(${BUILD_STATIC_LIBS} OR WIN32)
+if(${BUILD_STATIC_LIBS})
     set(STATIC_OR_SHARED "STATIC")
+    set(BUILD_SHARED_LIBS TRUE)
 else()
     set(STATIC_OR_SHARED "SHARED")
 endif()
@@ -33,10 +34,9 @@ else()
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
-# if(WIN32)
-#     message(STATUS "Windows detected, forcing static libs.")
-#     set(BUILD_STATIC_LIBS ON)
-# endif()
+if(WIN32 AND (STATIC_OR_SHARED STREQUAL "SHARED"))
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
 
 
 
@@ -411,7 +411,6 @@ target_link_libraries("RenderBoi" PUBLIC ${CMAKE_DL_LIBS}
 
 if(WIN32)
     target_link_libraries("RenderBoi" PUBLIC ${CMAKE_DL_LIBS}
-        ${CMAKE_DL_LIBS}
         ${GETOPT_WIN_LIB_NAME}
     ) 
 endif()

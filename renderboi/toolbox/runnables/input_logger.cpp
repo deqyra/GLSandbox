@@ -2,6 +2,7 @@
 
 #include <bitset>
 #include <iomanip>
+#include <vector>
 
 #include <renderboi/window/gl_window.hpp>
 

@@ -25,10 +25,10 @@ namespace rb = Renderboi;
 namespace rbw = rb::Window;
 
 #if 1
-      #define GLFW3_BORDERLESS_POLICY_NATIVE
+      #define GLFW3_BORDERLESS_POLICY_NATIVE_MODE
 
       #if (1 != 1) && (0 == 1)
-            #undef GLFW3_BORDERLESS_POLICY_NATIVE
+            #undef GLFW3_BORDERLESS_POLICY_NATIVE_MODE
             #define GLFW3_BORDERLESS_POLICY_MAX_MODE
       #endif
 

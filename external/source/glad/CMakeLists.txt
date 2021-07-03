@@ -19,6 +19,8 @@ add_library(${GLAD_LIB_NAME} ${STATIC_OR_SHARED}
     gl.h
     KHR/khrplatform.h
 )
+set_target_properties(${GLAD_LIB_NAME} PROPERTIES LINKER_LANGUAGE C)
+add_compile_definitions(GLAD_GLAPI_EXPORT GLAD_GLAPI_EXPORT_BUILD)
 
 add_custom_target("export_${GLAD_LIB_NAME}_lib")
 add_dependencies("export_${GLAD_LIB_NAME}_lib" ${GLAD_LIB_NAME})

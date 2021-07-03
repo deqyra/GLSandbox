@@ -36,8 +36,12 @@ namespace Window
 
         /// @brief Array listing all of the litterals defined by the EventType
         /// enum.
-        static const std::vector<EventType> EventTypeList;
-
+        static const inline std::vector<EventType> EventTypeList = {
+            EventType::FramebufferResize,
+            EventType::Keyboard,
+            EventType::MouseButton,
+            EventType::MouseCursor
+        };
         InputProcessor();
 
         /// @brief Callback for a framebuffer resize event.

@@ -29,6 +29,7 @@ target_link_libraries(${RB_EXAMPLES_LIB_NAME} PUBLIC
     ${RB_WINDOW_LIB_NAME}
     ${RB_TOOLBOX_LIB_NAME}
 )
+add_compile_definitions(GLAD_GLAPI_EXPORT)
 
 # Custom target to export examples lib
 add_custom_target("export_${RB_EXAMPLES_LIB_NAME}_lib")

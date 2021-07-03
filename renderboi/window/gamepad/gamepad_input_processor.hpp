@@ -39,7 +39,12 @@ public:
 
     /// @brief Array listing all of the litterals defined by the EventType
     /// enum.
-    static const std::vector<EventType> EventTypeList;
+    static const inline std::vector<EventType> EventTypeList = {
+        EventType::Connect,
+        EventType::Disconnect,
+        EventType::Axis,
+        EventType::Button
+    };
 
     GamepadInputProcessor();
 

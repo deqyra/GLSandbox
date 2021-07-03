@@ -3,11 +3,8 @@
 namespace Renderboi::Window
 {
 
-static std::vector<InputProcessor::EventType> listEventTypes();
-
 // Initialize static stuff
 unsigned int InputProcessor::_count = 0;
-const std::vector<InputProcessor::EventType> InputProcessor::EventTypeList = listEventTypes();
 
 InputProcessor::InputProcessor() :
     id(_count++)                    // Generate ID from instance count
@@ -46,16 +43,6 @@ void InputProcessor::processMouseButton(
 void InputProcessor::processMouseCursor(const GLWindowPtr window, const double xpos, const double ypos)
 {
 
-}
-
-std::vector<InputProcessor::EventType> listEventTypes()
-{
-    return {
-        InputProcessor::EventType::FramebufferResize,
-        InputProcessor::EventType::Keyboard,
-        InputProcessor::EventType::MouseButton,
-        InputProcessor::EventType::MouseCursor
-    };
 }
 
 }//namespace Renderboi::Window
