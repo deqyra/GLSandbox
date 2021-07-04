@@ -192,8 +192,9 @@ GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(const WindowCreation
     const GLWindowPtr glWindow = std::static_pointer_cast<GLWindow>(glfw3Window);
     glfwSetWindowUserPointer(window, (void*)glWindow.get());
 
-    // Then, a function can retrieve the GLWindow instance from the GLFWwindow object and call the appropriate callback on the GLWindow instance
-    // Bind all relevant callbacks to such functions
+    // Then, a function can retrieve the GLWindow instance from the GLFWwindow
+    // object and call the appropriate callback on the GLWindow instance.
+    // Bind all relevant callbacks to such functions.
     glfwSetFramebufferSizeCallback(window, GLFW3Utilities::globalGlfwFramebufferResizeCallback);
     glfwSetKeyCallback(window, GLFW3Utilities::globalGlfwKeyboardCallback);
     glfwSetMouseButtonCallback(window, GLFW3Utilities::globalGlfwMouseButtonCallback);
