@@ -52,7 +52,6 @@ std::vector<Window::Input::Joystick> GLFW3GamepadManager::pollPresentGamepads(bo
     {
         int jid = Window::GLFW3Adapter::getValue(*it);
 
-        bool present = glfwJoystickPresent(jid);
         bool gamepad = glfwJoystickIsGamepad(jid);
         if (glfwJoystickIsGamepad(jid) && !(mustBeUnused && _managedGamepads.contains(*it)))
         {
@@ -119,6 +118,12 @@ GamepadState GLFW3GamepadManager::_GamepadStateFromGlfwGamepadState(const GLFWga
     state.DPadRight     = glfwState.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT];
     state.DPadDown      = glfwState.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN];
     state.DPadLeft      = glfwState.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT];
+    state.DPad          = state.DPadUp    ? GamepadState::DPadDirection::Up
+                        : state.DPadRight ? GamepadState::DPadDirection::Right
+                        : state.DPadDown  ? GamepadState::DPadDirection::Down
+                        : state.DPadLeft  ? GamepadState::DPadDirection::Left
+                        : GamepadState::DPadDirection::None;
+                        
     state.LeftX         = glfwState.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
     state.LeftY         = glfwState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
     state.RightX        = glfwState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];

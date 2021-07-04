@@ -38,7 +38,7 @@ Scene::Scene() :
 
 SceneObjectPtr Scene::operator[](const unsigned int id)
 {
-    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id);
+    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id, "cannot retrieve this object");
     const ObjectTree::NodePtr node = _objects[meta.objectNodeId];
     return node->value;
 }
@@ -58,7 +58,7 @@ SceneObjectPtr Scene::newObject(const std::string name)
 SceneObjectPtr Scene::newObject(const unsigned int parentId)
 {
     const SceneObjectPtr object = Factory::MakeSceneObject();
-    const SceneObjectMetadata meta = _findObjectMetaOrThrow(parentId);
+    const SceneObjectMetadata meta = _findObjectMetaOrThrow(parentId, "cannot create new (unnamed) object with this parent");
  
     _performObjectRegistration(object, meta);
 
@@ -68,7 +68,7 @@ SceneObjectPtr Scene::newObject(const unsigned int parentId)
 SceneObjectPtr Scene::newObject(const std::string name, const unsigned int parentId)
 {
     const SceneObjectPtr object = Factory::MakeSceneObject(name);
-    const SceneObjectMetadata meta = _findObjectMetaOrThrow(parentId);
+    const SceneObjectMetadata meta = _findObjectMetaOrThrow(parentId, "cannot create new object with this parent");
  
     _performObjectRegistration(object, meta);
 
@@ -90,7 +90,7 @@ void Scene::registerObject(const SceneObjectPtr object, const unsigned int paren
 {
     _checkNotNullOrThrow(object);
     _verifyNoParentSceneOrThrow(object);
-    const SceneObjectMetadata meta = _findObjectMetaOrThrow(parentId);
+    const SceneObjectMetadata meta = _findObjectMetaOrThrow(parentId, "cannot register object to this parent");
  
     _performObjectRegistration(object, meta);
 }
@@ -98,7 +98,7 @@ void Scene::registerObject(const SceneObjectPtr object, const unsigned int paren
 void Scene::removeObject(const unsigned int id)
 {
     // Retrieve object metadata
-    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id);
+    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id, "cannot remove this object");
 
     const ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
     const std::vector<ObjectTree::NodePtr> children = objectNode->getChildren();
@@ -128,8 +128,8 @@ void Scene::removeObject(const unsigned int id)
 void Scene::moveObject(const unsigned int id, const unsigned int newParentId, const bool worldPositionStays)
 {
     // Retrieve IDs of both nodes in all graphs
-    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id);
-    const SceneObjectMetadata parentMeta = _findObjectMetaOrThrow(id);
+    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id, "cannot move this object");
+    const SceneObjectMetadata parentMeta = _findObjectMetaOrThrow(id, "cannot move to this object");
 
     // Fetch the world transform of moved object, updating if necessary
     const Transform worldTransform = getWorldTransform(id);
@@ -153,14 +153,14 @@ void Scene::moveObject(const unsigned int id, const unsigned int newParentId, co
 unsigned int Scene::getParentId(const unsigned int id) const
 {
     // Retrieve object metadata
-    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id);
+    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id, "cannot retrieve the parent ID of this object");
     return meta.parentId;
 }
 
 SceneObjectPtr Scene::getParent(const unsigned int id) const
 {
     // Retrieve object metadata
-    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id);
+    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id, "cannot retrieve the parent of this object");
     return _objects[meta.parentId]->value;
 }
 
@@ -184,38 +184,47 @@ void Scene::updateAllTransforms()
 
 Transform Scene::getWorldTransform(const unsigned int id, const bool cascadeUpdate) const
 {
-    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id);
+    const SceneObjectMetadata meta = _findObjectMetaOrThrow(id, "cannot retrieve world transform of this object");
 
     // Update transform if required
-    if (_outdatedTransformNodes)
+    if (_outdatedTransformNodes > 0)
     {
-        // Find the longest outdated parent
-        const std::vector<unsigned int> outdatedIds = _findLongestOutdatedParentChain(id);
+        // Find the IDs of parents that make up the longest chain of outdated object
+        const std::vector<unsigned int> outdatedIds = _findLongestOutdatedParentIdChain(id);
 
-        // If no outdated parent was found, the vector is empty
-        if (outdatedIds.size() == 0)
-        {
-            // If the update marker of the considered object is set, update its transform
-            if (_updateMarkers[meta.updateNodeId]->value)
-            {
-                // Update it along with all of its children's if appropriate
-                if (cascadeUpdate) _worldTransformCascadeUpdate(id);
-                else _worldTransformUpdateNoCascade(id);
-            }
-
-            // If it isn't set, the transform of that object is up to date and no action is required
-        }
         // If an outdated parent chain was found
-        else
+        if (outdatedIds.size() != 0)
         {
-            // Update the furthest parent, cascading, if appropriate
-            if (cascadeUpdate) _worldTransformCascadeUpdate(outdatedIds.back());
+            // If a cascade update is request, simply cascade update the furthest parent
+            if (cascadeUpdate)
+            {
+                _worldTransformCascadeUpdate(outdatedIds.back());
+            }
             else
             {
-                // Otherwise, update each element in the chain from the top, not cascading
+                // Otherwise, update each element in the parent chain from the top, not cascading
                 for (auto it = outdatedIds.rbegin(); it != outdatedIds.rend(); it++)
                 {
                     _worldTransformUpdateNoCascade(*it);
+                }
+
+                // Finally, update this object, not cascading
+                _worldTransformUpdateNoCascade(id);
+            }
+        }
+        // If no outdated parent chain was found
+        else
+        {
+            // Update the object only if required
+            if (_updateMarkers[meta.updateNodeId]->value)
+            {
+                if (cascadeUpdate)
+                {
+                    _worldTransformCascadeUpdate(id);
+                }
+                else
+                {
+                    _worldTransformUpdateNoCascade(id);
                 }
             }
         }
@@ -364,13 +373,13 @@ void Scene::_verifyNoParentSceneOrThrow(const SceneObjectPtr object) const
     }
 }
 
-SceneObjectMetadata Scene::_findObjectMetaOrThrow(const unsigned int id) const
+SceneObjectMetadata Scene::_findObjectMetaOrThrow(const unsigned int id, const std::string& failureMessage) const
 {
     auto it = _objectMetadata.find(id);
     if (it == _objectMetadata.end())
     {
-        const std::string s = "Scene: no SceneObject with ID " + std::to_string(id) 
-            + ", cannot retrieve world transform.";
+        const std::string s = "Scene: no SceneObject with ID " + std::to_string(id)
+                            + " - " + failureMessage + ".";
 
         throw std::runtime_error(s.c_str());
     }
@@ -435,7 +444,7 @@ void Scene::_worldTransformDFSUpdate(const unsigned int startingId) const
     }
 }
 
-std::vector<unsigned int> Scene::_findLongestOutdatedParentChain(const unsigned int id) const
+std::vector<unsigned int> Scene::_findLongestOutdatedParentIdChain(const unsigned int id) const
 {
     auto it = _objectMetadata.find(id);
     // Retrieve the object node ID, the node pointer as well as its parent chain
@@ -465,13 +474,13 @@ std::vector<unsigned int> Scene::_findLongestOutdatedParentChain(const unsigned 
         }
     }
 
-    // If no outdated parents, return empty vector
+    // If there are no outdated parents, return an empty vector
     if (outdatedCount == 0) return std::vector<unsigned int>();
 
-    // If last parent is outdated, return whole ID vector
+    // If the last parent is outdated, return the whole ID vector
     if (outdatedCount == parentChain.size()) return parentIdChain;
 
-    // Otherwise, copy the outdated element IDs into a new vector and return it
+    // Otherwise, copy only the outdated element IDs into a new vector and return it
     std::vector<unsigned int> outdatedChain;
     outdatedChain.reserve(outdatedCount);
     std::copy(parentIdChain.begin(), parentIdChain.begin() + outdatedCount, std::back_inserter(outdatedChain));
