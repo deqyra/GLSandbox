@@ -43,13 +43,13 @@ ShaderProgram ShaderBuilder::BuildShaderProgramFromConfig(const ShaderConfig& co
     std::unordered_set<ShaderStage> requestedStages;
 
     // Find out which shader stage were requested in the features
-    for (auto it = Features.begin(); it != Features.end(); it++)
+    for (const auto& feature : Features)
     {
-        auto jt = FeatureStages().find(*it);
+        auto jt = FeatureStages().find(feature);
         if (jt == FeatureStages().end())
         {
             const std::string s = "ShaderBuilder: cannot build shader program from config, feature "
-                "\"" + to_string(*it) + "\" (" + std::to_string((unsigned int) *it) + ") "
+                "\"" + to_string(feature) + "\" (" + std::to_string((unsigned int) feature) + ") "
                 "from unknown stage was requested.";
 
             throw std::runtime_error(s.c_str());
@@ -61,9 +61,9 @@ ShaderProgram ShaderBuilder::BuildShaderProgramFromConfig(const ShaderConfig& co
 
     std::vector<Shader> shaders;
     // Generate all shader stages
-    for (auto it = requestedStages.begin(); it != requestedStages.end(); it++)
+    for (const auto& stage : requestedStages)
     {
-        const Shader shader = BuildShaderStageFromConfig(*it, config, dumpSource);
+        const Shader shader = BuildShaderStageFromConfig(stage, config, dumpSource);
         shaders.push_back(shader);
     }
 
@@ -77,14 +77,14 @@ ShaderProgram ShaderBuilder::LinkShaders(const std::vector<Shader>& shaders)
     std::vector<unsigned int> locations;
 
     // Check if there is no more than one shader per stage
-    for (auto it = shaders.begin(); it != shaders.end(); it++)
+    for (const auto& shader : shaders)
     {
-        ShaderStage stage = it->stage();
+        ShaderStage stage = shader.stage();
         auto jt = presentStages.find(stage);
         if (jt == presentStages.end())
         {
             presentStages.insert(stage);
-            locations.push_back(it->location());
+            locations.push_back(shader.location());
         }
         else
         {
@@ -245,9 +245,9 @@ ShaderBuilder::_MakeShaderProgram(const std::vector<unsigned int>& locations)
 {
 	const unsigned int program = glCreateProgram();
 
-	for (auto it = locations.begin(); it != locations.end(); it++)
+	for (const auto& loc : locations)
 	{
-		glAttachShader(program, *it);
+		glAttachShader(program, loc);
 	}
 
 	// Link all shaders
@@ -384,9 +384,9 @@ ShaderBuilder::_LocateIncludeDirectivesInSource(std::string& text)
 std::vector<ShaderFeature> ShaderBuilder::_AggregateShaderFeatures(const std::vector<Shader>& shaders)
 {
     std::vector<ShaderFeature> supportedFeatures;
-    for (auto it = shaders.begin(); it != shaders.end(); it++)
+    for (const auto shader : shaders)
     {
-        const std::vector<ShaderFeature>& features = it->getSupportedFeatures();
+        const std::vector<ShaderFeature>& features = shader.getSupportedFeatures();
         std::copy(features.begin(), features.end(), std::back_inserter(supportedFeatures));
     }
 

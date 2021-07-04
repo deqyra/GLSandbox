@@ -134,18 +134,18 @@ int main(int argc, char** argv)
 	shadowSandbox.worker->run();
 	shadowSandbox.startEventPollingLoop();
 
-	/*	
-    for (auto it = examples.begin(); it != examples.end(); it++)
+	/* Old loop for running examples
+    for (auto ex : examples)
     {
-		(*it)->setUp(window, sbParams);
+		ex->setUp(window, sbParams);
 
-		std::thread th(&rb::GLSandbox::run, *it, window, sbParams);
+		std::thread th(&rb::GLSandbox::run, ex, window, sbParams);
 		window->startEventPollingLoop();
 
 		th.join();
-		(*it)->tearDown(window);
+		ex->tearDown(window);
 
-        delete (*it);
+        delete ex;
     }
 	*/
 

@@ -74,9 +74,9 @@ void globalGlfwJoystickCallback(int jid, int event)
     {
         if (GLFW3GamepadManager::_PresentGamepads[jid])
         {
-            for (auto it = GLFW3GamepadManager::_GamepadManagers.begin(); it != GLFW3GamepadManager::_GamepadManagers.end(); it++)
+            for (const auto& [_, manager] : GLFW3GamepadManager::_GamepadManagers)
             {
-                it->second->gamepadDisconnected(Window::GLFW3Adapter::getEnum<Window::Input::Joystick>(jid));
+                manager->gamepadDisconnected(Window::GLFW3Adapter::getEnum<Window::Input::Joystick>(jid));
             }
 
             GLFW3GamepadManager::_PresentGamepads[jid] = false;

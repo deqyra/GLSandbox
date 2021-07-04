@@ -15,16 +15,16 @@ InputLogger::InputLogger(std::ostream& outputStream) :
 {
     const std::vector<IEventType>& inputTypeList = InputProcessor::EventTypeList;
     
-    for (auto it = inputTypeList.begin(); it != inputTypeList.end(); it++)
+    for (const auto& inputType : inputTypeList)
     {
-        _inputLoggingStatus[*it] = true;
+        _inputLoggingStatus[inputType] = true;
     }
 
     const std::vector<GEventType>& gamepadInputTypeList = GamepadInputProcessor::EventTypeList;
     
-    for (auto it = gamepadInputTypeList.begin(); it != gamepadInputTypeList.end(); it++)
+    for (const auto inputType : gamepadInputTypeList)
     {
-        _gamepadInputLoggingStatus[*it] = true;
+        _gamepadInputLoggingStatus[inputType] = true;
     }
 }
 

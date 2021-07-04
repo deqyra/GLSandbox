@@ -232,9 +232,9 @@ std::map<unsigned int, MonitorPtr> WindowFactory<WindowBackend::GLFW3>::_ListMon
 
 void WindowFactory<WindowBackend::GLFW3>::_SaveMonitorVideoModes()
 {
-    for (auto it = _monitors.begin(); it != _monitors.end(); it++)
+    for (const auto& [id, monitor] : _monitors)
     {
-        _nativeVideoModes[it->second->id] = it->second->getCurrentVideoMode();
+        _nativeVideoModes[id] = monitor->getCurrentVideoMode();
     }
 }
 

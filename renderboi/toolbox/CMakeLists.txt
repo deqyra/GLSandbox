@@ -12,7 +12,8 @@ add_library(${RB_TOOLBOX_LIB_NAME} ${STATIC_OR_SHARED}
     ${RB_TOOLBOX_SOURCE_FILES}
 )
 add_dependencies(${RB_TOOLBOX_LIB_NAME}
-    "${CPPTOOLS_LIB_NAME}_source"
+    "export_${CPPTOOLS_LIB_NAME}_headers"
+    "export_${CPPTOOLS_LIB_NAME}_lib"
     "export_${RB_CORE_LIB_NAME}_lib"
     "export_${RB_CORE_LIB_NAME}_headers"
     "export_${RB_WINDOW_LIB_NAME}_lib"

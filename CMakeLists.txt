@@ -4,7 +4,7 @@
 #                                                                             #
 ###############################################################################
 
-cmake_minimum_required(VERSION 3.1...3.15)
+cmake_minimum_required(VERSION 3.11)
 
 if(${CMAKE_VERSION} VERSION_LESS 3.12)
     cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
@@ -62,9 +62,6 @@ endif()
 
 if(CMAKE_COMPILER_IS_GNUCC)
 endif()
-
-# set(CMAKE_CXX_COMPILER_WORKS 1)
-# Skips the compiler test, which is platform-dependent
 
 
 
@@ -143,7 +140,23 @@ file(MAKE_DIRECTORY ${EXPORT_LOCATION}/lib)
 #    (easier to browse here than to go and update it in each subdirectory)    #
 ###############################################################################
 
+# cpptools
 set(CPPTOOLS_LIB_NAME "cpptools")
+
+include(FetchContent)
+FetchContent_Declare(${CPPTOOLS_LIB_NAME}
+    GIT_REPOSITORY https://github.com/deqyra/CppTools.git
+)
+
+set(CPPTOOLS_EXPORT_LOCATION ${EXPORT_LOCATION})
+
+FetchContent_GetProperties(${CPPTOOLS_LIB_NAME})
+if(NOT cpptools_POPULATED)
+  FetchContent_Populate(${CPPTOOLS_LIB_NAME})
+  add_subdirectory(${cpptools_SOURCE_DIR} ${cpptools_BINARY_DIR})
+endif()
+
+# Everything else
 set(GLAD_LIB_NAME "glad")
 set(GETOPT_WIN_LIB_NAME "getopt")
 set(STB_IMAGE_LIB_NAME "stb_image")
@@ -153,16 +166,6 @@ set(RB_CORE_LIB_NAME "renderboi.core")
 set(RB_WINDOW_LIB_NAME "renderboi.window")
 set(RB_TOOLBOX_LIB_NAME "renderboi.toolbox")
 set(RB_EXAMPLES_LIB_NAME "renderboi.examples")
-
-include(ExternalProject)
-ExternalProject_Add(${CPPTOOLS_LIB_NAME}_source
-    GIT_REPOSITORY https://github.com/deqyra/CppTools
-    CMAKE_ARGS
-    UPDATE_DISCONNECTED TRUE
-    -DCMAKE_INSTALL_PREFIX=${EXPORT_LOCATION}
-    -DCPPTOOLS_EXTERNAL_INSTALL_PREFIX=True
-    -DCPPTOOLS_SKIP_TESTS=ON
-)
 
 set(RB_UTILITIES_SOURCE_FILES
     gl_utilities.cpp

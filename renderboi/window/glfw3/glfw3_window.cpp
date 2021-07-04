@@ -193,6 +193,7 @@ bool GLFW3Window::shouldClose() const
 
 void GLFW3Window::setShouldClose(bool value)
 {
+    _exitSignaled = value;
     glfwSetWindowShouldClose(_w, value);
 }
 

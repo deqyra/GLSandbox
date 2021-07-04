@@ -43,14 +43,14 @@ bool ShaderConfig::_checkForConflicts(const ShaderFeature newFeature) const
     const std::vector<ShaderFeature>& incompatibleFeatures = it->second;
 
     // For all features incompatible with the newly requested feature
-    for (auto jt = incompatibleFeatures.begin(); jt != incompatibleFeatures.end(); jt++)
+    for (const auto& feature : incompatibleFeatures)
     {
         // Check if it is part of the currently requested features
-        auto kt = _requestedFeatures.find(*jt);
+        auto kt = _requestedFeatures.find(feature);
         if (kt != _requestedFeatures.end())
         {
             // If it is, add it to the problems array
-            _problems.push_back(*kt);
+            _problems.push_back(feature);
         }
     }
 
@@ -67,14 +67,14 @@ bool ShaderConfig::_checkRequirementsAreMet(const ShaderFeature newFeature) cons
     const std::vector<ShaderFeature>& featureRequirements = it->second;
 
     // For all features required by the newly requested feature
-    for (auto jt = featureRequirements.begin(); jt != featureRequirements.end(); jt++)
+    for (const auto feature : featureRequirements)
     {
         // Check if it is part of the currently requested features
-        auto kt = _requestedFeatures.find(*jt);
+        auto kt = _requestedFeatures.find(feature);
         if (kt == _requestedFeatures.end())
         {
             // If it is not, add it to the problems array
-            _problems.push_back(*jt);
+            _problems.push_back(feature);
         }
     }
 
@@ -125,9 +125,9 @@ void ShaderConfig::addFeatureWithRequirements(const ShaderFeature newFeature)
     // If not all requirements for the new feature are met, add the missing ones
     if (!_checkRequirementsAreMet(newFeature))
     {
-        for (auto it = _problems.begin(); it != _problems.begin(); it++)
+        for (const auto& feature : _problems)
         {
-            addFeatureWithRequirements(*it);
+            addFeatureWithRequirements(feature);
         }
     }
 

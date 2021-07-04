@@ -104,9 +104,9 @@ void Scene::removeObject(const unsigned int id)
     const std::vector<ObjectTree::NodePtr> children = objectNode->getChildren();
 
     // Recursively remove all children before carrying on with the object at hand
-    for (auto it = children.begin(); it != children.end(); it++)
+    for (const auto child : children)
     {
-        removeObject((*it)->value->id);
+        removeObject(child->value->id);
     }
 
     // Within the markers about to be removed, subtract the count of those set 
@@ -230,9 +230,8 @@ std::vector<SceneObjectPtr> Scene::getAllObjects(const bool mustBeEnabled) const
 {
     std::vector<SceneObjectPtr> result;
 
-    for (auto it = _objectMetadata.begin(); it != _objectMetadata.end(); it++)
+    for (const auto& [_, meta] : _objectMetadata)
     {
-        const SceneObjectMetadata& meta = it->second;
         const ObjectTree::NodePtr node = _objects[meta.objectNodeId];
         if (!mustBeEnabled || node->value->enabled) result.push_back(node->value);
     }
@@ -263,9 +262,9 @@ void Scene::triggerUpdate()
     _lastTime = now;
 
     // Update all registered scripts
-    for (auto it = _scripts.begin(); it != _scripts.end(); it++)
+    for (const auto& [_, script] : _scripts)
     {
-        it->second->update((float)(delta.count()));
+        script->update((float)(delta.count()));
     }
 }
 void Scene::_init()
@@ -293,9 +292,8 @@ void Scene::_init()
 void Scene::_terminate()
 {
     // Remove scene references in all scene objects, unsubscribe scene from object updates
-    for (auto it = _objectMetadata.begin(); it != _objectMetadata.end(); it++)
+    for (const auto& [_, meta] : _objectMetadata)
     {
-        const SceneObjectMetadata& meta = it->second;
         _objects[meta.id]->value->setScene(nullptr);
         _objects[meta.id]->value->transform.getNotifier().deleteSubscriber(meta.transformSubscriberId);
     }
@@ -427,9 +425,8 @@ void Scene::_worldTransformDFSUpdate(const unsigned int startingId) const
         const ObjectTree::NodePtr object = _objects[meta.objectNodeId];
         const std::vector<ObjectTree::NodePtr> children = object->getChildren();
 
-        for (auto it = children.begin(); it != children.end(); it++)
+        for (const auto& child : children)
         {
-            SceneObjectPtr child = (*it)->value;
             _worldTransformDFSUpdate(child->id);
         }
     }
@@ -449,11 +446,11 @@ std::vector<unsigned int> Scene::_findLongestOutdatedParentChain(const unsigned 
     // Find the count of elements in the chain up until the last outdated element
     unsigned int count = 0;
     unsigned int outdatedCount = 0;
-    for (auto parentIt = parentChain.begin(); parentIt != parentChain.end(); parentIt++)
+    for (const auto& parent : parentChain)
     {
         count++;
 
-        const unsigned int id = (*parentIt)->value->id;
+        const unsigned int id = parent->value->id;
         parentIdChain.push_back(id);
         const SceneObjectMetadata meta = _objectMetadata.at(id);
 
@@ -491,9 +488,9 @@ void Scene::_worldTransformCascadeUpdate(const unsigned int id) const
     
     // Reverberate changes to children transforms
     const std::vector<ObjectTree::NodePtr> children = objectNode->getChildren();
-    for (auto childIt = children.begin(); childIt != children.end(); childIt++)
+    for (const auto child : children)
     {
-        _worldTransformCascadeUpdate((*childIt)->value->id);
+        _worldTransformCascadeUpdate(child->value->id);
     }
 }
 
@@ -534,10 +531,10 @@ bool Scene::_hasDisabledParent(const unsigned int id) const
     const ObjectTree::NodePtr objectNode = _objects[meta.objectNodeId];
     const std::vector<ObjectTree::NodePtr> parents = objectNode->getParentChain();
 
-    for (auto it = parents.begin(); it != parents.end(); it++)
+    for (const auto parent : parents)
     {
         // Return whether any parent in the chain is disabled
-        if (!(*it)->value->enabled) return true;
+        if (!parent->value->enabled) return true;
     }
     return false;
 }

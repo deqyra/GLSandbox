@@ -166,10 +166,10 @@ std::shared_ptr<T> SceneObject::addComponent(ArgTypes&& ... args)
 template<class T>
 bool SceneObject::hasComponent() const
 {
-    const ComponentType expectedType = Component::componentType<T>();
-    for (auto it = _components.begin(); it != _components.end(); it++)
+    static const ComponentType expectedType = Component::componentType<T>();
+    for (const auto& component : _components)
     {
-        if ((*it)->type == expectedType)
+        if (component->type == expectedType)
         {
             return true;
         }
@@ -181,12 +181,12 @@ bool SceneObject::hasComponent() const
 template<class T>
 std::shared_ptr<T> SceneObject::getComponent() const
 {
-    const ComponentType expectedType = Component::componentType<T>();
-    for (auto it = _components.begin(); it != _components.end(); it++)
+    static const ComponentType expectedType = Component::componentType<T>();
+    for (const auto& component : _components)
     {
-        if ((*it)->type == expectedType)
+        if (component->type == expectedType)
         {
-            return std::static_pointer_cast<T>(*it);
+            return std::static_pointer_cast<T>(component);
         }
     }
 
@@ -196,7 +196,7 @@ std::shared_ptr<T> SceneObject::getComponent() const
 template<class T>
 std::vector<std::shared_ptr<T>> SceneObject::getComponents() const
 {
-    const ComponentType expectedType = Component::componentType<T>();
+    static const ComponentType expectedType = Component::componentType<T>();
     std::vector<std::shared_ptr<T>> components;
 
     std::function<bool(std::shared_ptr<T>)> checkType = [expectedType](std::shared_ptr<T> val) -> bool

@@ -101,23 +101,23 @@ void GLFW3GamepadManager::refreshGamepadStatuses() const
         // Reset the flag immediately
         _JoystickStatusRefreshFlag = false;
 
-        for (auto it = _PresentJoysticks.begin(); it != _PresentJoysticks.end(); it++)
+        for (const auto& [id, present] : _PresentJoysticks)
         {
             // Don't bother with undetected gamepads
-            if (!it->second) continue;
+            if (!present) continue;
 
             // Don't bother with joysticks already marked as gamepads
-            if (_PresentGamepads[it->first]) continue;
+            if (_PresentGamepads[id]) continue;
 
             // Update the gamepad status for that joystick
-            if (glfwJoystickIsGamepad(it->first))
+            if (glfwJoystickIsGamepad(id))
             {
-                _PresentGamepads[it->first] = true;
+                _PresentGamepads[id] = true;
 
                 // Fire connection events to registered gamepad managers
-                for (auto it = _GamepadManagers.begin(); it != _GamepadManagers.end(); it++)
+                for (const auto& [mId, manager] : _GamepadManagers)
                 {
-                    it->second->gamepadConnected(Window::GLFW3Adapter::getEnum<Window::Input::Joystick>(it->first));
+                    manager->gamepadConnected(Window::GLFW3Adapter::getEnum<Window::Input::Joystick>(mId));
                 }
             }
         }

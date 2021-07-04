@@ -22,9 +22,9 @@ SceneObject::SceneObject(std::string name) :
 
 SceneObject::~SceneObject()
 {
-    for (auto it = _components.begin(); it != _components.end(); it++)
+    for (const auto& component : _components)
     {
-        (*it)->_releaseSceneObject();
+        component->_releaseSceneObject();
     }
 }
 
@@ -53,9 +53,10 @@ SceneObjectPtr SceneObject::clone() const
     SceneObjectPtr clonedObject = std::make_shared<SceneObject>();
     clonedObject->enabled = enabled;
     clonedObject->transform = transform;
-    for (auto it = _components.begin(); it != _components.end(); it++)
+
+    for (const auto& component : _components)
     {
-        ComponentPtr newComponent = ComponentPtr((*it)->clone(clonedObject));
+        ComponentPtr newComponent = ComponentPtr(component->clone(clonedObject));
         clonedObject->_components.push_back(newComponent);
     }
 

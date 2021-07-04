@@ -66,10 +66,8 @@ void SceneRenderer::renderScene(const ScenePtr scene) const
     // Preprocess lights
     std::vector<LightPtr> lights;
     std::vector<Transform> worldTransforms;
-    for (auto it = lightObjects.begin(); it != lightObjects.end(); it++)
+    for (const auto& lightObj : lightObjects)
     {
-        // Get the light component
-        SceneObjectPtr lightObj = *it;
         std::shared_ptr<LightComponent> lightComp = lightObj->getComponent<LightComponent>();
         // Get the actual light and its world model matrix (needed to compute its world position)
         lights.push_back(lightComp->getLight());
@@ -84,10 +82,10 @@ void SceneRenderer::renderScene(const ScenePtr scene) const
     const int64_t gap = _frameIntervalUs - std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
     std::this_thread::sleep_for(std::chrono::microseconds(gap));
 
-    for (auto it = meshObjects.begin(); it != meshObjects.end(); it++)
+    for (const auto& meshObj : meshObjects)
     {
         // Draw the mesh
-        drawMesh(*it, cameraComp->getViewMatrix());
+        drawMesh(meshObj, cameraComp->getViewMatrix());
     }
 }
 

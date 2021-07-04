@@ -22,6 +22,7 @@ void BasicWindowManager::triggerAction(const GLWindowPtr window, const BasicWind
     {
         case BasicWindowManagerAction::Terminate:
             window->setShouldClose(true);
+            window->signalExit();
             break;
         case BasicWindowManagerAction::PolygonFill:
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

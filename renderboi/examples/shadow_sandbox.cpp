@@ -282,7 +282,6 @@ void ShadowSandbox::run(const GLWindowPtr window, const GLSandboxParameters& par
         sceneRenderer.renderScene(scene);
         window->swapBuffers();
     }
-    window->setShouldClose(false);
 
 
 
@@ -294,8 +293,6 @@ void ShadowSandbox::run(const GLWindowPtr window, const GLSandboxParameters& par
 
     splitter->detachAllInputProcessors();
     Factory::DestroyScene(scene);
-
-    window->signalExit();
 
     GLSandbox::terminateContext(window);
 }

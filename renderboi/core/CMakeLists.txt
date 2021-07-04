@@ -12,8 +12,9 @@ add_library(${RB_CORE_LIB_NAME} ${STATIC_OR_SHARED}
     ${RB_CORE_SOURCE_FILES}
 )
 add_dependencies(${RB_CORE_LIB_NAME}
-    "${CPPTOOLS_LIB_NAME}_source"
     "export_${GLM_LIB_NAME}_headers"
+    "export_${CPPTOOLS_LIB_NAME}_headers"
+    "export_${CPPTOOLS_LIB_NAME}_lib"
     "export_${GLAD_LIB_NAME}_lib"
     "export_${GLAD_LIB_NAME}_headers"
     "export_${STB_IMAGE_LIB_NAME}_lib"

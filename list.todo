@@ -83,6 +83,7 @@ RenderBoi:
             ✔ Refactor getComponent & co to fit new several-per-type components @done(20-10-20 16:14)
             ✔ Refactor methods (e.g. object creation and registration) to skip sanity checks where unnecessary @done(20-10-21 18:02)
             ✔ Make init() and terminate() private with Factory as a friend @done(20-10-21 19:59)
+            ☐ remove() recursively calls itself instead of a more efficient, check-free private routine
         SceneObject:
             ✔ Add name for debugging purposes @done(20-10-19 12:04)
             ✔ Return shared pointers instead of weak pointers where possible @done(20-10-20 16:17)
