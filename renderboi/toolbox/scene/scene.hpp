@@ -90,13 +90,15 @@ private:
     /// throw an exception.
     ///
     /// @param id ID of the object whose metadata to find.
+    /// @param failureMessage Quick indicating in which context a bad ID was
+    /// provided.
     ///
     /// @return The metadata entry of the object of provided ID, if found.
     ///
     /// @exception If the provided ID does not match that of an object 
     /// registered in the scene, the function will throw a 
     /// std::runtime_error.
-    SceneObjectMetadata _findObjectMetaOrThrow(const unsigned int id) const;
+    SceneObjectMetadata _findObjectMetaOrThrow(const unsigned int id, const std::string& failureMessage) const;
 
     /// @brief Check that the provided pointer to a scene object is not 
     /// null, or throw.
@@ -139,7 +141,7 @@ private:
     /// @return An array filled with the IDs of the successive parents of 
     /// the object, up to the topmost one whose world transform was marked
     /// as outdated.
-    std::vector<unsigned int> _findLongestOutdatedParentChain(const unsigned int id) const;
+    std::vector<unsigned int> _findLongestOutdatedParentIdChain(const unsigned int id) const;
 
     /// @brief Update the world transform of the scene object with provided 
     /// ID, as well as the world transforms of all of its children.

@@ -6,11 +6,7 @@
 
 #include "../enums.hpp"
 
-namespace Renderboi
-{
-namespace Window
-{
-namespace GLFW3Adapter
+namespace Renderboi::Window::GLFW3Adapter
 {
 
     namespace EnumMaps
@@ -806,6 +802,4 @@ namespace GLFW3Adapter
         return ValueMaps::GlProfileValues().at(literal);
     }
 
-}// namespace GLFW3Adapter
-}// namespace Window
-}//namespace Renderboi
+}//namespace Renderboi::Window::GLFW3Adapter
