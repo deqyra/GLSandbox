@@ -115,6 +115,7 @@ target_link_libraries(${RB_WINDOW_LIB_NAME} PUBLIC ${CMAKE_DL_LIBS}
     ${GLAD_LIB_NAME}
     ${RB_UTILITIES_LIB_NAME}
 )
+add_compile_definitions(GLAD_GLAPI_EXPORT)
 
 # Custom target to export window lib
 add_custom_target("export_${RB_WINDOW_LIB_NAME}_lib")

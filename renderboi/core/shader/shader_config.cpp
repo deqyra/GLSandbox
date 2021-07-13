@@ -6,7 +6,7 @@
 
 #include <renderboi/utilities/to_string.hpp>
 
-#include <cpptools/string_tools.hpp>
+#include <cpptools/utility/string_tools.hpp>
 
 namespace Renderboi
 {
@@ -89,7 +89,7 @@ void ShaderConfig::addFeature(const ShaderFeature newFeature)
     if (_checkForConflicts(newFeature))
     {
         const std::string s = "ShaderConfig: cannot request new feature " + to_string(newFeature) + " as it conflicts "
-            "with the following already present features: " + CppTools::String::iterableToString(_problems, ",") + ".";
+            "with the following already present features: " + cpptools::String::iterableToString(_problems, ",") + ".";
 
         throw std::runtime_error(s.c_str());
     }
@@ -99,7 +99,7 @@ void ShaderConfig::addFeature(const ShaderFeature newFeature)
     {
         const std::string s = "ShaderConfig: cannot request new feature " + to_string(newFeature)
             + " as it requires the following features, which are currently absent from the config: "
-            + CppTools::String::iterableToString(_problems, ",") + ". Consider using addFeatureWithRequirements.";
+            + cpptools::String::iterableToString(_problems, ",") + ". Consider using addFeatureWithRequirements.";
 
         throw std::runtime_error(s.c_str());
     }
@@ -117,7 +117,7 @@ void ShaderConfig::addFeatureWithRequirements(const ShaderFeature newFeature)
     if (_checkForConflicts(newFeature))
     {
         const std::string s = "ShaderConfig: cannot request new feature " + to_string(newFeature) + " as it conflicts "
-            "with the following already present features: " + CppTools::String::iterableToString(_problems, ",") + ".";
+            "with the following already present features: " + cpptools::String::iterableToString(_problems, ",") + ".";
 
         throw std::runtime_error(s.c_str());
     }

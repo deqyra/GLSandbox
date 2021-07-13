@@ -7,15 +7,17 @@
 #include <string>
 #include <vector>
 
-#include "critical_event_manager.hpp"
 #include "enums.hpp"
+#include "gl_context_client.hpp"
 #include "input_processor.hpp"
 #include "monitor.hpp"
+#include "event/critical_event_manager.hpp"
 #include "gamepad/gamepad_manager.hpp"
 #include "interfaces/critical_event_receiver.hpp"
 
 namespace Renderboi
 {
+    
 namespace Window
 {
 
@@ -28,6 +30,9 @@ public:
     GLWindow(std::string title);
     
     virtual ~GLWindow();
+
+    /// @brief Entity which utilizes the context painted by the window.
+    GLContextClientPtr glContextClient;
 
     /// @brief Callback for a framebuffer resize event.
     ///

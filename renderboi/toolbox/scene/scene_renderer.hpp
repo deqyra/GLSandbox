@@ -80,6 +80,8 @@ public:
     void setFramerateLimit(const unsigned int framerateLimit);
 };
 
+using SceneRendererPtr = std::shared_ptr<SceneRenderer>;
+
 }//namespace Renderboi
 
 #endif//RENDERBOI__TOOLBOX__SCENE__SCENE_RENDERER_HPP

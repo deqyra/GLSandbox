@@ -55,8 +55,8 @@ std::size_t ControlHash::operator()(Control const& c) const
     std::size_t res = 0;
 
     const unsigned int* data = reinterpret_cast<const unsigned int*>(&c);
-    CppTools::hash_combine(res, data[0]);
-    CppTools::hash_combine(res, data[1]);
+    cpptools::hash_combine(res, data[0]);
+    cpptools::hash_combine(res, data[1]);
 
     return res;
 }

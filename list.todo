@@ -26,7 +26,7 @@ RenderBoi:
             ☐ Handle several types of draw methods per single mesh
             ✔ Use glMultiDrawElements, adapt mesh generators @done(20-11-05 08:59)
             ☐ Star mesh generator (branch count, inset, hollow)
-            ☐ Meshed curve generator, using CppTools::Curve
+            ☐ Meshed curve generator, using cpptools::Curve
         Shaders:
             ✔ Use GL_ARB_shader_language_include @done(20-10-24 17:30)
             ✔ Declare uniform blocks in their own file @done(20-10-24 17:30)

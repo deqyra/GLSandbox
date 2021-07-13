@@ -35,8 +35,6 @@
 #include <renderboi/toolbox/runnables/basic_window_manager.hpp>
 #include <renderboi/toolbox/runnables/camera_aspect_ratio_manager.hpp>
 
-#include <cpptools/enum_map.hpp>
-
 namespace Renderboi
 {
 
@@ -55,7 +53,7 @@ void LightingSandbox::setUp(const GLWindowPtr window, const GLSandboxParameters&
 
 void LightingSandbox::run(const GLWindowPtr window, const GLSandboxParameters& params)
 {
-    GLSandbox::initContext(window, params);
+    GLSandbox::initContext(params);
 
     ShaderConfig lightConfig;
     lightConfig.addFeature(ShaderFeature::VertexMVP);
@@ -170,7 +168,7 @@ void LightingSandbox::run(const GLWindowPtr window, const GLSandboxParameters& p
     Factory::DestroyScene(scene);
     window->signalExit();
     
-    GLSandbox::terminateContext(window);
+    GLSandbox::terminateContext();
 }
 
 void LightingSandbox::tearDown(const GLWindowPtr window)

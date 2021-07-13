@@ -5,7 +5,7 @@
 
 #include <renderboi/window/enums.hpp>
 
-#include <cpptools/hash_combine.hpp>
+#include <cpptools/utility/hash_combine.hpp>
 
 namespace Renderboi
 {

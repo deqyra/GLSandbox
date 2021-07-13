@@ -1,6 +1,6 @@
 #include "critical_event_manager.hpp"
 
-#include "gl_window.hpp"
+#include "../gl_window.hpp"
 
 namespace Renderboi
 {
@@ -18,7 +18,7 @@ CriticalEventManager::CriticalEventManager(GLWindow* window) :
 
 }
 
-void CriticalEventManager::processCriticalEvents()
+void CriticalEventManager::processPendingCriticalEvents()
 {
     _criticalEventMutex.lock();
     bool empty = _criticalEventQueue.empty();
@@ -79,14 +79,14 @@ void CriticalEventManager::detachCriticalProcess(unsigned int registrationId)
     _criticalProcesses.erase(registrationId);
 }
 
-void CriticalEventManager::queueCriticalEvent(GLWindowCriticalEvent event)
+void CriticalEventManager::queueEvent(const GLWindowCriticalEvent& event)
 {
     _criticalEventMutex.lock();
     _criticalEventQueue.push(event);
     _criticalEventMutex.unlock();
 }
 
-void CriticalEventManager::_processCriticalEvent(GLWindowCriticalEvent event)
+void CriticalEventManager::_processCriticalEvent(const GLWindowCriticalEvent& event)
 {
     switch (event)
     {

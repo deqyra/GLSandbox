@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <cpptools/thread/interfaces/interruptible.hpp>
+#include <cpptools/oo/interfaces/event_receiver.hpp>
 
 namespace Renderboi
 {
@@ -16,7 +17,7 @@ namespace Window
 ///
 /// @tparam E Type of the critical events to be received. 
 template<typename E>
-class CriticalEventReceiver
+class CriticalEventReceiver : public cpptools::EventReceiver<E>
 {
 private:
     using InterruptiblePtr = cpptools::InterruptiblePtr;
@@ -47,11 +48,16 @@ public:
     /// registerCriticalProcess in the first place.
     virtual void detachCriticalProcess(unsigned int registrationId) = 0;
 
-    /// @brief Register a critical event to the window, which must then be 
-    /// processed with processCriticalEventQueue().
+    /////////////////////////////////////////////
+    ///                                       ///
+    /// Methods overridden from EventReceiver ///
+    ///                                       ///
+    /////////////////////////////////////////////
+
+    /// @brief Register a critical event to the window.
     ///
     /// @param event Literal describing the event to queue.
-    virtual void queueCriticalEvent(E event) = 0;
+    virtual void queueEvent(const E& event) = 0;
 };
 
 }// namespace Window

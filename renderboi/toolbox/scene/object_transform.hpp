@@ -10,7 +10,7 @@
 
 #include <renderboi/core/transform.hpp>
 
-#include <cpptools/notifier.hpp>
+#include <cpptools/oo/notifier.hpp>
 
 /* ╔════════════╗
  * ║   README   ║
@@ -66,7 +66,7 @@ using SceneObjectWPtr = std::weak_ptr<SceneObject>;
 class ObjectTransform : public Transform
 {
 public:
-    using TransformNotifier = CppTools::Notifier<const unsigned int>;
+    using TransformNotifier = cpptools::Notifier<const unsigned int>;
 
 protected:
     /// @brief Will notify subscribers that the transform has been modified.

@@ -12,7 +12,7 @@
 
 #include <glm/glm.hpp>
 
-#include <cpptools/tree.hpp>
+#include <cpptools/container/tree.hpp>
 
 #include "../script.hpp"
 #include "scene_object.hpp"
@@ -31,9 +31,9 @@ class Scene : public std::enable_shared_from_this<Scene>
 friend Factory;
 
 public:
-    using ObjectTree = CppTools::Tree<SceneObjectPtr>;
-    using TransformTree = CppTools::Tree<Transform>;
-    using BoolTree = CppTools::Tree<bool>;
+    using ObjectTree = cpptools::Tree<SceneObjectPtr>;
+    using TransformTree = cpptools::Tree<Transform>;
+    using BoolTree = cpptools::Tree<bool>;
 
 private:
     /// @brief Scene graph. Contains all objects in the scene, 

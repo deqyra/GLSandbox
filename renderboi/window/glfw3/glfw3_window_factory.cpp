@@ -12,7 +12,7 @@
 #include <GLFW/glfw3.h>
 #undef GLFW_INCLUDE_NONE
 
-#include <cpptools/string_tools.hpp>
+#include <cpptools/utility/string_tools.hpp>
 
 #include <renderboi/utilities/gl_utilities.hpp>
 #include <renderboi/utilities/resource_locator.hpp>
@@ -54,7 +54,7 @@ int WindowFactory<WindowBackend::GLFW3>::InitializeBackend()
     // GAMEPAD RELATED STUFF //
     ///////////////////////////
     std::string gamepadMappingsPath = ReLoc::locate(ReType::Any, "gamecontrollerdb.txt");
-    std::string gamepadMappings = CppTools::String::readFileIntoString(gamepadMappingsPath);
+    std::string gamepadMappings = cpptools::String::readFileIntoString(gamepadMappingsPath);
     glfwUpdateGamepadMappings(gamepadMappings.c_str());
     glfwSetJoystickCallback(GLFW3Utilities::globalGlfwJoystickCallback);
     GLFW3Utilities::initGamepadStatuses();
@@ -183,7 +183,7 @@ GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(const WindowCreation
 
 	if (!window)
 	{
-        throw std::runtime_error("Failed to create window.");
+        throw std::runtime_error("WIndowsFactory<GLFW3>: Failed to create window.");
     }
 
     // Initialize a GLWindow instance with a GLFWwindow object

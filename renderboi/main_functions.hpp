@@ -15,7 +15,4 @@ bool processArguments(const int argc, char* const* argv, RenderboiParameters& de
 // Print usage message and exit cleanly
 void printHelp();
 
-// Instantiate all available sandboxes
-std::vector<Renderboi::GLSandbox*> createAllSandboxes();
-
 #endif//RENDERBOI__MAIN_FUNCTIONS_HPP

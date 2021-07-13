@@ -13,7 +13,7 @@
 
 #include <renderboi/utilities/to_string.hpp>
 
-#include <cpptools/map_tools.hpp>
+#include <cpptools/utility/map_tools.hpp>
 
 #include "control.hpp"
 #include "../interfaces/control_binding_provider.hpp"
@@ -144,7 +144,7 @@ template<typename T>
 void ControlSchemeManager<T>::bindControl(const Control control, const T action)
 {
     const unsigned int actionBindingCount = (unsigned int)_controlsBoundToAction.count(action);
-    const bool alreadyPresent = CppTools::mapContainsPair(_actionBoundToControl, {control, action});
+    const bool alreadyPresent = cpptools::mapContainsPair(_actionBoundToControl, {control, action});
 
     if (actionBindingCount >= _MaxControlsPerAction)
     {

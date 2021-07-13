@@ -19,7 +19,7 @@
 #include <renderboi/utilities/to_string.hpp>
 #include <renderboi/utilities/resource_locator.hpp>
 
-#include <cpptools/string_tools.hpp>
+#include <cpptools/utility/string_tools.hpp>
 
 #define INFO_BUFFER_SIZE 2048
 
@@ -303,7 +303,7 @@ std::string ShaderBuilder::_GetIncludeString(const std::string& arg)
         }
 
         // Read file contents and cache it
-        _includeStrings[arg] = CppTools::String::readFileIntoString(jt->second);
+        _includeStrings[arg] = cpptools::String::readFileIntoString(jt->second);
     }
 
     return _includeStrings[arg];
@@ -315,7 +315,7 @@ ShaderBuilder::_LocateIncludeDirectivesInSource(std::string& text)
     static const std::string IncludeStringStart = "#include";
     std::vector<std::pair<std::string, std::pair<size_t, size_t>>> includeArguments;
 
-    CppTools::String::stripComments(text);
+    cpptools::String::stripComments(text);
 
     size_t offset = text.find(IncludeStringStart, 0);
     while (offset != std::string::npos)
@@ -325,7 +325,7 @@ ShaderBuilder::_LocateIncludeDirectivesInSource(std::string& text)
         if (lastEol == std::string::npos) lastEol = 0;
 
         const std::string before = text.substr(lastEol, offset - lastEol);
-        if (!CppTools::String::stringIsWhitespace(before))
+        if (!cpptools::String::stringIsWhitespace(before))
         {
             std::cout << "ShaderBuilder: ignored include directive as non "
                          "whitespace characters are present on the same line "
@@ -345,7 +345,7 @@ ShaderBuilder::_LocateIncludeDirectivesInSource(std::string& text)
             text.size() - offset;
 
         std::string includeArgument = text.substr(offset, argLength);
-        CppTools::String::trim(includeArgument);
+        cpptools::String::trim(includeArgument);
 
         const char firstDelimiter = includeArgument[0];
         char secondDelimiter = 0;

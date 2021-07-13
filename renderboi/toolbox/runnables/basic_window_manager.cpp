@@ -21,7 +21,6 @@ void BasicWindowManager::triggerAction(const GLWindowPtr window, const BasicWind
     switch (action)
     {
         case BasicWindowManagerAction::Terminate:
-            window->setShouldClose(true);
             window->signalExit();
             break;
         case BasicWindowManagerAction::PolygonFill:
@@ -45,7 +44,7 @@ void BasicWindowManager::stopAction(const GLWindowPtr window, const BasicWindowM
 
 void BasicWindowManager::processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height)
 {
-    glViewport(0, 0, width, height);
+    window->glContextClient->eventManager->queueEvent(Window::GLContextEvent::FitFramebufferToWindow);
 }
 
 ControlSchemeManagerPtr<BasicWindowManagerAction> BasicWindowManager::getDefaultControlScheme() const
@@ -70,11 +69,11 @@ void BasicWindowManager::_toggleFullscreen(const GLWindowPtr window) const
     
     if (window->isFullscreen())
     {
-        window->criticalEventManager.queueCriticalEvent(GLWindowCriticalEvent::GoFullscreen);
+        window->criticalEventManager.queueEvent(GLWindowCriticalEvent::ExitFullscreen);
     }
     else
     {
-        window->criticalEventManager.queueCriticalEvent(GLWindowCriticalEvent::ExitFullscreen);
+        window->criticalEventManager.queueEvent(GLWindowCriticalEvent::GoFullscreen);
     }
 }
 

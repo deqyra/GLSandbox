@@ -30,6 +30,8 @@ public:
 
 private:
     using Worker = cpptools::Worker;
+    using WorkerPtr = cpptools::WorkerPtr;
+    using Interruptible = cpptools::Interruptible;
     using InterruptiblePtr = cpptools::InterruptiblePtr;
 
     /// @brief Pointer to the hosted sandbox.
@@ -49,7 +51,7 @@ private:
     const bool _gamepadManagerPresent;
 
     /// @brief Thread on which the sandbox will run.
-    Worker _worker;
+    WorkerPtr _worker;
 
     /// @brief ID returned when registering the sandbox as a critical process.
     unsigned int criticalProcessRegistrationId;
@@ -62,48 +64,62 @@ public:
     /// @param params Parameters to run the sandbox with
     /// @param startNow Whether to start running the sandbox right away. If 
     /// false is provided, the sandbox will need to be started using
-    /// this->worker.run().
+    /// this->worker->run().
     GLSandboxRunner(GLWindowPtr window, GLSandboxParameters params, bool startNow = true) :
         _window(window),
         _gamepadManager(_window->getGamepadManager()),
         _gamepadManagerPresent(_gamepadManager != nullptr),
-        _sandbox(std::make_shared<SandboxType>()),
+        _sandbox(std::make_shared<SandboxType>(window)),
         _params(params),
-        _worker(
-            [this](){               // Run the worker on the sandbox
-                _sandbox->run(_window, _params);
+        _worker(std::make_shared<Worker>(
+            [this](){               // Run the worker on the sandbox rendering loop
+                _sandbox->eventManager->processPendingEvents();
+                _sandbox->render(_params);
             },
-            false                   // Don't start the worker right away
-        ),
-        worker(&_worker)
+            false,                  // Don't start the worker right away
+            [this](){               // Set up the scene before rendering
+                _sandbox->renderSetUp(_params);
+            },
+            [this](){               // Clean up the scene after rendering
+                _sandbox->renderTearDown();
+            }
+        )),
+        worker(std::static_pointer_cast<Interruptible>(_worker))
     {
-        _sandbox->setUp(_window, _params);
+        _sandbox->setUp(_params);
         criticalProcessRegistrationId = _window->criticalEventManager.registerCriticalProcess(worker);
         if (startNow)
         {
-            _worker.run();
+            _worker->run();
         }
     }
 
     ~GLSandboxRunner()
     {
-        _worker.waitUntilFinalized(true);
+        _worker->waitUntilFinalized(true);
         _window->criticalEventManager.detachCriticalProcess(criticalProcessRegistrationId);
-        _sandbox->tearDown(_window);
+        _sandbox->tearDown();
+        _window->setShouldClose(true);
     }
 
+    /// @brief Get a pointer to the sandbox being ran.
+    ///
+    /// @return A pointer to the sandbox being ran.
     SandboxPtr getSandbox()
     {
         return _sandbox;
     }
 
+    /// @brief Poll the input of the window repeatedly, until the window's exit
+    /// signal is raised by another thread. Then, the worker is requested to
+    /// finalize, and the function returns when it is.
     void startEventPollingLoop()
     {
         // Reset the window exit signal
         _window->signalExit(false);
 
         // Poll events until exit requested
-        while (!_window->exitSignaled())
+        while (!_window->exitSignaled() && !_window->shouldClose())
         {
             _window->pollEvents();
 
@@ -114,8 +130,9 @@ public:
             }
             
             // Process awaiting critical events
-            _window->criticalEventManager.processCriticalEvents();
+            _window->criticalEventManager.processPendingCriticalEvents();
         }
+        _worker->waitUntilFinalized(true);
     }
 };
 

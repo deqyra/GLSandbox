@@ -16,7 +16,7 @@
 #include <renderboi/toolbox/script.hpp>
 #include <renderboi/toolbox/scene/scene_object.hpp>
 
-#include <cpptools/sine_generator.hpp>
+#include <cpptools/math/sine_generator.hpp>
 
 namespace Renderboi
 {
@@ -89,7 +89,7 @@ class LightingSandboxScript : public InputProcessor, public Script
         float _speedFactor;
 
         /// @brief Sine along which to vary the light range.
-        CppTools::SineGenerator<float> _sine;
+        cpptools::SineGenerator<float> _sine;
 
         /// @brief Base range of the light.
         float _baseRange;

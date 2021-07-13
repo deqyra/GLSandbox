@@ -8,12 +8,15 @@
 #include "gl_sandbox.hpp"
 #include "gl_sandbox_parameters.hpp"
 
-#include <cpptools/sine_generator.hpp>
+#include <cpptools/math/sine_generator.hpp>
 
 #include <renderboi/core/camera.hpp>
 
 #include <renderboi/toolbox/script.hpp>
+#include <renderboi/toolbox/input_splitter.hpp>
+#include <renderboi/toolbox/scene/scene.hpp>
 #include <renderboi/toolbox/scene/scene_object.hpp>
+#include <renderboi/toolbox/scene/scene_renderer.hpp>
 
 #include <renderboi/window/gl_window.hpp>
 #include <renderboi/window/input_processor.hpp>
@@ -35,6 +38,15 @@ class ShadowSandbox : public GLSandbox
         /// @brief Whether or not a gamepad could be retrieved.
         bool _gamepadPresent;
 
+        /// @brief Pointer to the scene.
+        ScenePtr _scene;
+
+        /// @brief In charge of rendering the scene.
+        SceneRendererPtr _sceneRenderer;
+
+        /// @brief Pointer to the input splitter of the scene.
+        InputSplitterPtr _splitter;
+
     public:
         static constexpr float LightBaseRange = 10.f;
         static constexpr Camera::CameraParameters CameraParams = {-45.f, -35.f, 1.f};
@@ -43,6 +55,9 @@ class ShadowSandbox : public GLSandbox
         static constexpr float PlaneTileSize = 1.f;
         static constexpr float WallSize = PlaneTileCount * PlaneTileSize;
         static constexpr glm::vec3 LightPosition = {WallSize / 2.f, WallSize / 2.f, WallSize / 2.f};
+
+		/// @param window Pointer to the window on which the sandbox should run.
+        ShadowSandbox(const GLWindowPtr window);
 
         /////////////////////////////////////////
         ///                                   ///
@@ -54,19 +69,32 @@ class ShadowSandbox : public GLSandbox
 		/// called from the main thread.
 		///
 		/// @param window Pointer to the window to initialize.
-		virtual void setUp(const GLWindowPtr window, const GLSandboxParameters& params) override;
+		virtual void setUp(const GLSandboxParameters& params);
 
-        /// @brief Run something in the provided GL window.
+		/// @brief Set up everything needed prior to rendering. Will be called  
+		/// from the rendering thread.
+		///
+		/// @param window Pointer to the window to initialize.
+		virtual void renderSetUp(const GLSandboxParameters& params);
+
+        /// @brief Run something in the provided GL window. To be executed by
+		/// a separate thread.
 		///
 		/// @param window Pointer to the window to run stuff in.
-        void run(const GLWindowPtr window, const GLSandboxParameters& params) override;
+		virtual void render(const GLSandboxParameters& params);
+
+		/// @brief Clean up everything that had to be set up for rendering. Will
+		/// be called from the rendering thread once run() has returned.
+		///
+		/// @param window Pointer to the window to detach from.
+		virtual void renderTearDown();
 
 		/// @brief Restore the window back to how it was before the example ran.
 		/// The contents of this function should be the opposite from those in
 		/// setUp(). Will be called from the main thread once run() has returned.
 		///
-		/// @param window Pointer to the window to initialize.
-		virtual void tearDown(const GLWindowPtr window) override;
+		/// @param window Pointer to the window to detach from.
+		virtual void tearDown();
 };
 
 class ShadowSandboxScript : public Script, public InputProcessor
@@ -88,7 +116,7 @@ class ShadowSandboxScript : public Script, public InputProcessor
         float _speedFactor;
 
         /// @brief Sine along which to have the light position vary.
-        CppTools::SineGenerator<float> _sine;
+        cpptools::SineGenerator<float> _sine;
 
     public:
         static constexpr glm::vec3 LightMovementAxis = {0.f, 1.f, 0.f};
@@ -97,6 +125,8 @@ class ShadowSandboxScript : public Script, public InputProcessor
         static constexpr glm::vec3 TorusRotationAxis = {0.f, 1.f, 0.f};
 
         ShadowSandboxScript(SceneObjectPtr lightObj, SceneObjectPtr torusObj);
+
+        virtual ~ShadowSandboxScript() = default;
 
         //////////////////////////////////////
         ///                                ///

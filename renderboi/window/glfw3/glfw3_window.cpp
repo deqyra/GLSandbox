@@ -26,6 +26,7 @@ GLFW3Window::GLFW3Window(GLFWwindow* window, std::string title) :
 {
     _gamepadManager = std::static_pointer_cast<GamepadManager>(std::make_shared<GLFW3GamepadManager>());
     _gamepadManager->pollPresentGamepads();
+    _fullscreenMonitor = glfwGetWindowMonitor(_w);
 }
 
 GLFW3Window::~GLFW3Window()
@@ -93,12 +94,12 @@ bool GLFW3Window::isMinimized() const
 
 void GLFW3Window::getSize(int& width, int& height) const
 {
-
+    glfwGetWindowSize(_w, &width, &height);
 }
 
 void GLFW3Window::getFramebufferSize(int& width, int& height) const
 {
-
+    glfwGetFramebufferSize(_w, &width, &height);
 }
 
 void GLFW3Window::goFullscreen(MonitorPtr monitor, bool borderless)
@@ -124,7 +125,7 @@ void GLFW3Window::goFullscreen(MonitorPtr monitor, bool borderless)
         // somewhere and restored (there is, however, no strong guarantee that 
         // the queried video mode is the actual desktop video mode of the
         // monitor).
-        // (used when GLFW3_BORDERLESS_POLICY_NATIVE is defined)
+        // (used when GLFW3_BORDERLESS_POLICY_NATIVE_MODE is defined)
         //
         // - or, OPTION 2: It can be assumed that this video mode will simply be
         // the largest of those supported by the monitor, although this is not

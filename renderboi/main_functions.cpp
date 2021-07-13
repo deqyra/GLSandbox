@@ -51,21 +51,3 @@ void printHelp()
                 << "\n"
                 << "<path>: path to the directory where assets/ is located." << std::endl;
 }
-
-std::vector<rb::GLSandbox*> createAllSandboxes()
-{
-    // Try and instantiate all sandboxes.
-    try
-    {
-        return std::vector<rb::GLSandbox*>({
-            //new rb::LightingSandbox(),
-			new rb::ShadowSandbox()
-        });
-    }
-    catch (std::runtime_error e)
-    {
-        std::cerr << "createAllSandboxes: " << e.what();
-    }
-
-    return std::vector<rb::GLSandbox*>();
-}
