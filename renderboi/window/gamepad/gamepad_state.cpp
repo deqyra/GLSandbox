@@ -34,6 +34,13 @@ GamepadState::GamepadState() :
 
 }
 
+GamepadState::GamepadState(const GamepadState& other)
+{
+    std::copy(other.Buttons, other.Buttons + 15, Buttons);
+    std::copy(other.Axes, other.Axes + 6, Axes);
+    DPad = other.DPad;
+}
+
 GamepadState& GamepadState::operator=(GamepadState other)
 {
     swap(*this, other);

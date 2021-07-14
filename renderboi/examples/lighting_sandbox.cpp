@@ -154,7 +154,7 @@ void LightingSandbox::run()
 
     glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    while (!_window->shouldClose())
+    while (!_window->exitSignaled())
     {
         // Process awaiting render events
         _eventManager->processPendingEvents();
@@ -168,7 +168,6 @@ void LightingSandbox::run()
     }
 
     Factory::DestroyScene(scene);
-    _window->signalExit();
     
     GLSandbox::_terminateContext();
 }

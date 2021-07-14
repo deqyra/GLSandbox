@@ -21,7 +21,7 @@ public:
 
     GamepadState();
 
-    GamepadState(const GamepadState& other) = default;
+    GamepadState(const GamepadState& other);
 
     /// @brief Collection of litterals describing the possible state of a DPad.
     enum DPadDirection : unsigned char

@@ -133,7 +133,8 @@ void GLFW3GamepadManager::pollGamepadStates() const
         int jid = Window::GLFW3Adapter::getValue(it->first);
         GLFWgamepadstate glfwState;
         glfwGetGamepadState(jid, &glfwState);
-        GamepadManager::setGamepadState(it->second, _GamepadStateFromGlfwGamepadState(glfwState));
+        GamepadState state = _GamepadStateFromGlfwGamepadState(glfwState);
+        GamepadManager::setGamepadState(it->second, state);
     }
 }
 

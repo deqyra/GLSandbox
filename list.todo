@@ -100,7 +100,7 @@ RenderBoi:
             ☐ Serialisation
         SceneRenderer:
             ✔ Implement a framerate limiter @done(20-10-19 21:49)
-            ☐ Mesh rendering order based on the requested shader, then on their VertexDataManager handle
+            ☐ Mesh rendering order based on distance to camera
             ☐ Eliminate buffer swaps between objects sharing the same vertex data
             ☐ Transform direction of lights according to the world transform of their object
             ✔ Skip the normal restoration where applicable @done(20-10-24 17:47)
@@ -120,6 +120,7 @@ RenderBoi:
         ✔ Move functionality to get input action/button names (used in BasicInputManager) @done(20-12-25 16:00)
         ✘ Update concrete window instantiation mechanisms? @cancelled(21-01-31 17:12)
         ✔ Move rendering away in another thread, keep event polling in the main thread @done(21-01-31 17:46)
+        ✔ Handle fullscreen toggling @done(21-07-14 16:07)
         ☐ Fully integrate GLFW in windowing system
         ☐ Make it possible to queue GLContextEvents alonside with parameters for them
         Gamepad:
@@ -136,9 +137,12 @@ RenderBoi:
             ☐ Async dispatch of events
             ☐ Think about breaking the interface apart for performance
         ☐ Implement an input poll rate limiter
-    Examples:
-        ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
-        ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)
+    Sandbox:
+        ☐ Add gamepad connection callback
+        ☐ Provide ability to pause
+        Ideas:
+            ☐ Times table arranged in a circle (https://www.youtube.com/watch?v=qhbuKbxJsk8)
+            ☐ Spyrograph thing (https://www.youtube.com/watch?v=7Fn-26Jmi5E)
     FIXME:
         ✔ Transform::lookAt @done(20-10-13 17:04)
         ✔ Light attenuation @done(20-04-20 06:55)

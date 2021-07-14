@@ -26,6 +26,7 @@ if(WINDOW_BACKEND_GLFW3)
         UPDATE_DISCONNECTED TRUE
         CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX=${EXPORT_LOCATION}
+        -DBUILD_SHARED_LIBS=ON
         -DGLFW_BUILD_EXAMPLES=OFF
         -DGLFW_BUILD_TESTS=OFF
     )
@@ -33,7 +34,7 @@ else()
     add_custom_target("window_backend_source")
     add_custom_command(
         TARGET "window_backend_source"
-        COMMAND ${CMAKE_COMMAND} -E echo "No window backend was selected! Building the project will fail..."
+        COMMAND ${CMAKE_COMMAND} -E echo "No window backend was selected! Building will fail."
     )
     set(NO_WINDOW_BACKEND 1)
 endif()

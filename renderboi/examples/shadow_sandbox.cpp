@@ -87,7 +87,6 @@ void ShadowSandbox::run()
     lightConfig.removeFeature(ShaderFeature::FragmentFullLight);
     lightConfig.addFeature(ShaderFeature::FragmentMeshMaterial);
     lightConfig.addFeature(ShaderFeature::FragmentBlinnPhong);
-    //lightConfig.addFeature(ShaderFeature::FragmentFullLight);
     lightConfig.addFeature(ShaderFeature::FragmentGammaCorrection);
     ShaderProgram blinnPhongShader = ShaderBuilder::BuildShaderProgramFromConfig(lightConfig);
 
@@ -238,6 +237,8 @@ void ShadowSandbox::run()
 
     // Instantiate an input logger
     InputLoggerPtr logger = std::make_shared<InputLogger>();
+    logger->disableEventLog(InputProcessor::EventType::MouseCursor);
+    logger->disableEventLog(GamepadInputProcessor::EventType::Axis);
 
     // Register all input processors to the splitter
     InputSplitterPtr splitter = std::make_shared<InputSplitter>();

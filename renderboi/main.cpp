@@ -130,10 +130,21 @@ int main(int argc, char** argv)
 		};
 
 		// Run examples
-		rb::GLSandboxRunner<rb::ShadowSandbox> shadowSandbox =
-		rb::GLSandboxRunner<rb::ShadowSandbox>(window, sbParams);
 
-		shadowSandbox.run();
+		if (false)
+		{
+			rb::GLSandboxRunner<rb::LightingSandbox> lightingSandbox =
+			rb::GLSandboxRunner<rb::LightingSandbox>(window, sbParams);
+
+			lightingSandbox.run();
+		}
+
+		{
+			rb::GLSandboxRunner<rb::ShadowSandbox> shadowSandbox =
+			rb::GLSandboxRunner<rb::ShadowSandbox>(window, sbParams);
+
+			shadowSandbox.run();
+		}
 
 		AppWindowFactory::DestroyWindow(window);
 	}
