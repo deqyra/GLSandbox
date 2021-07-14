@@ -30,12 +30,15 @@ public:
     /// @param eventManager Pointer to entity which will process the context events.
     GLContextClient(GLWindowPtr window, GLContextEventManagerPtr eventManager);
 
-    /// @brief Pointer to the render event queue manager of the sandbox.
-    GLContextEventManagerPtr eventManager;
+    /// @brief Read-only ointer to the render event queue manager of the sandbox.
+    const GLContextEventManagerPtr& eventManager = _eventManager;
 
 protected:
     /// @brief Pointer to the window painting the context.
     GLWindowPtr _window;
+
+    /// @brief Pointer to the render event queue manager of the sandbox.
+    GLContextEventManagerPtr _eventManager;
 };
 
 using GLContextClientPtr = std::shared_ptr<GLContextClient>;

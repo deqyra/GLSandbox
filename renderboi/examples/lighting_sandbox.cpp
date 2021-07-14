@@ -40,20 +40,26 @@ namespace Renderboi
 
 using Ref = FrameOfReference;
 
-void LightingSandbox::setUp(const GLWindowPtr window, const GLSandboxParameters& params)
+LightingSandbox::LightingSandbox(const GLWindowPtr window, const GLSandboxParameters params) :
+    GLSandbox(window, params)
+{
+
+}
+
+void LightingSandbox::setUp()
 {
     // Update window title
-    _title = window->getTitle();
-    window->setTitle(_title + " - Lighting");
+    _title = _window->getTitle();
+    _window->setTitle(_title + " - Lighting");
 
     // Remove cursor from window
     namespace InputMode = Window::Input::Mode;
-    window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
+    _window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
 }
 
-void LightingSandbox::run(const GLWindowPtr window, const GLSandboxParameters& params)
+void LightingSandbox::run()
 {
-    GLSandbox::initContext(params);
+    GLSandbox::_initContext();
 
     ShaderConfig lightConfig;
     lightConfig.addFeature(ShaderFeature::VertexMVP);
@@ -124,11 +130,11 @@ void LightingSandbox::run(const GLWindowPtr window, const GLSandboxParameters& p
     splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEventTranslator()));
     
     // Register the splitter to the window
-    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
+    _window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
 
 
     // Register the splitter to the window
-    window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
+    _window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
 
     const glm::vec3 X = Transform::X;
     const glm::vec3 Y = Transform::Y;
@@ -148,36 +154,32 @@ void LightingSandbox::run(const GLWindowPtr window, const GLSandboxParameters& p
 
     glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    while (!window->shouldClose())
+    while (!_window->shouldClose())
     {
+        // Process awaiting render events
+        _eventManager->processPendingEvents();
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Update and draw scene
         scene->triggerUpdate();
-
-        Transform t = scene->getWorldTransform(smallTorusObj->id);
-
-        //scene->updateAllTransforms();
         sceneRenderer.renderScene(scene);
-
-        // Refresh screen and process input
-        window->swapBuffers();
-        window->pollEvents();
+        _window->swapBuffers();
     }
-    window->setShouldClose(false);
+
     Factory::DestroyScene(scene);
-    window->signalExit();
+    _window->signalExit();
     
-    GLSandbox::terminateContext();
+    GLSandbox::_terminateContext();
 }
 
-void LightingSandbox::tearDown(const GLWindowPtr window)
+void LightingSandbox::tearDown()
 {
     // Reset everything back to how it was
     namespace InputMode = Window::Input::Mode;
-    window->setInputMode(InputMode::Target::Cursor, InputMode::Value::NormalCursor);
-    window->detachInputProcessor();
-    window->setTitle(_title);
+    _window->setInputMode(InputMode::Target::Cursor, InputMode::Value::NormalCursor);
+    _window->detachInputProcessor();
+    _window->setTitle(_title);
 }
 
 LightingSandboxScript::LightingSandboxScript(SceneObjectPtr cubeObj, SceneObjectPtr bigTorusObj, SceneObjectPtr smallTorusObj, SceneObjectPtr tetrahedronObj, SceneObjectPtr cameraObj, std::shared_ptr<PointLight> light, float baseLightRange) :

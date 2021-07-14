@@ -210,6 +210,7 @@ void WindowFactory<WindowBackend::GLFW3>::DestroyWindow(GLWindowPtr window)
 {
     GLFWwindow* glfw3Window = std::static_pointer_cast<GLFW3Window>(window)->_w;
     GLFW3Utilities::unsubscribeFromGlfwJoystickStatus(window);
+    glfwSetWindowShouldClose(glfw3Window, true);
     glfwDestroyWindow(glfw3Window);
 }
 

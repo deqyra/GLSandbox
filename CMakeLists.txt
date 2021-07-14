@@ -233,13 +233,10 @@ set(RB_WINDOW_SOURCE_FILES
     window_backend.hpp
     window_creation_parameters.hpp
     window_factory.hpp
-    event/critical_event_manager.cpp
-    event/critical_event_manager.hpp
     event/gl_context_event_manager.cpp
     event/gl_context_event_manager.hpp
     event/gl_context_event.cpp
     event/gl_context_event.hpp
-    event/gl_window_critical_event.hpp
     gamepad/gamepad_input_processor.cpp
     gamepad/gamepad_input_processor.hpp
     gamepad/gamepad_manager.cpp

@@ -34,6 +34,11 @@ class LightingSandbox : public GLSandbox
         static constexpr glm::vec3 StartingCameraPosition = {5.f, 6.f, 5.f};
         static constexpr glm::vec3 StartingLightPosition = {-3.f, 3.f, 0.f};
 
+		/// @param window Pointer to the window on which the sandbox should run.
+        /// @param params Strcture packing the parameters according to which the
+        /// sandbox should run.
+        LightingSandbox(const GLWindowPtr window, const GLSandboxParameters params);
+
         /////////////////////////////////////////
         ///                                   ///
         /// Methods overridden from GLSandbox ///
@@ -44,20 +49,20 @@ class LightingSandbox : public GLSandbox
 		/// called from the main thread.
 		///
 		/// @param window Pointer to the window to initialize.
-		virtual void setUp(const GLWindowPtr window, const GLSandboxParameters& params);
+		virtual void setUp() override;
 
         /// @brief Run something in the provided GL window. To be executed by
 		/// a separate thread.
 		///
 		/// @param window Pointer to the window to run stuff in.
-		virtual void run(const GLWindowPtr window, const GLSandboxParameters& params);
+		virtual void run() override;
 
 		/// @brief Restore the window back to how it was before the example ran.
 		/// The contents of this function should be the opposite from those in
 		/// setUp(). Will be called from the main thread once run() has returned.
 		///
 		/// @param window Pointer to the window to detach from.
-		virtual void tearDown(const GLWindowPtr window);
+		virtual void tearDown() override;
 };
 
 // Handle object movement in the scene displayed by LightingSandbox

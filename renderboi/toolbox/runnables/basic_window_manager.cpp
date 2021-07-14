@@ -69,15 +69,13 @@ ControlSchemeManagerPtr<BasicWindowManagerAction> BasicWindowManager::getDefault
 
 void BasicWindowManager::_toggleFullscreen(const GLWindowPtr window) const
 {
-    using Window::GLWindowCriticalEvent;
-    
     if (window->isFullscreen())
     {
-        window->criticalEventManager.queueEvent(GLWindowCriticalEvent::ExitFullscreen);
+        window->exitFullscreen();
     }
     else
     {
-        window->criticalEventManager.queueEvent(GLWindowCriticalEvent::GoFullscreen);
+        window->goFullscreen(nullptr, true);
     }
 }
 

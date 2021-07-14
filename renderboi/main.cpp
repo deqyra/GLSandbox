@@ -82,7 +82,7 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	// Make things RAII-friendly
+	// RAII-friendly scope :)
 	{
 		// Init window, GL context and GL pointers
 		rbw::GLWindowPtr window;
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 			nullptr,							// shareContext
 			nullptr,							// monitor
 			false,								// borderlessFullscreen
-			false,								// autoMinimize
+			true,								// autoMinimize
 			true,								// decorated
 			false,								// transparentFramebuffer
 			true,								// visible
@@ -130,33 +130,10 @@ int main(int argc, char** argv)
 		};
 
 		// Run examples
-		// rb::GLSandboxRunner<rb::ShadowSandbox> shadowSandbox =
-		// rb::GLSandboxRunner<rb::ShadowSandbox>(window, sbParams, false);
+		rb::GLSandboxRunner<rb::ShadowSandbox> shadowSandbox =
+		rb::GLSandboxRunner<rb::ShadowSandbox>(window, sbParams);
 
-		// shadowSandbox.worker->run();
-		// shadowSandbox.startEventPollingLoop();
-
-		/* Old loop for running examples */
-		std::shared_ptr<rb::ShadowSandbox> ex = std::make_shared<rb::ShadowSandbox>(window);
-		ex->setUp(sbParams);
-
-		auto run = [ex, window, &sbParams]() {
-			ex->renderSetUp(sbParams);
-			while (!window->exitSignaled())
-			{
-				ex->eventManager->processPendingEvents();
-				ex->render(sbParams);
-			}
-			ex->renderTearDown();
-		};
-		std::thread th(run);
-		window->startEventPollingLoop();
-
-		th.join();
-		ex->tearDown();
-		//*/
-
-		// shadowSandbox.worker->waitUntilFinalized();
+		shadowSandbox.run();
 
 		AppWindowFactory::DestroyWindow(window);
 	}

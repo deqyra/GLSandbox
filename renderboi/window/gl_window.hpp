@@ -11,9 +11,7 @@
 #include "gl_context_client.hpp"
 #include "input_processor.hpp"
 #include "monitor.hpp"
-#include "event/critical_event_manager.hpp"
 #include "gamepad/gamepad_manager.hpp"
-#include "interfaces/critical_event_receiver.hpp"
 
 namespace Renderboi
 {
@@ -105,9 +103,9 @@ public:
     /// @return The title of the window.
     virtual std::string getTitle() const;
 
-    /// @brief Get a pointer to the GL context client on which the window runs.
+    /// @brief Get a pointer to the GL context client which the window manages.
     ///
-    /// @return A pointer to the GL context client on which the window runs.
+    /// @return A pointer to the GL context client which the window manages.
     virtual GLContextClientPtr getGlContextClient() const;
 
     /// @brief Set the title of the window. May only be called from the main
@@ -124,11 +122,12 @@ public:
     /// @param value Literal describing which input to set the target to.
     virtual void setInputMode(const Window::Input::Mode::Target target, const Window::Input::Mode::Value value) = 0;
 
-private:
-    std::atomic_bool _stopPollingFlag = false;
+    /// @brief Poll and process input and queued events until requested to exit.
+    void pollAllEvents();
 
-public:
-    void startEventPollingLoop();
+    /// @brief Call pollAllEvents() in a loop until requested to exit (see 
+    /// signalExit() and exitSignaled()).
+    void startPollingLoop();
 
     /// @brief Hide the window. May be called only from the main thread.
     virtual void hide() = 0;
@@ -268,11 +267,6 @@ public:
     ///
     /// @param extName String containing the name of the extension to query.
     virtual bool extensionSupported(std::string extName) = 0;
-
-    /// @brief Entity in charge of processing events which require to temporarily
-    /// invalidate that the window shares with the processes which are running
-    /// in it.
-    CriticalEventManager criticalEventManager;
 
 protected:
     /// @brief Default input processor of all windows.

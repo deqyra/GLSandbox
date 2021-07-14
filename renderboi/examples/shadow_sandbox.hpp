@@ -38,15 +38,6 @@ class ShadowSandbox : public GLSandbox
         /// @brief Whether or not a gamepad could be retrieved.
         bool _gamepadPresent;
 
-        /// @brief Pointer to the scene.
-        ScenePtr _scene;
-
-        /// @brief In charge of rendering the scene.
-        SceneRendererPtr _sceneRenderer;
-
-        /// @brief Pointer to the input splitter of the scene.
-        InputSplitterPtr _splitter;
-
     public:
         static constexpr float LightBaseRange = 10.f;
         static constexpr Camera::CameraParameters CameraParams = {-45.f, -35.f, 1.f};
@@ -57,7 +48,9 @@ class ShadowSandbox : public GLSandbox
         static constexpr glm::vec3 LightPosition = {WallSize / 2.f, WallSize / 2.f, WallSize / 2.f};
 
 		/// @param window Pointer to the window on which the sandbox should run.
-        ShadowSandbox(const GLWindowPtr window);
+        /// @param params Strcture packing the parameters according to which the
+        /// sandbox should run.
+        ShadowSandbox(const GLWindowPtr window, const GLSandboxParameters params);
 
         /////////////////////////////////////////
         ///                                   ///
@@ -69,25 +62,13 @@ class ShadowSandbox : public GLSandbox
 		/// called from the main thread.
 		///
 		/// @param window Pointer to the window to initialize.
-		virtual void setUp(const GLSandboxParameters& params);
-
-		/// @brief Set up everything needed prior to rendering. Will be called  
-		/// from the rendering thread.
-		///
-		/// @param window Pointer to the window to initialize.
-		virtual void renderSetUp(const GLSandboxParameters& params);
+		virtual void setUp();
 
         /// @brief Run something in the provided GL window. To be executed by
 		/// a separate thread.
 		///
 		/// @param window Pointer to the window to run stuff in.
-		virtual void render(const GLSandboxParameters& params);
-
-		/// @brief Clean up everything that had to be set up for rendering. Will
-		/// be called from the rendering thread once run() has returned.
-		///
-		/// @param window Pointer to the window to detach from.
-		virtual void renderTearDown();
+		virtual void run();
 
 		/// @brief Restore the window back to how it was before the example ran.
 		/// The contents of this function should be the opposite from those in

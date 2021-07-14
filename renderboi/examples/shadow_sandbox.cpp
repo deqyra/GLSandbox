@@ -36,13 +36,13 @@ namespace Renderboi
 
 using Ref = FrameOfReference;
 
-ShadowSandbox::ShadowSandbox(const GLWindowPtr window) :
-    GLSandbox(window)
+ShadowSandbox::ShadowSandbox(const GLWindowPtr window, const GLSandboxParameters params) :
+    GLSandbox(window, params)
 {
 
 }
 
-void ShadowSandbox::setUp(const GLSandboxParameters& params)
+void ShadowSandbox::setUp()
 {
     // Update window title
     _title = _window->getTitle();
@@ -69,9 +69,9 @@ void ShadowSandbox::setUp(const GLSandboxParameters& params)
     }
 }
 
-void ShadowSandbox::renderSetUp(const GLSandboxParameters& params)
+void ShadowSandbox::run()
 {
-    GLSandbox::initContext(params);
+    GLSandbox::_initContext();
 
     ////////////////////////////
     ///                      ///
@@ -104,7 +104,7 @@ void ShadowSandbox::renderSetUp(const GLSandboxParameters& params)
     ///                                       ///
     /////////////////////////////////////////////
 
-    _scene = Factory::MakeScene();
+    ScenePtr scene = Factory::MakeScene();
 
     PlaneGenerator::Parameters planeParameters = {
         PlaneTileSize,      // tileSizeX
@@ -172,12 +172,12 @@ void ShadowSandbox::renderSetUp(const GLSandboxParameters& params)
     //depthShader.setFloat("far", camera->getFarDistance());
 
     // Register all objects
-    _scene->registerObject(floorObj);
-    _scene->registerObject(xyWallObj);
-    _scene->registerObject(yzWallObj);
-    _scene->registerObject(torusObj);
-    _scene->registerObject(lightObj);
-    _scene->registerObject(cameraObj);
+    scene->registerObject(floorObj);
+    scene->registerObject(xyWallObj);
+    scene->registerObject(yzWallObj);
+    scene->registerObject(torusObj);
+    scene->registerObject(lightObj);
+    scene->registerObject(cameraObj);
 
 
 
@@ -217,7 +217,7 @@ void ShadowSandbox::renderSetUp(const GLSandboxParameters& params)
 
     // Attach object movement script to scene
     std::shared_ptr<ShadowSandboxScript> sandboxScript = std::make_shared<ShadowSandboxScript>(lightObj, torusObj);
-    _scene->registerScript(std::static_pointer_cast<Script>(sandboxScript));
+    scene->registerScript(std::static_pointer_cast<Script>(sandboxScript));
     
     std::shared_ptr<BasisProvider> cameraAsBasisProvider = std::static_pointer_cast<BasisProvider>(camera);
 
@@ -231,7 +231,7 @@ void ShadowSandbox::renderSetUp(const GLSandboxParameters& params)
 
     // Add script component to scene: GamepadCameraManager
     std::shared_ptr<GamepadCameraManager> gamepadCameraManager = std::make_shared<GamepadCameraManager>(camera);
-    _scene->registerScript(std::static_pointer_cast<Script>(gamepadCameraManager));
+    scene->registerScript(std::static_pointer_cast<Script>(gamepadCameraManager));
 
     // Window script
     ControlledEntityManager<BasicWindowManager> windowManager;
@@ -240,53 +240,53 @@ void ShadowSandbox::renderSetUp(const GLSandboxParameters& params)
     InputLoggerPtr logger = std::make_shared<InputLogger>();
 
     // Register all input processors to the splitter
-    _splitter = std::make_shared<InputSplitter>();
-    _splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraManager));
-    _splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraAspectRatioManager));
-    _splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(sandboxScript));
-    _splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(keyboardMovementScriptManager.getEventTranslator()));
-    _splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEntity()));
-    _splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEventTranslator()));
+    InputSplitterPtr splitter = std::make_shared<InputSplitter>();
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraManager));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(cameraAspectRatioManager));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(sandboxScript));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(keyboardMovementScriptManager.getEventTranslator()));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEntity()));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(windowManager.getEventTranslator()));
 
     // Register all gamepad input processors to the splitter
-    _splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(gamepadMovementScript));
-    _splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(gamepadCameraManager));
+    splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(gamepadMovementScript));
+    splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(gamepadCameraManager));
 
     // Register the logger as both a classic input processor and a gamepad input processor
-    _splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));
-    _splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(logger));
+    splitter->registerInputProcessor(std::static_pointer_cast<InputProcessor>(logger));
+    splitter->registerGamepadInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(logger));
     
     // Register the splitter to the window and the gamepad
-    _window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(_splitter));
+    _window->registerInputProcessor(std::static_pointer_cast<InputProcessor>(splitter));
     if (_gamepadPresent)
     {
-        _gamepad->registerInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(_splitter));
+        _gamepad->registerInputProcessor(std::static_pointer_cast<GamepadInputProcessor>(splitter));
     }
 
     glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
 
-    _sceneRenderer = std::make_shared<SceneRenderer>();
-}
+    SceneRenderer sceneRenderer;
 
-void ShadowSandbox::render(const GLSandboxParameters& params)
-{
-    // Do a single render pass
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
+    while (!_window->exitSignaled())
+    {
+        // Process awaiting render events
+        _eventManager->processPendingEvents();
 
-    // Update and draw scene
-    _scene->triggerUpdate();
-    _sceneRenderer->renderScene(_scene);
-    _window->swapBuffers();
-}
+        // Do a single render pass
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
 
-void ShadowSandbox::renderTearDown()
-{
-    _splitter->detachAllInputProcessors();
-    Factory::DestroyScene(_scene);
+        // Update and draw scene
+        scene->triggerUpdate();
+        sceneRenderer.renderScene(scene);
+        _window->swapBuffers();
+    }
 
-    GLSandbox::terminateContext();
+    splitter->detachAllInputProcessors();
+    Factory::DestroyScene(scene);
+
+    GLSandbox::_terminateContext();
 }
 
 void ShadowSandbox::tearDown()
@@ -299,6 +299,13 @@ void ShadowSandbox::tearDown()
     _window->setTitle(_title);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////                       ////////////////////////////
+/////////////////////////////  ShadowSandboxScript  ////////////////////////////
+/////////////////////////////                       ////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 ShadowSandboxScript::ShadowSandboxScript(SceneObjectPtr lightObj, SceneObjectPtr torusObj) :
     _lightObj(lightObj),

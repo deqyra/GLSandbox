@@ -14,8 +14,7 @@ GLWindow::GLWindow(std::string title) :
     _inputProcessor(_DefaultInputProcessor),
     _title(title),
     _exitSignaled(false),
-    _gamepadManager(nullptr),
-    criticalEventManager(this)
+    _gamepadManager(nullptr)
 {
 
 }
@@ -79,23 +78,26 @@ GLContextClientPtr GLWindow::getGlContextClient() const
     return _glContextClient;
 }
 
-void GLWindow::startEventPollingLoop()
+void GLWindow::pollAllEvents()
 {
-    _stopPollingFlag = false;
-    while (!_stopPollingFlag)
+    pollEvents();
+
+    _gamepadManager->refreshGamepadStatuses();
+    _gamepadManager->pollGamepadStates();
+}
+
+void GLWindow::startPollingLoop()
+{
+    _exitSignaled = false;
+    while (!_exitSignaled)
     {
-        criticalEventManager.processPendingCriticalEvents();
-        pollEvents();
-        
-        _gamepadManager->refreshGamepadStatuses();
-        _gamepadManager->pollGamepadStates();
+        pollAllEvents();
     }
 }
 
 void GLWindow::signalExit(bool value)
 {
     _exitSignaled = value;
-    _stopPollingFlag = true;
 }
 
 bool GLWindow::exitSignaled()

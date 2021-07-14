@@ -7,20 +7,21 @@
 namespace Renderboi
 {
 
-GLSandbox::GLSandbox(const GLWindowPtr window) :
-    GLContextClient(window)
+GLSandbox::GLSandbox(const GLWindowPtr window, const GLSandboxParameters params) :
+    GLContextClient(window),
+    _parameters(params)
 {
 
 }
 
-void GLSandbox::initContext(const GLSandboxParameters& params)
+void GLSandbox::_initContext()
 {
     static Window::GLContextClientPtr thisContextClient =
     static_pointer_cast<Window::GLContextClient>(this->shared_from_this());
 
     _window->makeContextCurrent(thisContextClient);
 
-    if (params.debug)
+    if (_parameters.debug)
     {
         if (!_window->extensionSupported("GL_ARB_debug_output"))
         {
@@ -33,7 +34,7 @@ void GLSandbox::initContext(const GLSandboxParameters& params)
     }
 }
 
-void GLSandbox::terminateContext()
+void GLSandbox::_terminateContext()
 {
     _window->releaseContext();
 }

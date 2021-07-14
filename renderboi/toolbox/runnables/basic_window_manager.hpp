@@ -41,6 +41,7 @@ private:
     /// @brief Toggles the fullscreen state of the managed window.
     void _toggleFullscreen(const GLWindowPtr window) const;
 
+    /// @brief Queues an event to set the polygon mode of the render context.
     void _setPolygonMode(const GLWindowPtr window, const PolygonMode mode) const;
 
 public:

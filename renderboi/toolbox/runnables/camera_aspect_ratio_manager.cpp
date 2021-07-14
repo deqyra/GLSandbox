@@ -11,7 +11,10 @@ CameraAspectRatioManager::CameraAspectRatioManager(const CameraPtr camera) :
 
 void CameraAspectRatioManager::processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height)
 {
-    _camera->setAspectRatio((float)width / (float)height);
+    if (height != 0.f)
+    {
+        _camera->setAspectRatio((float)width / (float)height);
+    }
 }
 
 }//namespace Renderboi

@@ -21,25 +21,13 @@ class GLSandbox : public Window::GLContextClient,
 		/// called from the main thread.
 		///
 		/// @param window Pointer to the window to initialize.
-		virtual void setUp(const GLSandboxParameters& params) = 0;
-
-		/// @brief Set up everything needed prior to rendering. Will be called  
-		/// from the rendering thread.
-		///
-		/// @param window Pointer to the window to initialize.
-		virtual void renderSetUp(const GLSandboxParameters& params) = 0;
+		virtual void setUp() = 0;
 
         /// @brief Run something in the provided GL window. To be executed by
 		/// a separate thread.
 		///
 		/// @param window Pointer to the window to run stuff in.
-		virtual void render(const GLSandboxParameters& params) = 0;
-
-		/// @brief Clean up everything that had to be set up for rendering. Will
-		/// be called from the rendering thread once run() has returned.
-		///
-		/// @param window Pointer to the window to detach from.
-		virtual void renderTearDown() = 0;
+		virtual void run() = 0;
 
 		/// @brief Restore the window back to how it was before the example ran.
 		/// The contents of this function should be the opposite from those in
@@ -50,13 +38,19 @@ class GLSandbox : public Window::GLContextClient,
 
 	protected:
 		/// @param window Pointer to the window on which the sandbox should run.
-		GLSandbox(const GLWindowPtr window);
+        /// @param params Strcture packing the parameters according to which the
+        /// sandbox should run.
+		GLSandbox(const GLWindowPtr window, const GLSandboxParameters params);
 
 		/// @brief Initialize an OpenGL context for the sandbox.
-		virtual void initContext(const GLSandboxParameters& params);
+		virtual void _initContext();
 
 		/// @brief Release the OpenGL context of the sandbox.
-		virtual void terminateContext();
+		virtual void _terminateContext();
+
+		/// @brief Structure packing the parameters according to which the 
+		/// sandbox should run.
+		GLSandboxParameters _parameters;
 };
 
 }//namespace Renderboi
