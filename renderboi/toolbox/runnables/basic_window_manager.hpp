@@ -21,6 +21,13 @@ enum class BasicWindowManagerAction
     ToggleFullscreen
 };
 
+enum class PolygonMode
+{
+    Fill,
+    Line,
+    Point
+};
+
 
 /// @brief Provides event callbacks associated with basic window management.
 class BasicWindowManager :  public InputProcessor,
@@ -33,6 +40,8 @@ private:
 
     /// @brief Toggles the fullscreen state of the managed window.
     void _toggleFullscreen(const GLWindowPtr window) const;
+
+    void _setPolygonMode(const GLWindowPtr window, const PolygonMode mode) const;
 
 public:
     using ActionType = BasicWindowManagerAction;

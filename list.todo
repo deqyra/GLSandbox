@@ -16,6 +16,7 @@ RenderBoi:
         ✔ Better documentation @done(20-10-19 19:22)
         ☐ In all accessor functions using local-statically generated data: provide a refresh argument
         ☐ In all functions using the `bool runOnce` trick to generate local static data once: use initialiser syntax instead
+        ☐ ADL behaves badly on to_string methods
     Core:
         Camera:
             ✔ Use a parent transform instead of a simple up vector @done(20-10-14 12:27)
@@ -118,7 +119,8 @@ RenderBoi:
         ✔ Move functionality to get input action/button names (used in BasicInputManager) @done(20-12-25 16:00)
         ✘ Update concrete window instantiation mechanisms? @cancelled(21-01-31 17:12)
         ✔ Move rendering away in another thread, keep event polling in the main thread @done(21-01-31 17:46)
-        ☐ Fully integrate GLFW in windowing systeam
+        ☐ Fully integrate GLFW in windowing system
+        ☐ Make it possible to queue GLContextEvents alonside with parameters for them
         Gamepad:
             ✔ Write GamepadState @done(21-01-25 12:37)
             ✔ Write Gamepad @done(21-01-25 15:18)

@@ -50,7 +50,7 @@ void ShadowSandbox::setUp(const GLSandboxParameters& params)
 
     // Remove cursor from window
     namespace InputMode = Window::Input::Mode;
-    //window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
+    _window->setInputMode(InputMode::Target::Cursor, InputMode::Value::DisabledCursor);
 
     using Joystick = Window::Input::Joystick;
     GamepadManagerPtr gManager = _window->getGamepadManager();

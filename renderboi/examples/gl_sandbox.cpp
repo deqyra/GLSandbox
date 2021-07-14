@@ -18,8 +18,7 @@ void GLSandbox::initContext(const GLSandboxParameters& params)
     static Window::GLContextClientPtr thisContextClient =
     static_pointer_cast<Window::GLContextClient>(this->shared_from_this());
 
-    _window->makeContextCurrent();
-    _window->glContextClient = thisContextClient;
+    _window->makeContextCurrent(thisContextClient);
 
     if (params.debug)
     {
@@ -36,7 +35,6 @@ void GLSandbox::initContext(const GLSandboxParameters& params)
 
 void GLSandbox::terminateContext()
 {
-    _window->glContextClient = nullptr;
     _window->releaseContext();
 }
 

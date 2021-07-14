@@ -121,6 +121,10 @@ public:
         // Poll events until exit requested
         while (!_window->exitSignaled() && !_window->shouldClose())
         {
+            // Process awaiting critical events
+            _window->criticalEventManager.processPendingCriticalEvents();
+            
+            // Process regular events
             _window->pollEvents();
 
             if (_gamepadManagerPresent)
@@ -128,9 +132,6 @@ public:
                 _gamepadManager->refreshGamepadStatuses();
                 _gamepadManager->pollGamepadStates();
             }
-            
-            // Process awaiting critical events
-            _window->criticalEventManager.processPendingCriticalEvents();
         }
         _worker->waitUntilFinalized(true);
     }

@@ -82,78 +82,86 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	// Init window, GL context and GL pointers
-	rbw::GLWindowPtr window;
-	rbw::WindowCreationParameters windowParams = {
-		"RenderBoi",						// title
-		1280,								// width
-		720,								// height
-		true,								// resizable
-		GL_CONTEXT_VERSION_MAJOR,			// glVersionMajor
-		GL_CONTEXT_VERSION_MINOR,			// glVersionMinor
-		rb::Window::OpenGLProfile::Core,	// glProfile
-		nullptr,							// shareContext
-		nullptr,							// monitor
-		false,								// borderlessFullscreen
-		false,								// autoMinimize
-		true,								// decorated
-		false,								// transparentFramebuffer
-		true,								// visible
-		false,								// maximized
-		false,								// alwaysOnTop
-		true,								// focused
-		true,								// focusOnShow
-		true,								// scaleToMonitor
-		true								// debug
-	};
-
-	try
+	// Make things RAII-friendly
 	{
-		window = AppWindowFactory::MakeWindow(windowParams);
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr 	<< "Exception thrown during window creation:\n"
-				  	<< e.what() << '\n'
-					<< "Window creation failed. Aborting..." << std::endl;
+		// Init window, GL context and GL pointers
+		rbw::GLWindowPtr window;
+		rbw::WindowCreationParameters windowParams = {
+			"RenderBoi",						// title
+			1280,								// width
+			720,								// height
+			true,								// resizable
+			GL_CONTEXT_VERSION_MAJOR,			// glVersionMajor
+			GL_CONTEXT_VERSION_MINOR,			// glVersionMinor
+			rb::Window::OpenGLProfile::Core,	// glProfile
+			nullptr,							// shareContext
+			nullptr,							// monitor
+			false,								// borderlessFullscreen
+			false,								// autoMinimize
+			true,								// decorated
+			false,								// transparentFramebuffer
+			true,								// visible
+			false,								// maximized
+			false,								// alwaysOnTop
+			true,								// focused
+			true,								// focusOnShow
+			true,								// scaleToMonitor
+			true								// debug
+		};
 
-		AppWindowFactory::TerminateBackend();
-		return EXIT_FAILURE; 
-	}
+		try
+		{
+			window = AppWindowFactory::MakeWindow(windowParams);
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr 	<< "Exception thrown during window creation:\n"
+						<< e.what() << '\n'
+						<< "Window creation failed. Aborting..." << std::endl;
 
-	rb::glIgnoreDebugMessagesOfType(GL_DEBUG_TYPE_PERFORMANCE_ARB);
+			AppWindowFactory::TerminateBackend();
+			return EXIT_FAILURE; 
+		}
 
-	const rb::GLSandboxParameters sbParams = {
-		.debug = true
-	};
+		rb::glIgnoreDebugMessagesOfType(GL_DEBUG_TYPE_PERFORMANCE_ARB);
 
-    // Run examples
-	rb::GLSandboxRunner<rb::ShadowSandbox> shadowSandbox =
-	rb::GLSandboxRunner<rb::ShadowSandbox>(window, sbParams, false);
+		const rb::GLSandboxParameters sbParams = {
+			.debug = true
+		};
 
-	shadowSandbox.worker->run();
-	shadowSandbox.startEventPollingLoop();
+		// Run examples
+		// rb::GLSandboxRunner<rb::ShadowSandbox> shadowSandbox =
+		// rb::GLSandboxRunner<rb::ShadowSandbox>(window, sbParams, false);
 
-	/* Old loop for running examples
-    for (auto ex : examples)
-    {
-		ex->setUp(window, sbParams);
+		// shadowSandbox.worker->run();
+		// shadowSandbox.startEventPollingLoop();
 
-		std::thread th(&rb::GLSandbox::run, ex, window, sbParams);
+		/* Old loop for running examples */
+		std::shared_ptr<rb::ShadowSandbox> ex = std::make_shared<rb::ShadowSandbox>(window);
+		ex->setUp(sbParams);
+
+		auto run = [ex, window, &sbParams]() {
+			ex->renderSetUp(sbParams);
+			while (!window->exitSignaled())
+			{
+				ex->eventManager->processPendingEvents();
+				ex->render(sbParams);
+			}
+			ex->renderTearDown();
+		};
+		std::thread th(run);
 		window->startEventPollingLoop();
 
 		th.join();
-		ex->tearDown(window);
+		ex->tearDown();
+		//*/
 
-        delete ex;
-    }
-	*/
+		// shadowSandbox.worker->waitUntilFinalized();
 
-	shadowSandbox.worker->waitUntilFinalized();
+		AppWindowFactory::DestroyWindow(window);
+	}
 
-	// Destroy window by resetting what should be the only shared pointer to it
-	window.reset();
 	AppWindowFactory::TerminateBackend();
 
-	return EXIT_SUCCESS + 1;
+	return EXIT_SUCCESS;
 }

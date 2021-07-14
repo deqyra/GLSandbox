@@ -192,11 +192,11 @@ public:
 
     /// @brief Make the GL context current for the calling thread. May be called
     /// from any thread.
-    void makeContextCurrent();
+    void makeContextCurrent(GLContextClientPtr context) override;
 
     /// @brief Make the GL context non- current for the calling thread. May be 
     /// called from any thread.
-    void releaseContext();
+    void releaseContext() override;
 
     /// @brief Tell whether the GL context supports a certain extension. A GL 
     /// context must be current on the calling thread.

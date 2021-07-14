@@ -237,6 +237,7 @@ set(RB_WINDOW_SOURCE_FILES
     event/critical_event_manager.hpp
     event/gl_context_event_manager.cpp
     event/gl_context_event_manager.hpp
+    event/gl_context_event.cpp
     event/gl_context_event.hpp
     event/gl_window_critical_event.hpp
     gamepad/gamepad_input_processor.cpp

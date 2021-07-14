@@ -208,11 +208,9 @@ GLWindowPtr WindowFactory<WindowBackend::GLFW3>::MakeWindow(const WindowCreation
 
 void WindowFactory<WindowBackend::GLFW3>::DestroyWindow(GLWindowPtr window)
 {
+    GLFWwindow* glfw3Window = std::static_pointer_cast<GLFW3Window>(window)->_w;
     GLFW3Utilities::unsubscribeFromGlfwJoystickStatus(window);
-
-    // No need to actually destroy the window, as the underlying GLFW3Window
-    // instance will do it in its own destructor when the last pointer to the 
-    // instance is released.
+    glfwDestroyWindow(glfw3Window);
 }
 
 std::map<unsigned int, MonitorPtr> WindowFactory<WindowBackend::GLFW3>::_ListMonitors()

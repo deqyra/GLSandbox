@@ -31,7 +31,7 @@ GLFW3Window::GLFW3Window(GLFWwindow* window, std::string title) :
 
 GLFW3Window::~GLFW3Window()
 {
-    glfwDestroyWindow(_w);
+
 }
 
 void GLFW3Window::setTitle(std::string title)
@@ -221,7 +221,7 @@ void GLFW3Window::getCursorPos(double& x, double& y) const
     glfwGetCursorPos(_w, &x, &y);
 }
 
-void GLFW3Window::makeContextCurrent()
+void GLFW3Window::makeContextCurrent(GLContextClientPtr context)
 {
     glfwMakeContextCurrent(_w);
 	// Load GL pointers
@@ -229,11 +229,14 @@ void GLFW3Window::makeContextCurrent()
 	{
         throw std::runtime_error("GLFW3Window: Failed to load GL function pointers.");
     }
+
+    _glContextClient = context;
 }
 
 void GLFW3Window::releaseContext()
 {
     glfwMakeContextCurrent(nullptr);
+    _glContextClient = nullptr;
 }
 
 bool GLFW3Window::extensionSupported(std::string extName)

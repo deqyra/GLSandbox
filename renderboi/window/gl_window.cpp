@@ -74,9 +74,28 @@ std::string GLWindow::getTitle() const
     return _title;
 }
 
+GLContextClientPtr GLWindow::getGlContextClient() const
+{
+    return _glContextClient;
+}
+
+void GLWindow::startEventPollingLoop()
+{
+    _stopPollingFlag = false;
+    while (!_stopPollingFlag)
+    {
+        criticalEventManager.processPendingCriticalEvents();
+        pollEvents();
+        
+        _gamepadManager->refreshGamepadStatuses();
+        _gamepadManager->pollGamepadStates();
+    }
+}
+
 void GLWindow::signalExit(bool value)
 {
     _exitSignaled = value;
+    _stopPollingFlag = true;
 }
 
 bool GLWindow::exitSignaled()

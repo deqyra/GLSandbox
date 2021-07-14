@@ -20,20 +20,24 @@ void BasicWindowManager::triggerAction(const GLWindowPtr window, const BasicWind
 {
     switch (action)
     {
-        case BasicWindowManagerAction::Terminate:
-            window->signalExit();
-            break;
-        case BasicWindowManagerAction::PolygonFill:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            break;
-        case BasicWindowManagerAction::PolygonLine:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            break;
-        case BasicWindowManagerAction::PolygonPoint:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-            break;
-        case BasicWindowManagerAction::ToggleFullscreen:
-            _toggleFullscreen(window);
+    case BasicWindowManagerAction::Terminate:
+        window->signalExit();
+        break;
+
+    case BasicWindowManagerAction::PolygonFill:
+        _setPolygonMode(window, PolygonMode::Fill);
+        break;
+
+    case BasicWindowManagerAction::PolygonLine:
+        _setPolygonMode(window, PolygonMode::Line);
+        break;
+
+    case BasicWindowManagerAction::PolygonPoint:
+        _setPolygonMode(window, PolygonMode::Point);
+        break;
+        
+    case BasicWindowManagerAction::ToggleFullscreen:
+        _toggleFullscreen(window);
     }
 }
 
@@ -44,7 +48,7 @@ void BasicWindowManager::stopAction(const GLWindowPtr window, const BasicWindowM
 
 void BasicWindowManager::processFramebufferResize(const GLWindowPtr window, const unsigned int width, const unsigned int height)
 {
-    window->glContextClient->eventManager->queueEvent(Window::GLContextEvent::FitFramebufferToWindow);
+    window->getGlContextClient()->eventManager->queueEvent(Window::GLContextEvent::FitFramebufferToWindow);
 }
 
 ControlSchemeManagerPtr<BasicWindowManagerAction> BasicWindowManager::getDefaultControlScheme() const
@@ -74,6 +78,26 @@ void BasicWindowManager::_toggleFullscreen(const GLWindowPtr window) const
     else
     {
         window->criticalEventManager.queueEvent(GLWindowCriticalEvent::GoFullscreen);
+    }
+}
+
+void BasicWindowManager::_setPolygonMode(const GLWindowPtr window, const PolygonMode mode) const
+{
+    using Window::GLContextEvent;
+
+    switch (mode)
+    {
+    case PolygonMode::Fill:
+        window->getGlContextClient()->eventManager->queueEvent(GLContextEvent::PolygonModeFill);
+        break;
+
+    case PolygonMode::Line:
+        window->getGlContextClient()->eventManager->queueEvent(GLContextEvent::PolygonModeLine);
+        break;
+
+    case PolygonMode::Point:
+        window->getGlContextClient()->eventManager->queueEvent(GLContextEvent::PolygonModePoint);
+        break;
     }
 }
 

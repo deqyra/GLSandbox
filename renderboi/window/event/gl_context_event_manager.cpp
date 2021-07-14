@@ -55,16 +55,28 @@ void GLContextEventManager::_processEvent(const GLContextEvent& event)
 {
     switch (event)
     {
-        case GLContextEvent::FitFramebufferToWindow:
-            int w, h;
-            _window->getFramebufferSize(w, h);
-            glViewport(0, 0, w, h);
-            break;
+    case GLContextEvent::FitFramebufferToWindow:
+        int w, h;
+        _window->getFramebufferSize(w, h);
+        glViewport(0, 0, w, h);
+        break;
 
-        default:
-            std::string s = "GLContextEventManager: cannot process unknown event"
-            + std::to_string(static_cast<int>(event)) + "."; 
-            throw std::runtime_error(s.c_str());
+    case GLContextEvent::PolygonModeFill:
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        break;
+        
+    case GLContextEvent::PolygonModeLine:
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        break;
+
+    case GLContextEvent::PolygonModePoint:
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+        break;
+
+    default:
+        std::string s = "GLContextEventManager: cannot process unknown event \""
+        + to_string(event) + "\"."; 
+        throw std::runtime_error(s.c_str());
     }
 }
 
